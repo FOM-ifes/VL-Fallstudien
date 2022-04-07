@@ -85,6 +85,8 @@ pi_gewinn
 
 #### Fragen
 
+- Welche Annahme muss erfüllt sein, damit obige Berechnung der (theoretischen) Gewinnwahrscheinlichkeit so funktioniert?
+
 - Hätten Sie - in der Vergangenheit - mit Ihren Zahlen, bezogen auf den Anteil Ziehungen mit einem Gewinn, eher Glück oder Pech gehabt?
 
 - Wenn wir davon ausgehen, dass die Gewinnwahrscheinlichkeit bei $\pi = `r pi_gewinn`$ liegt. Muss dann der Anteil der Gewinne $p$ auch bei $`r pi_gewinn`$ liegen?
