@@ -20,7 +20,7 @@ library(here)
 
 Wie kommt eigentlich der Preis für ein LEGO-Set zustande? Lesen Sie dazu das Statement unter [https://www.lego.com/de-de/service/help/Shopping/how-we-decide-the-prices-of-lego-sets-kA009000001dcamCAA](https://www.lego.com/de-de/service/help/Shopping/how-we-decide-the-prices-of-lego-sets-kA009000001dcamCAA).
 
-Über den Artikel Anna D. Peterson & Laura Ziegler (2021) Building a Multiple Linear Regression Model With LEGO Brick Data, Journal of Statistics and Data Science Education, [DOI: 10.1080/26939169.2021.1946450](https://doi.org/10.1080/26939169.2021.1946450) liegt uns hierfür eine Datentabelle von Amazon Preisen für eine zufällige Stichprobe von Produkten vor. Die Stichprobe wurde eingeschränkt auf folgende Serien:^[Siehe ergänzend [https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/](https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/)]
+Über den Artikel Anna D. Peterson & Laura Ziegler (2021) Building a Multiple Linear Regression Model With LEGO Brick Data, Journal of Statistics and Data Science Education, [DOI: 10.1080/26939169.2021.1946450](https://doi.org/10.1080/26939169.2021.1946450) liegt uns hierfür eine Datentabelle von Amazon Preisen für eine zufällige Stichprobe von Produkten vor.^[Lizenz: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de)] Die Stichprobe wurde eingeschränkt auf folgende Serien:^[Siehe ergänzend [https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/](https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/)]
 
 - Duplo: [https://www.lego.com/de-de/themes/duplo](https://www.lego.com/de-de/themes/duplo)
 
@@ -77,7 +77,7 @@ gf_histogram( ~ Amazon_Price, data = lego, center = 0.5, binwidth = 1)
 
 #### Fragen
 
-- Wie Prozent der Sets kosten unter 10 Dollar? (Tipp: `pdata()`)
+- Wie Prozent der Sets kosten 10 Dollar oder weniger? (Tipp: `pdata()`)
 
 - Was ist größer: Der arithmetische Mittelwert oder der Median? (Tipp: `favstats()`) Gibt es eine Verbindung zum Histogramm?
 
