@@ -87,9 +87,9 @@ gf_bar( ~ E_Horror, fill = ~ E_Komoedie, data = film, position = "fill",
 
 #### Fragen
 
-- Anhand welcher Abbildung können Sie am Besten erkennen welche Gruppe (Interesse an Horrorfilmen Ja oder Nein) sich eher für Komödien interessiert?
-
 - Welche Gruppe interessiert sich mehr für Komödien? Die mit Interesse an Horrorfilmen oder die ohne?
+
+- Anhand welcher Abbildung können Sie am Besten erkennen welche Gruppe (Interesse an Horrorfilmen Ja oder Nein) sich eher für Komödien interessiert?
 
 ***
 
