@@ -111,11 +111,15 @@ $$\hat{y}_i = `r betadach[1]` + `r betadach[2]` \cdot x_i$$
 
 #### Fragen
 
-- Welchen modellierten Wert hat ein Set mit $x_j=10$ Bauteilen? Gilt immer $\hat{y}_j = y_j$?
+- Welchen modellierten Wert hat ein Set mit $x_j=10$ Bauteilen? 
+
+- Gilt immer $\hat{y}_j = y_j$?
 
 - Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
 
 ### Bestimmtheitsmaß
+
+$$R^2= 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}$$
 
 ```{r rquadrat}
 r2 <- rsquared(erg1) %>% round(2)
@@ -280,8 +284,12 @@ summary(erg1)
 
 #### Frage
 
-- Modellieren Sie den Zusammenhang zwischen `Amazon_Price` und `Pieces` für die Serie (`theme`) DUPLO (`DUPLO`) und beschreiben Sie das Ergebnis.
+- Modellieren Sie den Zusammenhang zwischen `Amazon_Price` und `Pieces` für die Serie DUPLO und beschreiben Sie das Ergebnis.
 
 ```{r feld-fuer-R-Code}
+# Daten Vorverabeitung: 
+# Nur Beobachtungen der Serie "DUPLO" auswählen
+lego_DUPLO <- lego %>%
+  filter(Theme == "DUPLO")
 
 ```
