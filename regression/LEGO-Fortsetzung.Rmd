@@ -50,7 +50,7 @@ head(lego)
 
 ***
 
-Zunächst betrachten wir nur die Serien `City` und `Friends` und behalten wir nur die Beobachtungen, für die das Theme ungleich DUPLO ist.
+Zunächst betrachten wir nur die Serien `City` und `Friends` und wir behalten nur die Beobachtungen, für die das Theme ungleich DUPLO ist.
 
 ```{r filter}
 # Beobachtungen der Serie "DUPLO" eliminieren
@@ -74,7 +74,7 @@ str(lego_sub)
 
 ### Lineares Modell
 
-Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Komplexität, gemessen durch die Anzahl Bausteine (`Pieces`) und dem Preis (`Amazon_Price`). 
+Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Komplexität, gemessen durch die Anzahl Bausteine (`Pieces`), und dem Preis (`Amazon_Price`). 
 Dann wird mathematisch folgendes Modell angenommen:
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
@@ -99,7 +99,7 @@ Die unbekannten Parameter $\beta_0, \beta_1$ können anhand des *Kleinste Quadra
 
 ```{r lm1}
 erg1 <- lm(Amazon_Price ~ Pieces , data = lego_sub)
-# Geschätze Koeffizenten (coef()) auf 2 Nachkommastellen runden (round())
+# Geschätze Koeffizenten (coef()) auf 2 Nachkommastellen runden (round()).
 betadach <- coef(erg1) %>% round(2)
 betadach
 ```
@@ -111,9 +111,9 @@ $$\hat{y}_i = `r betadach[1]` + `r betadach[2]` \cdot x_i$$
 
 #### Fragen
 
-- Welchen modellierten Wert hat ein Set mit $x_j=10$ Bauteilen? 
+- Welchen modellierten Wert hat ein Set mit $x_0=10$ Bauteilen? 
 
-- Gilt immer $\hat{y}_j = y_j$?
+- Gilt immer $\hat{y}_0 = y_0$?
 
 - Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
 
@@ -142,7 +142,7 @@ gf_point(Amazon_Price ~ Pieces , data = resample(lego_sub)) %>%
   gf_lm()
 # Zufallszahlengenerator setzen
 set.seed(1896)
-# Geschätztes Modell auf drei zufälligen Re-Sample (resample())
+# geschätztes Modell auf drei zufälligen Re-Samples (resample())
 do(3) * lm(Amazon_Price ~ Pieces , data = resample(lego_sub))
 ```
 
@@ -160,7 +160,7 @@ Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces , data = resample(lego_sub))
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
               nbins = 20, center = betadach[2]) %>% # Anpassung Histogramm 
-  gf_vline(xintercept = ~  betadach[2], color = "blue") %>% # Geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = ~  betadach[2], color = "blue") %>% # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = ~  0, color = "red") # Steigung = 0
 ```
 
@@ -235,7 +235,7 @@ gf_point(Amazon_Price ~ shuffle(Pieces) , data = lego_sub) %>%
   gf_lm()
 # Zufallszahlengenerator setzen
 set.seed(1896)
-# Geschätztes Modell bei Permutationen
+# geschätztes Modell bei Permutationen
 do(3) * lm(Amazon_Price ~ shuffle(Pieces) , data = lego_sub)
 ```
 
@@ -249,7 +249,7 @@ Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces) , data = lego_sub)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Nullvtlg,
               nbins = 20, center = 0) %>% # Anpassung Histogramm 
-  gf_vline(xintercept = ~  betadach[2], color = "blue") %>% # Geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = ~  betadach[2], color = "blue") %>% # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = ~  0, color = "red") # Steigung = 0
 ```
 
@@ -263,7 +263,7 @@ gf_histogram( ~ Pieces, data = Nullvtlg,
 
 ```{r pwert}
 # p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese,
-# in denen der (Betrag) der Steigung mindestens so groß ist wie die Steigung 
+# in denen der (Betrag) der Steigung mindestens so groß ist wie, die Steigung 
 # der Stichprobe
 pwert <- prop( ~ (abs(Pieces) >= abs(betadach[2])), data = Nullvtlg)
 pwert
