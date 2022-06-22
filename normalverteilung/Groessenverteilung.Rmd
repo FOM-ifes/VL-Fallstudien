@@ -94,13 +94,15 @@ xpnorm(q = 160, mean = 168, sd = 6)
 
 ## Quantile bestimmen
 
-Die Quantilsfunktion, $q=F^{-1}(p)$, gibt den Wert $q$ zurück, der mit einer Wahrscheinlichkeit $p$ nicht überschritten wird. So sind z.B. unter diesen Annahmen $90\%$ der Frauen kleiner oder gleich $`r xqnorm(p = 0.9, mean = 168, sd =6) %>% round(2)`$:
+Die Quantilsfunktion, $q=F^{-1}(p)$, gibt den Wert $q$ zurück, der mit einer Wahrscheinlichkeit $p$ nicht überschritten wird. So sind z.B. unter diesen Annahmen $90\%$ der Frauen kleiner oder gleich $`r xqnorm(p = 0.9, mean = 168, sd = 6) %>% round(2)`$:
 
 ```{r}
-xqnorm(p = 0.9, mean = 168, sd =6)
+xqnorm(p = 0.9, mean = 168, sd = 6)
 ```
 
-#### Frage
+#### Fragen
+
+- Was ist der Wert der Verteilungsfunktion an der Stelle `r xqnorm(p = 0.9, mean = 168, sd =6)`? 
 
 - Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den $1\%$ größten gehört.
 
@@ -125,7 +127,7 @@ D.h., ihre Größe ist eine Standardabweichung über den Mittelwert
 
 - Berechnen und interpretieren Sie den z-Wert einer Frau, die $156cm$ groß ist.
 
-- Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sgima=6$, für die Herren $\mu=181$ und $\sigma=7.5$
+- Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
 
 ```{r}
 # Codefeld für z-Wert
