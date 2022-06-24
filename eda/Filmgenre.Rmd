@@ -131,6 +131,30 @@ prop(E_Drama ~ E_Action, data = film, success = "Ja")
 
 - Wie lautet die *Frage*, auf die das Ergebnis `r prop(E_Drama ~ E_Action, data = film, success = "Ja")[2]` lautet?
 
+## Bedingte und totale Wahrscheinlichkeit
+
+Die relative Häufigkeit von *guckt Drama*, gegeben *guckt Action*, also `r prop(E_Drama ~ E_Action, data = film, success = "Ja")[1]`, kann auch als bedingte Wahrscheinlichkeit $Pr(Drama = Ja | Action = Ja)$ aufgefasst werden.
+
+Um die (totale) Wahrscheinlichkeit für *guckt Drama* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Action* addieren:
+
+$$
+Pr(Drama = Ja | Action = Ja) \cdot P(Action = Ja) + Pr(Drama = Ja | Action = Nein) \cdot P(Action = Nein)
+$$
+
+```{r}
+prop(E_Drama ~ E_Action, data = film, success = "Ja")[1] * 
+  prop( ~ E_Action, data = film, success = "Ja") +
+  prop(E_Drama ~ E_Action, data = film, success = "Ja")[2] * 
+  prop( ~ E_Action, data = film, success = "Nein")
+```
+
+Das ergibt $Pr(Drama = Ja)$:
+
+```{r}
+prop( ~ E_Drama, data = film, success = "Ja")
+```
+
+
 ## Your-Turn
 
 #### Fragen
