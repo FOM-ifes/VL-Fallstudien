@@ -1,0 +1,159 @@
+---
+title: "Gummibärchen am Geschmack erkennen (?)"
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Hilfsfunktion
+dice <- function(n = 1) sample(1:6, size = n, replace = TRUE)
+# Paket mosaic aktivieren
+library(mosaic)
+```
+
+# Gummibärchen
+
+Haribo Goldbären werden in unterschiedlichen Geschmacksrichtungen, auch (?) erkennbar an unterschiedlichen Farben, angeboten.^[Produktinformationen unter [https://www.haribo.com/de-de/produkte/haribo/goldbaeren](https://www.haribo.com/de-de/produkte/haribo/goldbaeren).] 
+
+Aber: Können *wir* den Geschmack ekennen?
+
+Dazu machen wir einen Test in Partner:innenarbeit:
+
+1. Wachen Sie sich die Hände bzw. desinfizieren Sie diese.
+2. Wählen Sie heimlich und möglichst zufällig ein Gummibärchen aus.
+3. Die Partnerin, der Partner probiert die Sorte des Gummibärchens am Geschmack, d.h. mit geschlossenen Augen zu erkennen. **Bitte Nicht schummeln!**
+4. Auf einer Skala von 1 (sehr unsicher) bis 10 (sehr sicher): Wie sicher ist die Probierende, der Probierende?
+5. Lag sie, lag er richtig?
+
+Geben Sie die Daten unter [https://forms.gle/n6yyPau2sPeMHdw79](https://forms.gle/n6yyPau2sPeMHdw79) ein. 
+
+#### Fragen
+
+- Warum ist es für einen Geschmackstest wichtig, dass die Testerin, der Tester das Gummibärchen nicht sieht?
+
+- Wie viele verschiedene Geschmacksrichtungen gibt es?
+
+## Daten
+
+In `R` erfolgt eine *Zuweisung* über `<-`. Ein Kommentar wird über `#` eingeleitet. Geben wir das Testergebnis unseres Kurses ein.^[*Hinweis*: In der Vorlage steht `x <- 9` und `n <- 20`. Diese Zahlen müssen angepasst werden. Die Zeile `x <- 9` bedeutet: Der Variable `x` wird der Wert `9` zugewiesen (`<-`).]
+
+```{r ergebnis}
+# Anzahl Richtige:
+x <- 9
+# Anzahl Beobachtungen:
+n <- 20
+```
+
+#### Frage
+
+- Kann `x` größer als `n` sein?
+
+***
+
+`R` kann auch als Taschenrechner benutzt werden:
+
+```{r Anteile}
+# Anteil Richtig:
+x/n
+# Anteil Richtig zuweisen:
+p <- x/n
+# Ergebnis ausgeben:
+p
+```
+
+#### Frage
+
+- Wie interpretieren Sie das Ergebnis? Was sagt dies über die Geschmacksunterschiede von Gummibärchen aus?
+
+## Hypothese
+
+Es soll sechs verschiedene Geschmacksrichtungen geben.
+
+#### Fragen
+
+- Angenommen es gäbe *keine* Geschmacksunterschiede. Wie hoch wäre dann die Wahrscheinlichkeit die Geschmacksrichtung richtig zu raten?
+
+- Geben Sie unten den `R` Code ein, um auszurechnen, wie viel Richtige Sie erwarten würden, wenn die **Hypothese** *Es gibt keinen Geschmacksunterschied* stimmen würde. *Tipp*: Die Anzahl der Teilnehmenden wurde in `R` als `n` hinterlegt.
+
+```{r erwartung}
+
+```
+
+***
+
+Selbst wenn die Hypothese $\pi = 1/6$ stimmen würde, liegen rein zufällig mal mehr, mal weniger richtig. Wie beim Würfeln.
+
+Würfeln (Funktion (`dice()`)) wir `n` mal:
+
+```{r wuerfel}
+# mein_wurf soll sein dass Ergebnis eines n-fachen Würfelns
+mein_wurf <- dice(n = n)
+# mein_wurf anzeigen
+mein_wurf
+```
+
+#### Frage
+
+- Haben alle Studierenden das gleiche Ergebnis?
+
+***
+
+Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde:
+
+```{r wuerfel_auswertung}
+# Anzahl Richtig:
+sum( ~ mein_wurf == 6)
+# Anteil Richtig:
+prop( ~ mein_wurf == 6)
+```
+
+#### Fragen
+
+- Liegt der Anzahl Sechsen beim Würfeln über, unter oder gleich der Anzahl Richtige beim Geschmackstest?
+
+- Liegt der Anteil Sechsen über, unter oder gleich dem Anteil Richtige beim Geschmackstest?
+
+- Muss die Antwort auf die beiden vorherigen Fragen gleich sein?
+
+***
+
+Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ versuchen zum **Modell** $\pi=1/6$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+
+```{r Simulation}
+# Setze Zufallszahlengenerator
+set.seed(1896)
+# Nullvtlg soll sein
+# Wiederhole 1000x: Werfe n-Mal einen Würfel und zähle die Sechsen
+Nullvtlg <- do(1000)* sum( ~ dice(n=n) == 6)
+```
+
+Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. Die Anzahl der Sechsen steht hier in der Variable `sum` der eben simulierten Datentabelle `Nullvtlg`.
+
+```{r Säulendiagramm}
+gf_bar( ~ sum, data = Nullvtlg)
+```
+
+### Frage
+
+- Welche Anzahl Sechsen kommt am Häufigsten vor?
+
+***
+
+Zum Schluss vergleichen wir unser Ergebnis mit den Simulationen, indem wir die Abbildung um eine vertikale Linie (`vline()`) an der Stelle `x` ergänzen (`%>%`):
+
+```{r Hypothesenprüfung}
+gf_bar( ~ sum, data = Nullvtlg) %>%
+  gf_vline(xintercept = ~ x)
+```
+
+### Frage
+
+- Ist unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ versuchen zum hypothetischen Modell $\pi=1/6$ kompatibel?
+
