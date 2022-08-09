@@ -4,18 +4,20 @@ author: "Ihr Name"
 date: "`r Sys.Date()`"
 output:
   html_document:
-    toc: true
-    toc_float: true
-    collapsed: false
-    smooth_scroll: false
+    toc: yes
+    toc_float: yes
+    collapsed: no
+    smooth_scroll: no
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# Hilfsfunktion
+# Hilfsfunktion. n ist die Anzahl der Würfe
 dice <- function(n = 1) sample(1:6, size = n, replace = TRUE)
 # Paket mosaic aktivieren
 library(mosaic)
+# Paket DT aktivieren
+library(DT)
 ```
 
 # Gummibärchen
@@ -64,9 +66,14 @@ n <- 20
 x/n
 # Anteil Richtig zuweisen:
 p <- x/n
-# Ergebnis ausgeben:
+```
+
+Es gibt jetzt in `R` die Variable `p`, der der Wert `x/n` zugewiesen (`<-`) wurde. Eine Ausgabe erfolgt über ein einfaches `p`.
+
+```{r Ausgabe}
 p
 ```
+
 
 #### Frage
 
@@ -80,7 +87,7 @@ Es soll sechs verschiedene Geschmacksrichtungen geben.
 
 - Angenommen es gäbe *keine* Geschmacksunterschiede. Wie hoch wäre dann die Wahrscheinlichkeit die Geschmacksrichtung richtig zu raten?
 
-- Geben Sie unten den `R` Code ein, um auszurechnen, wie viel Richtige Sie erwarten würden, wenn die **Hypothese** *Es gibt keinen Geschmacksunterschied* stimmen würde. *Tipp*: Die Anzahl der Teilnehmenden wurde in `R` als `n` hinterlegt.
+- Geben Sie unten den `R` Code ein, um auszurechnen, wie viel Richtige Sie erwarten würden, wenn die **Hypothese** *Es gibt keinen Geschmacksunterschied* stimmen würde. Zur Erinnerung, die Anzahl der Teilnehmenden wurde in `R` als `n` hinterlegt.
 
 ```{r erwartung}
 
@@ -89,6 +96,8 @@ Es soll sechs verschiedene Geschmacksrichtungen geben.
 ***
 
 Selbst wenn die Hypothese $\pi = 1/6$ stimmen würde, liegen rein zufällig mal mehr, mal weniger richtig. Wie beim Würfeln.
+
+`R` Funktionen enthalten Anweisungen, die dem Computer sagen, was er mit einer möglichen Eingabe machen soll. Ähnlich wie in der Mathematik: $f(x)=x^2$. Das Funktionsargument $x$ soll quadriert werden. `R` Funktionen haben einen Namen, und das Funktionsargument (zusammen mit möglichen weiteren Parametern und Optionen) steht in Klammern. Welche Eingaben und Ausgaben eine Funktion hat kann sehr unterschiedlich sein.
 
 Würfeln (Funktion (`dice()`)) wir `n` mal:
 
@@ -99,16 +108,20 @@ mein_wurf <- dice(n = n)
 mein_wurf
 ```
 
-#### Frage
+#### Fragen
+
+- Wie lautet das Funktionsargument der Funktion `dice()`?
+
+- Das Ergebnis von `dice(n)` ist ein Vektor der Länge `n`. Was passiert, wenn `n` größer wird?
 
 - Haben alle Studierenden das gleiche Ergebnis?
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde:
+Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde. Über `mein_wurf == 6` wird für jedes Element des Vektors `mein_wurf` überprüft, ob es eine `6` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der Modellierung `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r wuerfel_auswertung}
-# Anzahl Richtig:
+# Anzahl Richtig: Summe der 
 sum( ~ mein_wurf == 6)
 # Anteil Richtig:
 prop( ~ mein_wurf == 6)
@@ -129,12 +142,22 @@ Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ versu
 ```{r Simulation}
 # Setze Zufallszahlengenerator
 set.seed(1896)
-# Nullvtlg soll sein
-# Wiederhole 1000x: Werfe n-Mal einen Würfel und zähle die Sechsen
-Nullvtlg <- do(1000)* sum( ~ dice(n=n) == 6)
+# Nullvtlg soll sein: 
+# Wiederhole 1000x: 
+# Werfe n-Mal einen Würfel und zähle die Sechsen
+Nullvtlg <- do(1000)* sum( ~ dice(n = n) == 6)
 ```
 
-Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. Die Anzahl der Sechsen steht hier in der Variable `sum` der eben simulierten Datentabelle `Nullvtlg`.
+`Nullvtlg` ist jetzt eine Datentabelle, die 1000 Zeilen und eine Spalte hat.
+
+```{r Daten}
+# Interaktive Datentabelle
+datatable(Nullvtlg)
+```
+
+In jeder Zeile steht also das Ergebnis einer Simulation. In der Spalte (Variable `sum`) steht dann jeweils, wie oft in den `r n`-Würfen der jeweiligen Simulation eine Sechs gewürfelt wurde. 
+
+Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. 
 
 ```{r Säulendiagramm}
 gf_bar( ~ sum, data = Nullvtlg)
