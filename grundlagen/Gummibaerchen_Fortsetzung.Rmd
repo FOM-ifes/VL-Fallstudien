@@ -1,0 +1,117 @@
+---
+title: "Gummibärchen am Geschmack erkennen (?) - Fortsetzung"
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+    smooth_scroll: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Hilfsfunktion. n ist die Anzahl der Würfe
+dice <- function(n = 1) sample(1:6, size = n, replace = TRUE)
+# Paket mosaic aktivieren
+library(mosaic)
+# Paket DT aktivieren
+library(DT)
+# Paket googlesheets4 aktivieren
+library(googlesheets4)
+gs4_deauth()
+```
+
+# Gummibärchen
+
+Haribo Goldbären werden in unterschiedlichen Geschmacksrichtungen, auch (?) erkennbar an unterschiedlichen Farben, angeboten.
+
+## Daten
+
+Die Daten von Geschmackstest sind in einer Google-Tabelle^[[https://docs.google.com/spreadsheets/d/1tXhRSZFGuKJa8G26Jf9dq1FLXbhLyDdUtx3xXzGZr80](https://docs.google.com/spreadsheets/d/1tXhRSZFGuKJa8G26Jf9dq1FLXbhLyDdUtx3xXzGZr80)] hinterlegt.
+
+Diese lesen wir in `R` ein (Befehl `read_sheet()` mit dem Funktionsargument der Tabellen ID) und weisen sie `Gummibaerchen` zu.
+
+```{r Einlesen}
+Gummibaerchen <- read_sheet("1tXhRSZFGuKJa8G26Jf9dq1FLXbhLyDdUtx3xXzGZr80")
+```
+
+Betrachten wir die Daten:
+
+```{r Tabelle}
+datatable(Gummibaerchen)
+```
+
+#### Fragen
+
+- Wie viele Spalten (Variablen) liegen vor?
+
+- Was müssen Sie im Suchfeld (`Search`) eingeben um unseren Test zu finden?
+
+***
+
+Leider sind die Variablennamen sehr unhandlich, daher nennen wir diese um (`rename()`):
+
+```{r Rename}
+Gummibaerchen <- Gummibaerchen %>%
+  rename(Geschmack = "Welche Sorte wurde getestet?",
+         Erkannt = "Wurde die Geschmacksrichtung erkannt?",
+         Sicherheit = "Wie sicher ist sich die Testerin, der Tester?")
+```
+
+#### Fragen
+
+- Ergibt ein Mittelwert der Variable `Geschmack` Sinn?
+
+- Ergibt ein Mittelwert der Variable `Sicherheit` Sinn?
+
+- Können wir sagen, dass jemand mit einer `Sicherheit` von 8 doppelt so sicher ist wie jemand mit einer `Sicherheit` von 4?
+
+## Erkennnen je Geschmacksrichtung
+
+Vielleicht lassen sich einige Geschmacksrichtungen leichter erkennen als andere? Die Variable `Erkannt` steht im Zusammenhang mit der Variable `Geschmack`? Die Funktion `prop(y ~ x, data = Daten)` ermöglicht es, den Anteil einer Ausprägung, eines möglichen Wertes, von `y` in Abhängigkeit (`~`) der Werte von `x` zu bestimmen. Dabei sind die Variablen (`x` und `y`) in der Datentabelle `Daten` zu finden. In unserem Fall also:
+
+```{r Anteil_je_Geschmack}
+prop(Erkannt ~ Geschmack, data = Gummibaerchen)
+```
+
+#### Fragen
+
+- Welche Sorte wird am häufigsten richtig erkannt, welche am seltensten?
+
+- Kann sich das Ergebnis mit mehr Daten ändern?
+
+- Angenommen die Teilnehmer:innen konnten die Farbe sehen. Würde sich das Ergebnis ändern?
+
+## Verzerrung
+
+Insgesamt - also ohne Betrachtung der Geschmacksrichtung, liegen `r prop( ~ Erkannt, data = Gummibaerchen)` richtig:
+
+```{r Anteil_insgesamt}
+prop( ~ Erkannt, data = Gummibaerchen)
+```
+
+#### Frage
+
+- Angenommen wir hätten nur Daten von Teilnehmenden, die sich sehr sicher waren (z.B. `Sicherheit` von 8 oder höher). Kann sich dann das Ergebnis ändern?
+
+***
+
+Über `filter()` können Beobachtungen (= Zeilen) anhand eines Kriteriums ausgewählt werden.
+
+```{r Filter}
+Gummibaerchen_sicher <- Gummibaerchen %>%
+  filter(Sicherheit >= 8)
+```
+
+#### Fragen
+
+- Wird die neue Datentabelle `Gummibaerchen_sicher` mehr oder weniger Beobachtungen haben als die Datentabelle `Gummibaerchen`? 
+
+- Ändern Sie den folgenden Code entsprechend, umd den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben zu berechnen. Wie hoch ist der Anteil?
+
+```{r Uebung}
+prop( ~ Erkannt, data = Gummibaerchen)
+```
+
