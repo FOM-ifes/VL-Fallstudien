@@ -1,0 +1,126 @@
+---
+title: "Zwei Wahrheiten, eine Lüge, Fortsetzung"
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+    smooth_scroll: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Paket mosaic aktivieren
+library(mosaic)
+# Paket DT aktivieren
+library(DT)
+# Paket googlesheets4 aktivieren
+library(googlesheets4)
+gs4_deauth()
+```
+
+# Eine Lüge. Erkannt?
+
+Wie gut können wir Lügen erkennen?
+
+Dazu haben wir die Daten folgendermaßen erhoben:
+
+Innerhalb einer Gruppe:
+
+1. Eine Person erzählt drei kurze Aussagen über sich. Eins davon ist eine Lüge.
+2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind die Lüge erkannt zu haben.
+3. Die Person enthüllt, ob die Anderen richtig lagen.
+4. Tragen Sie die Sicherheit und das Ergebnis ein.
+5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge berichtet.
+
+## Daten
+
+Die Daten unseres Tests sind in einer Google-Tabelle^[[https://docs.google.com/spreadsheets/d/1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4](https://docs.google.com/spreadsheets/d/1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4)] hinterlegt.
+
+Diese lesen wir in `R` ein (Befehl `read_sheet()` mit dem Funktionsargument der Tabellen ID) und weisen sie `EineLuege` zu.
+
+```{r Einlesen}
+EineLuege <- read_sheet("1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4")
+```
+
+Betrachten wir die Daten:
+
+```{r Tabelle}
+datatable(EineLuege)
+```
+
+#### Fragen
+
+- Wie viele Spalten (Variablen) liegen vor?
+
+***
+
+Leider sind die Variablennamen sehr unhandlich, daher nennen wir diese um (`rename()`):
+
+```{r Rename}
+EineLuege <- EineLuege %>%
+  rename(Sicherheit = "Wie sicher sind Sie, die Lüge erkannt zu haben?",
+         Erkannt = "Lagen Sie richtig?")
+```
+
+#### Fragen
+
+- Ergibt ein Mittelwert der Variable `Sicherheit` Sinn?
+
+- Ergibt ein Mittelwert der Variable `Erkannt` Sinn?
+
+- Können wir sagen, dass jemand mit einer `Sicherheit` von 8 doppelt so sicher ist wie jemand mit einer `Sicherheit` von 4?
+
+## Sicherheit
+
+Um die Verteilung der Variable `Sicherheit` zu betrachten können wir wieder den Befehl `gf_bar()` verwenden:
+
+```{r Verteilung_Sicherheit}
+gf_bar( ~ Sicherheit, data = EineLuege)
+```
+
+#### Frage
+
+- Wie würden Sie das Ergebnis beschreiben?
+
+## Zusammenhang Sicherheit und Erkannt
+
+#### Frage
+
+- Welchen Zusammenhang vermuten Sie zwischen `Sicherheit` und `Erkannt`?
+
+***
+
+Über ein Streudiagramm (`gf_point(y ~ x, data = Daten)`) kann die gemeinsame Verteilung der Variablen dargestellt werden:
+
+```{r Streudiagramm}
+gf_point(Erkannt ~ Sicherheit, data = EineLuege)
+```
+
+#### Fragen
+
+- Was zeigt ein Punkt?
+
+- Können Punkte übereinander liegen?
+
+***
+
+Den Zusammenhang können wir auch modellieren:^[Die methodische Umsetzung ist hier ein Ausblick!]
+
+```{r Modellierung}
+# Vorbereitung
+EineLuege <- EineLuege %>%
+  mutate(Erkannt = factor(Erkannt, levels = c("Nein", "Ja")))
+# Logistische Regression
+glm(Erkannt ~ Sicherheit, data = EineLuege, family = binomial) %>%
+  plotModel()
+```
+
+#### Fragen
+
+- Wie würden Sie den Zusammenhang beschreiben?
+
+- Wie sähe die Linie aus, wenn es keinen Zusammenhang geben würde?
+
