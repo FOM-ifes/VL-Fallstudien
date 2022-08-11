@@ -51,7 +51,7 @@ Betrachten wir die Daten:
 datatable(EineLuege)
 ```
 
-#### Fragen
+#### Frage
 
 - Wie viele Spalten (Variablen) liegen vor?
 
@@ -70,8 +70,6 @@ EineLuege <- EineLuege %>%
 - Ergibt ein Mittelwert der Variable `Sicherheit` Sinn?
 
 - Ergibt ein Mittelwert der Variable `Erkannt` Sinn?
-
-- Können wir sagen, dass jemand mit einer `Sicherheit` von 8 doppelt so sicher ist wie jemand mit einer `Sicherheit` von 4?
 
 ## Sicherheit
 

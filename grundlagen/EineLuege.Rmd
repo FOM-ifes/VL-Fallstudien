@@ -70,7 +70,7 @@ p
 
 #### Frage
 
-- Wie interpretieren Sie das Ergebnis? Was sagt unser Ergebnis über die Fähigkeit Lügen zu erknnen aus?
+- Wie interpretieren Sie das Ergebnis? Was sagt unser Ergebnis über die Fähigkeit Lügen zu erkennen aus?
 
 ## Hypothese
 
@@ -78,7 +78,7 @@ Jede Person hat drei Dinge über sich ausgesagt, eins davon war eine Lüge.
 
 #### Fragen
 
-- Angenommen wir können Lügen *nicht* erkennen. Wie hoch wäre dann die Wahrscheinlichkeit die richtig zu raten?
+- Angenommen wir können Lügen *nicht* erkennen. Wie hoch wäre dann die Wahrscheinlichkeit richtig zu raten?
 
 - Geben Sie unten den `R` Code ein, um auszurechnen, wie viel Richtige Sie erwarten würden, wenn die **Hypothese** *wir können Lügen nicht erkennen* stimmen würde. Zur Erinnerung, die Anzahl der Teilnehmenden wurde in `R` als `n` hinterlegt.
 
@@ -103,13 +103,13 @@ mein_raten
 
 #### Fragen
 
-- Wie lautet das Funktionsargument der Funktion `raten`()`?
+- Wie lautet das Funktionsargument der Funktion `raten()`?
 
 - Haben alle Studierenden das gleiche Ergebnis?
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Raten `Ja`, also richtig ist. Über `mein_raten == "Ja"` wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der Modellierung `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
+Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft wir beim Raten `Ja`, also zufällig richtig lagen. Über `mein_raten == "Ja"` wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r raten_auswertung}
 # Anzahl Richtig: Summe der (zufällig) richtigen Rateversuche 
@@ -119,14 +119,14 @@ prop( ~ mein_raten == "Ja")
 ```
 
 
-Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ versuchen zum **Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **hypothetischen Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
 
 ```{r Simulation}
 # Setze Zufallszahlengenerator
 set.seed(1896)
 # Nullvtlg soll sein: 
 # Wiederhole 1000x: 
-# Rate n-Mal und zähle die richtigen
+# Rate n-Mal und zähle die Richtigen
 Nullvtlg <- do(1000)* sum( ~ raten(n = n) == "Ja")
 ```
 
@@ -139,7 +139,7 @@ datatable(Nullvtlg)
 
 In jeder Zeile steht also das Ergebnis einer Simulation. In der Spalte (Variable `sum`) steht dann jeweils, wie oft in den `r n`-Rateversuchen der jeweiligen Simulation das Ergebnis richtig war. 
 
-Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie Richtige wir in unseren 1000 Simulationen jeweils hatten. 
+Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie Richtige wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
 
 ```{r Säulendiagramm}
 gf_bar( ~ sum, data = Nullvtlg)

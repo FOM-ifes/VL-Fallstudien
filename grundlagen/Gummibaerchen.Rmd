@@ -121,9 +121,9 @@ mein_wurf
 Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde. Über `mein_wurf == 6` wird für jedes Element des Vektors `mein_wurf` überprüft, ob es eine `6` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der Modellierung `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r wuerfel_auswertung}
-# Anzahl Richtig: Summe der 
+# Anzahl Richtig: Summe der Sechsen 
 sum( ~ mein_wurf == 6)
-# Anteil Richtig:
+# Anteil Richtig: Anteil der Sechsen 
 prop( ~ mein_wurf == 6)
 ```
 
@@ -137,7 +137,7 @@ prop( ~ mein_wurf == 6)
 
 ***
 
-Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ versuchen zum **Modell** $\pi=1/6$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **Modell** $\pi=1/6$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
 
 ```{r Simulation}
 # Setze Zufallszahlengenerator
@@ -157,7 +157,7 @@ datatable(Nullvtlg)
 
 In jeder Zeile steht also das Ergebnis einer Simulation. In der Spalte (Variable `sum`) steht dann jeweils, wie oft in den `r n`-Würfen der jeweiligen Simulation eine Sechs gewürfelt wurde. 
 
-Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. 
+Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
 
 ```{r Säulendiagramm}
 gf_bar( ~ sum, data = Nullvtlg)
