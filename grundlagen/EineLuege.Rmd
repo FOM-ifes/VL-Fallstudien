@@ -30,7 +30,7 @@ Innerhalb Ihrer Gruppe:
 2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind die Lüge erkannt zu haben.
 3. Die Person enthüllt, ob die Anderen richtig lagen.
 4. Tragen Sie die Sicherheit und das Ergebnis ein.
-5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge berichtet.
+5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge erzählt.
 
 Geben Sie die Daten unter [https://forms.gle/gciXvk4KMA1DD3Rw5](https://forms.gle/gciXvk4KMA1DD3Rw5) ein. 
 
@@ -109,7 +109,7 @@ mein_raten
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft wir beim Raten `Ja`, also zufällig richtig lagen. Über `mein_raten == "Ja"` wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
+Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft wir beim Raten `Ja`, also zufällig richtig lagen. Über `mein_raten == "Ja"`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r raten_auswertung}
 # Anzahl Richtig: Summe der (zufällig) richtigen Rateversuche 
@@ -119,7 +119,7 @@ prop( ~ mein_raten == "Ja")
 ```
 
 
-Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **hypothetischen Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+Um zu überprüfen, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **hypothetischen Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
 
 ```{r Simulation}
 # Setze Zufallszahlengenerator
@@ -139,7 +139,7 @@ datatable(Nullvtlg)
 
 In jeder Zeile steht also das Ergebnis einer Simulation. In der Spalte (Variable `sum`) steht dann jeweils, wie oft in den `r n`-Rateversuchen der jeweiligen Simulation das Ergebnis richtig war. 
 
-Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie Richtige wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
+Über ein Säulendiagramm (`gf_bar()`) können wir uns anschauen wie viele Richtige wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
 
 ```{r Säulendiagramm}
 gf_bar( ~ sum, data = Nullvtlg)

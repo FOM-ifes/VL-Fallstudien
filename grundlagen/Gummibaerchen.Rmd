@@ -118,7 +118,7 @@ mein_wurf
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde. Über `mein_wurf == 6` wird für jedes Element des Vektors `mein_wurf` überprüft, ob es eine `6` ist.^[`==` ist das logische gleich, `!=` ist ungleich.]. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der Modellierung `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
+Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft in unserem Wurf z.B. eine `6` gewürfelt wurde. Über `mein_wurf == 6`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_wurf` überprüft, ob es eine `6` ist. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der Modellierung `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r wuerfel_auswertung}
 # Anzahl Richtig: Summe der Sechsen 

@@ -33,7 +33,7 @@ Innerhalb einer Gruppe:
 2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind die Lüge erkannt zu haben.
 3. Die Person enthüllt, ob die Anderen richtig lagen.
 4. Tragen Sie die Sicherheit und das Ergebnis ein.
-5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge berichtet.
+5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge erzählt.
 
 ## Daten
 
