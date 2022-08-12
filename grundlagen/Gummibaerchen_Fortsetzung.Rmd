@@ -85,7 +85,7 @@ prop(Erkannt ~ Geschmack, data = Gummibaerchen)
 
 ## Verzerrung
 
-Insgesamt - also ohne Betrachtung der Geschmacksrichtung, liegen `r prop( ~ Erkannt, data = Gummibaerchen)` richtig:
+Insgesamt - also ohne Betrachtung der Geschmacksrichtung - liegen `r prop( ~ Erkannt, data = Gummibaerchen)` richtig:
 
 ```{r Anteil_insgesamt}
 prop( ~ Erkannt, data = Gummibaerchen)
@@ -108,7 +108,7 @@ Gummibaerchen_sicher <- Gummibaerchen %>%
 
 - Wird die neue Datentabelle `Gummibaerchen_sicher` mehr oder weniger Beobachtungen haben als die Datentabelle `Gummibaerchen`? 
 
-- Ändern Sie den folgenden Code entsprechend, umd den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben zu berechnen. Wie hoch ist der Anteil?
+- Ändern Sie den folgenden Code entsprechend, um den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben, zu berechnen. Wie hoch ist der Anteil?
 
 ```{r Uebung}
 prop( ~ Erkannt, data = Gummibaerchen)
