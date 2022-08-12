@@ -28,9 +28,9 @@ Aber: Können *wir* den Geschmack ekennen?
 
 Dazu machen wir einen Test in Partner:innenarbeit:
 
-1. Wachen Sie sich die Hände bzw. desinfizieren Sie diese.
+1. Waschen Sie sich die Hände bzw. desinfizieren Sie diese.
 2. Wählen Sie heimlich und möglichst zufällig ein Gummibärchen aus.
-3. Die Partnerin, der Partner probiert die Sorte des Gummibärchens am Geschmack, d.h. mit geschlossenen Augen zu erkennen. **Bitte Nicht schummeln!**
+3. Die Partnerin, der Partner probiert die Sorte des Gummibärchens am Geschmack, d.h. mit geschlossenen Augen, zu erkennen. **Bitte Nicht schummeln!**
 4. Auf einer Skala von 1 (sehr unsicher) bis 10 (sehr sicher): Wie sicher ist die Probierende, der Probierende?
 5. Lag sie, lag er richtig?
 
@@ -137,7 +137,7 @@ prop( ~ mein_wurf == 6)
 
 ***
 
-Um zu gucken, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **Modell** $\pi=1/6$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+Um zu überprüfen, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **Modell** $\pi=1/6$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
 
 ```{r Simulation}
 # Setze Zufallszahlengenerator
@@ -157,7 +157,7 @@ datatable(Nullvtlg)
 
 In jeder Zeile steht also das Ergebnis einer Simulation. In der Spalte (Variable `sum`) steht dann jeweils, wie oft in den `r n`-Würfen der jeweiligen Simulation eine Sechs gewürfelt wurde. 
 
-Über ein Säulendiagramm (`gf_bar()`) können wir uns angucken wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
+Über ein Säulendiagramm (`gf_bar()`) können wir uns anschauen wie viele Sechsen wir in unseren 1000 Simulationen jeweils hatten. Damit `R` die Variable `sum` (nicht zu Verwechseln mit dem Befehl `sum()`) auch richtig findet, geben wir die Datentabelle `Nullvtlg` als zuätzliches Funktionsargument an.
 
 ```{r Säulendiagramm}
 gf_bar( ~ sum, data = Nullvtlg)
