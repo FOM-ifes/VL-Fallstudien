@@ -166,9 +166,9 @@ pdata( ~ consume, q = 5, data = Verbrauch)
 1-pdata( ~ consume, q = 7.5, data = Verbrauch)
 ```
 
-- Wie hoch ist der Anteil der Fahren mit einem Verbrauch kleiner gleich 5l?
+- Wie hoch ist der Anteil der Fahrten mit einem Verbrauch kleiner gleich 5l?
 
-- Wie hoch ist der Anteil der Fahren mit einem Verbrauch größer als 7.5l?
+- Wie hoch ist der Anteil der Fahrten mit einem Verbrauch größer als 7.5l?
 
 ***
 
@@ -198,7 +198,7 @@ favstats( ~ consume, data = Verbrauch)
 
 - Wie hoch ist der arithmetische Mittelwert?
 
-- In welchen Bereich liegen 50% der Verbräuche?
+- In welchem Bereich liegen 50% der Verbräuche?
 
 - In der Datentabelle liegen außerdem noch die Innentemperatur (`temp_inside`) sowie die Außentemperatur vor (`temp_outside`). Bei welcher Temperatur wird die Streuung größer sein?
 
@@ -220,7 +220,7 @@ favstats(consume ~ AC, data = Verbrauch)
 
 #### Frage
 
-- Was können Sie über eine Vergleich der Verteilungen der der Verbräuche mit und ohne Klimaanlage aussagen?
+- Was können Sie über einen Vergleich der Verteilungen der Verbräuche mit und ohne Klimaanlage aussagen?
 
 ## Your-Turn
 

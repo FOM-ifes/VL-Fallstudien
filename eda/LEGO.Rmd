@@ -62,7 +62,7 @@ gf_histogram( ~ Amazon_Price, data = lego)
 
 #### R Übung
 
-- Passen Sie das Histogramm über `center = ` und `binwidth = ` so an, dass Sie finden dass zentrale Eigenschaften der Verteilung gut sichtbar sind.
+- Passen Sie das Histogramm über `center = ` und `binwidth = ` so an, dass nach Ihrem Empfinden zentrale Eigenschaften der Verteilung gut sichtbar sind.
 
 ```{r eda-preis-angepasst}
 # Histogramm
@@ -77,9 +77,9 @@ gf_histogram( ~ Amazon_Price, data = lego, center = 0.5, binwidth = 1)
 
 #### Fragen
 
-- Wie Prozent der Sets kosten 10 Dollar oder weniger? (Tipp: `pdata()`)
+- Wieviel Prozent der Sets kosten 10 Dollar oder weniger? (Tipp: `pdata()`)
 
-- Was ist größer: Der arithmetische Mittelwert oder der Median? (Tipp: `favstats()`) Gibt es eine Verbindung zum Histogramm?
+- Was ist größer: Der arithmetische Mittelwert oder der Median? (Tipp: `favstats()`). Gibt es eine Verbindung zum Histogramm?
 
 - Was ist die Aussage des Ergebnisses von `qdata( ~ Amazon_Price, p = 0.95, data = lego)`?
 
@@ -137,7 +137,7 @@ lego_sub <- lego %>%
 
 - Welche Datentabelle hat mehr Variablen: `lego`, `lego_sub` oder beide gleich?
 
-- Welche Darstellungform eignet sich das Verhältnis von Amazon_Price und Pieces zueinander darzustellen?
+- Welche Darstellungform eignet sich, um das Verhältnis von Amazon_Price und Pieces zueinander darzustellen?
 
 - Aus inhaltlichen Überlegungen: Welche Variable sollte auf die $x$-Achse gezeichnet werden: `Amazon_Price` oder `Pieces`?
 
