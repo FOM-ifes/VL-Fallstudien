@@ -162,8 +162,8 @@ pdata( ~ consume, q = 10, data = Verbrauch)
 Ändern Sie den Code so, dass Sie die folgenden Fragen beantworten können.
 
 ```{r AW-pdata-Fragen}
-pdata( ~ consume, q = 5, data = Verbrauch)
-1-pdata( ~ consume, q = 7.5, data = Verbrauch)
+pdata( ~ consume, q = 10, data = Verbrauch)
+pdata( ~ consume, q = 10, data = Verbrauch)
 ```
 
 - Wie hoch ist der Anteil der Fahrten mit einem Verbrauch kleiner gleich 5l?

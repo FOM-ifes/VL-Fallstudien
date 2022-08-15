@@ -1,5 +1,5 @@
 ---
-title: "Zwei Wahrheiten, eine Lüge, Fortsetzung"
+title: "Zwei Wahrheiten, eine Lüge - Fortsetzung"
 author: "Ihr Name"
 date: "`r Sys.Date()`"
 output:
