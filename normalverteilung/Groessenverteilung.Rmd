@@ -34,7 +34,7 @@ Es gibt gute Gründe dafür (siehe z.B. [Our World in Data](https://ourworldinda
 ```{r}
 gf_dist("norm", mean = 168, sd = 6) %>% 
   gf_labs(title = "Größenverteilung Frauen",
-          subtitle = "Dichtefunktion", x="x (in cm)", y="f(x)")
+          subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
 ```
 
 D.h., die Größe der weiblichen Bevölkerung verteilt sich unimodal und symmetrisch um den Mittelwert, kleinere Abweichung zum Mittelwert kommen häufig vor.
@@ -48,7 +48,7 @@ Für unsere Größenverteilung:
 ```{r}
 gf_dist("norm", mean = 168, sd = 6, kind = "cdf") %>% 
   gf_labs(title = "Größenverteilung Frauen",
-          subtitle = "Verteilungsfunktion", x="x (in cm)", y="F(x)")
+          subtitle = "Verteilungsfunktion", x = "x (in cm)", y = "F(x)")
 ```
 
 Bei einer Normalverteilung gilt:
@@ -66,17 +66,18 @@ Dabei ist:
 
 #### Frage
 
-- Für 20-25 jährige Männer gehen wir von $\mu=181cm$ und $\sigma=7.5cm$ aus:
+- Für 20-25 jährige Männer gehen wir von $\mu=181\,cm$ und $\sigma=7.5\,cm$ aus:
 ```{r}
 gf_dist("norm", mean = 181, sd = 7.5) %>% 
   gf_labs(title = "Größenverteilung Männer",
-          subtitle = "Dichtefunktion", x="x (in cm)", y="f(x)")
+          subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
 ```
+
 Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
 
 ## Wahrscheinlichkeiten bestimmen
 
-Wenn die Daten normalverteilt sind, und wir $\mu$ und $\sigma$ kennen, können wir Wahrscheinlichkeiten bestimmen, z.B., dass eine Frau kleiner oder gleich $160cm$ ist:
+Wenn die Daten normalverteilt sind, und wir $\mu$ und $\sigma$ kennen, können wir Wahrscheinlichkeiten bestimmen, z.B., dass eine Frau kleiner oder gleich $160\,cm$ ist:
 
 ```{r}
 xpnorm(q = 160, mean = 168, sd = 6)
@@ -84,13 +85,13 @@ xpnorm(q = 160, mean = 168, sd = 6)
 
 #### Fragen
 
-- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich $180cm$ ist:
+- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich $180\,cm$ ist:
 
 ```{r}
 xpnorm(q = 160, mean = 168, sd = 6)
 ```
 
-- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als $180cm$ ist?
+- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als $180\,cm$ ist?
 
 ## Quantile bestimmen
 
@@ -121,11 +122,11 @@ Z.B. hat eine $174cm$ große Frau einen z-Wert von $+1$:
 
 $$z=\frac{x-\mu}{\sigma}=\frac{174-168}{6}=+1$$ 
 
-D.h., ihre Größe ist eine Standardabweichung über den Mittelwert
+D.h., ihre Größe ist eine Standardabweichung über dem Mittelwert
 
 #### Fragen
 
-- Berechnen und interpretieren Sie den z-Wert einer Frau, die $156cm$ groß ist.
+- Berechnen und interpretieren Sie den z-Wert einer Frau, die $156\,cm$ groß ist.
 
 - Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
 
@@ -160,7 +161,7 @@ xpnorm(c(-1, 1))
 
 ## Einstieg in Bayes
 
-Simulieren wir eine Datentabelle von jeweils $10000$ Frauen und Männer, mit normalverteilter Größe und $\mu_F=168, \sigma_F=6$ bzw. $\mu_M=181, \sigma_M=7.5$
+Simulieren wir eine Datentabelle von jeweils $10000$ Frauen und Männern, mit normalverteilter Größe und $\mu_F=168, \sigma_F=6$ bzw. $\mu_M=181, \sigma_M=7.5$
 
 ```{r}
 # Zufallszahlengenerator festlegen
@@ -180,7 +181,7 @@ favstats(groesse ~ geschlecht, data = Daten)
 
 #### Frage
 
-- Angenommen vor Ihnen steht eine Person, die $185cm$ groß ist, und Sie können das Geschlecht nicht erkennne. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
+- Angenommen vor Ihnen steht eine Person, die $185\,cm$ groß ist, und Sie können das Geschlecht nicht erkennnen. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
 
 ---
 
@@ -200,7 +201,7 @@ dnorm(185, mean = 181, sd = 7.5)
 
 #### Fragen
 
-- Wären Sie sich bei einer Größe von $174.5cm$ bzgl. des Geschlechts *sicher*?
+- Wären Sie sich bei einer Größe von $174.5\,cm$ bzgl. des Geschlechts *sicher*?
 
 ```{r}
 gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) %>%
@@ -226,7 +227,7 @@ Pr(Geschlecht|Größe) &=&\frac{Pr(Größe|Geschlecht)\cdot Pr(Geschlecht)}{Pr(G
 &\propto& Pr(Größe|Geschlecht)\cdot Pr(Geschlecht)
 \end{eqnarray*}
 
-Für $174.5cm$ und a priori $90\%$ weiblich ergibt sich:
+Für $174.5\,cm$ und a priori $90\%$ weiblich ergibt sich:
 
 ```{r}
 # Frau

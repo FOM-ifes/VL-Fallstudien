@@ -91,14 +91,14 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
 Visuell:
 ```{r streu}
-gf_point(Amazon_Price ~ Pieces , data = lego_sub) %>%
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
   gf_lm()
 ```
 
 Die unbekannten Parameter $\beta_0, \beta_1$ können anhand des *Kleinste Quadrate Kriteriums* für diese Daten über die Funktion `lm()` optimal geschätzt werden:
 
 ```{r lm1}
-erg1 <- lm(Amazon_Price ~ Pieces , data = lego_sub)
+erg1 <- lm(Amazon_Price ~ Pieces, data = lego_sub)
 # Geschätze Koeffizenten (coef()) auf 2 Nachkommastellen runden (round()).
 betadach <- coef(erg1) %>% round(2)
 betadach
@@ -138,17 +138,17 @@ $$R^2 = `r r2`$$
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # Streudiagramm inkl. Regressionsgerade auf einem zufälligen Re-Sample (resample())
-gf_point(Amazon_Price ~ Pieces , data = resample(lego_sub)) %>%
+gf_point(Amazon_Price ~ Pieces, data = resample(lego_sub)) %>%
   gf_lm()
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # geschätztes Modell auf drei zufälligen Re-Samples (resample())
-do(3) * lm(Amazon_Price ~ Pieces , data = resample(lego_sub))
+do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 ```
 
 #### Frage
 
-- Ergeben sich bei zufälligen Re-Sample die selben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+- Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
 
 ***
 
@@ -156,7 +156,7 @@ do(3) * lm(Amazon_Price ~ Pieces , data = resample(lego_sub))
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # 1000x Re-Samplen
-Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces , data = resample(lego_sub))
+Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
               nbins = 20, center = betadach[2]) %>% # Anpassung Histogramm 
@@ -207,14 +207,14 @@ D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r
 Visualisierung Schätzunsicherheit:
 
 ```{r streuki}
-gf_point(Amazon_Price ~ Pieces , data = lego_sub) %>%
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
   gf_lm(interval = "confidence")
 ```
 
 Visualisierung Prognoseunsicherheit:
 
 ```{r streuprog}
-gf_point(Amazon_Price ~ Pieces , data = lego_sub) %>%
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
   gf_lm(interval = "prediction")
 ```
 
@@ -231,12 +231,12 @@ gf_point(Amazon_Price ~ Pieces , data = lego_sub) %>%
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # Streudiagramm inkl. Regressionsgerade bei permutierten (shuffle()) x
-gf_point(Amazon_Price ~ shuffle(Pieces) , data = lego_sub) %>%
+gf_point(Amazon_Price ~ shuffle(Pieces), data = lego_sub) %>%
   gf_lm()
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # geschätztes Modell bei Permutationen
-do(3) * lm(Amazon_Price ~ shuffle(Pieces) , data = lego_sub)
+do(3) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
 ```
 
 ***
@@ -245,7 +245,7 @@ do(3) * lm(Amazon_Price ~ shuffle(Pieces) , data = lego_sub)
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # 1000x Simulation unter Nullhypothese
-Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces) , data = lego_sub)
+Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Nullvtlg,
               nbins = 20, center = 0) %>% # Anpassung Histogramm 

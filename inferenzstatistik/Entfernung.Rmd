@@ -60,7 +60,7 @@ gf_histogram( ~ Entfernung, data = Umfrage)
 
 #### R Übung
 
-- Passen Sie das Histogramm über `center = ` und `binwidth = ` so an, dass Sie finden dass zentrale Eigenschaften der Verteilung gut sichtbar sind.
+- Passen Sie das Histogramm über `center = ` und `binwidth = ` so an, dass Ihrer Meinung nach zentrale Eigenschaften der Verteilung gut sichtbar sind.
 
 ```{r eda-Entfernung-angepasst}
 # Histogramm
@@ -82,7 +82,7 @@ favstats( ~ Entfernung, data = Umfrage)
 Betrachten wir besonders den arithmetischen Mittelwert:
 
 ```{r mean}
-mw_Umfrage <- mean(~ Entfernung, data = Umfrage)
+mw_Umfrage <- mean( ~ Entfernung, data = Umfrage)
 ```
 
 $$\bar{x}=`r round(mw_Umfrage, 2)`$$
@@ -95,32 +95,32 @@ $$\bar{x}=`r round(mw_Umfrage, 2)`$$
 
 - Wird für den Mittelwert der Zielpopulation gelten $\mu = `r round(mw_Umfrage, 2)`$?
 
-- Wir bei einer erneuten Stichprobe aus der selben Zielpopulation das Ergebnis wieder lauten $\bar{x}=`r round(mw_Umfrage, 2)`$?
+- Wird bei einer erneuten Stichprobe aus derselben Zielpopulation das Ergebnis wieder  $\bar{x}=`r round(mw_Umfrage, 2)`$ lauten?
 
 ## Re-Sampling
 
-Das Ergebnis bei einer anderen Stichprobe wird vermutlich leicht anders sein, als dass der vorhandenen Stichprobe.
+Das Ergebnis bei einer anderen Stichprobe wird vermutlich leicht anders sein, als das der vorhandenen Stichprobe.
 
 Simulieren wir das zufällige Ziehen einer Stichprobe aus einer Population (= hier alle Studierenden der befragten Kurse) durch zufälliges Re-Sampling der Stichprobe.
 
 `do(3)*` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein zufälliges Re-Sample - mit Zurücklegen. 
 
 ```{r resample1}
-do(3)* mean(~ Entfernung, data = resample(Umfrage))
+do(3)* mean( ~ Entfernung, data = resample(Umfrage))
 ```
 
 #### Fragen
 
 - Variiert der arithmetische Mittelwert bei zufälligen Re-Samples?
 
-- Erhöht re-sampling den ursprünglichen Stichprobenumfang?
+- Erhöht Re-Sampling den ursprünglichen Stichprobenumfang?
 
 ***
 
-Simulieren wir den Vorgang des zufälligen re-sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
+Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
 ```{r Bootstrapping}
-Bootvtlg <- do(10000)* mean(~ Entfernung, data = resample(Umfrage))
+Bootvtlg <- do(10000) * mean( ~ Entfernung, data = resample(Umfrage))
 ```
 
 Die Verteilung der Variable `mean`, d.h., des arithmetischen Mittelwerts in den Re-Samples aus der Datentabelle `Bootvtlg` kann auch über ein Histogramm dargestellt werden:
@@ -131,7 +131,7 @@ gf_histogram( ~ mean, data = Bootvtlg)
 
 #### Fragen
 
-- Welche Verteilungsform zeigt das Histogramm des Mittelwertes der Entfernung in der Re-Samples?
+- Welche Verteilungsform zeigt das Histogramm des Mittelwertes der Entfernung in den Re-Samples?
 
 - Wo liegt das Zentrum der Verteilung?
 

@@ -1,5 +1,5 @@
 ---
-title: "Lotto. Verganges Glück oder Pech?"
+title: "Lotto. Vergangenes Glück oder Pech?"
 author: "Ihr Name"
 date: "`r Sys.Date()`"
 output:
@@ -52,7 +52,7 @@ Beim Lotto werden 6 aus 49 Zahlen gezogen. Für die erste Kugel gibt es damit 49
 
 Möglichkeiten. 
 
-Da allerdings die Reihenfolge der Ziehung keine Rolle spielt, haben wir für die erste gezogenene Zahl 6 Möglichkeiten der Positionierung, für die zweite 5 usw.. Insgesamt ergeben sich für 6 Zahlen aus 49
+Da allerdings die Reihenfolge der Ziehung keine Rolle spielt, haben wir für die erste gezogenene Zahl 6 Möglichkeiten der Positionierung, für die zweite 5 usw. Insgesamt ergeben sich für 6 Zahlen aus 49
 
 ```{r lotto2}
 (49*48*47*46*45*44) / (6*5*4*3*2*1)
@@ -72,7 +72,7 @@ Um die *theoretische* Gewinnwahrscheinlichkeit zu berechnen, müssen wir bedenke
 (choose(6, 3) * choose(43, 3)) / choose(49, 6)
 ```
 
-Um zu bestimmen wir wahrscheinlich es ist mindestens 3 Richtige zu haben müssen die Wahrscheinlichkeiten für 3,4,5 und 6 Richtige addiert werden:
+Um zu bestimmen wir wahrscheinlich es ist mindestens 3 Richtige zu haben müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
 
 ```{r lotto5}
 pi_gewinn <- 
@@ -120,8 +120,8 @@ Als Visualisierung der simulierten Gewinnanteile bei $n = `r n`$ Ziehungen mit $
 ***
 
 ```{r hist1}
-gf_histogram( ~ prop, data = Nullvtlg,
-              center = pi_gewinn)
+gf_histogram( ~ prop, data   = Nullvtlg,
+                      center = pi_gewinn)
 ```
 
 Auch ohne Manipulation, oder dass Sie ein besonderer Glückspilz oder Pechvogel sind, kommt es rein zufällig vor, dass der Anteil der Richtigen in einer Stichprobe variiert.
