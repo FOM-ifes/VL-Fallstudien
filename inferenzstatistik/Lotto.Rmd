@@ -72,7 +72,7 @@ Um die *theoretische* Gewinnwahrscheinlichkeit zu berechnen, müssen wir bedenke
 (choose(6, 3) * choose(43, 3)) / choose(49, 6)
 ```
 
-Um zu bestimmen wir wahrscheinlich es ist mindestens 3 Richtige zu haben müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
+Um zu bestimmen wie wahrscheinlich es ist mindestens 3 Richtige zu haben müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
 
 ```{r lotto5}
 pi_gewinn <- 
