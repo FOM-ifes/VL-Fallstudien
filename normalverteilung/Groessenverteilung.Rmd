@@ -19,13 +19,13 @@ library(mosaic)
 
 Manche Menschen haben eine hohe Körpergröße, manche eine eher kleine. 
 
-Wie groß (in cm) ein Mensch wird, hängt von vielen Faktoren ab, z.B. Ernährung, aber auch von den Genen - und ist im Laufe der Zeit gestiegen.
+Wie groß (in cm) ein Mensch wird, hängt von vielen Faktoren ab, z.B. Ernährung, aber auch von den Genen -- und ist im Laufe der Zeit gestiegen.
 
-Für die Zielpopulation (biologische) Frauen zwischen 20 und 25 gehen wir von einem Mittelwert von 168 cm aus.^[Siehe z.B. [Statistisches Bundesamt](https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Gesundheit/Gesundheitszustand-Relevantes-Verhalten/Tabellen/liste-koerpermasse.html)] - bei einer Standardabweichung von 6 cm.^[Hier liegen keine *offiziellen* Daten vor, siehe aber z.B. [https://doi.org/10.1016/j.ehb.2007.02.002](https://doi.org/10.1016/j.ehb.2007.02.002) oder [https://doi.org/10.7554/eLife.20320](https://doi.org/10.7554/eLife.20320).]
+Für die Zielpopulation (biologische) Frauen zwischen 20 und 25 gehen wir von einem Mittelwert von 168 cm aus^[Siehe z.B. [Statistisches Bundesamt](https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Gesundheit/Gesundheitszustand-Relevantes-Verhalten/Tabellen/liste-koerpermasse.html)] -- bei einer Standardabweichung von 6 cm.^[Hier liegen keine *offiziellen* Daten vor, siehe aber z.B. [https://doi.org/10.1016/j.ehb.2007.02.002](https://doi.org/10.1016/j.ehb.2007.02.002) oder [https://doi.org/10.7554/eLife.20320](https://doi.org/10.7554/eLife.20320).]
 
 #### Frage
 
-- Recherchieren Sie die durchschnittliche Körpergröße eines 20-25 jährigen (biologischen) Mannes.
+- Recherchieren Sie die durchschnittliche Körpergröße eines 20--25 jährigen (biologischen) Mannes.
 
 ## Normalverteilung
 
@@ -118,7 +118,7 @@ xpnorm(q = 160, mean = 168, sd = 6)
 $$z=\frac{x-\mu}{\sigma}$$ 
 
 (R-Befehl `zscore()`) kann eine beliebige Verteilung in eine transformiert werden, für die $\mu_z=0$ und $\sigma_z=1$ gilt. Bei einer Normalverteilung spricht mensch in diesem Fall von einer Standardnormalverteilung. 
-Z.B. hat eine $174cm$ große Frau einen z-Wert von $+1$:
+Z.B. hat eine $174\,cm$ große Frau einen z-Wert von $+1$:
 
 $$z=\frac{x-\mu}{\sigma}=\frac{174-168}{6}=+1$$ 
 
@@ -145,13 +145,13 @@ xpnorm(c(-1, 1))
 
 #### Fragen
 
-- Ändern Sie den Code so, dass Sie aussagen können wie wahrscheinlich ein Wert innerhalb von zwei Standardabweichungen um den Mittelwert ist.
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von zwei Standardabweichungen um den Mittelwert ist.
 
 ```{r}
 xpnorm(c(-1, 1))
 ```
 
-- Ändern Sie den Code so, dass Sie aussagen können wie wahrscheinlich ein Wert innerhalb von drei Standardabweichungen um den Mittelwert ist.
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von drei Standardabweichungen um den Mittelwert ist.
 
 ```{r}
 xpnorm(c(-1, 1))
@@ -251,7 +251,7 @@ dnorm(174.5, mean = 181, sd = 7.5) * (1-0.9) /
 
 ---
 
-**Hinweis:** Das Geschlecht einer Person ist ein komplexes Thema. Anstelle von automatischer und unsicherer Klassifikation oder Klischee-Zuordnungen, fragen Sie bitte einfach die Person welchem Geschlecht sie sich selbst zuordnet!
+**Hinweis:** Das Geschlecht einer Person ist ein komplexes Thema. Anstelle von automatischer und unsicherer Klassifikation oder Klischee-Zuordnungen, fragen Sie bitte einfach die Person, welchem Geschlecht sie sich selbst zuordnet!
 
 
 

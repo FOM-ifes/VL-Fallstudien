@@ -156,7 +156,7 @@ se
 ### Konfidenzintervall
 
 Außerdem können wir unsere Schätzunsicherheit für den wahren Mittelwert $\mu$ durch ein Konfidenzintervall beschreiben.
-Für das zentrale 95%-Konfidenzintervall kann das 2.5% sowie das 97.5% Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
+Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das 97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
 
 ```{r konfidenzintervall}
 qdata( ~ mean, data = Bootvtlg, p = c(0.025, 0.975))

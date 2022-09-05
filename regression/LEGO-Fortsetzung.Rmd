@@ -95,7 +95,7 @@ gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
   gf_lm()
 ```
 
-Die unbekannten Parameter $\beta_0, \beta_1$ können anhand des *Kleinste Quadrate Kriteriums* für diese Daten über die Funktion `lm()` optimal geschätzt werden:
+Die unbekannten Parameter $\beta_0, \beta_1$ können anhand des *Kleinste-Quadrate-Kriteriums* für diese Daten über die Funktion `lm()` optimal geschätzt werden:
 
 ```{r lm1}
 erg1 <- lm(Amazon_Price ~ Pieces, data = lego_sub)
@@ -271,7 +271,7 @@ pwert
 
 #### Frage
 
-- Der p-Wert ist keiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt kleiner als $1/1000$ ist? 
+- Der p-Wert ist keiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist? 
 
 ***
 

@@ -27,7 +27,7 @@ Wie gut können wir Lügen erkennen?
 Innerhalb Ihrer Gruppe:
 
 1. Eine Person erzählt drei kurze Aussagen über sich. Eins davon ist eine Lüge.
-2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind die Lüge erkannt zu haben.
+2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind, die Lüge erkannt zu haben.
 3. Die Person enthüllt, ob die Anderen richtig lagen.
 4. Tragen Sie die Sicherheit und das Ergebnis ein.
 5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge erzählt.
@@ -95,7 +95,7 @@ Selbst wenn die Hypothese $\pi = 1/3$ stimmen würde, liegen rein zufällig mal 
 Raten (Funktion (`raten()`)) wir `n` mal:
 
 ```{r raten}
-# mein_raten soll sein dass Ergebnis eines n-fachen ratens
+# mein_raten soll das Ergebnis eines n-fachen Ratens sein
 mein_raten <- raten(n = n)
 # mein_raten anzeigen
 mein_raten
@@ -109,7 +109,7 @@ mein_raten
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln wie oft wir beim Raten `Ja`, also zufällig richtig lagen. Über `mein_raten == "Ja"`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
+Über die Befehle `sum()` und `prop()` können wir ermitteln, wie oft wir beim Raten `Ja` erhalten haben, also zufällig richtig lagen. Über `mein_raten == "Ja"`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r raten_auswertung}
 # Anzahl Richtig: Summe der (zufällig) richtigen Rateversuche 
@@ -119,7 +119,7 @@ prop( ~ mein_raten == "Ja")
 ```
 
 
-Um zu überprüfen, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **hypothetischen Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir Raten würden.^[Damit alle dasselbe Ergebnis bekommen steuern wir den Zufall über `set.seed()`.]
+Um zu überprüfen, ob unser Ergebnis, mit $x = `r x`$ Richtigen bei $n = `r n`$ Versuchen zum **hypothetischen Modell** $\pi=1/3$ kompatibel ist, simulieren wir `1000`-mal (über den Befehl `do()` die Welt, wie sie wäre, wenn wir raten würden.^[Damit alle dasselbe Ergebnis bekommen, steuern wir den Zufall über `set.seed()`.]
 
 ```{r Simulation}
 # Setze Zufallszahlengenerator

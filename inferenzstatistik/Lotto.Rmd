@@ -17,7 +17,7 @@ library(mosaic)
 set.seed(1896)
 ```
 
-# Vergangenes Lotto Glück?
+# Vergangenes Lotto-Glück?
 
 Besuchen Sie die Seite [https://fomshinyapps.shinyapps.io/Lottotipp/](https://fomshinyapps.shinyapps.io/Lottotipp/).
 
@@ -36,7 +36,7 @@ n <- 4558
 
 #### Frage
 
-- Berechnen Sie, an wie vielen Tagen Sie gejubelt hätten - sofern Sie 1955 schon spielberechtigt gewesen wären.
+- Berechnen Sie, an wie vielen Tagen Sie gejubelt hätten -- sofern Sie 1955 schon spielberechtigt gewesen wären.
 
 ```{r gewinnziehungen}
 
@@ -58,7 +58,7 @@ Da allerdings die Reihenfolge der Ziehung keine Rolle spielt, haben wir für die
 (49*48*47*46*45*44) / (6*5*4*3*2*1)
 ```
 
-Möglichkeiten - ohne Zurücklegen und ohne Berücksichtigung der Reihenfolge.
+Möglichkeiten -- ohne Zurücklegen und ohne Berücksichtigung der Reihenfolge.
 
 Die Anzahl der möglichen Kombinationen, $k$ Zahlen aus $n$ auszuwählen kann in `R` direkt über den Befehl `choose()` bestimmt werden:
 
@@ -72,7 +72,7 @@ Um die *theoretische* Gewinnwahrscheinlichkeit zu berechnen, müssen wir bedenke
 (choose(6, 3) * choose(43, 3)) / choose(49, 6)
 ```
 
-Um zu bestimmen wie wahrscheinlich es ist mindestens 3 Richtige zu haben müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
+Um zu bestimmen, wie wahrscheinlich es ist, mindestens 3 Richtige zu haben, müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
 
 ```{r lotto5}
 pi_gewinn <- 
@@ -166,6 +166,6 @@ pwert
 
 - Die Teilnehmer:in, die ein signifikantes Ergebnis hat, hat eine größere Wahrscheinlichkeit zu veröffentlichen als die, die kein signifikantes Ergebnis haben. So entsteht **Publication Bias**.
 
-- Allein aus der Tatsache, dass in der Vergangenheit bestimmte Zahlen häufiger oder seltener gezogen worden sind, lässt sich nicht schließen, dass diese Zahlen auch in Zukunft häufiger oder seltener gezogen werden. **Spielerfehlschluss**.
+- Allein aus der Tatsache, dass in der Vergangenheit bestimmte Zahlen häufiger oder seltener gezogen worden sind, lässt sich nicht schließen, dass diese Zahlen auch in Zukunft häufiger oder seltener gezogen werden: **Spielerfehlschluss**.
 
 
