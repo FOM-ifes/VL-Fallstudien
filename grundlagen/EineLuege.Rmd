@@ -29,7 +29,7 @@ Innerhalb Ihrer Gruppe:
 1. Eine Person erzählt drei kurze Aussagen über sich. Eins davon ist eine Lüge.
 2. Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind, die Lüge erkannt zu haben.
 3. Die Person enthüllt, ob die Anderen richtig lagen.
-4. Tragen Sie die Sicherheit und das Ergebnis ein.
+4. Tragen Sie die Sicherheit und das Ergebnis der Gruppe ein.
 5. Wechseln Sie reihum die Person, die über sich zwei Wahrheiten und eine Lüge erzählt.
 
 Geben Sie die Daten unter [https://forms.gle/gciXvk4KMA1DD3Rw5](https://forms.gle/gciXvk4KMA1DD3Rw5) ein. 
