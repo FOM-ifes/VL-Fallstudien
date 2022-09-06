@@ -25,7 +25,7 @@ Für die Zielpopulation (biologische) Frauen zwischen 20 und 25 gehen wir von ei
 
 #### Frage
 
-- Recherchieren Sie die durchschnittliche Körpergröße eines 20--25 jährigen (biologischen) Mannes.
+- Recherchieren Sie die durchschnittliche Körpergröße eines 20--25-jährigen (biologischen) Mannes.
 
 ## Normalverteilung
 
@@ -66,7 +66,7 @@ Dabei ist:
 
 #### Frage
 
-- Für 20-25 jährige Männer gehen wir von $\mu=181\,cm$ und $\sigma=7.5\,cm$ aus:
+- Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
 ```{r}
 gf_dist("norm", mean = 181, sd = 7.5) %>% 
   gf_labs(title = "Größenverteilung Männer",
@@ -77,7 +77,7 @@ Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, w
 
 ## Wahrscheinlichkeiten bestimmen
 
-Wenn die Daten normalverteilt sind, und wir $\mu$ und $\sigma$ kennen, können wir Wahrscheinlichkeiten bestimmen, z.B., dass eine Frau kleiner oder gleich $160\,cm$ ist:
+Wenn die Daten normalverteilt sind, und wir $\mu$ und $\sigma$ kennen, können wir Wahrscheinlichkeiten bestimmen, z.B., dass eine Frau kleiner oder gleich 160 cm ist:
 
 ```{r}
 xpnorm(q = 160, mean = 168, sd = 6)
@@ -85,17 +85,17 @@ xpnorm(q = 160, mean = 168, sd = 6)
 
 #### Fragen
 
-- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich $180\,cm$ ist:
+- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich 180 cm ist:
 
 ```{r}
 xpnorm(q = 160, mean = 168, sd = 6)
 ```
 
-- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als $180\,cm$ ist?
+- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als 180 cm ist?
 
 ## Quantile bestimmen
 
-Die Quantilsfunktion, $q=F^{-1}(p)$, gibt den Wert $q$ zurück, der mit einer Wahrscheinlichkeit $p$ nicht überschritten wird. So sind z.B. unter diesen Annahmen $90\%$ der Frauen kleiner oder gleich $`r xqnorm(p = 0.9, mean = 168, sd = 6) %>% round(2)`$:
+Die Quantilsfunktion, $q=F^{-1}(p)$, gibt den Wert $q$ zurück, der mit einer Wahrscheinlichkeit $p$ nicht überschritten wird. So sind z.B. unter diesen Annahmen 90 % der Frauen kleiner oder gleich `r xqnorm(p = 0.9, mean = 168, sd = 6) %>% round(2)` cm:
 
 ```{r}
 xqnorm(p = 0.9, mean = 168, sd = 6)
@@ -105,7 +105,7 @@ xqnorm(p = 0.9, mean = 168, sd = 6)
 
 - Was ist der Wert der Verteilungsfunktion an der Stelle `r xqnorm(p = 0.9, mean = 168, sd =6)`? 
 
-- Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den $1\%$ größten gehört.
+- Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den 1 % größten gehört.
 
 ```{r}
 xpnorm(q = 160, mean = 168, sd = 6)
@@ -118,7 +118,7 @@ xpnorm(q = 160, mean = 168, sd = 6)
 $$z=\frac{x-\mu}{\sigma}$$ 
 
 (R-Befehl `zscore()`) kann eine beliebige Verteilung in eine transformiert werden, für die $\mu_z=0$ und $\sigma_z=1$ gilt. Bei einer Normalverteilung spricht mensch in diesem Fall von einer Standardnormalverteilung. 
-Z.B. hat eine $174\,cm$ große Frau einen z-Wert von $+1$:
+Z.B. hat eine 174 cm große Frau einen z-Wert von +1:
 
 $$z=\frac{x-\mu}{\sigma}=\frac{174-168}{6}=+1$$ 
 
@@ -126,7 +126,7 @@ D.h., ihre Größe ist eine Standardabweichung über dem Mittelwert
 
 #### Fragen
 
-- Berechnen und interpretieren Sie den z-Wert einer Frau, die $156\,cm$ groß ist.
+- Berechnen und interpretieren Sie den z-Wert einer Frau, die 156 cm groß ist.
 
 - Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
 
@@ -135,9 +135,9 @@ D.h., ihre Größe ist eine Standardabweichung über dem Mittelwert
 
 ```
 
-## $68$-$95$-$99{,}7\%$-Regel
+## 68-95-99,7%-Regel
 
-Bei einer Normalverteilung liegt die Wahrscheinlichkeit für einen Wert innerhalb einer Standardabweichung um den Mittelwert bei ca. $68\%$:
+Bei einer Normalverteilung liegt die Wahrscheinlichkeit für einen Wert innerhalb einer Standardabweichung um den Mittelwert bei ca. 68 %:
 
 ```{r}
 xpnorm(c(-1, 1))
@@ -157,11 +157,11 @@ xpnorm(c(-1, 1))
 xpnorm(c(-1, 1))
 ```
 
-- In welchem Größenbereich liegen ungefähr $95\%$ der Frauen? 
+- In welchem Größenbereich liegen ungefähr 95 % der Frauen? 
 
 ## Einstieg in Bayes
 
-Simulieren wir eine Datentabelle von jeweils $10000$ Frauen und Männern, mit normalverteilter Größe und $\mu_F=168, \sigma_F=6$ bzw. $\mu_M=181, \sigma_M=7.5$
+Simulieren wir eine Datentabelle von jeweils 10000 Frauen und Männern, mit normalverteilter Größe und $\mu_F=168$, $\sigma_F=6$ bzw. $\mu_M=181$ $\sigma_M=7.5$
 
 ```{r}
 # Zufallszahlengenerator festlegen
@@ -181,7 +181,7 @@ favstats(groesse ~ geschlecht, data = Daten)
 
 #### Frage
 
-- Angenommen vor Ihnen steht eine Person, die $185\,cm$ groß ist, und Sie können das Geschlecht nicht erkennnen. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
+- Angenommen vor Ihnen steht eine Person, die 185 cm groß ist, und Sie können das Geschlecht nicht erkennnen. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
 
 ---
 
@@ -201,14 +201,14 @@ dnorm(185, mean = 181, sd = 7.5)
 
 #### Fragen
 
-- Wären Sie sich bei einer Größe von $174.5\,cm$ bzgl. des Geschlechts *sicher*?
+- Wären Sie sich bei einer Größe von 174.5 cm bzgl. des Geschlechts *sicher*?
 
 ```{r}
 gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) %>%
   gf_vline(xintercept = ~ 174.5)
 ```
 
-- Würde sich Ihre Einschätzung ändern, wenn z.B. $90\%$ der Zielpopulation weiblich wären?
+- Würde sich Ihre Einschätzung ändern, wenn z.B. 90 % der Zielpopulation weiblich wären?
 
 ### Satz von Bayes
 
@@ -227,7 +227,7 @@ Pr(Geschlecht|Größe) &=&\frac{Pr(Größe|Geschlecht)\cdot Pr(Geschlecht)}{Pr(G
 &\propto& Pr(Größe|Geschlecht)\cdot Pr(Geschlecht)
 \end{eqnarray*}
 
-Für $174.5\,cm$ und a priori $90\%$ weiblich ergibt sich:
+Für 174.5 cm und a priori 90 % weiblich ergibt sich:
 
 ```{r}
 # Frau
