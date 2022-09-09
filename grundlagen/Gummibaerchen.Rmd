@@ -169,7 +169,7 @@ gf_bar( ~ sum, data = Nullvtlg)
 
 ***
 
-Zum Schluss vergleichen wir unser Ergebnis mit den Simulationen, indem wir die Abbildung um eine vertikale Linie (`vline()`) an der Stelle `x` ergänzen (`%>%`):
+Zum Schluss vergleichen wir unser Ergebnis mit den Simulationen, indem wir die Abbildung um eine vertikale Linie (`gf_vline()`) an der Stelle `x` ergänzen (`%>%`):
 
 ```{r Hypothesenprüfung}
 gf_bar( ~ sum, data = Nullvtlg) %>%
