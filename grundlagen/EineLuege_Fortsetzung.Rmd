@@ -79,33 +79,49 @@ Um die Verteilung der Variable `Sicherheit` zu betrachten können wir wieder den
 gf_bar( ~ Sicherheit, data = EineLuege)
 ```
 
-#### Frage
+#### Fragen
 
 - Wie würden Sie das Ergebnis beschreiben?
 
-## Zusammenhang Sicherheit und Erkannt
+- Kann sich das Ergebnis mit mehr Daten ändern?
+
+- Angenommen die Teilnehmer:innen hätten sich sehr gut gekannt. Würde sich das Ergebnis ändern?
+
+## Verzerrung
+
+Insgesamt - also ohne Betrachtung der Sicherheit - liegen `r prop( ~ Erkannt, data = EineLuege)` richtig:
+
+```{r Anteil_insgesamt}
+prop( ~ Erkannt, data = EineLuege)
+```
 
 #### Frage
 
-- Welchen Zusammenhang vermuten Sie zwischen `Sicherheit` und `Erkannt`?
+- Angenommen wir hätten nur Daten von Teilnehmenden, die sich sehr sicher waren (z.B. `Sicherheit` von 8 oder höher). Kann sich dann das Ergebnis ändern?
 
 ***
 
-Über ein Streudiagramm (`gf_point(y ~ x, data = Daten)`) kann die gemeinsame Verteilung der Variablen dargestellt werden:
+Über `filter()` können Beobachtungen (= Zeilen) anhand eines Kriteriums ausgewählt werden.
 
-```{r Streudiagramm}
-gf_point(Erkannt ~ Sicherheit, data = EineLuege)
+```{r Filter}
+EineLuege_sicher <- EineLuege %>%
+  filter(Sicherheit >= 8)
 ```
 
 #### Fragen
 
-- Was zeigt ein Punkt?
+- Wird die neue Datentabelle `EineLuege_sicher` mehr oder weniger Beobachtungen haben als die Datentabelle `EineLuege`? 
 
-- Können Punkte übereinander liegen?
+- Ändern Sie den folgenden Code entsprechend, um den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben, zu berechnen. Wie hoch ist der Anteil?
 
-***
+```{r Uebung}
+prop( ~ Erkannt, data = EineLuege)
+```
 
-Den Zusammenhang können wir auch modellieren:^[Die methodische Umsetzung ist hier ein Ausblick!]
+
+## Zusammenhang Sicherheit und Erkannt
+
+Den Zusammenhang können wir modellieren:^[Die methodische Umsetzung ist hier ein Ausblick!]
 
 ```{r Modellierung}
 # Vorbereitung
@@ -118,7 +134,6 @@ glm(Erkannt ~ Sicherheit, data = EineLuege, family = binomial) %>%
 
 #### Fragen
 
-- Wie würden Sie den Zusammenhang beschreiben?
+- Wie würden Sie den Zusammenhang beschreiben? 
 
 - Wie sähe die Linie aus, wenn es keinen Zusammenhang geben würde?
-
