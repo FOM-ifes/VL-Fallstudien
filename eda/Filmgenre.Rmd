@@ -29,8 +29,10 @@ Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unte
 filmdaten <- here("data", "film.csv")
 # Daten einlesen
 film <- read.csv2(filmdaten)
-# Datenstruktur
+# Datenstruktur der Datentabelle fil
 str(film)
+# Obere Beobachtungen der Datentabelle
+head(film)
 ```
 
 #### Fragen
