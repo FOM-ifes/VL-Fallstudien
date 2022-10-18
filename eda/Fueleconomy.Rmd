@@ -32,7 +32,7 @@ Diese werden hier abgeschrieben und in der Datentabelle `TEBD` hinterlegt:
 TEBD <- data.frame(
   mpg = c(24.4, 27.9, 30.5, 31.7, 31.2, 31.0, 31.6,
           32.4, 32.4, 31.4, 29.2, 26.8, 24.8),
-  mph = seq(from = 15, to= 75, by = 5)
+  mph = seq(from = 15, to = 75, by = 5)
 )
 # Datenstruktur
 str(TEBD)
@@ -42,7 +42,7 @@ head(TEBD)
 
 #### Fragen
 
-- Handelt es sich um Daten von aktuellen Fahrzeugen?
+- Handelt es sich um Daten von aktuellen^[Baujahr ab 2015] Fahrzeugen?
 
 - Sind es die Verbrauchsdaten eines Fahrzeugs?
 
@@ -51,12 +51,25 @@ head(TEBD)
 Die Daten liegen im amerikanischen Messsystem vor: *miles per gallon* (`mpg`) und *miles per hour* (`mph`).
 
 Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechnen. 
-Eine Meile entspricht 1.609344 km, eine (amerikanische) Gallone 3.785411784 l:
+Eine Meile entspricht 1.609344 km, eine (amerikanische) Gallone 3.785411784 l. 
+
+Gucken wir uns den Zusammenhang zwischen *Reichweite*, und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für einen Reichweite von von 0 bis 100 (`seq()`) einmal an:
+
+```{r Liniendiagramm}
+# Erzeuge Vektor rewichweite als Zahlenfolge von 0 bis 100
+reichweite <- seq(from = 0, to = 100)
+# Berechne verbrauch (in l/100km) als Funktion der Reichweite (in m/g)
+verbrauch <- (100 * 3.785411784) / (1.609344 * reichweite)
+# Liniendiagramm
+gf_line(verbrauch ~ reichweite)
+```
+
+Über `mutate()` können Variablen erzeugt oder verändert werden. So können wir die Variablen auch für unsere Datentabelle `TEBD` ergänzen.
 
 ```{r TEBD-Umrechnung}
 TEBD <- TEBD %>%
   mutate(kmh = mph * 1.609344) %>%
-  mutate(l100km = 	(100 * 3.785411784) / (1.609344 * mpg))
+  mutate(l100km = (100 * 3.785411784) / (1.609344 * mpg))
 ```
 
 #### Frage
@@ -65,7 +78,7 @@ TEBD <- TEBD %>%
 
 ### Zusammenhang Geschwindigkeit und Verbrauch
 
-Streudiagramm:
+Streudiagramm (`gf_point()`):
 
 ```{r TEBD-Streu1}
 gf_point(l100km ~ kmh, data = TEBD)
@@ -85,8 +98,8 @@ Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenb
 ```{r TEBD-Streu2}
 gf_point(l100km ~ kmh, data = TEBD) %>%
   gf_smooth() %>%
-  gf_labs(x = "km/h", 
-          y = "l/100km",
+  gf_labs(x = "Geschwindigkeit in km/h", 
+          y = "Verbrauch in l/100km",
           title = "Verbrauch je Geschwindkeit", 
           subtitle ="Quelle: Transportation Energy Data Book, Edition 39, Tablle 4.34")
 ```
@@ -97,8 +110,8 @@ gf_point(l100km ~ kmh, data = TEBD) %>%
 gf_point(l100km ~ kmh, data = TEBD) %>%
   gf_smooth() %>%
   gf_lims(y = c(0,10)) %>%
-  gf_labs(x = "km/h", 
-          y = "l/100km",
+  gf_labs(x = "Geschwindigkeit in km/h", 
+          y = "Verbrauch in l/100km",
           title = "Verbrauch je Geschwindkeit", 
           subtitle ="Skalierung y-Achse angepasst")
 ```
