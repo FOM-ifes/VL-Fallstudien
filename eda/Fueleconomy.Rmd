@@ -53,7 +53,7 @@ Die Daten liegen im amerikanischen Messsystem vor: *miles per gallon* (`mpg`) un
 Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechnen. 
 Eine Meile entspricht 1.609344 km, eine (amerikanische) Gallone 3.785411784 l. 
 
-Gucken wir uns den Zusammenhang zwischen *Reichweite*, und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für einen Reichweite von von 0 bis 100 (`seq()`) einmal an:
+Gucken wir uns den Zusammenhang zwischen *Reichweite* und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für eine Reichweite von von 0 bis 100 (`seq()`) einmal an:
 
 ```{r Liniendiagramm}
 # Erzeuge Vektor rewichweite als Zahlenfolge von 0 bis 100
