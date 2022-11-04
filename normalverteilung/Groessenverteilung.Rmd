@@ -41,7 +41,7 @@ D.h., die Größe der weiblichen Bevölkerung verteilt sich unimodal und symmetr
 
 ### Verteilungsfunktion
 
-Die Verteilungsfunktion $F(x)$ sagt, wie wahrscheinlich es ist, einen Wert $\leq x$ zu beobachten: $F(x)=P(X\leq x)$, und damit $0\leq F(x) \leq 1$.
+Die Verteilungsfunktion $F(x)$ sagt, wie wahrscheinlich es ist, einen Wert $\leq x$ zu beobachten: $F(x)=Pr(X\leq x)$, und damit $0\leq F(x) \leq 1$.
 
 Für unsere Größenverteilung:
 
@@ -159,7 +159,7 @@ xpnorm(c(-1, 1))
 
 - In welchem Größenbereich liegen ungefähr 95 % der Frauen? 
 
-## Einstieg in Bayes
+## Einstieg in Bayes (Exkurs)
 
 Simulieren wir eine Datentabelle von jeweils 10000 Frauen und Männern, mit normalverteilter Größe und $\mu_F=168$, $\sigma_F=6$ bzw. $\mu_M=181$ $\sigma_M=7.5$
 
