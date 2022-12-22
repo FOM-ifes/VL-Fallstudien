@@ -36,6 +36,8 @@ entfernungsdaten <- here("data", "results-survey592526.csv")
 Umfrage <- read.csv2(entfernungsdaten)
 # Datenstruktur
 str(Umfrage)
+# Obere Beobachtungen
+head(Umfrage)
 ```
 
 #### Fragen
