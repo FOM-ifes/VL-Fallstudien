@@ -75,7 +75,7 @@ str(lego_sub)
 ### Lineares Modell
 
 Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Komplexität, gemessen durch die Anzahl Bausteine (`Pieces`), und dem Preis (`Amazon_Price`). 
-Dann wird mathematisch folgendes Modell angenommen:
+Dann wird mathematisch folgendes Modell für die Population angenommen:
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
@@ -87,7 +87,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
 - Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
 
-### Schätzung lineares Modell
+### Lineares Modell der Stikchprobe
 
 Visuell:
 ```{r streu}
@@ -95,7 +95,7 @@ gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
   gf_lm()
 ```
 
-Die unbekannten Parameter $\beta_0, \beta_1$ können anhand des *Kleinste-Quadrate-Kriteriums* für diese Daten über die Funktion `lm()` optimal geschätzt werden:
+Anhand des *Kleinste-Quadrate-Kriteriums* für diese Daten ergeben sich über die Funktion `lm()` folgende Werte:
 
 ```{r lm1}
 erg <- lm(Amazon_Price ~ Pieces, data = lego_sub)
@@ -104,8 +104,8 @@ betadach <- coef(erg) %>% round(2)
 betadach
 ```
 
-Für
-$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i$$
+Für das Modell der Stichprobe
+$$\hat{y}_i = b_0 + b_1 \cdot x_i$$
 ergibt sich:
 $$\hat{y}_i = `r betadach[1]` + `r betadach[2]` \cdot x_i$$ 
 
@@ -118,6 +118,8 @@ $$\hat{y}_i = `r betadach[1]` + `r betadach[2]` \cdot x_i$$
 - Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
 
 ### Bestimmtheitsmaß
+
+Wie gut die gefundene Gerade die vorliegenden Daten beschreibt, kann mit Hilfe des Bestimmtheitsmaßes $R^2$ bestimmt werden:
 
 $$R^2= 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}$$
 
@@ -133,6 +135,10 @@ $$R^2 = `r r2`$$
 - Interpretieren Sie $R^2 = `r r2`$.
 
 ### Schätzunsicherheit
+
+Die anhand der Stichprobe berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
+
+$$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
 
 ```{r resample}
 # Zufallszahlengenerator setzen
@@ -187,6 +193,8 @@ se
 
 - Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
 
+- Wann würde der Standardfehler kleiner werden, d.h., die Präszision der Schätzung steigen?
+
 ***
 
 **Konfidenzintervall**:
@@ -227,7 +235,7 @@ gf_point(Amazon_Price ~ Pieces, data = lego_sub) %>%
 
 ***
 
-```{r}
+```{r shuffle}
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # Streudiagramm inkl. Regressionsgerade bei permutierten (shuffle()) x
@@ -323,6 +331,7 @@ summary(erg1)
 #### Fragen
 
 - Bei welcher Serie ist der Mittelwert des Preises am größten?
+
 - Wie groß is der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
 
 ## Preismodellierung mit mehr als einer erklärenden Variable
@@ -339,6 +348,7 @@ summary(erg2)
 #### Fragen
 
 - Bei welcher Serie ist der Achsenabschnitt am größten?
+
 - Welches *Problem* dieses Modells sehen Sie?
 
 ## Preismodellierung mit Wechselwirkung
@@ -358,4 +368,5 @@ summary(erg3)
 ```
 
 - Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren. 
+
 - Bein welcher Serie ist die Steigung am größten?

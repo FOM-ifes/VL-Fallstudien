@@ -85,13 +85,24 @@ pi_gewinn
 
 #### Fragen
 
-- Welche Annahme muss erfüllt sein, damit obige Berechnung der (theoretischen) Gewinnwahrscheinlichkeit so funktioniert?
-
 - Hätten Sie - in der Vergangenheit - mit Ihren Zahlen, bezogen auf den Anteil Ziehungen mit einem Gewinn, eher Glück oder Pech gehabt?
 
 - Wenn wir davon ausgehen, dass die Gewinnwahrscheinlichkeit bei $\pi = `r pi_gewinn`$ liegt. Muss dann der Anteil der Gewinne $p$ auch bei $`r pi_gewinn`$ liegen?
 
+- Welche Annahme muss erfüllt sein, damit obige Berechnung der (theoretischen) Gewinnwahrscheinlichkeit so funktioniert?
+
 ## Zufallssimulation
+
+Eine einfache Möglichkeit, eine Erfolgswahrscheinlichkeit von $\pi=0.5$ zu simulieren ist der Münzwurf. Werfen Sie bitte $8\times$ eine Münze und tragen Sie unter [https://forms.gle/dXdhzL5YqttY46wu5](https://forms.gle/dXdhzL5YqttY46wu5) ein, wie oft Sie Kopf (Wappen) geworfen haben.
+
+
+#### Fragen
+
+- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf?
+
+- Was müssen wir beachten, wenn wir die Gewinnwahrscheinlichkeit beim Lotto simulieren wollen?
+
+***
 
 Simulieren wir $3\times$ (`do(3)*`) $n = `r n`$ Ziehungen mit einer Gewinnwahrscheinlichkeit von  $\pi = `r pi_gewinn`$ (`(rflip()`):
 
