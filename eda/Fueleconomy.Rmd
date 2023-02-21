@@ -122,7 +122,7 @@ gf_point(l100km ~ kmh, data = TEBD) %>%
 
 ## Verbrauchsdaten
 
-Andreas Wagener hat für ein paar Monate am Ende einer Autofahrt seine Verbrauchsdaten samt Kovariablen (wie z.B. Temperatur) gesammelt und über [Kaggle](https://www.kaggle.com/) unter der [GPL 2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) Lizenz veröffentlicht. 
+Andreas Wagener hat für ein paar Monate am Ende einer Autofahrt seine Verbrauchsdaten samt Kovariablen (wie z.B. Temperatur) gesammelt und über [Kaggle](https://www.kaggle.com/datasets/anderas/car-consume) unter der [GPL 2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) Lizenz veröffentlicht. 
 
 
 Einlesen und Kontrolle der Daten:
