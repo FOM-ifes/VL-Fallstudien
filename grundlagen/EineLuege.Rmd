@@ -37,7 +37,7 @@ Geben Sie die Daten unter [https://forms.gle/gciXvk4KMA1DD3Rw5](https://forms.gl
 
 ## Daten
 
-In `R` erfolgt eine *Zuweisung* über `<-`. Ein Kommentar wird über `#` eingeleitet. Geben wir das Testergebnis unseres Kurses ein.^[*Hinweis*: In der Vorlage steht `x <- 20` und `n <- 30`. Diese Zahlen müssen angepasst werden. Die Zeile `x <- 20` bedeutet: Der Variable `x` wird der Wert `30` zugewiesen (`<-`).]
+In `R` erfolgt eine *Zuweisung* über `<-`. Ein Kommentar wird über `#` eingeleitet. Geben wir das Testergebnis unseres Kurses ein.^[*Hinweis*: In der Vorlage steht `x <- 20` und `n <- 30`. Diese Zahlen müssen angepasst werden. Die Zeile `x <- 20` bedeutet: Der Variable `x` wird der Wert `20` zugewiesen (`<-`).]
 
 ```{r ergebnis}
 # Anzahl Richtige:
