@@ -67,6 +67,8 @@ EineLuege <- EineLuege %>%
 
 #### Fragen
 
+- Ist die Sicherheit beim Erkennen der Lüge direkt messbar?
+
 - Ergibt ein Mittelwert der Variable `Sicherheit` Sinn?
 
 - Ergibt ein Mittelwert der Variable `Erkannt` Sinn?
