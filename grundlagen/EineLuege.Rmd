@@ -13,7 +13,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # Hilfsfunktion. n ist die Anzahl der Versuche
-raten <- function(n = 1) sample(c("Ja", "Nein", "Nein"), size = n, replace = TRUE)
+raten <- function(anzahl = 1) sample(c("Ja", "Nein", "Nein"), size = n, replace = TRUE)
 # Paket mosaic aktivieren
 library(mosaic)
 # Paket DT aktivieren
@@ -96,7 +96,7 @@ Raten (Funktion (`raten()`)) wir `n` mal:
 
 ```{r raten}
 # mein_raten soll das Ergebnis eines n-fachen Ratens sein
-mein_raten <- raten(n = n)
+mein_raten <- raten(anzahl = n)
 # mein_raten anzeigen
 mein_raten
 ```
@@ -109,11 +109,11 @@ mein_raten
 
 ***
 
-Über die Befehle `sum()` und `prop()` können wir ermitteln, wie oft wir beim Raten `Ja` erhalten haben, also zufällig richtig lagen. Über `mein_raten == "Ja"`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist. Viele `R` Funktionen, wie z.B. `sum()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
+Über die Befehle `sum()` und `prop()` können wir ermitteln, wie oft wir beim Raten `Ja` erhalten haben, also zufällig richtig lagen. Über `mein_raten == "Ja"`^[`==` ist das logische gleich, `!=` ist ungleich.] wird für jedes Element des Vektors `mein_raten` überprüft, ob es `"Ja"` ist. Viele `R` Funktionen, wie z.B. `count()` und `prop()` dienen der **Modellierung** `y ~ x` und erwarten dies als Funktionsargument. In unserem Fall haben wir (noch) kein `y`, daher können wir dies weglassen.
 
 ```{r raten_auswertung}
 # Anzahl Richtig: Summe der (zufällig) richtigen Rateversuche 
-sum( ~ mein_raten == "Ja")
+count( ~ mein_raten == "Ja")
 # Anteil Richtig:
 prop( ~ mein_raten == "Ja")
 ```
@@ -127,7 +127,7 @@ set.seed(1896)
 # Nullvtlg soll sein: 
 # Wiederhole 1000x: 
 # Rate n-Mal und zähle die Richtigen
-Nullvtlg <- do(1000)* sum( ~ raten(n = n) == "Ja")
+Nullvtlg <- do(1000)* sum( ~ raten(anzahl = n) == "Ja")
 ```
 
 `Nullvtlg` ist jetzt eine Datentabelle, die 1000 Zeilen und eine Spalte hat.
