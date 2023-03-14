@@ -140,7 +140,7 @@ Die relative Häufigkeit von *guckt Drama*, gegeben *guckt Action*, also `r prop
 Um die (totale) Wahrscheinlichkeit für *guckt Drama* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Action*, addieren:
 
 $$
-Pr(Drama = Ja | Action = Ja) \cdot P(Action = Ja) + Pr(Drama = Ja | Action = Nein) \cdot P(Action = Nein)
+Pr(Drama = Ja | Action = Ja) \cdot Pr(Action = Ja) + Pr(Drama = Ja | Action = Nein) \cdot Pr(Action = Nein)
 $$
 
 ```{r}
