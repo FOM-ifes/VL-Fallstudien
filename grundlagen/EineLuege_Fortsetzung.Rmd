@@ -48,6 +48,9 @@ EineLuege <- read_sheet("1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4")
 Betrachten wir die Daten:
 
 ```{r Tabelle}
+# Struktur
+str(EineLuege)
+# Interaktive Tabelle
 datatable(EineLuege)
 ```
 
@@ -69,9 +72,9 @@ EineLuege <- EineLuege %>%
 
 - Ist die Sicherheit beim Erkennen der Lüge direkt messbar?
 
-- Ergibt ein Mittelwert der Variable `Sicherheit` Sinn?
+- Ist ein Mittelwert der Variable `Sicherheit` zulässig?
 
-- Ergibt ein Mittelwert der Variable `Erkannt` Sinn?
+- Ist ein Mittelwert der Variable `Erkannt` zulässig?
 
 ## Sicherheit
 
