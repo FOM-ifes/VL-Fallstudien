@@ -13,8 +13,8 @@ format:
     colorlinks: true 
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup}
+#| include: false
 library(mosaic)
 library(here)
 ```
