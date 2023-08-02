@@ -176,6 +176,11 @@ pwert
 
 - Ist die Wahrscheinlichkeit, dass mindestens eine:r im Kurs ein signifikantes Ergebnis hat kleiner als 5%?
 
+- Wie müsste die Nullyhpothese lauten, wenn Sie nachweisen wollten, dass Sie statistisch signifikant Pech haben?
+
+- Angenommen Sie würden auf die vorherige Frage einen sehr kleinen p-Wert erhalten, z.B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
+
+
 ## Hinweise
 
 - Wenn wir als Kurs ein zufälliges (!) signifikantes Ergebnis einer Teilnehmer:in berichten, und die vielen nicht-signifikanten verschweigen, würden wir eine Form von **p-Hacking** betreiben.
