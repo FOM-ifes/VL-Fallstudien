@@ -190,7 +190,7 @@ favstats(groesse ~ geschlecht, data = Daten)
 
 ```{r}
 gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) |>
-  gf_vline(xintercept = ~ 185)
+  gf_vline(xintercept = 185)
 ```
 
 Der Wert der Dichtefunktion ist für Männer an der Stelle $185$ viel höher als für Frauen:
@@ -208,7 +208,7 @@ dnorm(185, mean = 181, sd = 7.5)
 
 ```{r}
 gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) |>
-  gf_vline(xintercept = ~ 174.5)
+  gf_vline(xintercept = 174.5)
 ```
 
 - Würde sich Ihre Einschätzung ändern, wenn z.B. 90 % der Zielpopulation weiblich wären?

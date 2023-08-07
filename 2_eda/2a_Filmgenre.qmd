@@ -27,11 +27,11 @@ Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unte
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "film.csv" befindet sich im Projektordner "data". -->
 
-```{r einlesen}
+```{r}
 # Datei (inkl. Pfad)
-filmdaten <- here("data", "film.csv")
+pfad_film <- here("data", "film.csv")
 # Daten einlesen
-film <- read.csv2(filmdaten)
+film <- read.csv2(pfad_film)
 # Datenstruktur der Datentabelle film
 str(film)
 # Obere Beobachtungen der Datentabelle
@@ -58,7 +58,7 @@ head(film)
 
 Explorative Datenanalyse:
 
-```{r eda-horror}
+```{r}
 # Säulendiagramm
 gf_bar( ~ E_Horror, data = film)
 # Absolute Häufigkeiten
@@ -78,7 +78,7 @@ tally( ~ E_Horror, data = film, format = "proportion")
 
 Explorative Datenanalyse:
 
-```{r abb-horror-komoedie}
+```{r}
 # Säulendiagramm
 gf_bar( ~ E_Horror, fill = ~ E_Komoedie, data = film, 
         title = "Abbildung A")
@@ -98,7 +98,7 @@ gf_bar( ~ E_Horror, fill = ~ E_Komoedie, data = film, position = "fill",
 
 ***
 
-```{r kennzahlen-horror-komoedie}
+```{r}
 # Absolute Häufigkeiten
 tally(E_Komoedie ~ E_Horror, data = film)
 # Relative Häufigkeiten
@@ -117,13 +117,13 @@ prop(E_Komoedie ~ E_Horror, data = film, success = "Ja")
 
 - Wie viel Prozent derjenigen, die sich für Komödien interessieren, interessieren sich auch für Horrorfilme?
 
-```{r anteil-horror-an-komoedie}
+```{r}
 
 ```
 
 ## Drama
 
-```{r drama}
+```{r}
 # Absolute Häufigkeiten
 tally(E_Drama ~ E_Action, data = film)
 # Relative Häufigkeiten
@@ -170,7 +170,7 @@ prop( ~ E_Drama, data = film, success = "Ja")
 
 - Wie viel Prozent derjenigen, die sich für Erotikfilme interessieren sind Frauen? Kann dieser Anteil auf die Bevölkerung der Bundesrepublik übertragen werden? Begründen Sie.
 
-```{r feld-fuer-R-Code}
+```{r}
 
 ```
 

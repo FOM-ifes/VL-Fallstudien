@@ -31,7 +31,7 @@ Das Buch *Transportation Energy Data Book Edition 39* liefert Daten für den Zus
 [https://tedb.ornl.gov/wp-content/uploads/2021/02/TEDB_Ed_39.pdf#page=136](https://tedb.ornl.gov/wp-content/uploads/2021/02/TEDB_Ed_39.pdf#page=136)
 
 Diese werden hier abgeschrieben und in der Datentabelle `TEDB` hinterlegt:
-```{r TEDB-Daten}
+```{r}
 TEDB <- data.frame(
   mpg = c(24.4, 27.9, 30.5, 31.7, 31.2, 31.0, 31.6,
           32.4, 32.4, 31.4, 29.2, 26.8, 24.8),
@@ -56,20 +56,9 @@ Die Daten liegen im amerikanischen Messsystem vor: *miles per gallon* (`mpg`) un
 Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechnen. 
 Eine Meile entspricht 1.609344 km, eine (amerikanische) Gallone 3.785411784 l. 
 
-Gucken wir uns den Zusammenhang zwischen *Reichweite* und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für eine Reichweite von von 0 bis 100 (`seq()`) einmal an:
-
-```{r Liniendiagramm}
-# Erzeuge Vektor rewichweite als Zahlenfolge von 0 bis 100
-reichweite <- seq(from = 0, to = 100)
-# Berechne verbrauch (in l/100km) als Funktion der Reichweite (in m/g)
-verbrauch <- (100 * 3.785411784) / (1.609344 * reichweite)
-# Liniendiagramm
-gf_line(verbrauch ~ reichweite)
-```
-
 Über `mutate()` können Variablen erzeugt oder verändert werden. So können wir die Variablen auch für unsere Datentabelle `TEDB` ergänzen.
 
-```{r TEDB-Umrechnung}
+```{r}
 TEDB <- TEDB |>
   mutate(kmh = mph * 1.609344) |>
   mutate(l100km = (100 * 3.785411784) / (1.609344 * mpg))
@@ -79,11 +68,30 @@ TEDB <- TEDB |>
 
 - Ist der Zusammenhang zwischen `l100km` und `mpg` linear?
 
+```{r}
+# Streudiagramm
+
+# Streudiagramm mit Glättungslinie
+```
+
+Zusammenhang zwischen *Reichweite* und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für eine Reichweite von von 0 bis 100 (`seq()`):
+
+```{r}
+# Erzeuge Vektor rewichweite als Zahlenfolge von 0 bis 100
+reichweite <- seq(from = 0, to = 100)
+# Berechne verbrauch (in l/100km) als Funktion der Reichweite (in m/g)
+verbrauch <- (100 * 3.785411784) / (1.609344 * reichweite)
+# Liniendiagramm
+gf_line(verbrauch ~ reichweite)
+```
+
+
+
 ### Zusammenhang Geschwindigkeit und Verbrauch
 
 Streudiagramm (`gf_point()`):
 
-```{r TEDB-Streu1}
+```{r}
 gf_point(l100km ~ kmh, data = TEDB)
 ```
 
@@ -98,7 +106,7 @@ gf_point(l100km ~ kmh, data = TEDB)
 ***
 
 Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenbeschriftungen und Titel (`gf_labs()`) hinzufügen:
-```{r TEDB-Streu2}
+```{r}
 gf_point(l100km ~ kmh, data = TEDB) |>
   gf_smooth() |>
   gf_labs(x = "Geschwindigkeit in km/h", 
@@ -109,7 +117,7 @@ gf_point(l100km ~ kmh, data = TEDB) |>
 
 Über `gf_lims()` können die Achsenskalierungen angepasst werden, z.B. die y-Achse so, dass diese bei 0 anfängt und bei 10 aufhört.
 
-```{r TEDB-Streu3}
+```{r}
 gf_point(l100km ~ kmh, data = TEDB) |>
   gf_smooth() |>
   gf_lims(y = c(0,10)) |>
@@ -129,11 +137,11 @@ Andreas Wagener hat für ein paar Monate am Ende einer Autofahrt seine Verbrauch
 
 
 Einlesen und Kontrolle der Daten:
-```{r AW-Daten2}
+```{r}
 # Datei (inkl. Pfad)
-verbrauchsdaten <- here("data", "KaggleDaten_AW.csv")
+pfad_verbrauch <- here("data", "KaggleDaten_AW.csv")
 # Daten einlesen
-Verbrauch <- read.csv2(verbrauchsdaten)
+Verbrauch <- read.csv2(pfad_verbrauch)
 # Struktur
 str(Verbrauch)
 # Obere Beobachtungen der Tabelle
@@ -158,7 +166,7 @@ head(Verbrauch)
 
 Ein Histogramm visualisiert die Verteilung der von Andreas Wagener bei seinen Fahrten realisierten Verbräuche:
 
-```{r AW-Histogramm1}
+```{r}
 gf_histogram( ~ consume, data = Verbrauch)
 ```
 
@@ -171,7 +179,7 @@ gf_histogram( ~ consume, data = Verbrauch)
 ### Verteilungs- und Quantilsfunktion
 
 Mit Hilfe von `pdata()` kann für beliebige Verbräuche `q` der Wert der empirischen Verteilungsfunktion $F_n$ ermittelt werden, d.h. hier, der Anteil der Fahrten, in denen der Verbrauch z.B. kleiner oder gleich `q = 10` l war:
-```{r AW-pdata}
+```{r}
 pdata( ~ consume, q = 10, data = Verbrauch)
 ```
 
@@ -179,7 +187,7 @@ pdata( ~ consume, q = 10, data = Verbrauch)
 
 Ändern Sie den Code so, dass Sie die folgenden Fragen beantworten können.
 
-```{r AW-pdata-Fragen}
+```{r}
 pdata( ~ consume, q = 10, data = Verbrauch)
 pdata( ~ consume, q = 10, data = Verbrauch)
 ```
@@ -192,13 +200,13 @@ pdata( ~ consume, q = 10, data = Verbrauch)
 
 `qdata()` gibt an, welcher Wert für eine gegebene relative Häufigkeit `p` nicht überschritten wird, d.h. die jeweiligen Quantile. Z.B. gilt für 5% der Fahrten von Andreas Wagener, dass der Verbrauch nicht größer als `r qdata( ~ consume, p = 0.05, data = Verbrauch)` war:
 
-```{r AW-qata}
+```{r}
 qdata( ~ consume, p = 0.05, data = Verbrauch)
 ```
 
 Ändern Sie den Code so, dass Sie die folgende Frage beantworten können.
 
-```{r AW-qdata-Frage}
+```{r}
 qdata( ~ consume, p = 0.05, data = Verbrauch)
 ```
 
@@ -208,7 +216,7 @@ qdata( ~ consume, p = 0.05, data = Verbrauch)
 
 `favstats()` liefert einen Überblick über die gängigen Kennzahlen einer metrischen Variable:
 
-```{r AW-favstats}
+```{r}
 favstats( ~ consume, data = Verbrauch)
 ```
 
@@ -224,7 +232,7 @@ favstats( ~ consume, data = Verbrauch)
 
 Ein Boxplot ermöglich den Vergleich der Verbräuche mit und ohne Klimaanlage (`AC`). Diese muss aber zunächst als kategoriale Variable definiert werden.
 
-```{r AC-codierung}
+```{r}
 # Umkodieren der Varbiable
 Verbrauch <- Verbrauch |>
   mutate(AC = case_when(AC == 0 ~ "Nein",
@@ -244,7 +252,7 @@ favstats(consume ~ AC, data = Verbrauch)
 
 Geschwindigkeit und Verbrauch. Wie sieht der Zusammenhang aus?
 
-```{r feld-fuer-R-Code}
+```{r}
 
 ```
 

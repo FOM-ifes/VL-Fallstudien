@@ -40,13 +40,13 @@ Die Daten vieler Versuche davon sind in einer Google-Tabelle^[[https://docs.goog
 
 Diese lesen wir in `R` ein (Befehl `read_sheet()` mit dem Funktionsargument der Tabellen ID) und weisen sie `EineLuege` zu.
 
-```{r Einlesen}
+```{r}
 EineLuege <- read_sheet("1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4")
 ```
 
 Betrachten wir die Daten:
 
-```{r Tabelle}
+```{r}
 # Struktur
 str(EineLuege)
 # Obere Beobachtungen
@@ -63,7 +63,7 @@ tail(EineLuege)
 
 Leider sind die Variablennamen sehr unhandlich, daher nennen wir diese um (`rename()`):
 
-```{r Rename}
+```{r}
 EineLuege <- EineLuege |>
   rename(Sicherheit = "Wie sicher sind Sie, die Lüge erkannt zu haben?",
          Erkannt = "Lagen Sie richtig?")
@@ -77,7 +77,7 @@ EineLuege <- EineLuege |>
 
 Um die Verteilung der Variable `Sicherheit` zu betrachten können wir wieder den Befehl `gf_bar()` verwenden:
 
-```{r Verteilung_Sicherheit}
+```{r}
 gf_bar( ~ Sicherheit, data = EineLuege)
 ```
 
@@ -93,7 +93,7 @@ gf_bar( ~ Sicherheit, data = EineLuege)
 
 Insgesamt - also ohne Betrachtung der Sicherheit - liegen `r prop( ~ Erkannt, data = EineLuege)` richtig:
 
-```{r Anteil_insgesamt}
+```{r}
 prop( ~ Erkannt, data = EineLuege)
 ```
 
@@ -105,7 +105,7 @@ prop( ~ Erkannt, data = EineLuege)
 
 Über `filter()` können Beobachtungen (= Zeilen) anhand eines Kriteriums ausgewählt werden.
 
-```{r Filter}
+```{r}
 EineLuege_sicher <- EineLuege |>
   filter(Sicherheit >= 8)
 ```
@@ -116,7 +116,7 @@ EineLuege_sicher <- EineLuege |>
 
 - Ändern Sie den folgenden Code entsprechend, um den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben, zu berechnen. Wie hoch ist der Anteil?
 
-```{r Uebung}
+```{r}
 prop( ~ Erkannt, data = EineLuege)
 ```
 
@@ -124,7 +124,7 @@ prop( ~ Erkannt, data = EineLuege)
 ## Zusammenhang Sicherheit und Erkannt
 
 Den Zusammenhang können wir darstellen
-```{r Darstellung}
+```{r}
 gf_bar( ~ Sicherheit, fill = ~ Erkannt, position = "fill", 
         data = EineLuege)
 ```

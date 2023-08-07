@@ -26,14 +26,14 @@ Besuchen Sie die Seite [https://fomshinyapps.shinyapps.io/Lottotipp/](https://fo
 
 Wählen Sie dort 6 aus 49 Zahlen aus und notieren Sie sich den Anteil der Spiele an denen Sie mindestens drei Richtige hatten, z.B. `0.0199649`:
 
-```{r richtige}
+```{r}
 # Hier bitte den Anteil Ziehungen mit Gewinn eintragen
 p_gewinn <- 0.0199649
 ```
 
 Dem Abgleich *Ihres* Tipps mit den Lotto&copy;6aus49 Zahlen von 1955 bis Ende 2022 liegen $n = 4662$ Ziehungen zugrunde.
 
-```{r ziehungen}
+```{r}
 n <- 4662
 ```
 
@@ -41,7 +41,7 @@ n <- 4662
 
 - Berechnen Sie, an wie vielen Tagen Sie gejubelt hätten -- sofern Sie 1955 schon spielberechtigt gewesen wären.
 
-```{r gewinnziehungen}
+```{r}
 
 ```
 
@@ -49,7 +49,7 @@ n <- 4662
 
 Es werden 6 aus 49 Zahlen gezogen. Für die erste Kugel gibt es damit 49 Möglichkeiten. Da diese nicht zurückgelegt wird, gibt es für die nächste Kugel 48 Möglichkeiten. Für 6 Kugeln ergeben sich damit
 
-```{r lotto1}
+```{r}
 49*48*47*46*45*44
 ```
 
@@ -57,7 +57,7 @@ Möglichkeiten.
 
 Da allerdings die Reihenfolge der Ziehung keine Rolle spielt, haben wir für die erste gezogenene Zahl 6 Möglichkeiten der Positionierung, für die zweite 5 usw. Insgesamt ergeben sich für 6 Zahlen aus 49
 
-```{r lotto2}
+```{r}
 (49*48*47*46*45*44) / (6*5*4*3*2*1)
 ```
 
@@ -65,19 +65,19 @@ Möglichkeiten -- ohne Zurücklegen und ohne Berücksichtigung der Reihenfolge.
 
 Die Anzahl der möglichen Kombinationen, $k$ Zahlen aus $n$ auszuwählen kann in `R` direkt über den Befehl `choose()` bestimmt werden:
 
-```{r lotto3}
+```{r}
 choose(49, 6)
 ```
 
 Um die *theoretische* Gewinnwahrscheinlichkeit zu berechnen, müssen wir bedenken, dass wir z.B. bei drei Richtigen 3 der 6 gezogenen Zahlen gewählt werden und 3 aus den 43 nicht gezogenen. Damit ergibt sich für die Wahrscheinlichkeit 3 Richtige zu haben:
 
-```{r lotto4}
+```{r}
 (choose(6, 3) * choose(43, 3)) / choose(49, 6)
 ```
 
 Um zu bestimmen, wie wahrscheinlich es ist, mindestens 3 Richtige zu haben, müssen die Wahrscheinlichkeiten für 3, 4, 5 und 6 Richtige addiert werden:
 
-```{r lotto5}
+```{r}
 pi_gewinn <- 
   (choose(6, 3) * choose(43, 3)) / choose(49, 6) + # 3 Richtige, 3 Falsche
   (choose(6, 4) * choose(43, 2)) / choose(49, 6) + # 4 Richtige, 2 Falsche
@@ -109,7 +109,7 @@ Eine einfache Möglichkeit, eine Erfolgswahrscheinlichkeit von $\pi=0.5$ zu simu
 
 Simulieren wir $3\times$ (`do(3)*`) $n = `r n`$ Ziehungen mit einer Gewinnwahrscheinlichkeit von  $\pi = `r pi_gewinn`$ (`(rflip()`):
 
-```{r simu1}
+```{r}
 do(3) * rflip(n = n, prob = pi_gewinn)
 ```
 
@@ -121,7 +121,7 @@ do(3) * rflip(n = n, prob = pi_gewinn)
 
 Führen wir 10000 solche Simulationen durch und speichern das Ergebnis als `Nullvtlg`:
 
-```{r simu2}
+```{r}
 Nullvtlg <- do(10000)* rflip(n = n, prob = pi_gewinn)
 # Obere Beobachtungen
 head(Nullvtlg)
@@ -135,7 +135,7 @@ Als Visualisierung der simulierten Gewinnanteile bei $n = `r n`$ Ziehungen mit $
 
 ***
 
-```{r hist1}
+```{r}
 gf_histogram( ~ prop, data   = Nullvtlg,
                       center = pi_gewinn)
 ```
@@ -144,9 +144,9 @@ Auch ohne Manipulation, oder dass Sie ein besonderer Glückspilz oder Pechvogel 
 
 #### Frage
 
-- Über `gf_vline(xintercept = ~ ___)` kann eine vertikale Linie gezeichnet werden. Ergänzen Sie den Code so, dass Ihr Gewinnanteil eingezeichnet wird. Ist Ihr Ergebnis besonders außergewöhnlich?
+- Über `gf_vline(xintercept = ___)` kann eine vertikale Linie gezeichnet werden. Ergänzen Sie den Code so, dass Ihr Gewinnanteil eingezeichnet wird. Ist Ihr Ergebnis besonders außergewöhnlich?
 
-```{r hist2}
+```{r}
 gf_histogram( ~ prop, data = Nullvtlg,
               center = pi_gewinn) 
 

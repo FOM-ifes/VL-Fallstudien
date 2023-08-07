@@ -32,11 +32,11 @@ Die Antworten darauf liegen in der Datei `results-survey592526.csv` vor.
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "results-survey592526.csv" befindet sich im Projektordner "data". -->
 
-```{r einlesen}
+```{r}
 # Datei (inkl. Pfad)
-entfernungsdaten <- here("data", "results-survey592526.csv")
+pfad_entfernung <- here("data", "results-survey592526.csv")
 # Daten einlesen
-Umfrage <- read.csv2(entfernungsdaten)
+Umfrage <- read.csv2(pfad_entfernung)
 # Datenstruktur
 str(Umfrage)
 # Obere Beobachtungen
@@ -57,7 +57,7 @@ head(Umfrage)
 
 ### Grafisch
 
-```{r eda-Entfernung}
+```{r}
 # Histogramm
 gf_histogram( ~ Entfernung, data = Umfrage)
 ```
@@ -67,7 +67,7 @@ gf_histogram( ~ Entfernung, data = Umfrage)
 
 - Passen Sie das Histogramm über `center = ` und `binwidth = ` so an, dass Ihrer Meinung nach zentrale Eigenschaften der Verteilung gut sichtbar sind.
 
-```{r eda-Entfernung-angepasst}
+```{r}
 # Histogramm
 gf_histogram( ~ Entfernung, data = Umfrage, center = 0.5, binwidth = 1)
 ```
@@ -80,13 +80,13 @@ gf_histogram( ~ Entfernung, data = Umfrage, center = 0.5, binwidth = 1)
 
 Es ergeben sich folgende Statistiken der Stichprobe:
 
-```{r favstats}
+```{r}
 favstats( ~ Entfernung, data = Umfrage)
 ```
 
 Betrachten wir besonders den arithmetischen Mittelwert:
 
-```{r mean}
+```{r}
 mw_Umfrage <- mean( ~ Entfernung, data = Umfrage)
 ```
 
@@ -110,7 +110,7 @@ Simulieren wir das zufällige Ziehen einer Stichprobe aus einer Population (= hi
 
 `do(3)*` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein zufälliges Re-Sample - mit Zurücklegen. 
 
-```{r resample1}
+```{r}
 do(3)* mean( ~ Entfernung, data = resample(Umfrage))
 ```
 
@@ -124,7 +124,7 @@ do(3)* mean( ~ Entfernung, data = resample(Umfrage))
 
 Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
-```{r Bootstrapping}
+```{r}
 Bootvtlg <- do(10000) * mean( ~ Entfernung, data = resample(Umfrage))
 # Obere Beobachtungen
 head(Bootvtlg)
@@ -132,7 +132,7 @@ head(Bootvtlg)
 
 Die Verteilung der Variable `mean`, d.h., des arithmetischen Mittelwerts in den Re-Samples aus der Datentabelle `Bootvtlg` kann auch über ein Histogramm dargestellt werden:
 
-```{r Bootvtlg}
+```{r}
 gf_histogram( ~ mean, data = Bootvtlg)
 ```
 
@@ -149,7 +149,7 @@ Daher sind wir unsicher, wenn wir von einer Stichprobe auf die Population schlie
 Der Standardfehler gibt die Standardabweichung der Statistik bei zufälligen Stichproben an.
 Wir können ihn schätzen über die Standardabweichung (`sd()`) der Variable `mean` in unseren zufälligen Re-Samples. 
 
-```{r se}
+```{r}
 se <- sd( ~ mean, data = Bootvtlg)
 se
 ```
@@ -165,7 +165,7 @@ se
 Außerdem können wir unsere Schätzunsicherheit für den wahren Mittelwert $\mu$ durch ein Konfidenzintervall beschreiben.
 Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das 97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
 
-```{r konfidenzintervall}
+```{r}
 ki95 <- qdata( ~ mean, data = Bootvtlg, p = c(0.025, 0.975))
 ki95
 ```
@@ -184,7 +184,7 @@ gf_histogram( ~ mean, data = Bootvtlg) |>
 
 - Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu bestimmen. Wird das Konfidenzintervall schmaler oder breiter?
 
-```{r konfidenzintervall-uebung}
+```{r}
 qdata( ~ mean, data = Bootvtlg, p = c(0.025, 0.975))
 ```
 
