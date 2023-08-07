@@ -30,17 +30,17 @@ library(here)
 Das Buch *Transportation Energy Data Book Edition 39* liefert Daten für den Zusammenhang zwischen Geschwindigkeit und Benzinverbrauch: 
 [https://tedb.ornl.gov/wp-content/uploads/2021/02/TEDB_Ed_39.pdf#page=136](https://tedb.ornl.gov/wp-content/uploads/2021/02/TEDB_Ed_39.pdf#page=136)
 
-Diese werden hier abgeschrieben und in der Datentabelle `TEBD` hinterlegt:
+Diese werden hier abgeschrieben und in der Datentabelle `TEDB` hinterlegt:
 ```{r TEDB-Daten}
-TEBD <- data.frame(
+TEDB <- data.frame(
   mpg = c(24.4, 27.9, 30.5, 31.7, 31.2, 31.0, 31.6,
           32.4, 32.4, 31.4, 29.2, 26.8, 24.8),
   mph = seq(from = 15, to = 75, by = 5)
 )
 # Datenstruktur
-str(TEBD)
+str(TEDB)
 # Obere 6 Beobachtungen
-head(TEBD)
+head(TEDB)
 ```
 
 #### Fragen
@@ -67,10 +67,10 @@ verbrauch <- (100 * 3.785411784) / (1.609344 * reichweite)
 gf_line(verbrauch ~ reichweite)
 ```
 
-Über `mutate()` können Variablen erzeugt oder verändert werden. So können wir die Variablen auch für unsere Datentabelle `TEBD` ergänzen.
+Über `mutate()` können Variablen erzeugt oder verändert werden. So können wir die Variablen auch für unsere Datentabelle `TEDB` ergänzen.
 
-```{r TEBD-Umrechnung}
-TEBD <- TEBD |>
+```{r TEDB-Umrechnung}
+TEDB <- TEDB |>
   mutate(kmh = mph * 1.609344) |>
   mutate(l100km = (100 * 3.785411784) / (1.609344 * mpg))
 ```
@@ -83,8 +83,8 @@ TEBD <- TEBD |>
 
 Streudiagramm (`gf_point()`):
 
-```{r TEBD-Streu1}
-gf_point(l100km ~ kmh, data = TEBD)
+```{r TEDB-Streu1}
+gf_point(l100km ~ kmh, data = TEDB)
 ```
 
 #### Fragen
@@ -98,8 +98,8 @@ gf_point(l100km ~ kmh, data = TEBD)
 ***
 
 Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenbeschriftungen und Titel (`gf_labs()`) hinzufügen:
-```{r TEBD-Streu2}
-gf_point(l100km ~ kmh, data = TEBD) |>
+```{r TEDB-Streu2}
+gf_point(l100km ~ kmh, data = TEDB) |>
   gf_smooth() |>
   gf_labs(x = "Geschwindigkeit in km/h", 
           y = "Verbrauch in l/100km",
@@ -109,8 +109,8 @@ gf_point(l100km ~ kmh, data = TEBD) |>
 
 Über `gf_lims()` können die Achsenskalierungen angepasst werden, z.B. die y-Achse so, dass diese bei 0 anfängt und bei 10 aufhört.
 
-```{r TEBD-Streu3}
-gf_point(l100km ~ kmh, data = TEBD) |>
+```{r TEDB-Streu3}
+gf_point(l100km ~ kmh, data = TEDB) |>
   gf_smooth() |>
   gf_lims(y = c(0,10)) |>
   gf_labs(x = "Geschwindigkeit in km/h", 
@@ -168,7 +168,9 @@ gf_histogram( ~ consume, data = Verbrauch)
 
 ***
 
-Mit Hilfe von `pdata()` kann für beliebige Verbräuche `q` der Wert der empirischen Verteilungsfunktion $F_n$ ermittelt werden, d.h. hier, der Anteil der Fahrten, in denen der Verbrauch z.B. kleiner oder gleich `q = 10`l war:
+### Verteilungs- und Quantilsfunktion
+
+Mit Hilfe von `pdata()` kann für beliebige Verbräuche `q` der Wert der empirischen Verteilungsfunktion $F_n$ ermittelt werden, d.h. hier, der Anteil der Fahrten, in denen der Verbrauch z.B. kleiner oder gleich `q = 10` l war:
 ```{r AW-pdata}
 pdata( ~ consume, q = 10, data = Verbrauch)
 ```

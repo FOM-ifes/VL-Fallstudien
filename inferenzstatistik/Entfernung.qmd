@@ -175,7 +175,7 @@ Eingezeichnet:
 
 ```{r}
 gf_histogram( ~ mean, data = Bootvtlg) |>
-  gf_vline(xintercept =  ki95)
+  gf_vline(xintercept = ki95)
 ```
 
 #### Fragen

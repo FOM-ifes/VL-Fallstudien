@@ -69,7 +69,7 @@ EineLuege <- EineLuege |>
          Erkannt = "Lagen Sie richtig?")
 ```
 
-#### Fragen
+#### Frage
 
 - Ist die Sicherheit beim Erkennen der Lüge direkt messbar?
 
