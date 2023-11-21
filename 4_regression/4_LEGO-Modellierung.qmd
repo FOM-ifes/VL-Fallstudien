@@ -177,7 +177,7 @@ Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 head(Bootvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              nbins = 20, center = b[2]) |> # Anpassung Histogramm 
+              bins = 20, center = b[2]) |> # Anpassung Histogramm 
   # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = betadach[2], color = "blue")
 ```
@@ -282,7 +282,7 @@ Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
 head(Nullvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Nullvtlg,
-              nbins = 20, center = 0) |> # Anpassung Histogramm 
+              bins = 20, center = 0) |> # Anpassung Histogramm 
   gf_vline(xintercept = betadach[2], color = "blue") |> # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = 0, color = "red") # Steigung = 0
 ```
