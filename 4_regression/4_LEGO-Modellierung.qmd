@@ -176,6 +176,8 @@ Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 # Obere Beobachtungen
 head(Bootvtlg)
 # Visualisierung Verteilung 
+# Farbpaket laden
+library(ggsci)
 gf_histogram( ~ Pieces, data = Bootvtlg,
               bins = 20, center = b[2]) |> # Anpassung Histogramm 
   # geschätzte Steigung in Originalstichprobe
@@ -227,7 +229,7 @@ D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r
 gf_histogram( ~ Pieces, data = Bootvtlg,
               nbins = 20, center = b[2]) |> # Anpassung Histogramm 
   # Konfidenzintervall
-  gf_vline(xintercept = ki95, color = "green") |> 
+  gf_vline(xintercept = ki95, color = "blue") |> 
   # Steigung = 0
   gf_vline(xintercept = 0, color = "red") 
 
@@ -362,10 +364,12 @@ summary(erg1)
 ## Preismodellierung mit mehr als einer erklärenden Variable
 
 ```{r}
+# Farbpalette laden
+library(ggsci)
 # Lineare Modellierung
 erg2 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg2)
+plotModel(erg2) + scale_color_npg()
 # Zusammenfassung
 summary(erg2)
 ```
@@ -387,7 +391,7 @@ summary(erg2)
 # Lineare Modellierung
 erg3 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg3)
+plotModel(erg3) + scale_color_npg()
 # Zusammenfassung
 summary(erg3)
 ```
