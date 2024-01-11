@@ -67,7 +67,7 @@ Leider sind die Variablennamen sehr unhandlich, daher nennen wir diese um (`rena
 ```{r}
 EineLuege <- EineLuege |>
   rename(Sicherheit = "Wie sicher sind Sie, die Lüge erkannt zu haben?",
-         Erkannt = "Lagen Sie richtig?")
+         Richtig = "Lagen Sie richtig?")
 ```
 
 #### Frage
@@ -92,13 +92,15 @@ gf_bar( ~ Sicherheit, data = EineLuege)
 
 ## Verzerrung
 
-Insgesamt - also ohne Betrachtung der Sicherheit - liegen `r prop( ~ Erkannt, data = EineLuege)` richtig:
+Insgesamt - also ohne Betrachtung der Sicherheit - liegen `r prop( ~ Richtig, data = EineLuege)` richtig:
 
 ```{r}
-prop( ~ Erkannt, data = EineLuege)
+prop( ~ Richtig, data = EineLuege)
 ```
 
-#### Frage
+#### Fragen
+
+- Heißt dass, das $p=`r prop( ~ Richtig, data = EineLuege)`$ in der Stichprobe die Lüge erkannt haben?
 
 - Angenommen wir hätten nur Daten von Teilnehmenden, die sich sehr sicher waren (z.B. `Sicherheit` von 8 oder höher). Kann sich dann das Ergebnis ändern?
 
@@ -118,15 +120,16 @@ EineLuege_sicher <- EineLuege |>
 - Ändern Sie den folgenden Code entsprechend, um den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben, zu berechnen. Wie hoch ist der Anteil?
 
 ```{r}
-prop( ~ Erkannt, data = EineLuege)
+prop( ~ Richtig, data = EineLuege)
 ```
 
 
-## Zusammenhang Sicherheit und Erkannt
+## Zusammenhang Sicherheit und Richtig
 
 Den Zusammenhang können wir darstellen
+
 ```{r}
-gf_bar( ~ Sicherheit, fill = ~ Erkannt, position = "fill", 
+gf_bar( ~ Sicherheit, fill = ~ Richtig, position = "fill", 
         data = EineLuege)
 ```
 
