@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 library(mosaic)
 library(here)
@@ -78,8 +79,8 @@ TEDB <- TEDB |>
 Zusammenhang zwischen *Reichweite* und *Verbrauch* über ein Liniendiagramm (`gf_line()`) für eine Reichweite von von 0 bis 100 (`seq()`):
 
 ```{r}
-# Erzeuge Vektor rewichweite als Zahlenfolge von 0 bis 100
-reichweite <- seq(from = 0, to = 100)
+# Erzeuge Vektor rewichweite als Zahlenfolge von 1 bis 100
+reichweite <- seq(from = 1, to = 100)
 # Berechne verbrauch (in l/100km) als Funktion der Reichweite (in m/g)
 verbrauch <- (100 * 3.785411784) / (1.609344 * reichweite)
 # Liniendiagramm
@@ -186,16 +187,19 @@ pdata( ~ consume, q = 10, data = Verbrauch)
 
 #### Fragen
 
-Ändern Sie den Code so, dass Sie die folgenden Fragen beantworten können.
-
-```{r}
-pdata( ~ consume, q = 10, data = Verbrauch)
-pdata( ~ consume, q = 10, data = Verbrauch)
-```
+Ändern Sie den Code jeweils so, dass Sie die Fragen beantworten können.
 
 - Wie hoch ist der Anteil der Fahrten mit einem Verbrauch kleiner gleich 5l?
 
+```{r}
+pdata( ~ consume, q = 10, data = Verbrauch)
+```
+
 - Wie hoch ist der Anteil der Fahrten mit einem Verbrauch größer als 7.5l?
+
+```{r}
+pdata( ~ consume, q = 10, data = Verbrauch)
+```
 
 ***
 
@@ -205,13 +209,13 @@ pdata( ~ consume, q = 10, data = Verbrauch)
 qdata( ~ consume, p = 0.05, data = Verbrauch)
 ```
 
-Ändern Sie den Code so, dass Sie die folgende Frage beantworten können.
+- Mit welchem Verbrauch kam Andreas Wagener in 80% seiner Fahren zurecht?
+
+  Ändern Sie den Code so, dass Sie die Frage beantworten können.
 
 ```{r}
 qdata( ~ consume, p = 0.05, data = Verbrauch)
 ```
-
-- Mit welchem Verbrauch kam Andreas Wagener in 80% seiner Fahren zurecht?
 
 ***
 
@@ -236,13 +240,13 @@ Ein Boxplot ermöglich den Vergleich der Verbräuche mit und ohne Klimaanlage (`
 ```{r}
 # Umkodieren der Varbiable
 Verbrauch <- Verbrauch |>
-  mutate(AC = case_when(AC == 0 ~ "Nein",
-                        AC == 1 ~ "Ja"))
+  mutate(ACrc = case_when(AC == 0 ~ "Nein",
+                          AC == 1 ~ "Ja"))
 
 # Boxplot
-gf_boxplot(consume ~ AC, data = Verbrauch)
+gf_boxplot(consume ~ ACrc, data = Verbrauch)
 # Kennzahlen
-favstats(consume ~ AC, data = Verbrauch)
+favstats(consume ~ ACrc, data = Verbrauch)
 ```
 
 #### Frage

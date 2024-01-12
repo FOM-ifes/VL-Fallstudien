@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 library(mosaic)
 library(here)
@@ -91,7 +92,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
 - Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
 
-### Lineares Modell der Stikchprobe
+### Lineares Modell der Stichprobe
 
 Visuell:
 ```{r}
@@ -149,6 +150,7 @@ $$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
 betadach <- b
 ```
 
+**Bootstrap:**
 
 ```{r}
 # Zufallszahlengenerator setzen
@@ -203,7 +205,7 @@ se
 
 #### Fragen
 
-- Welche Standardabweichung liegt bei `r se`: Die der Bausteine oder die der geschätzten Steigung?
+- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigung?
 
 - Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
 
@@ -227,7 +229,7 @@ D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r
 ```{r}
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              nbins = 20, center = b[2]) |> # Anpassung Histogramm 
+              bins = 20, center = b[2]) |> # Anpassung Histogramm 
   # Konfidenzintervall
   gf_vline(xintercept = ki95, color = "blue") |> 
   # Steigung = 0
@@ -359,7 +361,7 @@ summary(erg1)
 
 - Bei welcher Serie ist der Mittelwert des Preises am größten?
 
-- Wie groß is der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
+- Wie groß ist der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
 
 ## Preismodellierung mit mehr als einer erklärenden Variable
 
@@ -387,6 +389,8 @@ summary(erg2)
 
 #### Fragen
 
+- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren. 
+
 ```{r}
 # Lineare Modellierung
 erg3 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
@@ -396,6 +400,4 @@ plotModel(erg3) + scale_color_npg()
 summary(erg3)
 ```
 
-- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren. 
-
-- Bein welcher Serie ist die Steigung am größten?
+- Bei welcher Serie ist die Steigung am größten?

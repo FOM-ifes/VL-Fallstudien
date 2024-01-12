@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 # Hilfsfunktion. n ist die Anzahl der Versuche
 raten <- function(anzahl = 1) sample(c("Ja", "Nein", "Nein"), size = n, replace = TRUE)

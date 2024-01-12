@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 library(mosaic)
 ```
@@ -227,7 +228,7 @@ $$Pr(y|x)=\frac{Pr(x|y)\cdot Pr(y)}{Pr(x)}$$
 Auch wenn die Dichtefunktion $f$ keine Wahrscheinlichkeit $Pr$ ist, können wir jetzt auf Basis der bekannten Größenverteilung je Geschlecht und der angenommenen a priori Verteilung der Geschlechter die a posteriori Verteilung des Geschlechts gegeben die Größe bestimmen und damit klassifizieren:
 
 $$
-Pr(Geschlecht|Größe) =\frac{Pr(Größe|Geschlecht)\cdot Pr(Geschlecht)}{Pr(Größe)} 
+Pr(Geschlecht|Groesse) =\frac{Pr(Groesse|Geschlecht)\cdot Pr(Geschlecht)}{Pr(Groesse)} 
 $$
 Der Nennen spielt für die Zuordnung keine Rolle. Für 174.5 cm und a priori 90 % weiblich ergibt sich dann:
 

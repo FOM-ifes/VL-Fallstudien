@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 # Paket mosaic aktivieren
 library(mosaic)

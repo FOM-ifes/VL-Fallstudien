@@ -14,7 +14,8 @@ format:
     papersize: a4
 ---
 
-```{r setup}
+```{r}
+#| label: setup
 #| include: false
 library(mosaic)
 library(here)
@@ -169,7 +170,7 @@ prop( ~ E_Drama, data = film, success = "Ja")
 
 - Wie viel Prozent der männlichen Teilnehmenden interessieren sich für Liebesfilme?
 
-- Wie viel Prozent derjenigen, die sich für Erotikfilme interessieren sind Frauen? Kann dieser Anteil auf die Bevölkerung der Bundesrepublik übertragen werden? Begründen Sie.
+- Wie viel Prozent derjenigen, die sich für Erotikfilme interessieren, sind Frauen? Kann dieser Anteil auf die Bevölkerung der Bundesrepublik übertragen werden? Begründen Sie.
 
 ```{r}
 
