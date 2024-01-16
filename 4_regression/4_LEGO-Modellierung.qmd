@@ -80,15 +80,15 @@ str(lego_sub)
 ### Lineares Modell
 
 Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Komplexität, gemessen durch die Anzahl Bausteine (`Pieces`), und dem Preis (`Amazon_Price`). 
-Dann wird mathematisch folgendes Modell für die Population angenommen:
+Dann wird mathematisch folgendes Modell für die Stichprobe angenommen:
 
-$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
+$$y_i = b_0 + b_1 \cdot x_i + e_i$$
 
 #### Fragen
 
 - Wofür steht das $i$?
 
-- Was ist $\beta_0$?
+- Was ist $b_0$?
 
 - Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
 
@@ -140,6 +140,10 @@ $$R^2 = `r r2`$$
 - Interpretieren Sie $R^2 = `r r2`$.
 
 ### Schätzunsicherheit
+
+Wenn wir überlegen, dass es auch in der Population einen linearen Zusammenhang gibt, wird mathematisch folgendes Modell für die Population angenommen:
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
 Die anhand der Stichprobe berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
 
@@ -312,7 +316,8 @@ pwert
 
 ***
 
-Ergebniszusammenfassung:
+### Ergebniszusammenfassung
+
 ```{r}
 summary(erg)
 ```
@@ -330,7 +335,8 @@ mean(Amazon_Price ~ 1, data = lego)
 
 # Lineare Modellierung
 erg0 <- lm(Amazon_Price ~ 1, data = lego)
-summary(erg0)
+# Koeffizienten
+coef(erg0)
 ```
 
 Also
@@ -354,7 +360,8 @@ mean(Amazon_Price ~ Theme, data = lego)
 
 # Lineare Modellierung
 erg1 <- lm(Amazon_Price ~ Theme, data = lego)
-summary(erg1)
+# Koeffizienten
+coef(erg1)
 ```
 
 #### Fragen
@@ -372,8 +379,8 @@ library(ggsci)
 erg2 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
 plotModel(erg2) + scale_color_npg()
-# Zusammenfassung
-summary(erg2)
+# Koeffizienten
+coef(erg2)
 ```
 
 #### Fragen
@@ -396,8 +403,14 @@ summary(erg2)
 erg3 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
 plotModel(erg3) + scale_color_npg()
-# Zusammenfassung
-summary(erg3)
+# Koeffizienten
+coef(erg3)
 ```
 
 - Bei welcher Serie ist die Steigung am größten?
+
+### Ergebniszusammenfassung
+
+```{r}
+summary(erg3)
+```
