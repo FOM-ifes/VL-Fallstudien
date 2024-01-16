@@ -141,11 +141,11 @@ $$R^2 = `r r2`$$
 
 ### Schätzunsicherheit
 
-Wenn wir überlegen, dass es auch in der Population einen linearen Zusammenhang gibt, wird mathematisch folgendes Modell für die Population angenommen:
+In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
-Die anhand der Stichprobe berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
+Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
 
 $$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
 
