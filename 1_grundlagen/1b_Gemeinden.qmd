@@ -35,7 +35,7 @@ Das Statistische Bundesamt hat Daten über
 
 > Alle politisch selbständigen Gemeinden mit ausgewählten Merkmalen am 31.12.2022
 
-[hier](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122022_Auszug_GV.html) veröffentlicht. Diese lesen wir zur Analyse ein:
+[hier](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122022_Auszug_GV.html) veröffentlicht.
 
 Eine vereinfachte Version^[Außerdem gefiltert auf Gemeinden mit einer Bevölkerung>0.] steht im Ordner `data` als `csv` Datei unter dem Namen `GV2022.csv` zur Verfügung.
 
@@ -142,5 +142,12 @@ mean( ~ Bevoelkerung, data = gv_bevoelkerung)
 
 Da jetzt größere Gemeinden eher Teil der Stichprobe als kleinere Gemeinden sind, liegt eine Auswahlverzerrung vor. Der Mittelwert der Stichprobe ist jetzt systematisch anders als der der Population. Bei einer zufälligen Stichprobe aus der Population der Gemeinden liegt hingegen nur eine zufällige Abweichung vor.
 
+#### Frage
 
+- Auch in der Stichprobe `gv_bevoelkerung` kommt jede Gemeinde, egal wie groß, nur einmal vor. Über die Option `replace = TRUE` im Befehl `sample()` können wir auch simulieren, was passieren würde wenn eine Gemeinde mehrfach in der Stichprobe vorkommen kann. Ändern Sie den Code entsprechend. Wie ändert sich das Ergebnis?
 
+```{r}
+gv_bevoelkerung2 <- gv |>
+  sample(size = 1000, prob = gv$Bevoelkerung)
+mean( ~ Bevoelkerung, data = gv_bevoelkerung2)
+```
