@@ -151,3 +151,22 @@ gv_bevoelkerung2 <- gv |>
   sample(size = 1000, prob = gv$Bevoelkerung)
 mean( ~ Bevoelkerung, data = gv_bevoelkerung2)
 ```
+
+## Konzentration (Exkurs)
+
+Es gibt sehr viele kleine Gemeinden, und sehr wenig große. Trotzdem leben viele Menschen in einer großen Gemeinde. Wenn wir die Gemeinde der Größe nach absteigend (`desc()`) sortieren (`arrange()`) und den jeweiligen Anteil an der Summe berechnen ^[row_number()` gibt die aktuelle Zeilennummer aus, `cumsum()` berechnet die kummulierte Summe.], können wir dies visualisieren:
+
+```{r}
+gv <- gv |>
+  arrange(desc(Bevoelkerung)) |>
+  mutate(Anteil_Gemeinde = row_number() / anzahl_gemeinden,
+         Anteil_Bevoelkerung = cumsum(Bevoelkerung) / summe_bevoelkerung)
+
+gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv)
+```
+
+#### Frage
+
+- Wie viel Prozent der Bevölkerung wohnt ungefähr in den 20\% Prozent größten Gemeinden?
+
+
