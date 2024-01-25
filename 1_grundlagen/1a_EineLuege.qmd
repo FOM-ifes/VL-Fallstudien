@@ -18,7 +18,7 @@ format:
 #| label: setup
 #| include: false
 # Hilfsfunktion. n ist die Anzahl der Versuche
-raten <- function(anzahl = 1) sample(c("Ja", "Nein", "Nein"), size = n, replace = TRUE)
+raten <- function(anzahl = 1) sample(c("Ja", "Nein", "Nein"), size = anzahl, replace = TRUE)
 # Paket mosaic aktivieren
 library(mosaic)
 ```
