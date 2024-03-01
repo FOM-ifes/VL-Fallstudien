@@ -1,0 +1,210 @@
+---
+title: "IRIS Datensatz (Clusteranalyse)"
+lang: de
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(cluster)
+set.seed(1701) # Zufallszahlengenerator
+```
+
+# Hintergrundwissen zum IRIS Datensatz
+
+Über den Befehl `iris` können Sie in R auf den IRIS Datensatz zugreifen. Die Bezeichnung ist auf die gleichnamige griechische Göttin des Regenbogens zurückzuführen, nach der ebenfalls die Pflanzengattung der Schwertlilien benannt ist. Im IRIS Datensatz befinden sich insgesamt 150 Beobachtungen mit jeweils vier Merkmalsvariablen: Die Breite und Länge des Kelchblatts (Sepalum) sowie des Kronblatts (Petalum). Darüber hinaus unterscheidet der IRIS Datensatz in drei verschiedene Schwertlilienarten (Setosa, Versicolor und Virginica), welche sich jeweils in Breite und Länge des Kelch- und Kronblatts unterscheiden.
+
+Dieser Fallstudie liegen zwei Fragestellungen zugrunde:
+
+> (1) Wie unterscheiden sich Setosa, Versicolor und Virginica in den Ausprägungen der Merkmalsvariablen?
+
+> (2) Fallen die Unterschiede deutlich genug aus, um erkennen zu können, dass es sich um drei verschiedene Schwertlilenarten handelt?
+
+\newpage
+# Datenverständnis
+
+## Univariate Statistik des IRIS Datensatzes
+
+Einen ersten Einblick in den IRIS Datensatz über die Ausweisung der Minimum- und Maximumwerte sowie der Qartile und Lagemaße der Merkmalsvariablen ist über den Befehl `summary(...)` möglich. Diese deskriptiven Kennwerte beziehen sich zunächst auf den gesamten IRIS Datensatz und ermöglichen noch keinen Einblick in die Ausprägungen der Merkmalsvariablen bei den verschiedenen Schwertlilienarten:
+
+```{r}
+# Deskriptive Kennwerte des IRIS Datensatzes
+summary(iris)
+```
+
+#### Fragen
+
+- Vergleichen Sie die Längen von Kelch- und Kronblatt. Welches Blatt ist länger?
+
+- Wie viele Fälle der verschiedenen Schwertlilienarten liegen jeweils vor?
+
+\newpage
+## Univariate Statistik der Teildatensätze
+
+Über den Befehl `subset(...)` wird der IRIS Datensatz in Teildatensätze eingeteilt:
+
+```{r}
+# IRIS Datensatz als Teildatensätze
+setosa <- subset(iris, Species=="setosa")
+versicolor <- subset(iris, Species=="versicolor")
+virginica <- subset(iris, Species=="virginica")
+```
+
+Diese lassen sich ebenfalls über den Befehl `summary(...)` analysieren, wobei diesmal nur die ersten vier Spalten von Interesse sind:
+
+```{r}
+summary(setosa[c(1:4)])
+summary(versicolor[c(1:4)])
+summary(virginica[c(1:4)])
+```
+
+\newpage
+#### Fragen
+
+- Welche Schwertlilienart hat die längsten Kelch- und Kronblätter?
+
+- Welche Schwertlilienart hat das schmalste Kronblatt?
+
+## Bivariate Statistik des IRIS Datensatzes
+
+Die Unterschiede zwischen den verschiedenen Schwertlilienarten lassen sich auch mittels Scatterplot visualisieren. In einem Scatterplot werden jeweils zwei der Merkmalsvariablen auf der Y-Achse und der X-Achse abgetragen. Für die farbliche Gestaltung werden die verschiedenen Schwertlilienarten `as.factor(...)` hinterlegt und die entsprechende Visualisierung über die Befehle `plot(...)` und `legend(...)` aufgerufen. Hier sind bspw. auf der Y-Achse die Merkmalsvariable `Petal Width` und auf der X-Achse die Merkmalsvariable `Petal Length` abgetragen:
+
+```{r}
+# Scatterlot zur Visualisierung der Unterschiede
+iris_colour <- c("red","green3","blue")[as.factor(iris$Species)]
+plot(iris$Petal.Length, iris$Petal.Width,
+    col = iris_colour, xlab = "Petal Length", ylab = "Petal Width",
+    main = "Scatterplot: IRIS Datensatzes")
+legend("topleft", legend=c("Setosa", "Versicolor", "Virginica"), pch=1,
+    col=c("red", "green3", "blue"))
+```
+
+Es ist deutlich zu erkennen, dass sich die Schwertlilienart Setosa in der linken unteren Ecke zu konzentrieren und somit von den anderen beiden Schwertlilienarten zu unterscheiden scheint. Diese Erkenntnis in Verbindung mit den konkreten Werten aus der univariaten Statistik ermöglichen eine detaillierte Beschreibung der Schwertlilienart Setosa.
+
+## Detaillierte Beschreibung der Schwertlilienarten
+
+Nun geht es darum, die aus der univariaten und bivariaten Statistik gewonnenen Erkenntnisse zu validieren. Hierbei kommt es auf die möglichst detaillierte Beschreibung der jeweiligen Schwertlilienarten an. Über den Befehl `subset(...)` in Verbindung mit den Vergleichsoperatoren `<=` sowie `>=` können die Ausprägungen der jeweiligen Schwertlilienarten in den entsprechenden Merkmalsvariablen spezifiziert werden.
+
+Die Schwertlilienart Setosa ist bspw. die einzige Schwertlilienart, bei der die Ausprägungen in der Merkmalsvariable `Petal Width` kleiner als der Wert `1` (hier: Maximum von 0.60) ist und die `Petal Length` übersteigt den Wert `2` (hier: Maximum von 1.90) nicht. Beide Bedingungen lassen sich über ein `&` entsprechend festhalten:
+
+```{r}
+# Beschreibung der Schwertlilienarten Setosa
+erste_schwertlilienart <- subset(iris, Petal.Length<="2"
+    & Petal.Width <="1", select=c(Species))
+summary(erste_schwertlilienart)
+```
+Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Schwerlilienart Setosa diese vollständig (hier: 50 von 50) aufgerufen werden, ohne fälschlicherweise eine andere Schwertlilienart mit aufzurufen. 
+
+#### R Übung
+
+Wenn auch bei den Schwertlilienarten Versicolor und Virginica von Ähnlichkeiten zwischen den Beobachtungen innerhalb einer Schwertlilienart und somit von Unterschieden zwischen den verschiedenen Schwertlilienarten ausgegangen werden kann, dann müssten sich auch diese Schwertlilienarten über eine ähnliche Herangehensweise identifizieren lassen.
+
+- Wie unterscheiden sich Versicolor und Virginica jeweils von den anderen Schwertlilienarten?
+
+- Wie viele Bobchtungen der Schwertlilienarten Versicolor, respektive Virginica, können Sie auf diese Weise aufrufen?
+
+- Warum können Sie bei Versicolor und Virginica nicht 50 / 50 korrekt aufrufen, bzw. wieso werden Beobachtungen einer anderen Schwertlilienart ebenfalls aufgerufen?
+
+Setzen Sie Ihre Erkenntnisse jeweils für Versicolor und Virginica (jeweils ohne `#`) an der Stelle `IHRE EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
+
+#### Ihre Lösung für Versicolor
+
+```{r}
+# Beschreibung der Schwertlilienarten Versicolor
+# zweite_schwertlilienart <- subset(iris, IHRE_EINGABE, select=c(Species))
+# summary(zweite_schwertlilienart)
+```
+
+#### Ihre Lösung für Virginica
+
+```{r}
+# Beschreibung der Schwertlilienarten Virginica
+# dritte_schwertlilienart <- subset(iris, IHRE_EINGABE, select=c(Species))
+# summary(dritte_schwertlilienart)
+```
+
+# Clusteranalyse
+
+## k-Means Clustering
+
+Die bisherige Datenanalyse diente dem Datenverständnis und war nur deshalb möglich, weil die Information über die drei verschiedenen Schwertlilienarten vorab in der Merkmalsvariable `Species` hinterlegt war. Oftmals ist diese Information allerdings nicht vorab bekannt, bspw. bei der Kundensegmentierung: Kundinnen und Kunden sind nicht gleich, manche sind sich aber ähnlich. Bevor also die Frage nach den Ähnlichkeiten (oder Unterschieden) zwischen den Beobachtungen beantwortet werden kann, ist zunächst die Frage nach der Anzahl an zu unterscheidenden Gruppen von Kundinnen und Kunden zu beantworten.
+
+Bei den Schwertlilien waren drei Schwertlilienarten zu unterscheiden. Aber wie viele Gruppen wären bei einer Kundensegmentierung zu unterscheiden? Zur Beantwortung dieser Frage kann auf eine Clusteranalyse zurückgegriffen werden, die anhand des k-Means Clusterings und ebenfalls am IRIS Datensatz vorgestellt werden soll. Arten und Gruppen von Beobachtungen mit Ähnlichkeiten zueinander werden hierbei zu Clustern zusammengefasst.
+
+Das Ziel beim k-Means Clustering ist demnach die Einteilung eines Datensatzes in eine Anzahl `k` an Clustern, so dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten (hier besteht eine Analogie zu den Lagemaßen, respektive dem Mean-Wert) innerhalb eines jeden Clusters minimal ist.
+
+## Within Cluster Sum of Squares
+
+Within Cluster Sum of Squares (WCSS) ist eine Methode zur Bewertung der Qualität von Clustering-Ergebnissen und zur Vorabbestimmung der Anzahl `k` an Clustern. Dabei wird zunächst die Summe der quadratischen Abweichungen (Sum of Squares) aller Punkte innerhalb eines Clusters von dessen Zentrum ermittelt.
+
+Die Berechnung der WCSS beginnt damit, dass jeder Punkt im Datensatz einem bestimmten Cluster zugeordnet wird. Anschließend wird für jedes Cluster das Zentrum berechnet, das als der durchschnittliche Wert aller Punkte innerhalb des Clusters definiert ist. Dann wird die Summe der quadratischen Abweichungen jedes Punktes innerhalb des Clusters von seinem Zentrum berechnet und aufsummiert. Dies wird für jedes Cluster im Datensatz durchgeführt und die Ergebnisse werden addiert, um den Gesamtwert des WCSS zu erhalten.
+
+Ein niedriger WCSS-Wert bedeutet, dass die Punkte innerhalb jedes Clusters näher beieinander liegen und somit eine höhere Dichte aufweisen. Das bedeutet, dass das Clustering besser ist, da es klarere und besser definierte Cluster gibt. Ein hoher WCSS-Wert deutet hingegen darauf hin, dass die Punkte innerhalb jedes Clusters weiter auseinander liegen und somit eine geringere Dichte aufweisen, was darauf hinweisen kann, dass das Clustering schlechter ist.
+
+Zur Ermittlung der WCSS empfielt es sich, die relevanten Merkmalsvariablen zunächst zu standardisieren, bzw. zu z-transformieren. Dies kann über den Befehl `scale(...)` erreicht werden:
+
+```{r}
+# Relevante Merkmalsvariablen standardisieren
+cluster_data <- scale(iris[c(1:4)])
+summary(cluster_data)
+```
+
+Die Summe der quadratischen Abweichungen aller Punkte innerhalb jedes Clusters von dessen Zentrum lässt sich formal wie folgt ermitteln, wobei hier davon ausgegangen wird, dass die Clusteranzahl zwischen 2 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird:
+
+```{r}
+# Within Cluster Sum of Squares (WCSS) ermitteln
+wcss <- (nrow(cluster_data)-1)*sum(apply(cluster_data,2,var))
+    for (i in 2:10) wcss[i] <- sum(kmeans(cluster_data, centers=i)$withinss)
+```
+
+Grafisch lässt sich die WCSS über den Befehl `plot(...)` aufrufen. Auch wenn die Ermittlung der WCSS über eine voreingestellte Clusteranzahl zwischen 2 und 10 Clustern erfolgt ist, wird die Visualisierung aus optischen Gründen für eine Clusteranzahl zwischen 1 und 10 vorgenommen. Die nachfolgende Abbildung wird auch `Ellenbogenknick-Grafik` genannt. An der Knickstelle flacht der fallende Verlauf deutlich ab, woraus sich ableiten lässt, dass ein zusätzliches Cluster den WCSS-Wert nicht mehr wesentlich senken wird. Der X-Achse kann die somit ermittelte Anzahl `k` an Clustern entnommen werden:
+
+```{r}
+# Within Cluster Sum of Squares (WSS) visualisieren
+plot(1:10, wcss, type="c", xlab="Cluster", ylab="WCSS",
+    main="Clusteranzahl in Abhängigkeit von WCSS")
+```
+
+Demnach konnten 3 Cluster im IRIS Datensatz identifiziert werden.
+
+#### Fragen
+
+- Ist die Standardisierung der Merkmalsvariablen beim IRIS Datensatz erforderlich?
+
+- Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+
+## Clusterlösung
+
+Schließlich kann das k-Means Clustering unter Spezifizierung der Anzahl `k` an Clustern durchgeführt werden. Hierfür steht der Befehl `kmeans(...)` zur Verfügung. Der Befehl `clusplot(...)` visualisiert die Clusterlösung entsprechend: 
+
+```{r}
+# K-Means Algorithmus anwenden
+k_means_cluster <- kmeans(iris[,-5], 3, nstart=30)
+    clusplot(iris, k_means_cluster$cluster, color=TRUE, shade=TRUE, lines=0)
+```
+
+Wie gut die verschiedenen Schwertlilienarten den jeweiligen Clustern zugeordnet worden sind, kann über den Befehl `table(...)` eingesehen werden:
+
+```{r}
+# Validierung der K-Means Clusterlösung
+table(iris$Species, k_means_cluster$cluster)
+```
+
+Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im IRIS Datensatz korrekt identifiziert, hat aber Schwierigkeiten mit der Zuordnung der einzelnen Schwertlilienarten in die jeweiligen Cluster. Dies liegt daran, dass die Identifikation der Anzahl `k` an Clustern vornehmlich eine Aufgabe für die Clusteranalyse darstellt, wohingegen die Identifikation und Zuordnung als Klassifikationsverfahren auf andere Algorithmen setzen würde.
+
+#### R Übung
+
+- Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
+
+- Spezifizieren Sie 50 statt 30 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
