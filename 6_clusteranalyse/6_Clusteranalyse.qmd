@@ -32,7 +32,8 @@ Dieser Fallstudie liegen zwei Fragestellungen zugrunde:
 
 > (2) Fallen die Unterschiede deutlich genug aus, um erkennen zu können, dass es sich um drei verschiedene Schwertlilenarten handelt?
 
-{{< pagebreak >}}
+Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Schwertlilienarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
+
 # Datenverständnis
 
 ## Univariate Statistik des IRIS Datensatzes
@@ -60,7 +61,6 @@ tally( ~ Species, data = iris)
 
 - Wie viele Fälle der verschiedenen Schwertlilienarten liegen jeweils vor?
 
-{{< pagebreak >}}
 ## Univariate Statistik, ausdifferenziert nach Schwertlilienarten
 
 Mit dem Befehl `df_stats(...)` lassen sich die Ausprägungen der Merkmalsvariablen selbstverständlich auch nach den verschiedenen Schwertlilienarten ausdifferenzieren Dies ermöglicht einen systematischen Vergleich der Ausprägungen der Merkmalsvariablen zwischen den verschiedenen Schwertlilienarten:
@@ -85,7 +85,6 @@ Die Unterschiede zwischen den verschiedenen Schwertlilienarten lassen sich auch 
 # Scatterlot zur Visualisierung der Unterschiede
 gf_point(Petal.Width ~ Petal.Length, color = ~ Species, data = iris)
 ```
-
 Es ist deutlich zu erkennen, dass sich die Schwertlilienart Setosa in der linken unteren Ecke zu konzentrieren und somit von den anderen beiden Schwertlilienarten zu unterscheiden scheint. Diese Erkenntnis in Verbindung mit den konkreten Werten aus der univariaten Statistik ermöglichen eine detaillierte Beschreibung der Schwertlilienart Setosa.
 
 ## Detaillierte Beschreibung der Schwertlilienarten
@@ -100,7 +99,6 @@ erste_schwertlilienart <-
   filter(iris, Petal.Length <= "2" & Petal.Width <= "1")
 tally( ~ Species, data = erste_schwertlilienart)
 ```
-
 Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Schwerlilienart Setosa diese über den Befehl `tally(...)` vollständig (hier: 50 von 50) aufgerufen werden, ohne fälschlicherweise eine andere Schwertlilienart mit aufzurufen. 
 
 #### R Übung
@@ -115,16 +113,13 @@ Wenn auch bei den Schwertlilienarten Versicolor und Virginica von Ähnlichkeiten
 
 Setzen Sie Ihre Erkenntnisse jeweils für Versicolor und Virginica (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
 
-#### Ihre Lösung für Versicolor
+#### Ihre Lösung für Versicolor und Virginica
 
 ```{r}
 # Beschreibung der Schwertlilienarten Versicolor
 # zweite_schwertlilienart <- filter(iris, IHRE_EINGABE)
 # tally( ~ Species, data = zweite_schwertlilienart)
 ```
-
-{{< pagebreak >}}
-#### Ihre Lösung für Virginica
 
 ```{r}
 # Beschreibung der Schwertlilienarten Virginica
@@ -166,23 +161,27 @@ Arithmetisches Mittel:
 # Arithmetisches Mittel
 round(mean( ~ Sepal.Length, data = z_iris))
 ```
-
 Standardabweichung: 
 
 ```{r}
 # Standardabweichung
 sd( ~ Sepal.Length, data = z_iris)
 ```
+Nachfolgend soll die WCSS mit dem standardisierten IRIS Datensatz exemplarisch ermittelt werden. Hierbei wird wie folgt vorgegangen: Die Summe der quadratischen Abweichungen aller Punkte (`x`) innerhalb jedes Clusters von dessen Zentrum (`c`) lässt sich über die Anzahl der Fälle `n` und die Anzahl der Cluster `k` formal über folgende Optimierungsfunktion `J` minimieren:
 
-Die Summe der quadratischen Abweichungen aller Punkte innerhalb jedes Clusters von dessen Zentrum lässt sich formal wie folgt ermitteln, wobei hier davon ausgegangen wird, dass die Clusteranzahl zwischen 2 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird:
+$$
+J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||
+$$
+
+Ausgehend von den vorherigen Analyseschritten kann für den IRIS Datensatz davon ausgegangen werden, dass die Clusteranzahl zwischen 1 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird. In R ist die WCSS dabei wie folgt zu ermitteln:
 
 ```{r}
 # Within Cluster Sum of Squares (WCSS) ermitteln
-wcss <- (nrow(z_iris) - 1) * sum(apply(z_iris, 2, var))
-    for (i in 2:10) wcss[i] <- sum(kmeans(z_iris, centers = i)$withinss)
+wcss = vector()
+for (i in 1:10) wcss[i] <- sum(kmeans(z_iris, i)$withinss)
 ```
 
-Grafisch lässt sich die WCSS über den Befehl `gf_line(...)` aufrufen. Auch wenn die Ermittlung der WCSS über eine voreingestellte Clusteranzahl zwischen 2 und 10 Clustern erfolgt ist, wird die Visualisierung aus optischen Gründen für eine Clusteranzahl zwischen 1 und 10 vorgenommen. Die nachfolgende Abbildung wird auch `Ellenbogenknick-Grafik` genannt. An der Knickstelle flacht der fallende Verlauf deutlich ab, woraus sich ableiten lässt, dass ein zusätzliches Cluster den WCSS-Wert nicht mehr wesentlich senken wird. Die Knickstelle ist nachfolgend über die Befehle `gf_hline(...)` und `gf_vline(...)` hervorgehoben. Der X-Achse kann die somit ermittelte Anzahl `k` an Clustern entnommen werden:
+Grafisch lässt sich die WCSS zusätzlich über den Befehl `gf_line(...)` abbilden. Da die Ermittlung der WCSS über eine voreingestellte Clusteranzahl zwischen 1 und 10 Clustern erfolgt ist, wird auch die Visualisierung für eine Clusteranzahl zwischen 1 und 10 vorgenommen. Die nachfolgende Abbildung wird auch `Ellenbogenknick-Grafik` genannt. An der Knickstelle flacht der fallende Verlauf deutlich ab, woraus sich ableiten lässt, dass ein zusätzliches Cluster den WCSS-Wert nicht mehr wesentlich senken wird. Die Knickstelle ist nachfolgend über die Befehle `gf_hline(...)` und `gf_vline(...)` hervorgehoben. Der X-Achse kann die somit ermittelte Anzahl `k` an Clustern entnommen werden:
 
 ```{r}
 # Within Cluster Sum of Squares (WCSS) visualisieren
@@ -190,7 +189,6 @@ gf_line(wcss ~ 1:10, xlab = "cluster") %>%
   gf_hline(yintercept = 138.88836, linetype = 2) %>%
     gf_vline(xintercept = 3, linetype = 2)
 ```
-
 Demnach konnten 3 Cluster im IRIS Datensatz identifiziert werden.
 
 #### Fragen
@@ -216,7 +214,6 @@ Wie gut die verschiedenen Schwertlilienarten den jeweiligen Clustern zugeordnet 
 # Größe der identifizierten Cluster
 k_means_cluster$size
 ```
-
 Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im IRIS Datensatz korrekt identifiziert, hat aber Schwierigkeiten mit der Zuordnung der einzelnen Schwertlilienarten in die jeweiligen Cluster. Dies liegt daran, dass die Identifikation der Anzahl `k` an Clustern vornehmlich eine Aufgabe für die Clusteranalyse darstellt, wohingegen die Identifikation und Zuordnung als Klassifikationsverfahren auf andere Algorithmen setzen würde.
 
 #### R Übung
