@@ -32,7 +32,7 @@ Dieser Fallstudie liegen zwei Fragestellungen zugrunde:
 
 > (2) Fallen die Unterschiede deutlich genug aus, um erkennen zu können, dass es sich um drei verschiedene Schwertlilenarten handelt?
 
-Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Schwertlilienarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
+Dafür wird in dieser Fallstudie die Clusteranalyse vorgestellt. Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Schwertlilienarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
 
 # Datenverständnis
 
@@ -76,15 +76,15 @@ df_stats(Sepal.Length + Sepal.Width + Petal.Length
 
 - Welche Schwertlilienart hat das schmalste Kronblatt?
 
-{{< pagebreak >}}
 ## Bivariate Statistik des IRIS Datensatzes
 
 Die Unterschiede zwischen den verschiedenen Schwertlilienarten lassen sich auch mittels Scatterplot grafisch darstellen In einem Scatterplot werden jeweils zwei der Merkmalsvariablen auf der Y-Achse und der X-Achse abgetragen. Dies ermöglicht der Befehl `gf_point(...)` inklusive farblicher Unterscheidung zwischen den verschiedenen Schwerlilienarten:
 
 ```{r}
-# Scatterlot zur Visualisierung der Unterschiede
+# Scatterplot zur Visualisierung der Unterschiede
 gf_point(Petal.Width ~ Petal.Length, color = ~ Species, data = iris)
 ```
+
 Es ist deutlich zu erkennen, dass sich die Schwertlilienart Setosa in der linken unteren Ecke zu konzentrieren und somit von den anderen beiden Schwertlilienarten zu unterscheiden scheint. Diese Erkenntnis in Verbindung mit den konkreten Werten aus der univariaten Statistik ermöglichen eine detaillierte Beschreibung der Schwertlilienart Setosa.
 
 ## Detaillierte Beschreibung der Schwertlilienarten
@@ -99,6 +99,7 @@ erste_schwertlilienart <-
   filter(iris, Petal.Length <= "2" & Petal.Width <= "1")
 tally( ~ Species, data = erste_schwertlilienart)
 ```
+
 Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Schwerlilienart Setosa diese über den Befehl `tally(...)` vollständig (hier: 50 von 50) aufgerufen werden, ohne fälschlicherweise eine andere Schwertlilienart mit aufzurufen. 
 
 #### R Übung
@@ -161,22 +162,25 @@ Arithmetisches Mittel:
 # Arithmetisches Mittel
 round(mean( ~ Sepal.Length, data = z_iris))
 ```
+
 Standardabweichung: 
 
 ```{r}
 # Standardabweichung
 sd( ~ Sepal.Length, data = z_iris)
 ```
+
 Nachfolgend soll die WCSS mit dem standardisierten IRIS Datensatz exemplarisch ermittelt werden. Hierbei wird wie folgt vorgegangen: Die Summe der quadratischen Abweichungen aller Punkte (`x`) innerhalb jedes Clusters von dessen Zentrum (`c`) lässt sich über die Anzahl der Fälle `n` und die Anzahl der Cluster `k` formal über folgende Optimierungsfunktion `J` minimieren:
 
 $$
-J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||^2
+J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||²
 $$
 
 Ausgehend von den vorherigen Analyseschritten kann für den IRIS Datensatz davon ausgegangen werden, dass die Clusteranzahl zwischen 1 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird. In R ist die WCSS dabei wie folgt zu ermitteln:
 
 ```{r}
 # Within Cluster Sum of Squares (WCSS) ermitteln
+set.seed(1701)
 wcss = vector()
 for (i in 1:10) wcss[i] <- sum(kmeans(z_iris, i)$withinss)
 ```
@@ -214,6 +218,7 @@ Wie gut die verschiedenen Schwertlilienarten den jeweiligen Clustern zugeordnet 
 # Größe der identifizierten Cluster
 k_means_cluster$size
 ```
+
 Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im IRIS Datensatz korrekt identifiziert, hat aber Schwierigkeiten mit der Zuordnung der einzelnen Schwertlilienarten in die jeweiligen Cluster. Dies liegt daran, dass die Identifikation der Anzahl `k` an Clustern vornehmlich eine Aufgabe für die Clusteranalyse darstellt, wohingegen die Identifikation und Zuordnung als Klassifikationsverfahren auf andere Algorithmen setzen würde.
 
 #### R Übung
