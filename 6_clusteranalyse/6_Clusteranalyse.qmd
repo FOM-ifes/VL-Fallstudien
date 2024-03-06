@@ -170,7 +170,7 @@ sd( ~ Sepal.Length, data = z_iris)
 Nachfolgend soll die WCSS mit dem standardisierten IRIS Datensatz exemplarisch ermittelt werden. Hierbei wird wie folgt vorgegangen: Die Summe der quadratischen Abweichungen aller Punkte (`x`) innerhalb jedes Clusters von dessen Zentrum (`c`) lässt sich über die Anzahl der Fälle `n` und die Anzahl der Cluster `k` formal über folgende Optimierungsfunktion `J` minimieren:
 
 $$
-J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||
+J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||^2
 $$
 
 Ausgehend von den vorherigen Analyseschritten kann für den IRIS Datensatz davon ausgegangen werden, dass die Clusteranzahl zwischen 1 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird. In R ist die WCSS dabei wie folgt zu ermitteln:
