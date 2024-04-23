@@ -1,0 +1,205 @@
+---
+title: "Hauptkomponentenanalyse (HKA)"
+lang: de
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+if (!require("pacman")) install.packages("pacman")
+if (!require("mosaic")) install.packages("mosaic")
+if (!require("here")) install.packages("here")
+if (!require("corrplot")) install.packages("corrplot")
+if (!require("ggbiplot")) install.packages("ggbiplot")
+
+pacman::p_load(mosaic, here, corrplot, ggbiplot)
+```
+
+# Grundidee
+
+Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. Das Ziel dieser Hauptkomponenten ist, Datensätze übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
+
+Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als ganz normale Variablen für weitere statistische Tests verwendet werden.
+
+# Projekt IRLL (International Readiness in Lifelong Learning)
+
+*Studie und Daten erklären (+ evtl. Verlinkung Fragebogen)*
+
+## Daten einlesen und inspizieren
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "irll.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Datei (inkl. Pfad)
+pfad_irll <- here("data", "irll.csv")
+# Daten einlesen
+irll <- read.csv2(pfad_irll, sep = ",")
+# Datenstruktur
+str(irll)
+```
+
+**Fragen:**
+
+-   Was ist eine Beobachtungseinheit im Datensatz?
+
+    -   *Antwort: Eine befragte Person.*
+
+-   Wie wurden die Variablen erhoben? Welches Skalenniveau besitzen die Variablen?
+
+    -   *Antwort: Die Variablen wurden mit einer 5-Punkt-Likert Skala erhoben. Das Skalenniveau der Variablen ist quasimetrisch.*
+
+-   Welche Variablen würden sich für eine Hauptkomponentenanalyse anbieten?
+
+    -   *Antwort: Alle Variablen des Datensatzes (zumindest in meiner Version des Datensatzes) können mithilfe der HKA zusammengefasst werden.*
+
+## Daten standardisieren
+
+Die Hauptkomponentenanalyse ist sehr sensitiv bezüglich unterschiedlicher Varianzverhältnisse. Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von z-standardisierten Variablen durchgeführt.
+
+```{r}
+# Standardisierung
+irll_norm <- as.data.frame(scale(irll))
+```
+
+**Frage:**
+
+-   Warum löst die Standardisierung das Problem der Varianz-Sensitivität der HKA?
+    -   *Antwort: Da die standardisierten Variablen alle eine Varianz von 1 haben.*
+
+## Korrelation/Kovarianz
+
+Die Bildung der einzelnen Hauptkomponenten geschieht durch das Zusammenfassen von hoch korrelierten Variablen. Eine hohe Korrelation zwischen zwei Variablen deutet darauf hin, dass diese ähnliche oder nahezu gleiche Informationen beinhalten (Redundanz). Die HKA benutzt diese Redundanz, um sich ähnelnde Variablen zu einer Hauptkomponente zusammenzufassen.
+
+Einen guten Überblick über die Korrelation zwischen den Variablen verschafft ein Korrelationsplot:
+
+```{r}
+# Korrelationsmatrix
+cor_mtx <- cor(irll_norm)
+
+# Korrelationsplot
+corrplot(cor_mtx)
+```
+
+**Fragen:**
+
+-   Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Warum?
+
+    -   *Antwort: In diesem Fall schon, da die Daten standardisiert wurden und cor(X)==cov(X).*
+
+-   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der leicht rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
+
+    -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist hoch positiv.*
+    -   *Antwort (rot): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.*
+    -   *Inhaltliche Interpretation?*
+
+-   Warum sind manche Flächen im Korrelationsplot weiß und was bedeutet das?
+
+    -   *Antwort: Eine Korrelation von 0 bedeutet, dass die beiden Variablen linear nicht voneinander abhängen.*
+
+-   Welche Gruppen von Variablen, die sich ähnlich sind, können Sie entdecken?
+
+## Analyse
+
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *prcomp*-Funktion durchgeführt:
+
+```{r}
+# Hauptkomponentenanalyse
+hka <- prcomp(irll_norm)
+summary(hka)
+```
+
+*Soll der Output noch genauer erklärt werden?*
+
+**Fragen:**
+
+-   Wie viel Prozent der Gesamtvarianz wird durch die zweite Hauptkomponente erklärt?
+
+    -   *Antwort: ca. 17,7 % (Proportion of Variance)*
+
+-   Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
+
+    -   *Antwort: ca. 84,3 % (Cumulative Varianz)*
+
+## Bestimmung der Anzahl der Hauptkomponenten
+
+Wie kann man anhand der Analyseergebnisse herausfinden, wie viele Hauptkomponenten ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden?
+
+### [Screeplot]{.underline}
+
+Eine Möglichkeit zur Bestimmung der optimalen Anzahl ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
+
+`Hinweis: die Varianz ist hier gleich den Eigenwerten! Der besseren Übersicht wegen, werden außerdem nur die ersten 10 Hauptkomponenten abgebildet.`
+
+```{r}
+# Screeplot
+screeplot(hka, type="l", main = "Screeplot")
+```
+
+**Frage:**
+
+-   Wie viele Hauptkomponenten würden Sie auf Basis des Screeplots bestimmen? Warum?
+
+Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer einfach zu lesen. In solchen Fällen kann man auf andere Methoden und Faustregeln zurückgreifen.
+
+### [Eigenwert über 1 (Kaiser-Dickman-Kriterium)]{.underline}
+
+Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer sind als 1.
+
+Dazu wird im nächsten Schritt eine Linie bei y = 1 in den Plot gezeichnet. Man kann sich die Eigenwerte aber auch über den Befehl `eigen(cor_mtx)$value` ausgeben lassen.
+
+```{r}
+#Einzeichnen der Gerade bei 1
+screeplot(hka, type="l", main = "Screeplot")
+abline(h=1, col="red")
+```
+
+**Frage:**
+
+-   Hat sich Ihre Meinung aufgrund des Kaiser-Dickman-Kriteriums geändert?
+    -   *"Richtige" Anzahl der Hauptkomponenten: 6*
+
+*Noch ein Unterpunkt zum Kriterium der Varianz?*
+
+## Biplot (und Ladungen?)
+
+*Ist ein Biplot mit diesem Datenbeispiel überhaupt sinnvoll?*
+
+```{r}
+#Biplot erstellen
+biplot(hka)
+```
+
+```{r}
+#| eval: false
+#Loadings anschauen?
+hka$rotation
+```
+
+# Your Turn
+
+Jetzt sind Sie an der Reihe! Im folgenden Code-Anfang wird das Paket *"HDclassif"* installiert. Dieses Paket enthält den Datensatz **wine**. Dieser Datensatz ist das Ergebnis einer chemischen Analyse von Weinen, die in der gleichen Region in Italien angebaut werden, aber von drei verschiedenen Weinsorten (barolo, grignolino, barbera) stammen. Bei der Analyse wurden 13 Inhaltsstoffe bestimmt, die in jeder der drei Weinsorten enthalten sind.
+
+Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ein. Nachdem Sie diesen ausgeführt haben, können Sie mit ihrer Hauptkomponentenanalyse starten.
+
+```{r}
+#| eval: false
+#Wine-Datensatz laden
+install.packages("HDclassif")
+library(HDclassif)
+
+data(wine)
+```
+
+*Soll ich hierfür auch eine Musterlösung erstellen?*
