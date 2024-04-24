@@ -130,7 +130,7 @@ summary(hka)
 
 -   Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
 
-    -   *Antwort: ca. 84,3 % (Cumulative Varianz)*
+    -   *Antwort: ca. 84,3 % (Cumulative Variance)*
 
 ## Bestimmung der Anzahl der Hauptkomponenten
 
