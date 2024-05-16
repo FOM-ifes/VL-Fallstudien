@@ -59,7 +59,11 @@ tally( ~ Species, data = iris)
 
 - Vergleichen Sie die Längen von Kelch- und Kronblatt. Welches Blatt ist länger?
 
+  - *Antwort: Beim Kelchblatt (Sepal) fallen min, median, mean und max länger aus.*
+
 - Wie viele Fälle der verschiedenen Schwertlilienarten liegen jeweils vor?
+
+  - *Antwort: Von jeder Schwertlilienart liegen insgesamt 50 vor.*
 
 ## Univariate Statistik, ausdifferenziert nach Schwertlilienarten
 
@@ -74,7 +78,11 @@ df_stats(Sepal.Length + Sepal.Width + Petal.Length
 
 - Welche Schwertlilienart hat die längsten Kelch- und Kronblätter?
 
+  - *Antwort: Virginica.*
+
 - Welche Schwertlilienart hat das schmalste Kronblatt?
+
+  - *Antwort: Setosa.*
 
 ## Bivariate Statistik des IRIS Datensatzes
 
@@ -108,9 +116,15 @@ Wenn auch bei den Schwertlilienarten Versicolor und Virginica von Ähnlichkeiten
 
 - Wie unterscheiden sich Versicolor und Virginica jeweils von den anderen Schwertlilienarten?
 
+  - *Antwort: Das Kronblatt (Petal) ist bspw. deutlich länger und breiter als bei Setosa.*
+
 - Wie viele Bobchtungen der Schwertlilienarten Versicolor, respektive Virginica, können Sie auf diese Weise aufrufen?
 
+  - *Antwort: Eine mögliche Lösung könnte bspw. 47/50 Versicolor bei insgesamt 9 Fehlklassifikationen sein, respektive 47/50 Virginica bei 5 Fehlklassifikationen. Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
+
 - Warum können Sie bei Versicolor und Virginica nicht 50 / 50 korrekt aufrufen, bzw. wieso werden Beobachtungen einer anderen Schwertlilienart ebenfalls aufgerufen?
+
+  - *Antwort: Versicolor und Virginica ähneln sich hinsichtlich der Länge und Breite der verschiedenen Blattarten teilweise so deutlich, dass diese nicht klar differenziert werden können.*
 
 Setzen Sie Ihre Erkenntnisse jeweils für Versicolor und Virginica (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
 
@@ -118,14 +132,14 @@ Setzen Sie Ihre Erkenntnisse jeweils für Versicolor und Virginica (jeweils ohne
 
 ```{r}
 # Beschreibung der Schwertlilienarten Versicolor
-# zweite_schwertlilienart <- filter(iris, IHRE_EINGABE)
-# tally( ~ Species, data = zweite_schwertlilienart)
+zweite_schwertlilienart <- filter(iris, Petal.Length >= "3" & Petal.Length <= "5" & Petal.Width <= "2")
+tally( ~ Species, data = zweite_schwertlilienart)
 ```
 
 ```{r}
 # Beschreibung der Schwertlilienarten Virginica
-# dritte_schwertlilienart <- filter(iris, IHRE_EINGABE)
-# tally( ~ Species, data = dritte_schwertlilienart)
+dritte_schwertlilienart <- filter(iris, Petal.Length >= "4.5" & Petal.Width >= "1.6")
+tally( ~ Species, data = dritte_schwertlilienart)
 ```
 
 # Clusteranalyse
@@ -199,7 +213,11 @@ Demnach konnten 3 Cluster im IRIS Datensatz identifiziert werden.
 
 - Ist die Standardisierung der Merkmalsvariablen beim IRIS Datensatz erforderlich?
 
+  - *Antwort: Nicht wirklich, da mit Blattlänge und -breite vergleichbare Variablen und Skalierungen zugrunde liegen.*
+
 - Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+
+  - *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `iris[c(1:4)]` an Stelle von `z_iris` in den Befehl zur Ermittlung der WCSS ein.*
 
 ## Clusterlösung
 
@@ -225,4 +243,8 @@ Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im IRIS Datensatz korr
 
 - Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
 
+  - *Antwort: Versicolor und Virinica würden nicht in zwei Schwertlilienarten unterteilt werden, sondern in drei. Dabei gibt es zwar weniger Überschneidungen, aber die Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Schwertlilienarten.*
+
 - Spezifizieren Sie 50 statt 30 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
+
+  - *Antwort: Ausgehend von den jeweils 50 verschiedenen Schwerlilienarten verändert sich die Zuordnung nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 50 zuzuordnende Fälle vorliegen.*

@@ -61,7 +61,11 @@ tally( ~ species, data = penguins)
 
 - Vergleichen Sie `bill_length_mm` mit `bill_depth_mm`. Welche Merkmalsvariable ist länger?
 
+  - *Antwort: Da sich die `bill_length_mm` auf die Länge des Schnabels und die `bill_depth_mm` auf dessen Höhe beziehen, weisen die Ausprägungen der Merkmalsvariable `bill_length_mm` eine größere Länge in mm auf.*
+
 - Wie viele Fälle der verschiedenen Pinguinarten liegen jeweils vor?
+
+  - *Antwort: 146 von Adelie, 68 von Chinstrap und 119 von Gentoo.*
 
 ## Univariate Statistik, ausdifferenziert nach Pinguinarten
 
@@ -76,7 +80,11 @@ df_stats(bill_length_mm + bill_depth_mm + flipper_length_mm
 
 - Welche Pinguinart hat die längsten Flügel (`flipper_length_mm`)?
 
+  - *Antwort: Bei Gentoo fallen alle statistischen Parameter (min, median, mean und max) größer aus.* 
+
 - Welche Pinguinart weist die kürzeste `bill_depth_mm` auf?
+
+  - *Antwort: Hier fallen ebenfalls bei Gentoo alle statistischen Parameter am kleinsten aus.*
 
 ## Bivariate Statistik des PENGUINS Datensatzes
 
@@ -108,9 +116,15 @@ Wenn auch bei den Pinguinarten Adelie und Chinstrap von Ähnlichkeiten zwischen 
 
 - Wie unterscheiden sich Adelie und Chinstrap jeweils von den anderen Pinguinarten?
 
+  - *Antwort: Adelie und Chinstrap weisen bei `flipper_length_mm` und `body_mass_g` deutlich kleinere Merkmalsausprägungen auf.*
+
 - Wie viele Bobchtungen der Pinguinart Adelie, respektive Chinstrap, können Sie auf diese Weise aufrufen?
 
+  - *Antwort: Eine mögliche Lösung könnte bspw. 146/146 Adelie bei insgesamt 39 (15 Chinstrap + 24 Gentoo) Fehlklassifikationen sein, respektive 68/68 Chinstrap bei 35 Fehlklassifikationen (35 Adelie + 0 Gentoo). Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
+
 - Wieso werden bei Adelie und Chinstrap so viele Beobachtungen einer anderen Pinguinart ebenfalls aufgerufen?
+
+ - *Antwort: Adelie und Chinstrap ähneln sich hinsichtlich der Länge des Schnabels und deren Gewicht in Gramm teilweise so deutlich, dass diese nicht klar differenziert werden können.*
 
 Setzen Sie Ihre Erkenntnisse jeweils für Adelie und Chinstrap (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
 
@@ -118,14 +132,14 @@ Setzen Sie Ihre Erkenntnisse jeweils für Adelie und Chinstrap (jeweils ohne `#`
 
 ```{r}
 # Beschreibung der Pinguinart Adelie
-# zweite_pinguinart <- filter(penguins, IHRE_EINGABE)
-# tally( ~ species, data = zweite_pinguinart)
+zweite_pinguinart <- filter(penguins, bill_length_mm <= "46.0" & bill_depth_mm <= "21.5" & body_mass_g <= "4775")
+tally( ~ species, data = zweite_pinguinart)
 ```
 
 ```{r}
 # Beschreibung der Pinguinart Chinstrap
-# dritte_pinguinart <- filter(penguins, IHRE_EINGABE)
-# tally( ~ species, data = dritte_pinguinart)
+dritte_pinguinart <- filter(penguins, bill_length_mm >= "40.9" & bill_depth_mm >= "16.4" & body_mass_g <= "4800")
+tally( ~ species, data = dritte_pinguinart)
 ```
 
 # Clusteranalyse
@@ -197,7 +211,11 @@ Demnach konnten 3 Cluster im PENGUINS Datensatz identifiziert werden.
 
 - Ist die Standardisierung der Merkmalsvariablen beim PENGUINS Datensatz erforderlich?
 
+  - *Antwort: Nicht wirklich, da bei den Merkmalsvariablen vergleichbare Merkmalsausprägungen und Skalierungen zugrunde liegen.*
+
 - Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+
+  - *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `penguins[c(3:6)]` an Stelle von `z_penguins` in den Befehl zur Ermittlung der WCSS ein.
 
 ## Clusterlösung
 
@@ -214,7 +232,7 @@ Schließlich kann das k-Means Clustering unter Spezifizierung der Anzahl `k` an 
 
 ```{r}
 # K-Means Clustering
-k_means_cluster <- kmeans(penguins_cluster[,-5], 3, nstart=20)
+k_means_cluster <- kmeans(penguins_cluster[,-5], 3, nstart=30)
 clusplot(penguins_cluster, k_means_cluster$cluster,
          color = TRUE, shade = TRUE, lines = 0)
 ```
@@ -232,4 +250,8 @@ Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im PENGUINS Datensatz 
 
 - Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
 
+  - *Antwort: Gentoo würde nicht mehr als eine Pinguinart erkannt werden, sondern in zwei verschiedene Pinguinarten ausfidderenziert werden. Diese Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Pinguinarten.*
+
 - Spezifizieren Sie 30 statt 20 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
+
+  - *Antwort: Die Zuordnungen verändern sich nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 30 zuzuordnende Fälle vorliegen.*
