@@ -19,12 +19,9 @@ format:
 #| include: false
 
 if (!require("pacman")) install.packages("pacman")
-if (!require("mosaic")) install.packages("mosaic")
-if (!require("here")) install.packages("here")
-if (!require("corrplot")) install.packages("corrplot")
-if (!require("ggbiplot")) install.packages("ggbiplot")
 
-pacman::p_load(mosaic, here, corrplot, ggbiplot)
+pacman::p_load(mosaic, psych, corrplot, ggbiplot, REdaS)
+pacman::p_load(here)
 ```
 
 # Grundidee
@@ -78,11 +75,11 @@ irll_norm <- as.data.frame(scale(irll))
 -   Warum löst die Standardisierung das Problem der Varianz-Sensitivität der HKA?
     -   *Antwort: Da die standardisierten Variablen alle eine Varianz von 1 haben.*
 
-## Korrelation/Kovarianz
+## Eignung der Daten
 
 Die Bildung der einzelnen Hauptkomponenten geschieht durch das Zusammenfassen von hoch korrelierten Variablen. Eine hohe Korrelation zwischen zwei Variablen deutet darauf hin, dass diese ähnliche oder nahezu gleiche Informationen beinhalten (Redundanz). Die HKA benutzt diese Redundanz, um sich ähnelnde Variablen zu einer Hauptkomponente zusammenzufassen.
 
-Einen guten Überblick über die Korrelation zwischen den Variablen verschafft ein Korrelationsplot:
+Die Korrelation kann deshalb Hinweise darüber geben, ob sich die Daten für eine Hauptkomponentenanalyse eignen. Einen guten Überblick über die Korrelation zwischen den Variablen verschafft ein Korrelationsplot:
 
 ```{r}
 # Korrelationsmatrix
@@ -110,41 +107,52 @@ corrplot(cor_mtx)
 
 -   Welche Gruppen von Variablen, die sich ähnlich sind, können Sie entdecken?
 
-## Analyse
+-   Denken Sie, dass sich die Daten für eine Hauptkomponentenanalyse eignen?
 
-Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *prcomp*-Funktion durchgeführt:
+### [KMO-Kriterium]{.underline}
+
+Zusätzlich zur Betrachtung des Korrelationsplot gibt es Test, welche die Eignung der Daten für eine HKA überprüfen. Einer dieser Tests ist das Kaiser-Meyer-Olkin-Kriterium (Kaiser und Rice, 1974), welches aus den partiellen Korrelationen zwischen Variablenpaaren, also der Korrelationen jeder Variable mit jeder anderen Variablen, berechnet wird. Die möglichen Ergebnisse des KMO-Kriteriums variieren zwischen 0 und 1. Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 0.5 nicht unterschreiten.
 
 ```{r}
-# Hauptkomponentenanalyse
-hka <- prcomp(irll_norm)
-summary(hka)
+# Kaiser-Maier-Olkin-Kriterium
+KMOS(irll_norm)$KMO
 ```
 
-*Soll der Output noch genauer erklärt werden?*
+Frage:
 
-**Fragen:**
+-   Hat das KMO-Kriterium etwas an Ihrer Annahme über die Eignung der Daten geändert? Begründen Sie.
 
--   Wie viel Prozent der Gesamtvarianz wird durch die zweite Hauptkomponente erklärt?
+    -   *Antwort: Die Antwort sollte beinhalten, dass die Daten für eine HKA geeignet sind, da 0.817 \> 0.5.*
 
-    -   *Antwort: ca. 17,7 % (Proportion of Variance)*
+### [Bartlett-Test]{.underline}
 
--   Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
+Ein weiterer Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. Dieser überprüft, ob sich die Korrelationsmatrix von einer Einheitsmatrix unterscheidet. Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Nullhypothese, die Korrelationsmatrix unterscheidet sich nicht von einer Einheitsmatrix, verwerfen.
 
-    -   *Antwort: ca. 84,3 % (Cumulative Variance)*
+```{r}
+# Bartlett-Test
+bart_spher(irll_norm)
+```
 
-## Bestimmung der Anzahl der Hauptkomponenten
+Frage:
 
-Wie kann man anhand der Analyseergebnisse herausfinden, wie viele Hauptkomponenten ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden?
+-   Kommt der Bartlett-Test zum selben Ergebnis? Warum?
+
+    -   *Antwort: Ja, kommt er. Die Nullhypothese kann bei jeder gängigen Irrtumswahrscheinlichkeit abgelehnt werden.*
+
+## Anzahl der Hauptkomponenten
+
+Da nun klar ist, dass sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte unserer Datenmatrix.
+
+[*Exkurs: Was sind Eigenwerte?*]{.underline} *\
+Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird also nur skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.*
 
 ### [Screeplot]{.underline}
 
 Eine Möglichkeit zur Bestimmung der optimalen Anzahl ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
 
-`Hinweis: die Varianz ist hier gleich den Eigenwerten! Der besseren Übersicht wegen, werden außerdem nur die ersten 10 Hauptkomponenten abgebildet.`
-
 ```{r}
 # Screeplot
-screeplot(hka, type="l", main = "Screeplot")
+scree(irll_norm, factors = FALSE, hline = -1)
 ```
 
 **Frage:**
@@ -157,12 +165,11 @@ Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkompon
 
 Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer sind als 1.
 
-Dazu wird im nächsten Schritt eine Linie bei y = 1 in den Plot gezeichnet. Man kann sich die Eigenwerte aber auch über den Befehl `eigen(cor_mtx)$value` ausgeben lassen.
+Dazu kann der vorherige Code so ergänzt werden, dass eine Linie bei y = 1 in den Plot gezeichnet. Man kann sich die Eigenwerte aber auch über den Befehl `eigen(cor_mtx)$value` ausgeben lassen.
 
 ```{r}
-#Einzeichnen der Gerade bei 1
-screeplot(hka, type="l", main = "Screeplot")
-abline(h=1, col="red")
+#Screeplot mit Linie bei y=1
+scree(irll_norm, factors = FALSE)
 ```
 
 **Frage:**
@@ -170,22 +177,69 @@ abline(h=1, col="red")
 -   Hat sich Ihre Meinung aufgrund des Kaiser-Dickman-Kriteriums geändert?
     -   *"Richtige" Anzahl der Hauptkomponenten: 6*
 
-*Noch ein Unterpunkt zum Kriterium der Varianz?*
+### [Varianz]{.underline}
 
-## Biplot (und Ladungen?)
+Auch der Anteil an Varianz, welcher durch die Hauptkomponenten erklärt werden kann, dient als Maßstab zur Bestimmung der optimalen Anzahl. Demnach sollte durch die Hauptkomponenten ein möglichst großer Teil der ursprünglichen Variation erklärt werden.
 
-*Ist ein Biplot mit diesem Datenbeispiel überhaupt sinnvoll?*
-
-```{r}
-#Biplot erstellen
-biplot(hka)
-```
+Dies kann mithilfe der Eigenwerte der Korrelationsmatrix abgeschätzt werden. Die einzelnen Eigenwerte werden in Relation zu der Summe aller Eigenwerte gesetzt. Zusätzlich zum Anteil der Varianz der einzelnen Hauptkomponenten an der Gesamtvarianz wird die kumulierte Varianz ausgegeben.
 
 ```{r}
-#| eval: false
-#Loadings anschauen?
-hka$rotation
+# Varianzanteil der Hauptkomponenten
+round(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values), 3)
+
+# Kumulierte Varianz der Hauptkomponenten
+round(cumsum(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values)), 3)
 ```
+
+**Fragen:**
+
+-   Wie viel Prozent der Gesamtvarianz wird durch die zweite Hauptkomponente erklärt?
+
+    -   *Antwort: ca. 17,7 % (Varianzanteil)*
+
+-   Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
+
+    -   *Antwort: ca. 84,3 % (Kumulierte Varianz)*
+
+-   Ändert das Varianz-Kriteruim etwas an der Anzahl der ausgewählten Hauptkomponenten?
+
+    -   *Antwort. Nein. 71,8% ist ausreichend viel Varianz.*
+
+## Analyse
+
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt.
+
+Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht. Die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) werden außerdem nur ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen. Zusätzlich wird weiter unten noch einmal der Anteil der Hauptkomponenten an der Gesamtvarianz, sowie die kumulierte Varianz angegeben.
+
+```{r}
+# Hauptkomponentenanalyse ohne Rotation
+hka <- principal(irll_norm, 6, rotate = "none")
+# Löschen des nicht benötigten Outputs
+hka$criteria <- NULL
+# Grenzwert, sortieren und runden
+print(hka, cut = 0.5, sort = TRUE, digits = 2)
+```
+
+Schaut man sich die Ladungen der einzelnen Variablen auf die Hauptkomponenten an, so erkennt man, dass einige Variablen auf mehrere Hauptkomponenten hoch laden. Dieser Umstand macht eine inhaltliche Interpretation der einzelnen Hauptkomponenten schwer.
+
+## Rotation
+
+Um die Hauptkomponenten inhaltlich besser interpretieren zu können, wird eine Rotation der Hauptkomponenten vorgenommen. Das Ziel der Rotation ist, dass auf jeder Hauptkomponente einige Variablen hoch und die übrigen Variablen möglichst niedrig laden. Zusätzlich sollte jede Variable nur auf einer einzelnen Hauptkomponente hoch laden, auf den übrigen niedrig.
+
+Es gibt zwei verschiedene Arten von Rotationsverfahren, orthogonale und oblique Verfahren. Orthogonale Rotationsverfahren nehmen Unabhängigkeit zwischen den extrahierten Hauptkomponenten an und produzieren einfache Modelle, die sich gut interpretieren lassen. Allerdings bilden orthogonale Verfahren durch die Annahme der Unabhängigkeit die Realität meistens nicht so gut ab, wie oblique Rotationsverfahren, welche wiederum etwas schwieriger zu interpretieren sind.
+
+Eine oft verwendete orthogonale Rotationsmethode zur besseren Interpretation der Hauptkomponenten ist die Varimax-Rotation:
+
+```{r}
+#Varimax Rotation
+hka_rotiert <- principal(irll_norm, 6, rotate = "varimax")
+# Löschen des nicht benötigten Outputs
+hka_rotiert$criteria <- NULL
+# Grenzwert, sortieren und runden
+print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
+```
+
+<!--  Bitte inhaltliche Interpretation einfügen. -->
 
 # Your Turn
 
