@@ -1,0 +1,358 @@
+---
+title: "Früherkennung"
+lang: de
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+# Zufallszahlengenerator festlegen
+set.seed(1896)
+# Vektor für \pi bereitstellen
+vpi <- seq(0,1, by = 1/1000)
+```
+
+# Einführung
+
+#### Frage
+
+Angenommen Sie gehen zu Ihrer Ärztin zu einer Routineuntersuchung. Sie haben keine Symptome.
+
+Ihnen wird ein diagnostischer Test für eine Krankheit vorgeschlagen, die 1% der Bevölkerung betrifft.^[Dies ist die *Prävalenz*.]
+
+Wenn Sie erkrankt sind, wird dies mit einer Wahrscheinlichkeit von 80% richtig erkannt.^[Dies ist die *Sensitivität*.]
+
+Wenn Sie nicht erkrankt, also gesund sind, wird dies mit einer Wahrscheinlichkeit von 90% richtig erkannt.^[Dies ist die *Spezifität*.]
+
+- Wie hoch ist die Wahrscheinlichkeit, bei einem positiven Testergebnis erkrankt zu sein?
+
+  - A: Ca. 90%
+  - B: Ca. 85%
+  - C: Ca. 80%
+  - D: Ca. 7.5%
+
+---
+
+## Satz von Bayes
+
+Ein paar Symbole:
+
+- $K^+$: Krankheit liegt vor.
+- $K^-$: Krankheit liegt nicht vor.
+- $T^+$: Test postiv. (Testergebnis: krank)
+- $T^-$: Test negativ.(Testergebnis: nicht krank)
+
+Dann liegt uns folgende Information aus der Aufgabe vor:
+
+- $Pr(K^+) = 0.01$.
+- $Pr(T^+ | K^+) = 0.8$.
+- $Pr(T^- | K^-) = 0.9$.
+
+Da $Pr(K^+) + Pr(K^-)=1$ gelten muss, wissen wir außerdem das $Pr(K^-)= 1 - 0.01 = 0.99$ gilt.
+
+Was wir suchen ist die Wahrscheinlichkeit $Pr(K^+ | T^+)$.
+
+Der weltberühmte **Satz von Bayes** lautet hier:
+
+$$Pr(K^+ | T^+)=\frac{Pr(T^+ | K^+) \cdot Pr(K^+)}{Pr(T^+)}$$
+$Pr(T^+)$ kann mit Hilfe des **Satzes von der totalen Wahrscheinlichkeit**
+
+$$Pr(T^+) = Pr(T^+ | K^+) \cdot Pr(K^+) + Pr(T^+ | K^-) \cdot Pr(K^-)$$
+
+berechnet werden...
+
+Aber häufig ist es leichter mit natürlichen Häufigkeiten zu rechnen: Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind -- und $1000-10=9990$ sind gesund.
+
+Von den $10$ Erkrankten erhalten $10 \cdot \underbrace{0.8}_{Pr(T^+|K^+)} = 8$ ein positives Testergebnis. 
+
+Von den $990$ Gesunden erhalten $990 \cdot \underbrace{0.1}_{1-Pr(T^-|K^-)} = 99$ fälschlicherweise ebenfalls ein positives Testergebnis.
+
+Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen aber nur $8$ wirklich krank sind, also 
+
+$$Pr(K^+ | T^+)=\frac{8}{8+99} \approx 0.075.$$
+
+*Tipp*: Mit der App <https://fomshinyapps.shinyapps.io/riskyrApp-DE/> können Sie verschiedene Formen der Risikokommunikation ausprobieren.
+
+#### Frage
+
+- Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten kann. Was schätzen Sie? Wie groß ist dieser -- und wie sicher sind Sie sich? Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> und notieren Sie die ausgegeben Werte für $\alpha$ und $\beta$, z.B. $\alpha=\beta=1$ wenn für Sie alle Werte für $\pi$ gleich plausibel sind:
+
+*Hinweis*: Erklärung und Auflösung folgt weiter unten.
+
+```{r prior}
+alpha_prior <- 1
+beta_prior <- 1
+```
+
+# Punktschätzung
+
+Geben wir das Ergebnis unseres Kurses ein:^[*Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese Zahlen müssen angepasst werden.]
+
+```{r evidenz}
+# Anzahl Beobachtungen:
+n <- 40
+# Anzahl Richtige:
+y <- 15
+```
+
+#### Frage
+
+- Nur mit diesen Daten, der Stichprobe: Was würden Sie tippen, wie groß ist der Anteil Richtige in der Zielpopulation? Ersetzen Sie den unten fehlenden Wert (`NA`) für `pi_tipp`:
+
+```{r tipp}
+pi_tipp <- NA
+pi_tipp
+```
+
+---
+
+Unter der Bedingung, dass für jeden unser $n$ Versuche die gleiche Erfolgswahrscheinlichket $\pi$ vorliegt, kann die Wahrscheinlichkeit für $y$ Erfolge mit Hilfe einer **Binomialverteilung** ($Y \sim Bin(n, \pi)$) berechnet werden:
+
+$$f(y) = Pr(Y=y) = \binom{n}{y} \cdot \pi^y \cdot (1-\pi)^{n-y}, \text{ für } y \in \{0,1, \ldots, n\}$$
+
+#### Frage
+
+- Angenommen die Erfolgswahrscheinlichkeit liegt bei $\pi=\frac{1}{2}$. Welche Anzahl Erfolge $y$ ist dann bei $n=`r n`$ Versuchen am wahrscheinlichsten?
+
+---
+
+```{r binomialverteilung}
+gf_dist("binom", size = n, prob = 1/2)
+```
+
+## Maximum-Likelihood
+
+Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher*  (engl.: likely) ist unser Ergebnis:
+
+```{r likelihhod}
+# Likelihood
+like <- dbinom(y, size = n, prob = vpi)
+# Zeichnen 
+gf_line(like ~ vpi) |>
+  gf_labs(x = expression(pi), 
+          y = expression(L(pi)), 
+          title = paste0("Likelihood bei n=", n, " und y=" , y))
+```
+
+Ein guter Punktschätzer für den Wert des Parameters $\pi$ in der Zielpopulation ist also der Anteilwert $p$ in unser Stichprobe:
+
+$$\hat{\pi} = p = \frac{y}{n} = \frac{`r y`}{`r n`} = `r round(y/n, 2)`.$$
+
+# Standardfehler
+
+Aber: Der Punktschätzer variiert mit der zufälligen Stichprobe: eine andere zufällige aus derselben Population hätte ein anderes Ergebnis ergeben können. Wie anders? Wie groß ist die Stichprobenvariation des Stichprobenanteils? 
+
+Simulieren wir das zufällige Ziehen einer Stichprobe aus einer Population durch zufälliges Re-Sampling der Stichprobe.
+
+`do(3)*` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein zufälliges Re-Sample - mit Zurücklegen. 
+
+*Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die mathematische Lösung (s.u.) zu bevorzugen.
+
+```{r resampling}
+# Bereitstellen Stichprobenvektor
+stichprobe <- rep(c("richtig","falsch"), times = c(y, n-y)) |>
+  as.factor()
+# 3x Re-Sample
+do(3)* prop( ~ resample(stichprobe), success = "richtig")
+```
+
+Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
+
+```{r bootstrapping}
+Bootvtlg <- do(10000) * prop( ~ resample(stichprobe), success = "richtig")
+# Obere Beobachtungen
+head(Bootvtlg)
+```
+
+Die Verteilung der Variable `prop_richtig`, d.h., des Anteils Richtig in den Re-Samples aus der Datentabelle `Bootvtlg` kann über ein Säulen diagramm dargestellt werden:
+
+```{r säulendiagramm}
+gf_bar( ~ prop_richtig, data = Bootvtlg)
+```
+
+
+# Konfidenzintervall
+
+
+Außerdem können wir unsere Schätzunsicherheit für den wahren Anteil $\pi$ durch ein Konfidenzintervall beschreiben.
+
+Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das 97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
+
+```{r konfidenzintervall1}
+ki95 <- qdata( ~ prop_richtig, data = Bootvtlg, p = c(0.025, 0.975))
+ki95
+```
+
+Eingezeichnet:
+
+```{r konfidenzintervall2}
+gf_bar( ~ prop_richtig, data = Bootvtlg) |>
+  gf_vline(xintercept = ki95)
+```
+
+#### Fragen
+
+- Stimmt die Aussage: Mit einer Wahrscheinlichkeit von 95% wird der Wert einer Beobachtung $x_i$ zwischen `r qdata( ~ prop_richtig, data = Bootvtlg, p = 0.025)` und `r qdata( ~ prop_richtig, data = Bootvtlg, p = 0.975)` liegen?
+
+- Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu bestimmen. Wird das Konfidenzintervall schmaler oder breiter?
+
+```{r konfidenzintervall-übung}
+qdata( ~ prop_richtig, data = Bootvtlg, p = c(0.025, 0.975))
+```
+
+## Mathematische Lösung
+
+Die Funktion `binom.test()` rechnet direkt über die Binomialverteilung und berechnet damit auch ein Konfidenzintervall:
+
+```{r binom.test}
+binom.test(y, n) |> 
+  confint()
+```
+
+# Bayessche Analyse
+
+Bisher haben wir ausschließlich die erhobenen Daten genutzt -- und nicht unser Vorwissen! 
+
+> One way to understand rational, scientific thinking is via “Bayesian
+> reasoning” which estimates the statistical probability of something
+> being true and then updates that probability as new evidence appears,
+> approaching the truth without achieving absolute certainty.
+
+*Quelle*: <https://bababrinkman.bandcamp.com/track/good-bayesian-feat-mc-lars-and-mega-ran>
+
+Wir können unser *Wissen* über den Parameter in der Population $\pi$ mit Hilfe des Satzes von Bayes anhand der Daten $n$ und $y$ aktualisieren!
+
+**Bayes Statistik**: Um auf Basis von Statistiken Aussagen über die Wahrscheinlichkeiten von Parametern tätigen zu können, brauchen wir zusätzlich eine *Priori* Wahrscheinlichkeit $Pr({\pi})$:
+
+$$\overbrace{Pr{(\pi} | {p})}^{\text{Posterior}} = Pr(\pi)\frac{Pr(p|\pi)}{Pr(p)}\propto \overbrace{Pr({\pi})}^{\text{Prior}} \cdot {\overbrace{Pr({p} | {\pi})}^{\text{Likelihood}}}$$
+
+- **Prior-Verteilung** $Pr({\pi})$: Wahrscheinlichkeitsverteilung von $\pi$, *bevor* wir unsere Daten haben.
+
+- **Likelihood** $Pr({p}|{\pi})$: *Mutmaßlichkeit* von $p$ bei gegebenem $\pi$.
+
+- **Posterior-Verteilung** $Pr({\pi}|{p})$: Wahrscheinlichkeitsverteilung von $\pi$ *nachdem* wir unsere Daten haben.
+
+## Beta-Binomial-Model
+
+Für diese Analyse verwenden wir das **Beta-Binomial-Model**, welches folgende Verteilungen nutzt:
+
+- **Prior-Verteilung**: Grundlage Beta-Verteilung mit Parametern: $\alpha_{prior}, \beta_{prior}$: $$\pi \sim Beta(\alpha_{prior}, \beta_{prior})$$
+
+- **Likelihood**: Grundlage Binomialverteilung mit Parametern $n$ und $\pi$: $$Y \sim Bin(n, \pi)$$
+
+- **Posterior-Verteilung**: Beta-Verteilung mit Parametern: $\alpha_{post}, \beta_{post}$:
+    $$\pi|(Y=y) \sim Beta(\alpha_{post}, \beta_{post})$$ mit $$\alpha_{post} = \alpha_{prior} + y, \quad \beta_{post} = \beta_{prior} + n - y$$
+
+Dabei gilt für die Dichtefunktion der **Betaverteilung** ($\pi \sim Beta(\alpha, \beta)$): 
+
+$$f(\pi) \propto \pi^{\alpha-1} \cdot (1-\pi)^{\beta-1}, \text{ für } \pi \in [0,1]$$
+
+Und $\alpha > 0, \beta >0$ bestimmen die Form der Verteilung. 
+
+Der Erwartungswert (*Mittelwert* der Verteilung) liegt bei $E(\pi)=\frac{\alpha}{\alpha+\beta}$, der Modus bei $Modus(\pi)=\frac{\alpha-1}{\alpha+\beta-2}, \text{ für } \alpha, \beta > 1$ und die Varianz bei $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
+
+## Prior-Verteilung
+
+Die Parameter *Ihrer* Prior Verteilung haben Sie oben festgelegt:
+$$\alpha_{prior}=`r alpha_prior`, \beta_{prior}=`r beta_prior`$$
+
+Und damit ergibt sich folgende Dichte:
+
+```{r, priorverteilung}
+# Dichte
+d_prior <- dbeta(vpi, shape1 = alpha_prior, shape2 = beta_prior)
+
+# Visualisierung
+gf_line(d_prior ~ vpi,
+         color= "#D55E00", linewidth = 1.2) |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = paste0("Beta(", alpha_prior, ", " , beta_prior, ")"))
+
+```
+
+#### Fragen
+
+- Welche Verteilungsform hat *Ihre* Prior-Verteilung?
+
+- Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen diese?
+
+## Likelihood
+
+Die Likelihood haben wir bereits in der klassisch-frequentistischen Analyse betrachtet:
+
+```{r likelihood2}
+# Likelihood
+like <- dbinom(y, n, vpi)
+
+# Visualisierung
+gf_line(like ~ vpi,
+        color= "#CC79A7", linewidth = 1.2) |>
+  gf_labs(x = expression(pi), y = expression(L(pi)), 
+          title = paste0("n = ", n, " und y = " , y))
+```
+
+## Posterior-Verteilung
+
+Wir aktualisieren jetzt unser Wissen (und unsere Unsicherheit) über $\pi$:
+
+```{r posterior}
+# Posterior
+alpha_post <- alpha_prior + y
+beta_post <- beta_prior + n - y
+
+# Dichte
+d_post <- dbeta(vpi, shape1 = alpha_post, shape2 = beta_post)
+
+# Visualisierung
+gf_line(d_post ~ vpi,
+         color= "#009E73", linewidth = 1.2) |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = paste0("Beta(", alpha_post, ", " , beta_post, ")"))
+```
+
+Wir können jetzt z.B. Modus oder Erwartungswert der Posteriorverteilung berechnen:
+
+```{r kennzahlen-posterior}
+# Erwartungswert
+mittelwert_post <- alpha_post/ (alpha_post + beta_post)
+mittelwert_post
+# Modus
+modus_post <- (alpha_post-1) / (alpha_post + beta_post-2)
+modus_post
+```
+
+Und es können die **Kredibilitätsintervall** berechnet werden:
+
+```{r kredibilität}
+# Kredibilitätsintervall
+ki <- qbeta(c(0.025, 0.975), alpha_post, beta_post)
+
+# Elemente benennen
+names(ki) <- c("2.5% Quantil", "97.5% Quantil")
+
+# ki ausgeben
+ki
+```
+
+#### Fragen
+
+*Tipp*: Zur Beantwortung der ersten beiden Fragen können Sie auch gerne wieder die App <https://fomshinyapps.shinyapps.io/BaBeBi/> nutzen!
+
+- Sind die Kennzahlen der Posterior-Verteilung unabhängig von der Prior-Verteilung?
+
+- Wo liegt der Erwartungswert der Posterior-Verteilung im Verhältnis zum Erwartungswert der Prior-Verteilung und dem entsprechenden Wert der Likelihood?
+
+- Stimmt die Aussage: Auf Grundlage der Prior-Verteilung und einer Binomial-Verteilung der beobachteten Daten kann mit einer Wahrscheinlichkeit von 95% davon ausgegangen werden, dass der Anteil $\pi$ in der Zielpopulation zwischen `{r} floor(ki[1]*100)/100` und `{r} ceiling(ki[2]*100)/100` liegt?
+
