@@ -120,18 +120,27 @@ $$H_0: \pi_0 =0.5$$
 
 ***
 
-Der Befehl `rflip()` simuliert den Münzwurf. Hier werden jetzt $10000$ Simulation der Anzahl Geimpfter unter den $170$ Fällen mit $\pi_0 =0.5$ durchgeführt:
+Der Befehl `rflip()` simuliert den Münzwurf. 
 
 ```{r}
+# Drei Simulation
+do(3) * rflip(n = 170)
+```
+
+
+Hier werden jetzt $10000$ Simulation der Anzahl Geimpfter unter den $170$ Fällen mit $\pi_0 =0.5$ durchgeführt:
+
+```{r}
+# Verteilung unter Nullypothese
 Nullvtlg <- do(10000) * rflip(n = 170)
 ```
 
-In der Variable (Spalte) `heads` der Datentabelle `Nullvtlg` steht die zufällige Anzahl Geimpfter unter den Fällen der Simulationen (Zeile) von Daten, wenn die Nullhypothese stimmen würde.
+In der Variable (Spalte) `heads` der Datentabelle `Nullvtlg` steht die zufällige Anzahl Geimpfter unter den simulierten Fällen (Zeile) von Daten, wenn die Nullhypothese stimmen würde.
 
 ```{r}
 gf_bar( ~ heads, data = Nullvtlg) |>
   gf_vline(xintercept = 8) |>
-  gf_labs(x = "Anzahl Fälle",
+  gf_labs(x = "Anzahl Geimpfter (unter 170 Fällen)",
           y = "Anzahl Simulationen")
 ```
 
