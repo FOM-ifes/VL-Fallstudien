@@ -1,0 +1,271 @@
+---
+title: "Körperfettanteil"
+lang: de
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+Der Körperfettanteil gibt an, wie viel Prozent des Körpergewichts einer Person aus Fettmasse bestehen. Er liegt in der Regel zwischen 10 und 50 Prozent.Der Körper benötigt das Fettgewebe für verschiedene nützliche Funktionen. Zu viel oder zu wenig Körperfett kann allerding gesundheitsschädlich sein[^1].
+
+[^1]: https://www.aok.de/pk/magazin/koerper-psyche/stoffwechsel/was-fuer-ein-koerperfettanteil-gesund-ist-und-wie-man-ihn-berechnet/
+
+## Wie misst man den Körperfettanteil?
+
+Um den Körperfettanteil so genau wie möglich zu bestimmen sind medizinisch aufwendige Verfahren notwendig. Kann oder will man diese Verfahren nicht durchlaufen, bedarf es, für Personen, die trotzdem ihren Körperfettanteil annähernd bestimmen wollen, einer einfachen und kostengünstigeren Methode.
+
+-   Kennen Sie eine dieser Methoden?
+    -   *Mögl. Antworten: Body-Mass-Index (BMI), Waist-Hip-Ratio, Bauchumfang...*
+
+Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
+
+-   Körperfettanteil in %
+
+-   Alter in Jahren
+
+-   Gewicht in Pfund
+
+-   Größe in Zoll
+
+-   Bauchumfang in cm
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(-pfaden) innerhalb von RStudio Projekten. Die csv Datei "film.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Datei (inkl. Pfad)
+pfad_body <- here("data", "bodyfat_prediction.csv")
+# Daten einlesen
+body_data <- read.csv2(pfad_body, sep = ";")
+# Datenstruktur der Datentabelle med_daten
+str(body_data)
+```
+
+#### Fragen
+
+-   Handelt es sich um eine Beobachtungsstudie oder um ein randomisiertes Experiment?
+
+    -   *Antwort: Beobachtungsstudie*
+
+-   Was ist hier eine Beobachtungseinheit?
+
+    -   *Antwort: Ein Mann*
+
+-   Wie viele Beobachtungen liegen vor?
+
+    -   *Antwort: 249 Beobachtungen*
+
+-   Wie viele Variablen liegen vor?
+
+    -   *Antwort: 5 Variablen*
+
+-   Welches Skalenniveau besitzen die Variablen?
+
+    -   *Antwort: metrisch*
+
+In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 50 Prozent liegt.
+
+-   Stimmt der Bereich mit den Werten unserer Stichprobe überein?
+
+`favstats()` liefert einen Überblick über die gängigen Kennzahlen einer metrischen Variable:
+
+```{r}
+favstats( ~ Körperfettanteil, data = body_data)
+```
+
+------------------------------------------------------------------------
+
+### Body-Mass-Index (BMI):
+
+Eine Methode zur indirekten Schätzung des Körperfettanteils ist der BMI (Body-Mass-Index). Der BMI wird mithilfe des Körpergewichts und der Körpergröße einer Person berechnet.
+
+$$
+BMI = \frac{Körpergewicht\ in\ kg}{(Körpergröße\ in\ m)^2}
+$$
+
+#### Umrechnung
+
+Die Daten für das Gewicht und die Größe liegen im amerikanischen Messsystem vor: *pounds* (`lbs`) und *inches* (`in`).
+
+Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechnen. Ein Pfund entspricht 0.453592 kg, ein Zoll 2.54 cm.
+
+Über `mutate()` können Variablen erzeugt oder verändert werden. So können wir die Variablen auch für unsere Datentabelle `body_data` ergänzen.
+
+```{r}
+body_data <- body_data |>
+  mutate(Gewicht_kg = Gewicht * 0.453592) |>
+  mutate(Größe_cm = Größe * 2.54)
+```
+
+#### Frage
+
+-   Was vermuten Sie über den Zusammenhang zwischen Größe und Gewicht?
+    -   *Antwort: Nimmt die Größe zu, steigt auch das Gewicht.*
+
+Erstellen Sie ein Streudiagramm, um Ihre Vermutung zu überprüfen:
+
+```{r}
+# Streudiagramm mit Glättungslinie
+gf_point(Gewicht_kg ~ Größe_cm, data = body_data) |>
+  gf_smooth()
+```
+
+### Zusammenhang Körperfettanteil und BMI
+
+Berechnen Sie mithilfe der `mutate()`-Funktion (s.o.) den BMI mit einer Nachkommastelle und speichern Sie diesen als neue Spalte (BMI) in der Datentabelle `body_data`:
+
+```{r}
+body_data <- body_data |>
+  mutate(BMI = round((Gewicht_kg / (Größe_cm / 100)^2), 1))
+```
+
+Streudiagramm (`gf_point()`) für den Zusammenhang zwischen Körperfettanteil und BMI:
+
+```{r}
+gf_point(Körperfettanteil ~ BMI, data = body_data)
+```
+
+#### Fragen
+
+-   Wofür steht ein Punkt in der Abbildung?
+
+    -   *Antwort: Für eine Beobachtungseinheit (Männer).*
+
+-   Ist der Zusammenhang zwischen `BMI` und `Körperfettanteil` linear?
+
+    -   *Antwort: Ja, der Zusammenhang zwischen BMI und Körperfettanteil ist linear.*
+
+-   Wie lässt sich dieser Zusammenhang interpretieren?
+
+    -   *Antwort: Steigt der BMI der beobachteten Teilnehmer, nimmt auch ihr Körperfettanteil zu.*
+
+------------------------------------------------------------------------
+
+Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenbeschriftungen und Titel (`gf_labs()`) hinzufügen:
+
+```{r}
+gf_point(Körperfettanteil ~ BMI, data = body_data) |>
+  gf_smooth() |>
+  gf_labs(x = "BMI", 
+          y = "Körperfettanteil in %",
+          title = "Zusammenhang Körperfettanteil und BMI")
+```
+
+### Verteilungs- und Quantilsfunktion
+
+Laut der Adipositas Gesellschaft gelten für den BMI folgende Grenzwerte[^2]:
+
+[^2]: https://adipositas-gesellschaft.de/bmi/
+
+| BMI ($kg/m^2$) | Gewichtsklassifikation |
+|----------------|------------------------|
+| ≤ 18,4         | Untergewicht           |
+| 18,5 -- 24,9   | Normalgewicht          |
+| 25 -- 29,9     | Übergewicht            |
+| 30 -- 34,9     | Adipositas Grad I      |
+| 35 -- 39,9     | Adipositas Grad II     |
+| ≥ 40           | Adipositas Grad III    |
+
+Mit Hilfe von `pdata()` kann für beliebige Werte des BMI's `q` der Wert der empirischen Verteilungsfunktion $F_n$ ermittelt werden, d.h. hier, der Anteil der Männer, deren BMI z.B. kleiner oder gleich `q = 24.9` $kg/m^2$ ist.
+
+```{r}
+pdata( ~ BMI, q = 24.9, data = body_data)
+```
+
+#### Frage
+
+-   Wie kann das Ergebnis inhaltlich interpretiert werden?
+    -   *Antwort: Der Anteil der Teilnehmer, die nicht übergewichtig oder adipös sind, beträgt ca. 49.8%*.
+
+Ändern Sie den Code jeweils so, dass Sie die Fragen beantworten können.
+
+-   Wie hoch ist der Anteil der Männer, die laut BMI untergewichtig sind (BMI kleiner gleich 18.4 $kg/m^2$)?
+
+```{r}
+pdata( ~ BMI, q = 18.4, data = body_data)
+```
+
+-   Wie hoch ist der Anteil der Männer mit Normalgewicht (BMI zwischen 18.5 und 24.9 $kg/m^2$)?
+
+```{r}
+pdata( ~ BMI, q = 24.9, data = body_data) - pdata( ~ BMI, q = 18.5, data = body_data)
+```
+
+-   Wie hoch ist der Anteil der Männer mit Adipositas (BMI größer als 29.9 $kg/m^2$)?
+
+```{r}
+1 - pdata( ~ BMI, q = 29.9, data = body_data)
+```
+
+------------------------------------------------------------------------
+
+Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein[^3].
+
+[^3]: https://iris.who.int/bitstream/handle/10665/37003/WHO_TRS_854.pdf;%20jsessionid=56CD01367D58BF71F68E62627A1904CD?sequence=1
+
+`Hinweis: Medizinische Normal- und Grenzwerte bezüglich des Körperfettanteils hängen auch vom Alter und Körperbau ab. Zur besseren Verständlichkeit und Übersicht, wurde hier eine allg. Empfehlung gewählt.`
+
+```{r}
+# Umkodieren der Varbiable
+body_data <- body_data |>
+  mutate(Übergewicht = case_when(Körperfettanteil <= 25 ~ "nicht übergewichitg",
+                          Körperfettanteil > 25 ~ "übergewichtig"))
+
+# Boxplot
+gf_boxplot(BMI ~ Übergewicht, data = body_data) + 
+  geom_hline(yintercept=25, color = "red")
+
+# Kennzahlen
+favstats(BMI ~ Übergewicht, data = body_data)
+```
+
+#### Fragen:
+
+-   Was kennzeichnet die schwarze Linie in der Box der beiden Boxplots?
+    -   *Antwort: den Median*
+-   Was bedeutet der schwarze Punkt oberhalb des rechten Boxplots?
+    -   *Antwort: einen Ausreißer in der erklärten Variable*
+-   Stimmen die Einteilungen in nicht übergewichtig/übergewicht der beiden Methoden überein?
+    -   *Antwort: Nein, da der BMI Teilnehmer als übergewichtig klassifiziert, die anhand des Körperfettanteils nicht übergewichtig sind und anders herum.*
+-   Woran könnte das liegen?
+    -   *Antwort: Die Diskrepanz könnte an der Berechnung des BMI's liegen, da dieser nicht zwischen Muskel- und Fettmasse unterscheidet.*
+
+## Your Turn
+
+Auch der Bauchumfang weißt auf gesundheitsschädliches Fett hin.
+
+-   Wie sieht der Zusammenhang zwischen Körperfettanteil und Bauchumfang aus?
+
+```{r}
+
+```
+
+Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94 cm und mehr das Risiko für übergewichtsbedingte Krankheiten erhöht[^4].
+
+[^4]: https://www.bzfe.de/ernaehrung/ernaehrungswissen/gesundheit/bauchumfang-entscheidend-fuer-das-gesundheitliche-risiko/
+
+-   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestüften Teilnehmern?
+
+```{r}
+
+```
+
+-   Gibt es Männer in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
+
+```{r}
+
+```
