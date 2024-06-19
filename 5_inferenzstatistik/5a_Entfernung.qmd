@@ -2,7 +2,7 @@
 title: "Entfernung zum Studienzentrum"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
@@ -24,13 +24,13 @@ set.seed(1896) # Zufallszahlengenerator festlegen
 
 # Entfernung zum Studienzentrum
 
-Zu Beginn des Sommersemesters 2022 wurden in 5 Kursen Studierende der FOM in einem freiwilligen, anonymen Online-Fragebogen nach Ihrem Fahrtweg zum Studienzentrum gefragt.
+Zu Beginn des Sommersemesters 2022 wurden in fünf Kursen Studierende an zwei Standorten der FOM in einem freiwilligen, anonymen Online-Fragebogen nach Ihrem Fahrtweg zum Studienzentrum gefragt.
 
 Die genaue Frage lautet:
 
 > Wie weit (gerundet auf ganze km) ist Ihr üblicher Fahrtweg zum Studienzentrum?
 
-Die Antworten darauf liegen in der Datei `results-survey592526.csv` vor.
+Eine zufällige Stichprobe der Antworten darauf liegt in der Datei `results-survey592526.csv` vor.
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "results-survey592526.csv" befindet sich im Projektordner "data". -->
 
@@ -92,7 +92,7 @@ Betrachten wir besonders den arithmetischen Mittelwert:
 mw_Umfrage <- mean( ~ Entfernung, data = Umfrage)
 ```
 
-$$\bar{x}=`r round(mw_Umfrage, 2)`$$
+$$\bar{y}=`r round(mw_Umfrage, 2)`$$
 
 #### Fragen
 
@@ -102,7 +102,9 @@ $$\bar{x}=`r round(mw_Umfrage, 2)`$$
 
 - Wird für den Mittelwert der Zielpopulation gelten $\mu = `r round(mw_Umfrage, 2)`$?
 
-- Wird bei einer erneuten Stichprobe aus derselben Zielpopulation das Ergebnis wieder  $\bar{x}=`r round(mw_Umfrage, 2)`$ lauten?
+- Welchen Wert würden Sie als **Punktschätzer** $\hat{\mu}$ verwenden?
+
+- Wird bei einer erneuten Stichprobe aus derselben Zielpopulation das Ergebnis wieder  $\bar{y}=`r round(mw_Umfrage, 2)`$ lauten?
 
 ## Re-Sampling
 
