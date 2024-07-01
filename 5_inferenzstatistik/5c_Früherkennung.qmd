@@ -67,19 +67,19 @@ Was wir suchen ist die Wahrscheinlichkeit $Pr(K^+ \mid T^+)$.
 Der weltberühmte **Satz von Bayes**^[Gutes Erklärvideo: <https://youtu.be/HZGCoVF3YvM>.] lautet hier:
 
 $$Pr(K^+ \mid T^+)=\frac{Pr(T^+ \mid K^+) \cdot Pr(K^+)}{Pr(T^+)}$$
-$Pr(T^+)$ kann mit Hilfe des **Satzes von der totalen Wahrscheinlichkeit**
+$Pr(T^+)$ kann mit Hilfe des **Satzes der totalen Wahrscheinlichkeit**
 
 $$Pr(T^+) = Pr(T^+ \mid K^+) \cdot Pr(K^+) + Pr(T^+ \mid K^-) \cdot Pr(K^-)$$
 
 berechnet werden...
 
-Aber häufig ist es leichter mit natürlichen Häufigkeiten zu rechnen: Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind -- und $1000-10=9990$ sind gesund.
+Aber oft ist es leichter, mit natürlichen Häufigkeiten zu rechnen: Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind -- und $1000-10=9990$ sind gesund.
 
 Von den $10$ Erkrankten erhalten $10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives Testergebnis. 
 
 Von den $990$ Gesunden erhalten $990 \cdot \underbrace{0.1}_{1-Pr(T^-\mid K^-)} = 99$ fälschlicherweise ebenfalls ein positives Testergebnis.
 
-Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen aber nur $8$ wirklich krank sind, also 
+Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen aber nur $8$ korrekt sind, also 
 
 $$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
 
@@ -87,7 +87,7 @@ $$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
 
 #### Frage
 
-- Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten kann. Was schätzen Sie? Wie groß ist dieser -- und wie sicher sind Sie sich? Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> und notieren Sie die ausgegeben Werte für $\alpha$ und $\beta$, z.B. $\alpha=\beta=1$ wenn für Sie alle Werte für $\pi$ gleich plausibel sind:
+- Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten kann. Was schätzen Sie? Wie groß ist dieser -- und wie sicher sind Sie sich? Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> und notieren Sie die ausgegeben Werte für $\alpha$ und $\beta$. Wenn für Sie z. B. alle Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
 
 *Hinweis*: Erklärung und Auflösung folgen weiter unten.
 
