@@ -1,0 +1,492 @@
+---
+title: "Preismodellierung Immobilien"
+lang: de
+author: "Ihr Name"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+# Mietpreise in Düsseldorf
+
+Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? Dieser Fragestellung sind die Autoren *Dominic Hernes, Frank Lehrbass und Kevin Maucy (2021)* in ihrer Studie *Big Data basierte Analyse des Einflusses traditioneller und neuartiger Faktoren auf Mietpreise in Düsseldorf (*<https://forschung.fom.de/fileadmin/fom/forschung/ifes/pdf/FOM-ifes_Bd25_Mietpreise.pdf>*)* nachgegangen. Aus dieser Studie liegt uns ein zufälliger Sub-Datensatz mit 500 Beobachtungen vor. Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
+
+-   totalrent: Mietpreis der Wohnung in Euro
+
+-   livingspace: Größe der Wohnung in Quadratmeter
+
+-   balcony: Wohnung hat einen Balkon ja/nein
+
+-   yearconstructed: Baujahr der Wohnung in Jahreszahl
+
+-   haskitchen: Wohnung hat eine Einbauküche ja/nein
+
+-   floor: Stockwerk der Wohnung
+
+-   interiorqual: Qualität der Innenausstattung
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Datei (inkl. Pfad)
+pfad_immo <- here("data", "Immo-Datensatz.csv")
+# Daten einlesen
+immo <- read.csv2(pfad_immo)
+# Um die Daten später besser analysieren zu können, werden die dichotomen Variablen als Faktoren kodiert.
+immo$haskitchen <- as.factor(immo$haskitchen)
+immo$balcony <- as.factor(immo$balcony)
+# Datenstruktur
+str(immo)
+# Obere 6 Beobachtungen
+head(immo)
+```
+
+#### Fragen
+
+-   Was ist eine Beobachtungseinheit der Datentabelle?
+
+    -   *Antwort: Eine Wohnung*
+
+-   Welche metrischen Variablen liegen in der Datentabelle vor?
+
+    -   *Antwort: totalrent, livingspace, yearconstructed*
+
+------------------------------------------------------------------------
+
+## Preismodellierung durch Quadratmeter
+
+### Lineares Modell
+
+Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Größe der Wohnfläche, gemessen durch die Quadratmeterzahl (`livingspace`), und dem Mietpreis (`totalrent`). Dann wird mathematisch folgendes Modell für die Stichprobe angenommen:
+
+$$y_i = b_0 + b_1 \cdot x_i + e_i$$
+
+#### Fragen
+
+-   Wofür steht das $i$?
+
+    -   *Antwort: Das i steht für eine Beobachtung.*
+
+-   Was ist $b_0$?
+
+    -   *Antwort: Der y-Achsenabschnitt (Intercept).*
+
+-   Welche Variable (`livingspace`, `totalrent`) ist die abhängige Variable $y$?
+
+    -   *Antwort: totalrent ist die abhängige Variable.*
+
+### Lineares Modell der Stichprobe
+
+Visuell:
+
+```{r}
+gf_point(totalrent ~ livingspace, data = immo) |>
+  gf_lm()
+```
+
+Anhand des *Kleinste-Quadrate-Kriteriums* für diese Daten ergeben sich über die Funktion `lm()` folgende Werte:
+
+```{r}
+erg <- lm(totalrent ~ livingspace, data = immo)
+# Geschätze Koeffizenten (coef()) auf 2 Nachkommastellen runden (round()).
+b <- coef(erg) |> round(2)
+b
+```
+
+Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: $$\hat{y}_i = `r b[1]` + `r b[2]` \cdot x_i$$
+
+#### Fragen
+
+-   Welchen modellierten Wert hat eine Wohnung mit $x_0=100$ Quadratmetern?
+
+    -   *Antwort: -5.38 + 14.69 \* 100 = 1463.62*
+
+-   Gilt immer $\hat{y}_0 = y_0$?
+
+    -   *Antwort: Nein, die Gleichung gilt nie, da wir Epsilon nicht modellieren können.* $\hat{y}_0$ *ist aber die beste Schätzung von* $y_0$, *die wir machen können.*
+
+-   Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Quadratmeter mehr zur Wohnfläche hinzukommt?
+
+    -   *Antwort: Der Preis steigt durchschnittlich um 14.69 Euro.*
+
+### Bestimmtheitsmaß
+
+Wie gut die gefundene Gerade die vorliegenden Daten beschreibt, kann mit Hilfe des Bestimmtheitsmaßes $R^2$ bestimmt werden:
+
+$$R^2 = \frac{\sum_{i=1}^n (\hat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_i-\bar{y})^2} = 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}$$
+
+```{r}
+r2 <- rsquared(erg) |> round(2)
+r2
+```
+
+$$R^2 = `r r2`$$
+
+#### Frage
+
+-   Interpretieren Sie $R^2 = `r r2`$.
+    -   *Antwort: 77% der Gesamtvarianz werden durch das Modell erklärt.*
+
+### Schätzunsicherheit
+
+In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
+
+Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
+
+$$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
+
+```{r}
+# betadach
+betadach <- b
+```
+
+**Bootstrap:**
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# Streudiagramm inkl. Regressionsgerade auf einem zufälligen Re-Sample (resample())
+gf_point(totalrent ~ livingspace, data = resample(immo)) |>
+  gf_lm()
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# geschätztes Modell auf drei zufälligen Re-Samples (resample())
+do(3) * lm(totalrent ~ livingspace, data = resample(immo))
+```
+
+#### Frage
+
+-   Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+    -   *Antwort: Nein, die Werte der Schätzer variieren.*
+
+------------------------------------------------------------------------
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# 1000x Re-Samplen
+Bootvtlg <- do(1000) * lm(totalrent ~ livingspace, data = resample(immo))
+# Obere Beobachtungen
+head(Bootvtlg)
+# Visualisierung Verteilung 
+# Farbpaket laden
+library(ggsci)
+gf_histogram( ~ livingspace, data = Bootvtlg,
+              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+  # geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = betadach[2], color = "blue")
+```
+
+#### Fragen
+
+-   Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
+
+    -   *Antwort: Nein, Bootstrap-Samples haben die gleiche Anzahl an Beobachtungen wie der ursprüngliche Datensatz.*
+
+-   Welche Verteilung zeigt das Histogramm?
+
+    -   *Antwort: Eine (annähernde) Normalverteilung.*
+
+-   Werden durch das Bootstrapping die Beobachtungen normalverteilt?
+
+    -   *Antwort: Nein, die Beobachtungen werden nicht normalverteilt. Die Regressionsergebnisse für* $\hat{\beta}_1$ *folgen einer Normalverteilung.*
+
+------------------------------------------------------------------------
+
+**Standardfehler**:
+
+```{r}
+se <- sd( ~ livingspace, data = Bootvtlg) |> round(4)
+se
+```
+
+#### Fragen
+
+-   Welche Standardabweichung liegt bei `r se`: Die der Wohnfläche oder die der geschätzten Steigung?
+
+    -   *Antwort: Die Standardabweichung der geschätzten Steigung.*
+
+-   Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
+
+    -   *Antwort: Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.*
+
+-   Wann würde der Standardfehler kleiner werden, d.h., die Präszision der Schätzung steigen?
+
+    -   *Antwort: Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.*
+
+------------------------------------------------------------------------
+
+**Konfidenzintervall**:
+
+```{r}
+ki95 <- qdata( ~ livingspace, p = c(0.025, 0.975), data = Bootvtlg)
+ki95
+```
+
+D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r ki95[1]` und `r ki95[2]`.
+
+#### Frage
+
+-   Ist eine Steigung von $0$ kompatibel zu der Stichprobe?
+    -   *Antwort: Nein, da die 0 außerhalb der Grenzen des KIs liegt.*
+
+```{r}
+# Visualisierung Verteilung 
+gf_histogram( ~ livingspace, data = Bootvtlg,
+              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+  # Konfidenzintervall
+  gf_vline(xintercept = ki95, color = "blue") |> 
+  # Steigung = 0
+  gf_vline(xintercept = 0, color = "red") 
+
+```
+
+------------------------------------------------------------------------
+
+Visualisierung Schätzunsicherheit:
+
+```{r}
+gf_point(totalrent ~ livingspace, data = immo) |>
+  gf_lm(interval = "confidence")
+```
+
+Visualisierung Prognoseunsicherheit:
+
+```{r}
+gf_point(totalrent ~ livingspace, data = immo) |>
+  gf_lm(interval = "prediction")
+```
+
+### Hypothesenprüfung
+
+#### Frage
+
+-   Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
+    -   *Antwort:* $\beta_1$ *und* $\hat{\beta}_1$ *nehmen den Wert 0 an.*
+
+------------------------------------------------------------------------
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# Streudiagramm inkl. Regressionsgerade bei permutierten (shuffle()) x
+gf_point(totalrent ~ shuffle(livingspace), data = immo) |>
+  gf_lm()
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# geschätztes Modell bei Permutationen
+do(3) * lm(totalrent ~ shuffle(livingspace), data = immo)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# 1000x Simulation unter Nullhypothese
+Nullvtlg <- do(1000) * lm(totalrent ~ shuffle(livingspace), data = immo)
+# Obere Beobachtungen
+head(Nullvtlg)
+# Visualisierung Verteilung 
+gf_histogram( ~ livingspace, data = Nullvtlg,
+              bins = 20, center = 0) |> # Anpassung Histogramm 
+  gf_vline(xintercept = betadach[2], color = "blue") |> # geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = 0, color = "red") # Steigung = 0
+```
+
+#### Frage
+
+-   Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
+    -   *Antwort: Nein.*
+
+------------------------------------------------------------------------
+
+**p-Wert**:
+
+p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese, in denen der (Betrag) der Steigung mindestens so groß ist wie, der Betrag der Steigung in der Stichprobe
+
+```{r}
+pwert <- prop( ~ (abs(livingspace) >= abs(betadach[2])), data = Nullvtlg)
+pwert
+```
+
+#### Frage
+
+-   Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
+    -   *Antwort: Nein, der p-Wert beschreibt die Wahrschinlichkeit - unter der Bedingung, dass die Nullhypothese gilt -, dass das gemessene Ergebnis der Stichtprobe zustande kommt.*
+
+------------------------------------------------------------------------
+
+### Ergebniszusammenfassung
+
+```{r}
+summary(erg)
+```
+
+## Preismodellierung ohne erklärende Variable
+
+Betrachten wir jetzt wieder die gesamte Stichprobe (`immo`):
+
+```{r}
+# Visualisierung über Histogramm
+gf_histogram( ~ totalrent, data = immo, binwidth = 10, center = 5)
+
+# Arithmetischer Mittelwert
+mean(totalrent ~ 1, data = immo)
+
+# Lineare Modellierung
+erg0 <- lm(totalrent ~ 1, data = immo)
+# Koeffizienten
+coef(erg0)
+```
+
+Also
+
+$$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(totalrent~ 1, data = immo),2)`$$
+
+#### Frage
+
+-   Wie groß ist hier $R^2$?
+    -   *Antwort: Null, da die Varianz in diesem Modell nicht erklärt wird.*
+
+## Preismodellierung mit kategorialer erklärender Variable
+
+Die Variable `balcony`ist dichotom-nominal skaliert, kann aber zur Modellierung herangezogen werden:
+
+```{r}
+# Visualisierung über verwackeltes Streudiagram
+gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
+
+# Arithmetische Mittelwerte
+mean(totalrent ~ balcony, data = immo)
+
+# Lineare Modellierung
+erg1 <- lm(totalrent ~ balcony, data = immo)
+# Koeffizienten
+coef(erg1)
+```
+
+#### Fragen
+
+-   Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
+
+    -   *Antwort: Bei Wohnungen mit Balkon (balcony== 1).*
+
+-   Wie groß ist der durchschnittliche Preisunterschied zwischen `Balkon` und `kein Balkon`?
+
+    -   *Antwort: ca. 345 Euro.*
+
+## Preismodellierung mit mehr als einer erklärenden Variable
+
+```{r}
+# Farbpalette laden
+library(ggsci)
+# Lineare Modellierung
+erg2 <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + floor + interiorqual, data = immo)
+# Koeffizienten
+summary(erg2)
+```
+
+#### Fragen
+
+-   Welche Variablen sind in dem Modell nicht signifikant?
+
+    -   *Antwort: Die Variablen floor und balcony.*
+
+-   Wird eine Wohnung durchschnittlich teurer oder günstiger mit steigendem Alter?
+
+    -   *Antwort: Günstiger. Mit jedem Jahr das eine Wohnung jünger ist, steigt der Mietpreis im Durchschnitt um 2.7 Euro.*
+
+### F-Test
+
+Was wäre, wenn alle Regressionskoeffizienten dieses Modells gleich Null wären und insgesamt keinen Einfluss auf die abhängige Variable hätten? Dann würde folgende Nullhypothese gelten:
+
+$$H_0 : \beta_1 = \beta_2 = ... = \beta_p = 0$$
+
+Alternativ kann diese Nullhypothese auch durch $H_0 : R^2 = 0$ formuliert werden.
+
+Dieses Nullmodell kann durch Mischen der y-Werte erzeugt werden:
+
+```{r}
+Nullvtlg <- do(1000) * lm(shuffle(totalrent) ~ livingspace + haskitchen, data = immo)
+```
+
+Um das Nullmodell zu testen wird der F-Test herangezogen, welcher die modellierte Variation ins Verhältnis zur nicht-modellierten Variation setzt und dabei die Anzahl der Parameter $(p : \beta_1, \beta_2, \dots, \beta_p)$ und die Anzahl der Beobachtungen $(n)$ berücksichtigt:
+
+$$F = \frac{R^2}{1 - R^2} \frac{n -p}{k}$$
+
+```{r}
+# F-Verteilung für Nullmodell
+gf_histogram( ~ F, data = Nullvtlg)
+```
+
+Für das Nullmodell erhalten wir F-Werte zwischen 0 bis 7. Im Modell der Stichprobe beträgt der F-Wert `r round(summary(erg2)$fstatistic[1],2)`. In keiner der 1000 Simulationen unter Annahme der Nullhypothese $H_0 : \beta_1 = \beta_2 = ... = \beta_p = 0$ kam der F-Wert von `r round(summary(erg2)$fstatistic[1],2)` vor. Die Nullhypothese wird daher abgelehnt.
+
+Ein anderer Weg die Nullhypothese zu testen, ist der Vergleich des p-Wertes mit einem vorher festgelegten Signifikanzniveau $\alpha$. Die Nullhypothese kann dann abgelehnt werden, wenn $p < \alpha$ gilt.
+
+#### Fragen
+
+-   Wie lautet die Alternativhypothese zur getesteten Nullhypothese?
+
+    -   *Antwort:* $H_1: mindestens\ ein\ \beta \neq 0$
+
+-   Schauen Sie sich die R-Ausgabe der Preismodellierung mit mehr als einer erklärenden Variable an. Wo in der Ausgabe kann man den p-Wert des F-Tests finden? Gegeben sei ein Signifikanzniveau von $\alpha = 5%$, kann die Nullhypothese auf Basis des p-Wertes abgelehnt werden?
+
+    -   *Antwort: Den p-Wert findet man in der Ausgabe in der letzten Zeile unter p-value. Die Nullypothese, dass alle Koeffizienten gleich 0 sind, kann zu einem Signifikanzniveau von 5% abgelehnt werden, da p = 2.2e-16 kleiner ist als 5%.*
+
+## Preismodellierung mit Wechselwirkung (Interaktion)
+
+Über `x1:x2` kann eine Interaktion zwischen zwei Variablen in ein Modell integriert werden. Eine Interaktion liegt dann vor, wenn sich der Effekt einer unabhängigen Variable in Abhängigkeit von den Ausprägungen einer anderen unabhängigen Variable ändert.
+
+Betrachtet wird zunächst ein Modell ohne Interaktionen:
+
+```{r}
+# Lineare Modellierung
+erg3 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
+# Visualisierung Ergebnis
+plotModel(erg3) + scale_color_npg()
+```
+
+#### Fragen
+
+-   Welches *Problem* dieses Modells sehen Sie?
+    -   *Antwort: Die blaue Gerde müsste etwas steiler sein.*
+-   Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace`und `haskitchen` ins Modell integrieren.
+
+```{r}
+# Lineare Modellierung
+erg4 <- lm(totalrent ~ livingspace + haskitchen + livingspace : haskitchen, data = immo) #Alternativ: livingspace * haskitchen
+# Visualisierung Ergebnis
+plotModel(erg4) + scale_color_npg()
+# Koeffizienten
+coef(erg4)
+```
+
+-   Bei welcher Ausprägung ist die Steigung größer?
+    -   *Antwort: Bei haskitchen ==1 ist die Steigung etwas größer.*
+
+### Ergebniszusammenfassung
+
+```{r}
+summary(erg4)
+```
+
+#### Frage
+
+-   Wie würden Sie das Ergebnis interpretieren?
