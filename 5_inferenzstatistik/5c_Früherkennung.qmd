@@ -172,7 +172,7 @@ Simulieren wir das zufällige Ziehen einer Stichprobe aus einer Population durch
 
 `do(3)*` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein zufälliges Re-Sample - mit Zurücklegen. 
 
-*Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die mathematische Lösung (s.u.) zu bevorzugen.
+*Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die mathematische Lösung (s. u.) zu bevorzugen.
 
 ```{r}
 #| label: Re-Sampling
@@ -194,7 +194,7 @@ Bootvtlg <- do(10000) * prop( ~ resample(stichprobe), success = "richtig")
 head(Bootvtlg)
 ```
 
-Die Verteilung der Variable `prop_richtig`, d.h., des Anteils Richtig in den Re-Samples aus der Datentabelle `Bootvtlg` kann über ein Säulen diagramm dargestellt werden:
+Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig in den Re-Samples aus der Datentabelle `Bootvtlg` kann über ein Säulendiagramm dargestellt werden:
 
 ```{r}
 #| label: Säulendiagramm
@@ -308,9 +308,11 @@ Dabei gilt für die Dichtefunktion der **Betaverteilung** ($\pi \sim Beta(\alpha
 
 $$f(\pi) \propto \pi^{\alpha-1} \cdot (1-\pi)^{\beta-1}, \text{ für } \pi \in [0,1]$$
 
-Und $\alpha > 0, \beta >0$ bestimmen die Form der Verteilung. 
+Und $\alpha > 0, \beta >0$ bestimmen die Form der Verteilung. Desweiteren ergeben sich:
 
-Der Erwartungswert (*Mittelwert* der Verteilung) liegt bei $E(\pi)=\frac{\alpha}{\alpha+\beta}$, der Modus bei $Modus(\pi)=\frac{\alpha-1}{\alpha+\beta-2}, \text{ für } \alpha, \beta > 1$ und die Varianz bei $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
+-   Erwartungswert (*Mittelwert* der Verteilung): $E(\pi)=\frac{\alpha}{\alpha+\beta}$, 
+-   Modus (Modalwert): $Modus(\pi)=\frac{\alpha-1}{\alpha+\beta-2}, \text{ für } \alpha, \beta > 1$ und
+-   Varianz: $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
 
 ## Prior-Verteilung
 
@@ -376,7 +378,7 @@ gf_line(d_post ~ vpi,
           title = paste0("Beta(", alpha_post, ", " , beta_post, ")"))
 ```
 
-Wir können jetzt z.B. Modus oder Erwartungswert der Posteriorverteilung berechnen:
+Wir können jetzt z. B. Modus oder Erwartungswert der Posteriorverteilung berechnen:
 
 ```{r}
 #| label: Posterior-Kennzahlen
@@ -389,7 +391,7 @@ modus_post <- (alpha_post-1) / (alpha_post + beta_post-2)
 modus_post
 ```
 
-Und es können die **Kredibilitätsintervall** berechnet werden:
+Und es kann das **Kredibilitätsintervall** berechnet werden:
 
 ```{r}
 #| label: Kredibilitätsintervall
