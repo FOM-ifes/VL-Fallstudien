@@ -28,7 +28,7 @@ pacman::p_load(here)
 
 Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. Das Ziel dieser Hauptkomponenten ist, Datensätze übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
 
-Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als ganz normale Variablen für weitere statistische Tests verwendet werden.
+Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als  "normale" Variablen für weitere statistische Tests verwendet werden.
 
 # Projekt IRLL (International Readiness in Lifelong Learning)
 
@@ -55,7 +55,7 @@ str(irll)
 
 -   Wie wurden die Variablen erhoben? Welches Skalenniveau besitzen die Variablen?
 
-    -   *Antwort: Die Variablen wurden mit einer 5-Punkt-Likert Skala erhoben. Das Skalenniveau der Variablen ist quasimetrisch.*
+    -   *Antwort: Die Variablen wurden mit einer 5-Punkt-Likert Skala erhoben. Das Skalenniveau der Variablen ist quasi-metrisch.*
 
 -   Welche Variablen würden sich für eine Hauptkomponentenanalyse anbieten?
 
@@ -63,7 +63,7 @@ str(irll)
 
 ## Daten standardisieren
 
-Die Hauptkomponentenanalyse ist sehr sensitiv bezüglich unterschiedlicher Varianzverhältnisse. Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von z-standardisierten Variablen durchgeführt.
+Die Hauptkomponentenanalyse ist sensitiv bezüglich unterschiedlicher Varianzen. Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von z-standardisierten Variablen durchgeführt.
 
 ```{r}
 # Standardisierung
@@ -95,9 +95,9 @@ corrplot(cor_mtx)
 
     -   *Antwort: In diesem Fall schon, da die Daten standardisiert wurden und cor(X)==cov(X).*
 
--   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der leicht rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
+-   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
-    -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist hoch positiv.*
+    -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.*
     -   *Antwort (rot): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.*
     -   *Inhaltliche Interpretation?*
 
@@ -109,9 +109,9 @@ corrplot(cor_mtx)
 
 -   Denken Sie, dass sich die Daten für eine Hauptkomponentenanalyse eignen?
 
-### [KMO-Kriterium]{.underline}
+### KMO-Kriterium
 
-Zusätzlich zur Betrachtung des Korrelationsplot gibt es Test, welche die Eignung der Daten für eine HKA überprüfen. Einer dieser Tests ist das Kaiser-Meyer-Olkin-Kriterium (Kaiser und Rice, 1974), welches aus den partiellen Korrelationen zwischen Variablenpaaren, also der Korrelationen jeder Variable mit jeder anderen Variablen, berechnet wird. Die möglichen Ergebnisse des KMO-Kriteriums variieren zwischen 0 und 1. Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 0.5 nicht unterschreiten.
+Zusätzlich zur Betrachtung des Korrelationsplot gibt es Tests, welche die Eignung der Daten für eine HKA überprüfen. Einer dieser Tests ist das Kaiser-Meyer-Olkin-Kriterium (Kaiser und Rice, 1974), welches aus den partiellen Korrelationen zwischen Variablenpaaren, also der Korrelationen jeder Variable mit jeder anderen Variablen, berechnet wird. Die möglichen Ergebnisse des KMO-Kriteriums variieren zwischen 0 und 1. Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 0.5 nicht unterschreiten.
 
 ```{r}
 # Kaiser-Maier-Olkin-Kriterium
@@ -124,7 +124,7 @@ Frage:
 
     -   *Antwort: Die Antwort sollte beinhalten, dass die Daten für eine HKA geeignet sind, da 0.817 \> 0.5.*
 
-### [Bartlett-Test]{.underline}
+### Bartlett-Test
 
 Ein weiterer Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. Dieser überprüft, ob sich die Korrelationsmatrix von einer Einheitsmatrix unterscheidet. Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Nullhypothese, die Korrelationsmatrix unterscheidet sich nicht von einer Einheitsmatrix, verwerfen.
 
@@ -141,18 +141,17 @@ Frage:
 
 ## Anzahl der Hauptkomponenten
 
-Da nun klar ist, dass sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte unserer Datenmatrix.
+Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte^[Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.] unserer Datenmatrix.
 
-[*Exkurs: Was sind Eigenwerte?*]{.underline} *\
-Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird also nur skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.*
 
-### [Screeplot]{.underline}
 
-Eine Möglichkeit zur Bestimmung der optimalen Anzahl ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
+### Screeplot
+
+Eine Möglichkeit zur Bestimmung der optimalen Anzahl der Hauptkomponenten ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
 
 ```{r}
 # Screeplot
-scree(irll_norm, factors = FALSE, hline = -1)
+scree(irll_norm, factors = FALSE)
 ```
 
 **Frage:**
@@ -161,23 +160,16 @@ scree(irll_norm, factors = FALSE, hline = -1)
 
 Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer einfach zu lesen. In solchen Fällen kann man auf andere Methoden und Faustregeln zurückgreifen.
 
-### [Eigenwert über 1 (Kaiser-Dickman-Kriterium)]{.underline}
+### Eigenwert über 1 (Kaiser-Dickman-Kriterium)
 
-Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer sind als 1.
-
-Dazu kann der vorherige Code so ergänzt werden, dass eine Linie bei y = 1 in den Plot gezeichnet. Man kann sich die Eigenwerte aber auch über den Befehl `eigen(cor_mtx)$value` ausgeben lassen.
-
-```{r}
-#Screeplot mit Linie bei y=1
-scree(irll_norm, factors = FALSE)
-```
+Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer als 1 ist.
 
 **Frage:**
 
 -   Hat sich Ihre Meinung aufgrund des Kaiser-Dickman-Kriteriums geändert?
     -   *"Richtige" Anzahl der Hauptkomponenten: 6*
 
-### [Varianz]{.underline}
+### Varianz
 
 Auch der Anteil an Varianz, welcher durch die Hauptkomponenten erklärt werden kann, dient als Maßstab zur Bestimmung der optimalen Anzahl. Demnach sollte durch die Hauptkomponenten ein möglichst großer Teil der ursprünglichen Variation erklärt werden.
 
@@ -207,9 +199,7 @@ round(cumsum(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values)), 3)
 
 ## Analyse
 
-Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt.
-
-Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht. Die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) werden außerdem nur ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen. Zusätzlich wird weiter unten noch einmal der Anteil der Hauptkomponenten an der Gesamtvarianz, sowie die kumulierte Varianz angegeben.
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.^[Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.]
 
 ```{r}
 # Hauptkomponentenanalyse ohne Rotation
@@ -220,11 +210,11 @@ hka$criteria <- NULL
 print(hka, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-Schaut man sich die Ladungen der einzelnen Variablen auf die Hauptkomponenten an, so erkennt man, dass einige Variablen auf mehrere Hauptkomponenten hoch laden. Dieser Umstand macht eine inhaltliche Interpretation der einzelnen Hauptkomponenten schwer.
+Schaut man sich die Ladungen der einzelnen Variablen auf die Hauptkomponenten an, so erkennt man, dass einige Variablen auf mehrere Hauptkomponenten hoch laden. Dieser Umstand erschwert eine inhaltliche Interpretation der einzelnen Hauptkomponenten.
 
 ## Rotation
 
-Um die Hauptkomponenten inhaltlich besser interpretieren zu können, wird eine Rotation der Hauptkomponenten vorgenommen. Das Ziel der Rotation ist, dass auf jeder Hauptkomponente einige Variablen hoch und die übrigen Variablen möglichst niedrig laden. Zusätzlich sollte jede Variable nur auf einer einzelnen Hauptkomponente hoch laden, auf den übrigen niedrig.
+Um die Hauptkomponenten inhaltlich besser interpretieren zu können, wird eine Rotation der Hauptkomponenten vorgenommen. Das Ziel der Rotation ist, dass auf jeder Hauptkomponente einige Variablen hoch und die übrigen Variablen möglichst niedrig laden. Zusätzlich sollte jede Variable nur auf eine einzelne Hauptkomponente hoch laden, auf die übrigen niedrig.
 
 Es gibt zwei verschiedene Arten von Rotationsverfahren, orthogonale und oblique Verfahren. Orthogonale Rotationsverfahren nehmen Unabhängigkeit zwischen den extrahierten Hauptkomponenten an und produzieren einfache Modelle, die sich gut interpretieren lassen. Allerdings bilden orthogonale Verfahren durch die Annahme der Unabhängigkeit die Realität meistens nicht so gut ab, wie oblique Rotationsverfahren, welche wiederum etwas schwieriger zu interpretieren sind.
 
@@ -239,7 +229,7 @@ hka_rotiert$criteria <- NULL
 print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-<!--  Bitte inhaltliche Interpretation einfügen. -->
+**Bitte inhaltliche Interpretation einfügen.**
 
 # Your Turn
 
