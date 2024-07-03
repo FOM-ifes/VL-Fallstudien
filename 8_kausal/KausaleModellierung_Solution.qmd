@@ -34,15 +34,15 @@ library(gridExtra)    # Anordnung mehrerer ggplot2-Objekte
 ## Warum brauchen wir die kausale Modellierung?
 
 Kausale Modellierung hilft, den datengenerierenden Prozess nachvollziehen zu können.
-So können idealerweise kausale Wirkungen auch auch Beobachtungsstudien abgeleitet werden.
-Unabhängig davon hilft die kausale Modellierung aber, Verzerrungen (*Bias*) zu vermeiden, z.B. durch fehlende Variablen oder nicht-zufällige Stichproben.
+So können idealerweise kausale Wirkungen auch aus Beobachtungsstudien abgeleitet werden.
+Unabhängig davon hilft die kausale Modellierung aber, Verzerrungen (*Bias*) zu vermeiden, z. B. durch fehlende Variablen oder nicht-zufällige Stichproben.
 
 Der hier gewählte Ansatz zur kausalen Modellierung nutzt sogenannte Directed Acyclic Graphs (DAGs).
 In diesen werden qualitative, kausale Modellannahmen dargestellt.^[siehe Pearl (2009)]
 
 Cunningham^[siehe Cunningham (2021), S. 98] gibt dazu eine praxisorientierte Definition: 
 Ein DAG ist eine theoretische Darstellung der Forschungsfrage, die auf dem aktuellen Wissensstand zu einer Fragestellung beruht. 
-Mögliche Quellen sind daher u. a. theoretische Konzepte, aktuelle Beiträge in der wissenschaftlichen Literatur, eigene Beobachtungen und Erfahrungen sowie Diskussionen mit Experten.
+Mögliche Quellen sind daher u. a. theoretische Konzepte, aktuelle Beiträge in der wissenschaftlichen Literatur, eigene Beobachtungen und Erfahrungen sowie Diskussionen mit Expert:innen.
 
 
 ## Grundelelemente der DAGs
@@ -75,7 +75,7 @@ Variable | Bedeutung
 `(n)bonitaet` | Ergebnis der Kreditwürdigkeitsprüfung: A (7) -- höchste Bonität, G (1) -- niedrigste Bonität
 `alter` | Alter in Jahren
 `wohnen` | Wohnstatus: Eigentum, Grundschuld, Miete, Sonstige
-`arbeit` | Dauer des Anstellungsverhältnisses in Jahren^[Hinweis: Hier gibt es einige unplausible Werte, z.B. im Alter von 23 schon über 60 Jahre im Anstellungsverhältnis.]
+`arbeit` | Dauer des Anstellungsverhältnisses in Jahren^[Hinweis: Hier gibt es einige unplausible Werte, z. B. im Alter von 23 schon über 60 Jahre im Anstellungsverhältnis.]
 `einkommen` | jährliches Einkommen in 1000 USD
 
 
@@ -86,15 +86,15 @@ Variable | Bedeutung
 # Einlesen des Datensatzes
 KRED <- read.csv2(here("data", "Kreditstatus.csv"))
 # Kategoriale Variablen in Faktoren umwandeln
-KRED |> mutate(
+KRED <- KRED |> mutate(
   ausfall = factor(ausfall, levels = c("nein", "ja")),
   bonitaet = as.factor(bonitaet),
   wohnen = as.factor(wohnen)
-) -> KRED
+)
 # Ergänzen einer diskret numerischen Variable
-KRED |> mutate(nbonitaet = as.integer(bonitaet)) -> KRED
+KRED <- KRED |> mutate(nbonitaet = as.integer(bonitaet))
 # Reihenfolge der Stufen umkehren
-KRED |> mutate(nbonitaet = max(nbonitaet) + 1 - nbonitaet) -> KRED
+KRED <- KRED |> mutate(nbonitaet = max(nbonitaet) + 1 - nbonitaet)
 # erste Beobachtungen zeigen
 head(KRED)
 ```
@@ -223,7 +223,7 @@ Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet
 
 ### Your turn: Modell `ausfall ~ nbonitaet` 
 
-- Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und welche Hintertüren.
+- Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und Hintertüren.
 
   - Vordertüren (Pfeile zeigen in die richtige Richtung)  
     `bonitaet` $\rightarrow$ `ausfall`  

@@ -86,15 +86,15 @@ Variable | Bedeutung
 # Einlesen des Datensatzes
 KRED <- read.csv2(here("data", "Kreditstatus.csv"))
 # Kategoriale Variablen in Faktoren umwandeln
-KRED |> mutate(
+KRED <- KRED |> mutate(
   ausfall = factor(ausfall, levels = c("nein", "ja")),
   bonitaet = as.factor(bonitaet),
   wohnen = as.factor(wohnen)
-) -> KRED
+)
 # Ergänzen einer diskret numerischen Variable
-KRED |> mutate(nbonitaet = as.integer(bonitaet)) -> KRED
+KRED <- KRED |> mutate(nbonitaet = as.integer(bonitaet))
 # Reihenfolge der Stufen umkehren
-KRED |> mutate(nbonitaet = max(nbonitaet) + 1 - nbonitaet) -> KRED
+KRED <- KRED |> mutate(nbonitaet = max(nbonitaet) + 1 - nbonitaet)
 # erste Beobachtungen zeigen
 head(KRED)
 ```
@@ -169,7 +169,7 @@ Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet
 
 ### Your turn: Modell `ausfall ~ nbonitaet` 
 
-- Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und welche Hintertüren.
+- Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und Hintertüren.
 - Bestimmen Sie das Modell, das den totalen kausalen Effekt von `nbonitaet` auf `ausfall` wiedergibt.
 - Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`. *Hinweis*: Da `ausfall` eine binäre kategoriale Variable ist, wird hier die logistische Regression genutzt.
 - Welche Variablen dürfen Sie interpretieren?
