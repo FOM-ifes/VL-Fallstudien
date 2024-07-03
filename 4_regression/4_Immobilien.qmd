@@ -23,17 +23,17 @@ library(here)
 
 # Mietpreise in Düsseldorf
 
-Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? Dieser Fragestellung sind die Autoren *Dominic Hernes, Frank Lehrbass und Kevin Maucy (2021)* in ihrer Studie *Big Data basierte Analyse des Einflusses traditioneller und neuartiger Faktoren auf Mietpreise in Düsseldorf (*<https://forschung.fom.de/fileadmin/fom/forschung/ifes/pdf/FOM-ifes_Bd25_Mietpreise.pdf>*)* nachgegangen. Aus dieser Studie liegt uns ein zufälliger Sub-Datensatz mit 500 Beobachtungen vor. Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
+Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? Dieser Fragestellung sind die Autoren *Dominic Hernes, Frank Lehrbass und Kevin Maucy (2021)* in ihrer Studie *Big Data basierte Analyse des Einflusses traditioneller und neuartiger Faktoren auf Mietpreise in Düsseldorf (*<https://forschung.fom.de/fileadmin/fom/forschung/ifes/pdf/FOM-ifes_Bd25_Mietpreise.pdf>*)* nachgegangen. Aus dieser Studie liegt uns ein zufälliger Teil-Datensatz mit 500 Beobachtungen vor. Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
 
 -   totalrent: Mietpreis der Wohnung in Euro
 
 -   livingspace: Größe der Wohnung in Quadratmeter
 
--   balcony: Wohnung hat einen Balkon ja/nein
+-   balcony: Wohnung hat einen Balkon (ja/nein)
 
--   yearconstructed: Baujahr der Wohnung in Jahreszahl
+-   yearconstructed: Baujahr der Wohnung (Jahreszahl)
 
--   haskitchen: Wohnung hat eine Einbauküche ja/nein
+-   haskitchen: Wohnung hat eine Einbauküche (ja/nein)
 
 -   floor: Stockwerk der Wohnung
 
@@ -46,9 +46,6 @@ Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? Dieser F
 pfad_immo <- here("data", "Immo-Datensatz.csv")
 # Daten einlesen
 immo <- read.csv2(pfad_immo)
-# Um die Daten später besser analysieren zu können, werden die dichotomen Variablen als Faktoren kodiert.
-immo$haskitchen <- as.factor(immo$haskitchen)
-immo$balcony <- as.factor(immo$balcony)
 # Datenstruktur
 str(immo)
 # Obere 6 Beobachtungen
@@ -64,6 +61,19 @@ head(immo)
 -   Welche metrischen Variablen liegen in der Datentabelle vor?
 
     -   *Antwort: totalrent, livingspace, yearconstructed*
+
+Daher ist es sinnvoll, die kategorialen Variablen entsprechend umzuwandeln:
+
+```{r}
+# Kategoriale Variablen umwandeln
+immo <- immo |> mutate(
+  balcony = factor(balcony, levels=c(0, 1), labels = c("nein", "ja")),
+  haskitchen = factor(haskitchen, levels=c(0, 1), labels = c("nein", "ja")),
+  interiorqual = as.factor(interiorqual)
+)
+# Obere 6 Beobachtungen 
+head(immo)
+```
 
 ------------------------------------------------------------------------
 
@@ -226,7 +236,7 @@ se
 
     -   *Antwort: Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.*
 
--   Wann würde der Standardfehler kleiner werden, d.h., die Präszision der Schätzung steigen?
+-   Wann würde der Standardfehler kleiner werden, d. h., die Präszision der Schätzung steigen?
 
     -   *Antwort: Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.*
 
@@ -239,7 +249,7 @@ ki95 <- qdata( ~ livingspace, p = c(0.025, 0.975), data = Bootvtlg)
 ki95
 ```
 
-D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r ki95[1]` und `r ki95[2]`.
+D. h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r ki95[1]` und `r ki95[2]`.
 
 #### Frage
 
@@ -278,7 +288,7 @@ gf_point(totalrent ~ livingspace, data = immo) |>
 #### Frage
 
 -   Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
-    -   *Antwort:* $\beta_1$ *und* $\hat{\beta}_1$ *nehmen den Wert 0 an.*
+    -   *Antwort:* $\beta_1$ *nimmt den Wert Null an. Aufgrund von zufälligem Rauschen kann in der Stichprobe aber durchaus* $\hat{\beta}_1 \neq 0$ *vorkommen.*
 
 ------------------------------------------------------------------------
 
@@ -319,7 +329,7 @@ gf_histogram( ~ livingspace, data = Nullvtlg,
 
 **p-Wert**:
 
-p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese, in denen der (Betrag) der Steigung mindestens so groß ist wie, der Betrag der Steigung in der Stichprobe
+p-Wert: Anteil der simulierten Stichproben gemäß dem Modell der Nullhypothese, in denen der Betrag der Steigung mindestens so groß ist wie der Betrag der Steigung in der Stichprobe.
 
 ```{r}
 pwert <- prop( ~ (abs(livingspace) >= abs(betadach[2])), data = Nullvtlg)
@@ -329,7 +339,7 @@ pwert
 #### Frage
 
 -   Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
-    -   *Antwort: Nein, der p-Wert beschreibt die Wahrschinlichkeit - unter der Bedingung, dass die Nullhypothese gilt -, dass das gemessene Ergebnis der Stichtprobe zustande kommt.*
+    -   *Antwort: Nein! Der p-Wert sagt nur, wie wahrscheinlich das Ergebnis der Stichprobe (\|`r b[2]`\|) wäre, wenn die Nullhypothese (*$H_0 : \beta_1 = 0$) gelten würde. Er sagt nicht wie wahrscheinlich die Nullhypothese ist.
 
 ------------------------------------------------------------------------
 
@@ -341,11 +351,13 @@ summary(erg)
 
 ## Preismodellierung ohne erklärende Variable
 
-Betrachten wir jetzt wieder die gesamte Stichprobe (`immo`):
+Schauen wir uns einmal die Verteilung der Mietpreise an:
 
 ```{r}
 # Visualisierung über Histogramm
-gf_histogram( ~ totalrent, data = immo, binwidth = 10, center = 5)
+gf_histogram( ~ totalrent, data = immo, binwidth = 200, center = 100)
+
+favstats(~ totalrent, data = immo)
 
 # Arithmetischer Mittelwert
 mean(totalrent ~ 1, data = immo)
@@ -367,10 +379,10 @@ $$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(totalrent~ 1, data = immo)
 
 ## Preismodellierung mit kategorialer erklärender Variable
 
-Die Variable `balcony`ist dichotom-nominal skaliert, kann aber zur Modellierung herangezogen werden:
+Die Variable `balcony`ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
 
 ```{r}
-# Visualisierung über verwackeltes Streudiagram
+# Visualisierung über "verwackeltes" Streudiagram
 gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
 
 # Arithmetische Mittelwerte
@@ -386,7 +398,7 @@ coef(erg1)
 
 -   Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
 
-    -   *Antwort: Bei Wohnungen mit Balkon (balcony== 1).*
+    -   *Antwort: Bei Wohnungen mit Balkon (balcony== "ja").*
 
 -   Wie groß ist der durchschnittliche Preisunterschied zwischen `Balkon` und `kein Balkon`?
 
@@ -398,22 +410,33 @@ coef(erg1)
 # Farbpalette laden
 library(ggsci)
 # Lineare Modellierung
-erg2 <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + floor + interiorqual, data = immo)
-# Koeffizienten
+erg2 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
+# Visualisierung des Ergebnisses
+plotModel(erg2)
+# Zusammenfassung
 summary(erg2)
 ```
 
 #### Fragen
 
--   Welche Variablen sind in dem Modell nicht signifikant?
+-   Wie lautet die Regressionsgerade?
 
-    -   *Antwort: Die Variablen floor und balcony.*
+    -   *Antwort:*\
+        $$\widehat{totalrent} =  `r round(coef(erg2)[1],2)` + `r round(coef(erg2)[2],2)` \cdot livingspace + \begin{cases}
+         `r round(coef(erg2)[3],2)` \cdot 1 & \, : \textrm{haskitchenja} \\
+          0 & \, : \textrm{sonst}
+         \end{cases}$$
 
--   Wird eine Wohnung durchschnittlich teurer oder günstiger mit steigendem Alter?
+-   Interpretieren Sie die Regressionskoeffizienten.
 
-    -   *Antwort: Günstiger. Mit jedem Jahr das eine Wohnung jünger ist, steigt der Mietpreis im Durchschnitt um 2.7 Euro.*
+    -   *Antwort: Im Modell der Stichprobe steigt im Durchschnitt der Mietpreis um `r round(coef(erg2)[2],2)` Euro je Quadratmeter. Mit einem p-Wert von $`r summary(erg2)$coefficients["livingspace", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[2],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{livingspace} = 0$) sehr klein. Die Nullhypothese wird verworfen. \
+    Im Modell der Stichprobe steigt im Durchschnitt der Mietpreis um `r round(coef(erg2)[3],2)` Euro, wenn eine Einbaucküche vorhanden ist. Mit einem p-Wert von $`r summary(erg2)$coefficients["haskitchenja", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[3],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{haskitchen} = 0$) sehr klein. Die Nullhypothese wird verworfen.* 
 
-### F-Test
+-   Interpretieren Sie das $R^2$.
+
+    -   *Antwort: 79% der Gesamtvarianz werden durch dieses Modell erklärt.*
+
+### F-Statistik - modellierte vs. nicht-modellierte Variation
 
 Was wäre, wenn alle Regressionskoeffizienten dieses Modells gleich Null wären und insgesamt keinen Einfluss auf die abhängige Variable hätten? Dann würde folgende Nullhypothese gelten:
 
@@ -449,6 +472,33 @@ Ein anderer Weg die Nullhypothese zu testen, ist der Vergleich des p-Wertes mit 
 -   Schauen Sie sich die R-Ausgabe der Preismodellierung mit mehr als einer erklärenden Variable an. Wo in der Ausgabe kann man den p-Wert des F-Tests finden? Gegeben sei ein Signifikanzniveau von $\alpha = 5%$, kann die Nullhypothese auf Basis des p-Wertes abgelehnt werden?
 
     -   *Antwort: Den p-Wert findet man in der Ausgabe in der letzten Zeile unter p-value. Die Nullypothese, dass alle Koeffizienten gleich 0 sind, kann zu einem Signifikanzniveau von 5% abgelehnt werden, da p = 2.2e-16 kleiner ist als 5%.*
+    
+```{r}
+# Bootstrapping multiples Regressionsmodell
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# 1000x Re-Samplen
+Bootvtlg <- do(1000) * lm(totalrent ~ livingspace + haskitchen, data = resample(immo))
+# Konfidenzintervalle
+confint(Bootvtlg)
+```
+    
+#### Frage
+-   Ist eine Steigung von Null für `hastkitchen` kompatibel zum Ergebnis der Stichprobe?
+
+  -   *Antwort: Nein. Die Null liegt nicht im  95%-Bootstrap-Konfidenzintervall [111.61; 207.13]. Eine Steigung von Null scheint mit den beobachteten Daten nicht kompatibel zu sein. Die Nullhypothese wird verworfen.*
+
+#### Your turn
+
+Führen Sie eine lineare Regression des Mietpreises auf alle in der Datentabelle vorhandenen Variablen durch und interpretieren Sie das Ergebnis.
+
+```{r}
+# Lineare Modellierung:
+# ergUeb <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + floor + interiorqual, data = immo)
+# Zusammenfassung
+# summary(ergUeb)
+```
+
 
 ## Preismodellierung mit Wechselwirkung (Interaktion)
 
@@ -458,7 +508,7 @@ Betrachtet wird zunächst ein Modell ohne Interaktionen:
 
 ```{r}
 # Lineare Modellierung
-erg3 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
+erg3 <- lm(totalrent ~ livingspace + balcony, data = immo)
 # Visualisierung Ergebnis
 plotModel(erg3) + scale_color_npg()
 ```
@@ -466,20 +516,22 @@ plotModel(erg3) + scale_color_npg()
 #### Fragen
 
 -   Welches *Problem* dieses Modells sehen Sie?
-    -   *Antwort: Die blaue Gerde müsste etwas steiler sein.*
--   Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace`und `haskitchen` ins Modell integrieren.
+    -   *Antwort: Beide Geraden fallen quasi aufeinander. Die Punktewolken unterscheiden sich in Ihrer Form allerdings.*
+-   Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace`und `balcony` ins Modell integrieren.
 
 ```{r}
 # Lineare Modellierung
-erg4 <- lm(totalrent ~ livingspace + haskitchen + livingspace : haskitchen, data = immo) #Alternativ: livingspace * haskitchen
+erg4 <- lm(totalrent ~ livingspace + balcony + livingspace:balcony, data = immo) #Alternativ: livingspace * balcony
 # Visualisierung Ergebnis
 plotModel(erg4) + scale_color_npg()
 # Koeffizienten
 coef(erg4)
+# Zusammenfassung
+summary(erg4)
 ```
 
 -   Bei welcher Ausprägung ist die Steigung größer?
-    -   *Antwort: Bei haskitchen ==1 ist die Steigung etwas größer.*
+    -   *Antwort: Bei balcony == "ja" ist die Steigung etwas größer.*
 
 ### Ergebniszusammenfassung
 
@@ -489,4 +541,4 @@ summary(erg4)
 
 #### Frage
 
--   Wie würden Sie das Ergebnis interpretieren?
+-   Interpretieren Sie das Ergebnis.
