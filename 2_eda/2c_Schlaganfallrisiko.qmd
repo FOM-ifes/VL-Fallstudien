@@ -110,7 +110,7 @@ gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = "
 
 #### Fragen
 
--   In welcher Gruppe gibt es mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe mit Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe mit Teilnehmer:innen ohne Schlaganfall?
+-   In welcher Gruppe gibt es mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
 
     -   *Antwort: In der Gruppe mit Teilnehmer:innen, ohne Schlaganfall.*
 
