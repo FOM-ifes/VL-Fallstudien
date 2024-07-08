@@ -2,7 +2,7 @@
 title: "Was guckst Du?"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
@@ -25,7 +25,7 @@ library(here)
 
 Welche Filmgenres interessieren Studierende? 
 
-Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unter FOM Studierenden in ausgewählten Fächern und Standorten vor.^[Hinweis: Aus Datenschutzgründen wurden die Daten verrauscht.]
+Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unter FOM-Studierenden in ausgewählten Fächern und Standorten vor.^[Hinweis: Aus Datenschutzgründen wurden die Daten verrauscht.]
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "film.csv" befindet sich im Projektordner "data". -->
 
@@ -44,7 +44,7 @@ head(film)
 
 - Handelt es sich um eine zufällige Stichprobe der Bevölkerung der Bundesrepublik Deutschland?
 
-- Handelt es sich um eine zufällige Stichprobe von FOM Studierenden?
+- Handelt es sich um eine zufällige Stichprobe von FOM-Studierenden?
 
 - Liegt ein randomisiertes Experiment vor?
 
@@ -123,7 +123,7 @@ prop(E_Komoedie ~ E_Horror, data = film, success = "Ja")
 
 ```
 
-## Drama
+## Drama und Action
 
 ```{r}
 # Absolute Häufigkeiten

@@ -21,7 +21,6 @@ format:
 library(mosaic)
 # Paket googlesheets4 aktivieren
 library(googlesheets4)
-gs4_deauth()
 ```
 
 # Eine Lüge. Erkannt?
@@ -43,6 +42,8 @@ Die Daten vieler Versuche davon sind in einer Google-Tabelle^[[https://docs.goog
 Diese lesen wir in `R` ein (Befehl `read_sheet()` mit dem Funktionsargument der Tabellen ID) und weisen sie `EineLuege` zu.
 
 ```{r}
+# Einlesen ohne Login ermöglichen
+gs4_deauth()
 EineLuege <- read_sheet("1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4")
 ```
 
