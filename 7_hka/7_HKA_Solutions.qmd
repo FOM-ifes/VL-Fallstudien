@@ -29,7 +29,7 @@ library(here)
 
 Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. Das Ziel dieser Hauptkomponenten ist, Datensätze übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
 
-Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als "normale" Variablen für weitere statistische Tests verwendet werden.
+Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als  "normale" Variablen für weitere statistische Tests verwendet werden.
 
 # Projekt IRLL (International Readiness in Lifelong Learning)
 
@@ -52,9 +52,15 @@ str(irll)
 
 -   Was ist eine Beobachtungseinheit im Datensatz?
 
+    -   *Antwort: Eine befragte Person.*
+
 -   Wie wurden die Variablen erhoben? Welches Skalenniveau besitzen die Variablen?
 
+    -   *Antwort: Die Variablen wurden mit einer 5-Punkt-Likert Skala erhoben. Das Skalenniveau der Variablen ist quasi-metrisch.*
+
 -   Welche Variablen würden sich für eine Hauptkomponentenanalyse anbieten?
+
+    -   *Antwort: Alle Variablen des Datensatzes (zumindest in meiner Version des Datensatzes) können mithilfe der HKA zusammengefasst werden.*
 
 ## Daten standardisieren
 
@@ -68,6 +74,7 @@ irll_norm <- as.data.frame(scale(irll))
 **Frage:**
 
 -   Warum löst die Standardisierung das Problem der Varianz-Sensitivität der HKA?
+    -   *Antwort: Da die standardisierten Variablen alle eine Varianz von 1 haben.*
 
 ## Eignung der Daten
 
@@ -87,11 +94,17 @@ corrplot(cor_mtx)
 
 -   Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Warum?
 
+    -   *Antwort: In diesem Fall schon, da die Daten standardisiert wurden und cor(X)==cov(X).*
+
 -   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
+    -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.*
+    -   *Antwort (rot): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.*
     -   *Inhaltliche Interpretation?*
 
 -   Warum sind manche Flächen im Korrelationsplot weiß und was bedeutet das?
+
+    -   *Antwort: Eine Korrelation von 0 bedeutet, dass die beiden Variablen linear nicht voneinander abhängen.*
 
 -   Welche Gruppen von Variablen, die sich ähnlich sind, können Sie entdecken?
 
@@ -110,6 +123,8 @@ Frage:
 
 -   Hat das KMO-Kriterium etwas an Ihrer Annahme über die Eignung der Daten geändert? Begründen Sie.
 
+    -   *Antwort: Die Antwort sollte beinhalten, dass die Daten für eine HKA geeignet sind, da 0.817 \> 0.5.*
+
 ### Bartlett-Test
 
 Ein weiterer Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. Dieser überprüft, ob sich die Korrelationsmatrix von einer Einheitsmatrix unterscheidet. Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Nullhypothese, die Korrelationsmatrix unterscheidet sich nicht von einer Einheitsmatrix, verwerfen.
@@ -123,11 +138,13 @@ Frage:
 
 -   Kommt der Bartlett-Test zum selben Ergebnis? Warum?
 
+    -   *Antwort: Ja, kommt er. Die Nullhypothese kann bei jeder gängigen Irrtumswahrscheinlichkeit abgelehnt werden.*
+
 ## Anzahl der Hauptkomponenten
 
-Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte[^1] unserer Datenmatrix.
+Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte^[Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.] unserer Datenmatrix.
 
-[^1]: Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.
+
 
 ### Screeplot
 
@@ -151,6 +168,7 @@ Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten 
 **Frage:**
 
 -   Hat sich Ihre Meinung aufgrund des Kaiser-Dickman-Kriteriums geändert?
+    -   *"Richtige" Anzahl der Hauptkomponenten: 6*
 
 ### Varianz
 
@@ -170,15 +188,19 @@ round(cumsum(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values)), 3)
 
 -   Wie viel Prozent der Gesamtvarianz wird durch die zweite Hauptkomponente erklärt?
 
+    -   *Antwort: ca. 17,7 % (Varianzanteil)*
+
 -   Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
+
+    -   *Antwort: ca. 84,3 % (Kumulierte Varianz)*
 
 -   Ändert das Varianz-Kriteruim etwas an der Anzahl der ausgewählten Hauptkomponenten?
 
+    -   *Antwort. Nein. 71,8% ist ausreichend viel Varianz.*
+
 ## Analyse
 
-Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.[^2]
-
-[^2]: Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.^[Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.]
 
 ```{r}
 # Hauptkomponentenanalyse ohne Rotation
