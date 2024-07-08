@@ -145,7 +145,7 @@ In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgende
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
 
-Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
+Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden (sogenannte *Punktschätzer*):
 
 $$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
 
@@ -170,7 +170,15 @@ do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 
 #### Frage
 
-- Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+- Ergeben sich bei zufälligen Re-Samples dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+
+**Zur Erinnerung: Messung**
+
+Statistik = Parameter + Bias + Rauschen
+
+#### Frage
+
+- Welcher Teil der Gleichung wird durch das Bootstrapping simuliert?
 
 ***
 
@@ -185,7 +193,8 @@ head(Bootvtlg)
 # Farbpaket laden
 library(ggsci)
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+              # Anpassung Histogramm 
+              bins = 20, center = betadach[2]) |> 
   # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = betadach[2], color = "blue")
 ```
@@ -194,7 +203,7 @@ gf_histogram( ~ Pieces, data = Bootvtlg,
 
 - Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
 
-- Welche Verteilung zeigt das Histogramm?
+- Welche Verteilungsform zeigt das Histogramm?
 
 - Werden durch das Bootstrapping die Beobachtungen normalverteilt?
 
@@ -233,7 +242,8 @@ D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r
 ```{r}
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+              # Anpassung Histogramm 
+              bins = 20, center = betadach[2]) |> 
   # Konfidenzintervall
   gf_vline(xintercept = ki95, color = "blue") |> 
   # Steigung = 0
@@ -303,7 +313,7 @@ gf_histogram( ~ Pieces, data = Nullvtlg,
 
 **p-Wert**:
 
-p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese, in denen der (Betrag) der Steigung mindestens so groß ist wie, der Betrag der Steigung in der Stichprobe
+p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese, in denen der (Betrag) der Steigung mindestens so groß ist wie der Betrag der Steigung in der Stichprobe
 
 ```{r}
 pwert <- prop( ~ (abs(Pieces) >= abs(betadach[2])), data = Nullvtlg)
