@@ -2,7 +2,7 @@
 title: "Energie sparen (!)"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
@@ -114,7 +114,7 @@ gf_point(l100km ~ kmh, data = TEDB) |>
   gf_labs(x = "Geschwindigkeit in km/h", 
           y = "Verbrauch in l/100km",
           title = "Verbrauch je Geschwindkeit", 
-          subtitle ="Quelle: Transportation Energy Data Book, Edition 39, Tablle 4.34")
+          subtitle ="Quelle: Transportation Energy Data Book, Edition 39, Tabelle 4.34")
 ```
 
 Über `gf_lims()` können die Achsenskalierungen angepasst werden, z.B. die y-Achse so, dass diese bei 0 anfängt und bei 10 aufhört.
