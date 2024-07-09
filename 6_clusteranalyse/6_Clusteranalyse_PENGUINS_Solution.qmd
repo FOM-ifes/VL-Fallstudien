@@ -34,7 +34,7 @@ Dieser Fallstudie liegen zwei Fragestellungen zugrunde:
 
 > (2) Fallen die Unterschiede deutlich genug aus, um erkennen zu können, dass es sich um drei verschiedene Pinguinarten handelt?
 
-Dafür wird in dieser Fallstudie die Clusteranalyse vorgestellt. Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Schwertlilienarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
+Dafür wird in dieser Fallstudie die Clusteranalyse vorgestellt. Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Pinguinarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
 
 # Datenverständnis
 
@@ -59,17 +59,17 @@ tally( ~ species, data = penguins)
 
 #### Fragen
 
-- Vergleichen Sie `bill_length_mm` mit `bill_depth_mm`. Welche Merkmalsvariable ist länger?
+-   Vergleichen Sie `bill_length_mm` mit `bill_depth_mm`. Welche Merkmalsvariable ist länger?
 
-  - *Antwort: Da sich die `bill_length_mm` auf die Länge des Schnabels und die `bill_depth_mm` auf dessen Höhe beziehen, weisen die Ausprägungen der Merkmalsvariable `bill_length_mm` eine größere Länge in mm auf.*
+    -   *Antwort: Da sich die `bill_length_mm` auf die Länge des Schnabels und die `bill_depth_mm` auf dessen Höhe beziehen, weisen die Ausprägungen der Merkmalsvariable `bill_length_mm` eine größere Länge in mm auf.*
 
-- Wie viele Fälle der verschiedenen Pinguinarten liegen jeweils vor?
+-   Wie viele Fälle der verschiedenen Pinguinarten liegen jeweils vor?
 
-  - *Antwort: 146 von Adelie, 68 von Chinstrap und 119 von Gentoo.*
+    -   *Antwort: 146 von Adelie, 68 von Chinstrap und 119 von Gentoo.*
 
 ## Univariate Statistik, ausdifferenziert nach Pinguinarten
 
-Mit dem Befehl `df_stats(...)` lassen sich die Ausprägungen der Merkmalsvariablen selbstverständlich auch nach den verschiedenen Pinguinarten ausdifferenzieren Dies ermöglicht einen systematischen Vergleich der Ausprägungen der Merkmalsvariablen zwischen den verschiedenen Pinguinarten:
+Mit dem Befehl `df_stats(...)` lassen sich die Ausprägungen der Merkmalsvariablen selbstverständlich auch nach den verschiedenen Pinguinarten ausdifferenzieren. Dies ermöglicht einen systematischen Vergleich der Ausprägungen der Merkmalsvariablen zwischen den verschiedenen Pinguinarten:
 
 ```{r, warning = FALSE}
 df_stats(bill_length_mm + bill_depth_mm + flipper_length_mm
@@ -78,22 +78,23 @@ df_stats(bill_length_mm + bill_depth_mm + flipper_length_mm
 
 #### Fragen
 
-- Welche Pinguinart hat die längsten Flügel (`flipper_length_mm`)?
+-   Welche Pinguinart hat die längsten Flügel (`flipper_length_mm`)?
 
-  - *Antwort: Bei Gentoo fallen alle statistischen Parameter (min, median, mean und max) größer aus.* 
+    -   *Antwort: Bei Gentoo fallen alle statistischen Parameter (min, median, mean und max) größer aus.*
 
-- Welche Pinguinart weist die kürzeste `bill_depth_mm` auf?
+-   Welche Pinguinart weist die kürzeste `bill_depth_mm` auf?
 
-  - *Antwort: Hier fallen ebenfalls bei Gentoo alle statistischen Parameter am kleinsten aus.*
+    -   *Antwort: Hier fallen ebenfalls bei Gentoo alle statistischen Parameter am kleinsten aus.*
 
 ## Bivariate Statistik des PENGUINS Datensatzes
 
-Die Unterschiede zwischen den verschiedenen Pinguinarten lassen sich auch mittels Scatterplot grafisch darstellen In einem Scatterplot werden jeweils zwei der Merkmalsvariablen auf der Y-Achse und der X-Achse abgetragen. Dies ermöglicht der Befehl `gf_point(...)` inklusive farblicher Unterscheidung zwischen den verschiedenen Pinguinarten:
+Die Unterschiede zwischen den verschiedenen Pinguinarten lassen sich auch mittels Scatterplot grafisch darstellen. In einem Scatterplot werden jeweils zwei der Merkmalsvariablen auf der Y-Achse und der X-Achse abgetragen. Dies ermöglicht der Befehl `gf_point(...)` inklusive farblicher Unterscheidung zwischen den verschiedenen Pinguinarten:
 
 ```{r}
 # Scatterplot zur Visualisierung der Unterschiede
 gf_point(flipper_length_mm ~ body_mass_g, color = ~ species, data = penguins)
 ```
+
 Es ist deutlich zu erkennen, dass sich die Pinguinart Gentoo in der rechten oberen Ecke zu konzentrieren und somit von den anderen beiden Pinguinarten zu unterscheiden scheint. Diese Erkenntnis in Verbindung mit den konkreten Werten aus der univariaten Statistik ermöglichen eine detaillierte Beschreibung der Pinguinart Gentoo.
 
 ## Detaillierte Beschreibung der Pinguinarten
@@ -108,23 +109,24 @@ erste_pinguinart <-
   filter(penguins, flipper_length_mm >= "203" & body_mass_g >= "3950")
 tally( ~ species, data = erste_pinguinart)
 ```
-Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Pinguinart Gentoo diese über den Befehl `tally(...)` vollständig (hier: 119 von 119) aufgerufen werden, wobei fälschlicherweise auch andere Pinguinarten mit aufgerufen werden. Über einen erweiterten Fokus auf die anderen Merkmalsvariablen lässt sich dieses Ergebnis jedoch weiter präzisieren. 
+
+Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Pinguinart Gentoo diese über den Befehl `tally(...)` vollständig (hier: 119 von 119) aufgerufen werden, wobei fälschlicherweise auch andere Pinguinarten mit aufgerufen werden. Über einen erweiterten Fokus auf die anderen Merkmalsvariablen lässt sich dieses Ergebnis jedoch weiter präzisieren.
 
 #### R Übung
 
 Wenn auch bei den Pinguinarten Adelie und Chinstrap von Ähnlichkeiten zwischen den Beobachtungen innerhalb einer Pinguinart und somit von Unterschieden zwischen den verschiedenen Pinguinarten ausgegangen werden kann, dann müssten sich auch diese Pinguinarten über eine ähnliche Herangehensweise identifizieren lassen.
 
-- Wie unterscheiden sich Adelie und Chinstrap jeweils von den anderen Pinguinarten?
+-   Wie unterscheiden sich Adelie und Chinstrap jeweils von den anderen Pinguinarten?
 
-  - *Antwort: Adelie und Chinstrap weisen bei `flipper_length_mm` und `body_mass_g` deutlich kleinere Merkmalsausprägungen auf.*
+    -   *Antwort: Adelie und Chinstrap weisen bei `flipper_length_mm` und `body_mass_g` deutlich kleinere Merkmalsausprägungen auf.*
 
-- Wie viele Bobchtungen der Pinguinart Adelie, respektive Chinstrap, können Sie auf diese Weise aufrufen?
+-   Wie viele Bobchtungen der Pinguinart Adelie, respektive Chinstrap, können Sie auf diese Weise aufrufen?
 
-  - *Antwort: Eine mögliche Lösung könnte bspw. 146/146 Adelie bei insgesamt 39 (15 Chinstrap + 24 Gentoo) Fehlklassifikationen sein, respektive 68/68 Chinstrap bei 35 Fehlklassifikationen (35 Adelie + 0 Gentoo). Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
+    -   *Antwort: Eine mögliche Lösung könnte bspw. 146/146 Adelie bei insgesamt 39 (15 Chinstrap + 24 Gentoo) Fehlklassifikationen sein, respektive 68/68 Chinstrap bei 35 Fehlklassifikationen (35 Adelie + 0 Gentoo). Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
 
-- Wieso werden bei Adelie und Chinstrap so viele Beobachtungen einer anderen Pinguinart ebenfalls aufgerufen?
+-   Wieso werden bei Adelie und Chinstrap so viele Beobachtungen einer anderen Pinguinart ebenfalls aufgerufen?
 
- - *Antwort: Adelie und Chinstrap ähneln sich hinsichtlich der Länge des Schnabels und deren Gewicht in Gramm teilweise so deutlich, dass diese nicht klar differenziert werden können.*
+    -   *Antwort: Adelie und Chinstrap ähneln sich hinsichtlich der Länge des Schnabels und deren Gewicht in Gramm teilweise so deutlich, dass diese nicht klar differenziert werden können.*
 
 Setzen Sie Ihre Erkenntnisse jeweils für Adelie und Chinstrap (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
 
@@ -168,7 +170,7 @@ z_penguins <- scale(penguins[c(3:6)])
 z_penguins <- as.data.frame(z_penguins)
 ```
 
-Die Überprüfung der Standardisierung kann anschließend über die Befehle `mean(...)` und `sd(...)` erfolgen, wobei für alle standardisierten Variablen ein Mittelwerte  von `0` und eine Standadabweichung von `1` vorliegen sollte; Nachfolgend am Beispiel für die Merkmalsvariable `flipper_length_mm` dargestellt.
+Die Überprüfung der Standardisierung kann anschließend über die Befehle `mean(...)` und `sd(...)` erfolgen, wobei für alle standardisierten Variablen ein Mittelwerte von `0` und eine Standadabweichung von `1` vorliegen sollte; Nachfolgend am Beispiel für die Merkmalsvariable `flipper_length_mm` dargestellt.
 
 Arithmetisches Mittel:
 
@@ -176,12 +178,14 @@ Arithmetisches Mittel:
 # Arithmetisches Mittel
 round(mean( ~ flipper_length_mm, data = z_penguins))
 ```
-Standardabweichung: 
+
+Standardabweichung:
 
 ```{r}
 # Standardabweichung
 sd( ~ flipper_length_mm, data = z_penguins)
 ```
+
 Nachfolgend soll die WCSS mit dem standardisierten PENGUINS Datensatz exemplarisch ermittelt werden. Hierbei wird wie folgt vorgegangen: Die Summe der quadratischen Abweichungen aller Punkte (`x`) innerhalb jedes Clusters von dessen Zentrum (`c`) lässt sich über die Anzahl der Fälle `n` und die Anzahl der Cluster `k` formal über folgende Optimierungsfunktion `J` minimieren:
 
 $$
@@ -205,17 +209,18 @@ gf_line(wcss ~ 1:10, xlab = "cluster") %>%
   gf_hline(yintercept = 369.6527, linetype = 2) %>%
     gf_vline(xintercept = 3, linetype = 2)
 ```
+
 Demnach konnten 3 Cluster im PENGUINS Datensatz identifiziert werden.
 
 #### Fragen
 
-- Ist die Standardisierung der Merkmalsvariablen beim PENGUINS Datensatz erforderlich?
+-   Ist die Standardisierung der Merkmalsvariablen beim PENGUINS Datensatz erforderlich?
 
-  - *Antwort: Nicht wirklich, da bei den Merkmalsvariablen vergleichbare Merkmalsausprägungen und Skalierungen zugrunde liegen.*
+    -   *Antwort: Nicht wirklich, da bei den Merkmalsvariablen vergleichbare Merkmalsausprägungen und Skalierungen zugrunde liegen.*
 
-- Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+-   Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
 
-  - *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `penguins[c(3:6)]` an Stelle von `z_penguins` in den Befehl zur Ermittlung der WCSS ein.
+    -   *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `penguins[c(3:6)]` an Stelle von `z_penguins` in den Befehl zur Ermittlung der WCSS ein.*
 
 ## Clusterlösung
 
@@ -248,10 +253,10 @@ Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im PENGUINS Datensatz 
 
 #### R Übung
 
-- Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
+-   Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
 
-  - *Antwort: Gentoo würde nicht mehr als eine Pinguinart erkannt werden, sondern in zwei verschiedene Pinguinarten ausfidderenziert werden. Diese Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Pinguinarten.*
+    -   *Antwort: Gentoo würde nicht mehr als eine Pinguinart erkannt werden, sondern in zwei verschiedene Pinguinarten ausfidderenziert werden. Diese Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Pinguinarten.*
 
-- Spezifizieren Sie 30 statt 20 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
+-   Spezifizieren Sie 30 statt 20 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
 
-  - *Antwort: Die Zuordnungen verändern sich nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 30 zuzuordnende Fälle vorliegen.*
+    -   *Antwort: Die Zuordnungen verändern sich nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 30 zuzuordnende Fälle vorliegen.*

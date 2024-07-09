@@ -57,13 +57,13 @@ tally( ~ Species, data = iris)
 
 #### Fragen
 
-- Vergleichen Sie die Längen von Kelch- und Kronblatt. Welches Blatt ist länger?
+-   Vergleichen Sie die Längen von Kelch- und Kronblatt. Welches Blatt ist länger?
 
-  - *Antwort: Beim Kelchblatt (Sepal) fallen min, median, mean und max länger aus.*
+    -   *Antwort: Beim Kelchblatt (Sepal) fallen min, median, mean und max länger aus.*
 
-- Wie viele Fälle der verschiedenen Schwertlilienarten liegen jeweils vor?
+-   Wie viele Fälle der verschiedenen Schwertlilienarten liegen jeweils vor?
 
-  - *Antwort: Von jeder Schwertlilienart liegen insgesamt 50 vor.*
+    -   *Antwort: Von jeder Schwertlilienart liegen insgesamt 50 vor.*
 
 ## Univariate Statistik, ausdifferenziert nach Schwertlilienarten
 
@@ -76,13 +76,13 @@ df_stats(Sepal.Length + Sepal.Width + Petal.Length
 
 #### Fragen
 
-- Welche Schwertlilienart hat die längsten Kelch- und Kronblätter?
+-   Welche Schwertlilienart hat die längsten Kelch- und Kronblätter?
 
-  - *Antwort: Virginica.*
+    -   *Antwort: Virginica.*
 
-- Welche Schwertlilienart hat das schmalste Kronblatt?
+-   Welche Schwertlilienart hat das schmalste Kronblatt?
 
-  - *Antwort: Setosa.*
+    -   *Antwort: Setosa.*
 
 ## Bivariate Statistik des IRIS Datensatzes
 
@@ -108,23 +108,23 @@ erste_schwertlilienart <-
 tally( ~ Species, data = erste_schwertlilienart)
 ```
 
-Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Schwerlilienart Setosa diese über den Befehl `tally(...)` vollständig (hier: 50 von 50) aufgerufen werden, ohne fälschlicherweise eine andere Schwertlilienart mit aufzurufen. 
+Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Schwerlilienart Setosa diese über den Befehl `tally(...)` vollständig (hier: 50 von 50) aufgerufen werden, ohne fälschlicherweise eine andere Schwertlilienart mit aufzurufen.
 
 #### R Übung
 
 Wenn auch bei den Schwertlilienarten Versicolor und Virginica von Ähnlichkeiten zwischen den Beobachtungen innerhalb einer Schwertlilienart und somit von Unterschieden zwischen den verschiedenen Schwertlilienarten ausgegangen werden kann, dann müssten sich auch diese Schwertlilienarten über eine ähnliche Herangehensweise identifizieren lassen.
 
-- Wie unterscheiden sich Versicolor und Virginica jeweils von den anderen Schwertlilienarten?
+-   Wie unterscheiden sich Versicolor und Virginica jeweils von den anderen Schwertlilienarten?
 
-  - *Antwort: Das Kronblatt (Petal) ist bspw. deutlich länger und breiter als bei Setosa.*
+    -   *Antwort: Das Kronblatt (Petal) ist bspw. deutlich länger und breiter als bei Setosa.*
 
-- Wie viele Bobchtungen der Schwertlilienarten Versicolor, respektive Virginica, können Sie auf diese Weise aufrufen?
+-   Wie viele Beobchtungen der Schwertlilienarten Versicolor, respektive Virginica, können Sie auf diese Weise aufrufen?
 
-  - *Antwort: Eine mögliche Lösung könnte bspw. 47/50 Versicolor bei insgesamt 9 Fehlklassifikationen sein, respektive 47/50 Virginica bei 5 Fehlklassifikationen. Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
+    -   *Antwort: Eine mögliche Lösung könnte bspw. 49/50 Versicolor bei insgesamt 9 Fehlklassifikationen sein, respektive 47/50 Virginica bei 5 Fehlklassifikationen. Ist Ihr Ergebnis besser als dieser "statistische Schnellschuss"?*
 
-- Warum können Sie bei Versicolor und Virginica nicht 50 / 50 korrekt aufrufen, bzw. wieso werden Beobachtungen einer anderen Schwertlilienart ebenfalls aufgerufen?
+-   Warum können Sie bei Versicolor und Virginica nicht 50 / 50 korrekt aufrufen, bzw. wieso werden Beobachtungen einer anderen Schwertlilienart ebenfalls aufgerufen?
 
-  - *Antwort: Versicolor und Virginica ähneln sich hinsichtlich der Länge und Breite der verschiedenen Blattarten teilweise so deutlich, dass diese nicht klar differenziert werden können.*
+    -   *Antwort: Versicolor und Virginica ähneln sich hinsichtlich der Länge und Breite der verschiedenen Blattarten teilweise so deutlich, dass diese nicht klar differenziert werden können.*
 
 Setzen Sie Ihre Erkenntnisse jeweils für Versicolor und Virginica (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
 
@@ -168,7 +168,7 @@ z_iris <- scale(iris[c(1:4)])
 z_iris <- as.data.frame(z_iris)
 ```
 
-Die Überprüfung der Standardisierung kann anschließend über die Befehle `mean(...)` und `sd(...)` erfolgen, wobei für alle standardisierten Variablen ein Mittelwerte  von `0` und eine Standadabweichung von `1` vorliegen sollte; Nachfolgend am Beispiel für die Merkmalsvariable `Sepal.Length` dargestellt.
+Die Überprüfung der Standardisierung kann anschließend über die Befehle `mean(...)` und `sd(...)` erfolgen, wobei für alle standardisierten Variablen ein Mittelwerte von `0` und eine Standadabweichung von `1` vorliegen sollte; Nachfolgend am Beispiel für die Merkmalsvariable `Sepal.Length` dargestellt.
 
 Arithmetisches Mittel:
 
@@ -177,7 +177,7 @@ Arithmetisches Mittel:
 round(mean( ~ Sepal.Length, data = z_iris))
 ```
 
-Standardabweichung: 
+Standardabweichung:
 
 ```{r}
 # Standardabweichung
@@ -207,21 +207,22 @@ gf_line(wcss ~ 1:10, xlab = "cluster") %>%
   gf_hline(yintercept = 138.88836, linetype = 2) %>%
     gf_vline(xintercept = 3, linetype = 2)
 ```
+
 Demnach konnten 3 Cluster im IRIS Datensatz identifiziert werden.
 
 #### Fragen
 
-- Ist die Standardisierung der Merkmalsvariablen beim IRIS Datensatz erforderlich?
+-   Ist die Standardisierung der Merkmalsvariablen beim IRIS Datensatz erforderlich?
 
-  - *Antwort: Nicht wirklich, da mit Blattlänge und -breite vergleichbare Variablen und Skalierungen zugrunde liegen.*
+    -   *Antwort: Nicht wirklich, da mit Blattlänge und -breite vergleichbare Variablen und Skalierungen zugrunde liegen.*
 
-- Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+-   Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
 
-  - *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `iris[c(1:4)]` an Stelle von `z_iris` in den Befehl zur Ermittlung der WCSS ein.*
+    -   *Antwort: Entsprechend der vorherigen Antwort bleibt die Anzahl an Clustern unverändert. Hinweis: Zum Ausprobieren geben Sie `iris[c(1:4)]` an Stelle von `z_iris` in den Befehl zur Ermittlung der WCSS ein.*
 
 ## Clusterlösung
 
-Schließlich kann das k-Means Clustering unter Spezifizierung der Anzahl `k` an Clustern durchgeführt werden. Hierfür steht der Befehl `kmeans(...)` zur Verfügung. Der Befehl `clusplot(...)` visualisiert die Clusterlösung entsprechend: 
+Schließlich kann das k-Means Clustering unter Spezifizierung der Anzahl `k` an Clustern durchgeführt werden. Hierfür steht der Befehl `kmeans(...)` zur Verfügung. Der Befehl `clusplot(...)` visualisiert die Clusterlösung entsprechend:
 
 ```{r}
 # K-Means Clustering
@@ -241,10 +242,10 @@ Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im IRIS Datensatz korr
 
 #### R Übung
 
-- Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
+-   Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
 
-  - *Antwort: Versicolor und Virinica würden nicht in zwei Schwertlilienarten unterteilt werden, sondern in drei. Dabei gibt es zwar weniger Überschneidungen, aber die Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Schwertlilienarten.*
+    -   *Antwort: Versicolor und Virinica würden nicht in zwei Schwertlilienarten unterteilt werden, sondern in drei. Dabei gibt es zwar weniger Überschneidungen, aber die Zuordnung entspricht nicht der tatsächlichen Einteilung in die drei Schwertlilienarten.*
 
-- Spezifizieren Sie 50 statt 30 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
+-   Spezifizieren Sie 50 statt 30 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
 
-  - *Antwort: Ausgehend von den jeweils 50 verschiedenen Schwerlilienarten verändert sich die Zuordnung nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 50 zuzuordnende Fälle vorliegen.*
+    -   *Antwort: Ausgehend von den jeweils 50 verschiedenen Schwerlilienarten verändert sich die Zuordnung nur marginal. Bei anderen Datensätzen kann eine Spezifizierung der Beobachtungen zum Start der Clusteranalyse allerdings erheblichen Einfluss nehmen, bspw. dann, wenn weniger als 50 zuzuordnende Fälle vorliegen.*
