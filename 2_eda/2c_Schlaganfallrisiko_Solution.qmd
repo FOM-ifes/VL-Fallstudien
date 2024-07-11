@@ -1,8 +1,8 @@
 ---
 title: "Schlaganfallrisiko"
 lang: de
-author: "Ihr Name"
-date: today
+author: "FOM-Dozierende und Mitarbeiter:innen"
+date: last-modified
 format: 
   html:
     toc: true
@@ -52,14 +52,23 @@ head(stroke_data)
 
 -   Um was für eine Stichprobe handelt es sich (Gelegenheitsstichprobe/randomisierte Stichprobe)?
 
+    -   *Antwort: Diese Frage können wir nicht beantworten, da es keinerlei Informationen zu den Daten gibt.*
+
 -   Wie viele Beobachtungen hat die Datentabelle?
+
+    -   *Antwort: 4440 Beobachtungen*
 
 -   Wie viele Variablen hat die Datentabelle?
 
+    -   *Antwort: 5 Variablen*
+
 -   Welches Skalenniveau hat die Variable `Geschlecht`?
+
+    -   *Antwort: kategorial-nominal*
 
 -   Welches Skalenniveau hat die Variable `Alter`?
 
+    -   *Antwort: metrisch (verhältnisskaliert)*
 
 ## Schlaganfall
 
@@ -78,8 +87,11 @@ tally( ~ Schlaganfall, data = stroke_data, format = "proportion")
 
 -   Hatte die Mehrheit der Teilnehmer:innen einen Schlaganfall?
 
+    -   *Antwort: Nein.*
+
 -   Wie viel Prozent der Teilnehmer:innen hatten einen Schlaganfall?
 
+    -   *Antwort: Nur ca. 5.5%*
 
 ### Bluthochdruck
 
@@ -100,12 +112,15 @@ gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = "
 
 -   In welcher Gruppe gibt es mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
 
+    -   *Antwort: In der Gruppe mit Teilnehmer:innen, ohne Schlaganfall.*
 
 -   Anhand welcher Abbildung können Sie am Besten erkennen in welcher Gruppe (Schlaganfall Ja oder Nein) es mehr Teilnehmer:innen mit Bluthochdruck gibt?
 
+    -   *Antwort: Abbildung 2*
 
 -   In welcher Gruppe (Schlaganfall Ja oder Nein) ist der Anteil an Teilnehmer:innen mit Bluthochdruck höher?
 
+    -   *Antwort: In der Gruppe mit Teilnehmer:innen, die einen Schlaganfall erlitten haben.*
 
 ------------------------------------------------------------------------
 
@@ -122,14 +137,18 @@ prop(Bluthochdruck ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 -   Wie viel Prozent derjenigen, die einen Schlaganfall erlitten haben, haben auch Bluthochdruck?
 
+    -   *Antwort: ca. 26.7%*
+
 -   Angenommen uns interessiert, wie viel Prozent derjenigen, die Bluthochdruck haben, auch einen Schlaganfall erlitten haben. Wird das Ergebnis genau so hoch sein wie bei der Frage zuvor?
+
+    -   *Antwort: Nein.*
 
 #### R Übung
 
 -   Wie viel Prozent derjenigen, die Bluthochdruck haben, haben auch einen Schlaganfall erlitten?
 
 ```{r}
-
+prop(Schlaganfall ~ Bluthochdruck, data = stroke_data, success = "Ja")[1]
 ```
 
 ### Herzkrankheit
@@ -147,6 +166,7 @@ prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 -   Wie lautet die *Frage*, auf die das Ergebnis `r prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")[2]` lautet?
 
+    -   *Antwort: Wie viel Prozent derjenigen, die keinen Schlaganfall erlitten haben, haben eine Herzkrankheit?*
 
 ## Bedingte und totale Wahrscheinlichkeit
 
@@ -155,7 +175,7 @@ Die relative Häufigkeit von *hat Herzkrankheit*, gegeben *hat Schlaganfall*, al
 Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
 
 $$
-Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) + Pr(Herzkrankheit = Ja \mid Schlaganfall = Nein) \cdot Pr(Schlaganfall = Nein)
+Pr(Herzkrankheit = Ja | Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) + Pr(Herzkrankheit = Ja | Schlaganfall = Nein) \cdot Pr(Schlaganfall = Nein)
 $$
 
 ```{r}
@@ -165,7 +185,7 @@ prop( ~ Herzkrankheit  | Schlaganfall, data = stroke_data, success = "Ja")[1] *
   prop( ~ Schlaganfall, data = stroke_data, success = "Nein")
 ```
 
-*Erklärung*: Das `[1]` bedeutet, dass das erste Element des Ergebnisvektors von `prop( ~ Herzkrankheit | Schlaganfall, data = stroke_data, success = "Ja")`, also der Anteil der Personen mit Herzkrankheit unter den Personen mit Schlaganfall, benutzt werden soll. Entsprechend bedeutet `[2]`, dass das zweite Element des Vektors, also der Anteil der Personen mit Herzkrankheit unter den Personen ohne Schlaganfall benutzt wird.
+*Erklärung*: Das `[1]` bedeutet, dass das erste Element des Ergebnisvektors von `prop( ~ Herzkrankheit| Schlaganfall, data = stroke_data, success = "Ja")`, also der Anteil der Personen mit Herzkrankheit unter den Personen mit Schlaganfall, benutzt werden soll. Entsprechend bedeutet `[2]`, dass das zweite Element des Vektors, also der Anteil der Personen mit Herzkrankheit unter den Personen ohne Schlaganfall benutzt wird.
 
 Das ergibt $Pr(Herzkrankheit= Ja)$:
 

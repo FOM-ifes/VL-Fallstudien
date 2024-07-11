@@ -1,8 +1,8 @@
 ---
 title: "Körperfettanteil"
 lang: de
-author: "Ihr Name"
-date: today
+author: "Ihr FOM Dozenten-Team und Mitarbeiter:innen"
+date: last-modified
 format: 
   html:
     toc: true
@@ -32,6 +32,8 @@ Um den Körperfettanteil so genau wie möglich zu bestimmen, sind medizinisch au
 
 -   Kennen Sie eine dieser Methoden?
 
+    -   *Mögl. Antworten: Body-Mass-Index (BMI), Waist-Hip-Ratio, Bauchumfang...*
+
 Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
 -   Körperfettanteil in %
@@ -59,14 +61,23 @@ str(body_data)
 
 -   Handelt es sich um eine Beobachtungsstudie oder um ein randomisiertes Experiment?
 
+    -   *Antwort: Beobachtungsstudie*
+
 -   Was ist hier eine Beobachtungseinheit?
+
+    -   *Antwort: Ein Mann*
 
 -   Wie viele Beobachtungen liegen vor?
 
+    -   *Antwort: 249 Beobachtungen*
+
 -   Wie viele Variablen liegen vor?
+
+    -   *Antwort: 5 Variablen*
 
 -   Welches Skalenniveau besitzen die Variablen?
 
+    -   *Antwort: metrisch*
 
 In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 50 Prozent liegt.
 
@@ -106,9 +117,14 @@ body_data <- body_data |>
 
 -   Was vermuten Sie über den Zusammenhang zwischen Größe und Gewicht?
 
--   Erstellen Sie ein Streudiagramm, um Ihre Vermutung zu überprüfen:
+    -   *Antwort: Nimmt die Größe zu, steigt auch das Gewicht.*
+
+Erstellen Sie ein Streudiagramm, um Ihre Vermutung zu überprüfen:
 
 ```{r}
+# Streudiagramm mit Glättungslinie
+gf_point(Gewicht_kg ~ Größe_cm, data = body_data) |>
+  gf_smooth()
 ```
 
 ### Zusammenhang Körperfettanteil und BMI
@@ -130,10 +146,15 @@ gf_point(Körperfettanteil ~ BMI, data = body_data)
 
 -   Wofür steht ein Punkt in der Abbildung?
 
+    -   *Antwort: Für eine Beobachtungseinheit (ein Mann).*
+
 -   Ist der Zusammenhang zwischen `BMI` und `Körperfettanteil` linear?
+
+    -   *Antwort: Ja, der Zusammenhang zwischen BMI und Körperfettanteil ist linear.*
 
 -   Wie lässt sich dieser Zusammenhang interpretieren?
 
+    -   *Antwort: Steigt der BMI der beobachteten Teilnehmer, nimmt auch ihr Körperfettanteil zu.*
 
 ------------------------------------------------------------------------
 
@@ -172,21 +193,26 @@ pdata( ~ BMI, q = 24.9, data = body_data)
 
 -   Wie kann das Ergebnis inhaltlich interpretiert werden?
 
+    -   *Antwort: Der Anteil der Teilnehmer, die nicht übergewichtig oder adipös sind, beträgt ca. 49.8%*.
+
 Ändern Sie den Code jeweils so, dass Sie die Fragen beantworten können.
 
 -   Wie hoch ist der Anteil der Männer, die laut BMI untergewichtig sind (BMI kleiner gleich 18.4 $kg/m^2$)?
 
 ```{r}
+pdata( ~ BMI, q = 18.4, data = body_data)
 ```
 
 -   Wie hoch ist der Anteil der Männer mit Normalgewicht (BMI zwischen 18.5 und 24.9 $kg/m^2$)?
 
 ```{r}
+pdata( ~ BMI, q = 24.9, data = body_data) - pdata( ~ BMI, q = 18.5, data = body_data)
 ```
 
 -   Wie hoch ist der Anteil der Männer mit Adipositas (BMI größer als 29.9 $kg/m^2$)?
 
 ```{r}
+1 - pdata( ~ BMI, q = 29.9, data = body_data)
 ```
 
 ------------------------------------------------------------------------
@@ -215,11 +241,19 @@ favstats(BMI ~ Übergewicht, data = body_data)
 
 -   Was kennzeichnet die schwarze Linie in der Box der beiden Boxplots?
 
+    -   *Antwort: den Median*
+
 -   Was bedeutet der schwarze Punkt oberhalb des rechten Boxplots?
+
+    -   *Antwort: einen Ausreißer*
 
 -   Stimmen die Einteilungen in nicht übergewichtig/übergewichtig der beiden Methoden überein?
 
+    -   *Antwort: Nein, da der BMI Teilnehmer als übergewichtig klassifiziert, die anhand des Körperfettanteils nicht übergewichtig sind und anders herum.*
+
 -   Woran könnte das liegen?
+
+    -   *Antwort: Die Diskrepanz könnte an der Berechnung des BMIs liegen, da dieser nicht zwischen Muskel- und Fettmasse unterscheidet.*
 
 ## Your Turn
 
