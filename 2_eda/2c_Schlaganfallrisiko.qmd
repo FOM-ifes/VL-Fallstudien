@@ -98,13 +98,13 @@ gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = "
 
 #### Fragen
 
--   In welcher Gruppe gibt es mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
-
-
--   Anhand welcher Abbildung können Sie am Besten erkennen in welcher Gruppe (Schlaganfall Ja oder Nein) es mehr Teilnehmer:innen mit Bluthochdruck gibt?
+-   In welcher Gruppe gibt es insgesamt mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
 
 
 -   In welcher Gruppe (Schlaganfall Ja oder Nein) ist der Anteil an Teilnehmer:innen mit Bluthochdruck höher?
+
+
+-   Anhand welcher Abbildung können Sie am Besten erkennen in welcher Gruppe (Schlaganfall Ja oder Nein) es anteilig mehr Teilnehmer:innen mit Bluthochdruck gibt?
 
 
 ------------------------------------------------------------------------
