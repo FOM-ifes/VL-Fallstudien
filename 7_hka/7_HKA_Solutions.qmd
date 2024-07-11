@@ -2,7 +2,7 @@
 title: "Hauptkomponentenanalyse (HKA)"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: last-modified
 format: 
   html:
     toc: true
@@ -15,7 +15,7 @@ format:
 ---
 
 ```{r}
-#| label: packages
+#| label: setup
 #| include: false
 
 library(mosaic)
@@ -74,6 +74,7 @@ irll_norm <- as.data.frame(scale(irll))
 **Frage:**
 
 -   Warum löst die Standardisierung das Problem der Varianz-Sensitivität der HKA?
+
     -   *Antwort: Da die standardisierten Variablen alle eine Varianz von 1 haben.*
 
 ## Eignung der Daten
@@ -99,6 +100,7 @@ corrplot(cor_mtx)
 -   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
     -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.*
+    
     -   *Antwort (rot): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.*
     -   *Inhaltliche Interpretation?*
 
@@ -168,6 +170,7 @@ Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten 
 **Frage:**
 
 -   Hat sich Ihre Meinung aufgrund des Kaiser-Dickman-Kriteriums geändert?
+
     -   *"Richtige" Anzahl der Hauptkomponenten: 6*
 
 ### Varianz
@@ -240,7 +243,7 @@ Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ei
 
 ```{r}
 #| eval: false
-#Wine-Datensatz laden
+# Wine-Datensatz laden
 install.packages("HDclassif")
 library(HDclassif)
 
