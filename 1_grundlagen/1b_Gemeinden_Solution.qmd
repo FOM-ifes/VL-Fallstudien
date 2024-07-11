@@ -2,7 +2,7 @@
 title: "1b_Musterlösung"
 lang: de
 author: "Celine Widera"
-date: "`r Sys.Date()`"
+date: last-modified
 format: 
   html:
     toc: true
@@ -58,7 +58,7 @@ datatable(gv)
 
 -   Suchen Sie die Gemeinde in der Sie gerade leben. Wie gut war Ihre Schätzung?
 
-    -   *Individuell zu beantworten.*
+    -   *Antwort: Individuell zu beantworten.*
 
 -   Zentrale Elemente einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable die untersucht wird?
 
@@ -80,7 +80,7 @@ tail(gv)
 #### Frage
 
 -   Wie viele Gemeinden gibt es gemäß dieser Datentabelle in Deutschland?
-    -   Antwort: 10786 Gemeinen (obs. für Observations)
+    -   *Antwort: 10786 Gemeinen (obs. für Observations)*
 
 ## Bevölkerungsgröße
 
@@ -107,7 +107,7 @@ mean( ~ Bevoelkerung, data = gv)
 #### Frage
 
 -   Wie gut war Ihre Schätzung?
-    -   *Individuell zu beantworten.*
+    -   *Antwort: Individuell zu beantworten.*
 
 ## Stichproben
 

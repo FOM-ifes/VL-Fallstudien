@@ -2,7 +2,7 @@
 title: "Bevölkerung Deutscher Gemeinden"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
