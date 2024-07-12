@@ -68,8 +68,8 @@ head(stroke_data)
 
 -   Welches Skalenniveau hat die Variable `Alter`?
 
-    -   *Antwort: metrisch (verhältnisskaliert)*
-
+    -   *Antwort: metrisch, diskret erhoben, (verhältnisskaliert)*
+    
 ## Schlaganfall
 
 Explorative Datenanalyse:
@@ -91,7 +91,7 @@ tally( ~ Schlaganfall, data = stroke_data, format = "proportion")
 
 -   Wie viel Prozent der Teilnehmer:innen hatten einen Schlaganfall?
 
-    -   *Antwort: Nur ca. 5.5%*
+    -   *Antwort: Nur ca. 5.6 %*
 
 ### Bluthochdruck
 
@@ -110,7 +110,7 @@ gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = "
 
 #### Fragen
 
--   In welcher Gruppe gibt es insgesamt mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
+-   In welcher Gruppe gibt es absolut mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
 
     -   *Antwort: In der Gruppe mit Teilnehmer:innen, ohne Schlaganfall.*
     

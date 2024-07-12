@@ -21,20 +21,20 @@ library(mosaic)
 library(here)
 ```
 
-Der Körperfettanteil gibt an, wie viel Prozent des Körpergewichts einer Person aus Fettmasse bestehen. Er liegt in der Regel zwischen 10 und 50 Prozent. Der Körper benötigt das Fettgewebe für verschiedene nützliche Funktionen. Zu viel oder zu wenig Körperfett kann allerdings gesundheitsschädlich sein.[^1]
+Der Körperfettanteil gibt an, wie viel Prozent des Körpergewichts einer Person aus Fettmasse bestehen. Der optimale Anteil ist altersabhängig und liegt bei Männern zwischen 10 - 25 % (Mann) und bei der Frau zwischen 20 und 33 Prozent. Der Körper benötigt das Fettgewebe für verschiedene nützliche Funktionen. Zu viel oder zu wenig Körperfett kann allerdings gesundheitsschädlich sein.[^1]
 
 [^1]: https://www.aok.de/pk/magazin/koerper-psyche/stoffwechsel/was-fuer-ein-koerperfettanteil-gesund-ist-und-wie-man-ihn-berechnet/
 
 ## Wie misst man den Körperfettanteil?
 
-Um den Körperfettanteil so genau wie möglich zu bestimmen, sind medizinisch aufwendige Verfahren notwendig. Kann oder will man diese Verfahren nicht durchlaufen, gibt es Schätz-Methoden, die ein annäherndes Ergebnis liefern. 
+Um den Körperfettanteil so genau wie möglich zu bestimmen, sind aufwendige Verfahren notwendig. Kann oder will man diese Verfahren nicht durchlaufen, gibt es Schätz-Methoden, die ein annäherndes Ergebnis liefern. 
 
 
 -   Kennen Sie eine dieser Methoden?
 
     -   *Mögl. Antworten: Body-Mass-Index (BMI), Waist-Hip-Ratio, Bauchumfang...*
 
-Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
+Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurde die orginale Datentabelle [Body Fat Prediction Dataset](https://https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
 -   Körperfettanteil in %
 
@@ -79,7 +79,7 @@ str(body_data)
 
     -   *Antwort: metrisch*
 
-In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 50 Prozent liegt.
+In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 33 Prozent liegt.
 
 -   Stimmt der Bereich mit den Werten unserer Stichprobe überein?
 
@@ -217,7 +217,7 @@ pdata( ~ BMI, q = 24.9, data = body_data) - pdata( ~ BMI, q = 18.5, data = body_
 
 ------------------------------------------------------------------------
 
-Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
+Die WHO stuft Männer ab einem Körperfettanteil von über 25 % als übergewichtig ein.[^3]
 
 [^3]: https://iris.who.int/bitstream/handle/10665/37003/WHO_TRS_854.pdf;%20jsessionid=56CD01367D58BF71F68E62627A1904CD?sequence=1
 
