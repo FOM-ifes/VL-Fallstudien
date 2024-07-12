@@ -2,10 +2,10 @@
 title: "Random Forrest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
+author: "Ihr Name"
+date: today
 execute:
   warning: false
-author: "Your name"
-date: "`r Sys.Date()`"
 format: 
   html:
     toc: true
