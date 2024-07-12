@@ -4,7 +4,7 @@ lang: de
 execute:
   warning: false
 author: "Matthias Gehrke"
-date: "`r Sys.Date()`"
+date: last-modified
 format: 
   html:
     toc: true
@@ -18,7 +18,7 @@ format:
 ## Verwendete Pakete
 
 ```{r}
-#| label: packages
+#| label: setup
 
 library(here)         # Pfad-Handling
 library(dplyr)        # Datenhandling

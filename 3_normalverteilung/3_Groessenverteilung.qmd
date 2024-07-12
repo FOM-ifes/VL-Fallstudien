@@ -2,7 +2,7 @@
 title: "Wie groß sind wir?"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
@@ -71,14 +71,14 @@ Dabei ist:
 
 #### Frage
 
-- Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
+-   Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
 ```{r}
 gf_dist("norm", mean = 181, sd = 7.5) |> 
   gf_labs(title = "Größenverteilung Männer",
           subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
 ```
 
-Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
+    Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
 
 ## Wahrscheinlichkeiten bestimmen
 

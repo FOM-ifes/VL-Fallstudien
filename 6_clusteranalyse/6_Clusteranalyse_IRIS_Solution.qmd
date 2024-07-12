@@ -2,7 +2,7 @@
 title: "IRIS Datensatz (Clusteranalyse)"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: last-modified
 format: 
   html:
     toc: true
@@ -19,7 +19,7 @@ format:
 #| include: false
 library(mosaic)
 library(cluster)
-set.seed(1701) # Zufallszahlengenerator
+set.seed(1896) # Zufallszahlengenerator
 ```
 
 # Hintergrundwissen zum IRIS Datensatz

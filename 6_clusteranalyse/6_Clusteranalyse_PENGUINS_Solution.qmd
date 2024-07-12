@@ -2,7 +2,7 @@
 title: "PENGUINS Datensatz (Clusteranalyse)"
 lang: de
 author: "Ihr Name"
-date: "`r Sys.Date()`"
+date: last-modified
 format: 
   html:
     toc: true
@@ -21,7 +21,7 @@ library(mosaic)
 library(cluster)
 library(palmerpenguins)
 penguins <- na.omit(penguins) # Ausschluss von Fehlwerten
-set.seed(2000) # Zufallszahlengenerator
+set.seed(1896) # Zufallszahlengenerator
 ```
 
 # Hintergrundwissen zum PENGUINS Datensatz

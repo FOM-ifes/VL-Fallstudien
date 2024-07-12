@@ -56,7 +56,11 @@ head(immo)
 
 -   Was ist eine Beobachtungseinheit der Datentabelle?
 
+    -   *Antwort: Eine Wohnung*
+
 -   Welche metrischen Variablen liegen in der Datentabelle vor?
+
+    -   *Antwort: totalrent, livingspace, yearconstructed*
 
 Daher ist es sinnvoll, die kategorialen Variablen entsprechend umzuwandeln:
 
@@ -79,16 +83,23 @@ head(immo)
 
 Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Größe der Wohnfläche, gemessen durch die Quadratmeterzahl (`livingspace`), und dem Mietpreis (`totalrent`). Dann wird mathematisch folgendes Modell für die Stichprobe angenommen:
 
-$$y_i = b_0 + b_1 \cdot x_i + e_i$$
+$$
+  y_i = b_0 + b_1 \cdot x_i + e_i
+$$
 
 #### Fragen
 
 -   Wofür steht das $i$?
 
+    -   *Antwort: Das i steht für eine Beobachtung.*
+
 -   Was ist $b_0$?
+
+    -   *Antwort: Der y-Achsenabschnitt (Intercept).*
 
 -   Welche Variable (`livingspace`, `totalrent`) ist die abhängige Variable $y$?
 
+    -   *Antwort: totalrent ist die abhängige Variable.*
 
 ### Lineares Modell der Stichprobe
 
@@ -114,37 +125,53 @@ Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: 
 
 -   Welchen modellierten Wert hat eine Wohnung mit $x_0=100$ Quadratmetern?
 
+    -   *Antwort: -5.38 + 14.69 \* 100 = 1463.62*
+
 -   Gilt immer $\hat{y}_0 = y_0$?
+
+    -   *Antwort: Nein, die Gleichung gilt nie, da wir Epsilon nicht modellieren können.* $\hat{y}_0$ *ist aber die beste Schätzung von* $y_0$, *die wir machen können.*
 
 -   Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Quadratmeter mehr zur Wohnfläche hinzukommt?
 
+    -   *Antwort: Der Preis steigt durchschnittlich um 14.69 Euro.*
 
 ### Bestimmtheitsmaß
 
 Wie gut die gefundene Gerade die vorliegenden Daten beschreibt, kann mit Hilfe des Bestimmtheitsmaßes $R^2$ bestimmt werden:
 
-$$R^2 = \frac{\sum_{i=1}^n (\hat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_i-\bar{y})^2} = 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}$$
+$$
+R^2 = \frac{\sum_{i=1}^n (\hat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_i-\bar{y})^2} 
+    = 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}
+$$
 
 ```{r}
 r2 <- rsquared(erg) |> round(2)
 r2
 ```
 
-$$R^2 = `r r2`$$
+$$
+  R^2 = `r r2`
+$$
 
 #### Frage
 
 -   Interpretieren Sie $R^2 = `r r2`$.
 
+    -   *Antwort: 77% der Gesamtvarianz werden durch das Modell erklärt.*
+
 ### Schätzunsicherheit
 
 In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
 
-$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
+$$
+  y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i
+$$
 
 Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden:
 
-$$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
+$$
+  \hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.
+$$
 
 ```{r}
 # betadach
@@ -168,6 +195,7 @@ do(3) * lm(totalrent ~ livingspace, data = resample(immo))
 #### Frage
 
 -   Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+
     -   *Antwort: Nein, die Werte der Schätzer variieren.*
 
 ------------------------------------------------------------------------
@@ -192,12 +220,15 @@ gf_histogram( ~ livingspace, data = Bootvtlg,
 
 -   Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
 
+    -   *Antwort: Nein, Bootstrap-Samples haben die gleiche Anzahl an Beobachtungen wie der ursprüngliche Datensatz.*
 
 -   Welche Verteilung zeigt das Histogramm?
 
+    -   *Antwort: Eine (annähernde) Normalverteilung.*
 
 -   Werden durch das Bootstrapping die Beobachtungen normalverteilt?
 
+    -   *Antwort: Nein, die Beobachtungen werden nicht normalverteilt. Die Regressionsergebnisse für* $\hat{\beta}_1$ *folgen einer Normalverteilung.*
 
 ------------------------------------------------------------------------
 
@@ -212,10 +243,15 @@ se
 
 -   Welche Standardabweichung liegt bei `r se`: Die der Wohnfläche oder die der geschätzten Steigung?
 
+    -   *Antwort: Die Standardabweichung der geschätzten Steigung.*
+
 -   Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
+
+    -   *Antwort: Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.*
 
 -   Wann würde der Standardfehler kleiner werden, d. h., die Präszision der Schätzung steigen?
 
+    -   *Antwort: Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.*
 
 ------------------------------------------------------------------------
 
@@ -231,6 +267,8 @@ D. h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen 
 #### Frage
 
 -   Ist eine Steigung von $0$ kompatibel zu der Stichprobe?
+
+    -   *Antwort: Nein, da die 0 außerhalb der Grenzen des KIs liegt.*
 
 ```{r}
 # Visualisierung Verteilung 
@@ -264,6 +302,8 @@ gf_point(totalrent ~ livingspace, data = immo) |>
 #### Frage
 
 -   Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
+
+    -   *Antwort:* $\beta_1$ *nimmt den Wert Null an. Aufgrund von zufälligem Rauschen kann in der Stichprobe aber durchaus* $\hat{\beta}_1 \neq 0$ *vorkommen.*
 
 ------------------------------------------------------------------------
 
@@ -299,6 +339,8 @@ gf_histogram( ~ livingspace, data = Nullvtlg,
 
 -   Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
 
+    -   *Antwort: Nein.*
+
 ------------------------------------------------------------------------
 
 **p-Wert**:
@@ -313,6 +355,8 @@ pwert
 #### Frage
 
 -   Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
+
+    -   *Antwort: Nein! Der p-Wert sagt nur, wie wahrscheinlich das Ergebnis der Stichprobe (*$\|`r b[2]`\|$*) wäre, wenn die Nullhypothese (*$H_0 : \beta_1 = 0$*) gelten würde. Er sagt nicht wie wahrscheinlich die Nullhypothese ist.*
 
 ------------------------------------------------------------------------
 
@@ -343,11 +387,15 @@ coef(erg0)
 
 Also
 
-$$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(totalrent~ 1, data = immo),2)`$$
+$$
+  \hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(totalrent~ 1, data = immo),2)`
+$$
 
 #### Frage
 
 -   Wie groß ist hier $R^2$?
+
+    -   *Antwort: Null, da die Varianz in diesem Modell nicht erklärt wird.*
 
 ## Preismodellierung mit kategorialer erklärender Variable
 
@@ -370,7 +418,11 @@ coef(erg1)
 
 -   Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
 
+    -   *Antwort: Bei Wohnungen mit Balkon (balcony== "ja").*
+
 -   Wie groß ist der durchschnittliche Preisunterschied zwischen `Balkon` und `kein Balkon`?
+
+    -   *Antwort: ca. 345 Euro.*
 
 ## Preismodellierung mit mehr als einer erklärenden Variable
 
@@ -389,11 +441,22 @@ summary(erg2)
 
 -   Wie lautet die Regressionsgerade?
 
+    -   *Antwort:*\
+        $$
+          \widehat{totalrent} =  `r round(coef(erg2)[1],2)` + `r round(coef(erg2)[2],2)` \cdot livingspace + \begin{cases}
+            `r round(coef(erg2)[3],2)` \cdot 1 & \, : \textrm{haskitchenja} \\
+            0 & \, : \textrm{sonst}
+          \end{cases}
+         $$
 
 -   Interpretieren Sie die Regressionskoeffizienten.
 
+    -   *Antwort: Im Modell der Stichprobe steigt im Durchschnitt der Mietpreis um `r round(coef(erg2)[2],2)` Euro je Quadratmeter. Mit einem p-Wert von $`r summary(erg2)$coefficients["livingspace", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[2],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{livingspace} = 0$) sehr klein. Die Nullhypothese wird verworfen. \
+    Im Modell der Stichprobe steigt im Durchschnitt der Mietpreis um `r round(coef(erg2)[3],2)` Euro, wenn eine Einbaucküche vorhanden ist. Mit einem p-Wert von $`r summary(erg2)$coefficients["haskitchenja", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[3],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{haskitchen} = 0$) sehr klein. Die Nullhypothese wird verworfen.* 
 
 -   Interpretieren Sie das $R^2$.
+
+    -   *Antwort: 79% der Gesamtvarianz werden durch dieses Modell erklärt.*
 
 ### F-Statistik - modellierte vs. nicht-modellierte Variation
 
@@ -411,7 +474,9 @@ Nullvtlg <- do(1000) * lm(shuffle(totalrent) ~ livingspace + haskitchen, data = 
 
 Um das Nullmodell zu testen wird der F-Test herangezogen, welcher die modellierte Variation ins Verhältnis zur nicht-modellierten Variation setzt und dabei die Anzahl der Parameter $(p : \beta_1, \beta_2, \dots, \beta_p)$ und die Anzahl der Beobachtungen $(n)$ berücksichtigt:
 
-$$F = \frac{R^2}{1 - R^2} \frac{n -p}{k}$$
+$$
+  F = \frac{R^2}{1 - R^2} \cdot \frac{n -p}{k}
+$$
 
 ```{r}
 # F-Verteilung für Nullmodell
@@ -426,9 +491,12 @@ Ein anderer Weg die Nullhypothese zu testen, ist der Vergleich des p-Wertes mit 
 
 -   Wie lautet die Alternativhypothese zur getesteten Nullhypothese?
 
+    -   *Antwort:* $H_1: mindestens\ ein\ \beta \neq 0$
+
 -   Schauen Sie sich die R-Ausgabe der Preismodellierung mit mehr als einer erklärenden Variable an. Wo in der Ausgabe kann man den p-Wert des F-Tests finden? Gegeben sei ein Signifikanzniveau von $\alpha = 5%$, kann die Nullhypothese auf Basis des p-Wertes abgelehnt werden?
 
-
+    -   *Antwort: Den p-Wert findet man in der Ausgabe in der letzten Zeile unter p-value. Die Nullypothese, dass alle Koeffizienten gleich 0 sind, kann zu einem Signifikanzniveau von 5% abgelehnt werden, da p = 2.2e-16 kleiner ist als 5%.*
+    
 ```{r}
 # Bootstrapping multiples Regressionsmodell
 # Zufallszahlengenerator setzen
@@ -442,6 +510,7 @@ confint(Bootvtlg)
 #### Frage
 -   Ist eine Steigung von Null für `hastkitchen` kompatibel zum Ergebnis der Stichprobe?
 
+    -   *Antwort: Nein. Die Null liegt nicht im  95%-Bootstrap-Konfidenzintervall [111.61; 207.13]. Eine Steigung von Null scheint mit den beobachteten Daten nicht kompatibel zu sein. Die Nullhypothese wird verworfen.*
 
 #### Your turn
 
@@ -472,11 +541,15 @@ plotModel(erg3) + scale_color_npg()
 
 -   Welches *Problem* dieses Modells sehen Sie?
 
+    -   *Antwort: Beide Geraden fallen quasi aufeinander. Die Punktewolken unterscheiden sich in Ihrer Form allerdings.*
+    
 -   Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace`und `balcony` ins Modell integrieren.
 
 ```{r}
 # Lineare Modellierung
-erg4 <- lm(totalrent ~ livingspace + balcony, data = immo)
+erg4 <- lm(totalrent ~ livingspace + balcony + livingspace:balcony, data = immo)
+# Alternativ: 
+# erg4 <- lm(totalrent ~ livingspace * balcony, data = immo)
 # Visualisierung Ergebnis
 plotModel(erg4) + scale_color_npg()
 # Koeffizienten
@@ -486,6 +559,8 @@ summary(erg4)
 ```
 
 -   Bei welcher Ausprägung ist die Steigung größer?
+
+    -   *Antwort: Bei balcony == "ja" ist die Steigung etwas größer.*
 
 ### Ergebniszusammenfassung
 
