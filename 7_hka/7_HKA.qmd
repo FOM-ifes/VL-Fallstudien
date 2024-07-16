@@ -33,8 +33,11 @@ Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als "
 
 # Projekt IRLL (International Readiness in Lifelong Learning)
 
-*Studie und Daten erklären (+ evtl. Verlinkung Fragebogen)*
+Selbstgesteuertes Lernen und überfachliche Kompetenzen gewinnen vor dem Hintergrund dynamischer und volatiler Arbeits- und Gesellschaftsprozesse zunehmend an Bedeutung. Um dem gerecht zu werden, bedarf es der Herausbildung und Stärkung einer fächerübergreifenden „Learning Readiness" im Studium. Außercurriculare Angebote stellen in diesem Zusammenhang wichtige Bausteine dar. Im Projekt IRLL (<https://forschung.fom.de/forschung/institute/iap-institut-fuer-arbeit-und-personal/irll.html/)> der FOM Hochschule wurde untersucht, inwieweit Hürden bei der Wahrnehmung studienübergreifender Angebote bestehen und wie entsprechenden Bedarfen von Hochschulseite begegnet werden kann.
 
+Im Zeitraum von September bis November 2022 wurden Bachelor- und Masterstudierende sowie Promovierende aller Fachbereiche, Semester und Standorte der FOM Hochschule befragt. Schwerpunkte der Befragung waren die Wahrnehmung und Entwicklung von Kompetenzen, die Motivation zum überfachlichen Kompetenzerwerb sowie die Wahrnehmung bestehender Auslands- und Zusatzprogramme. Insgesamt haben 1.421 Studierende teilgenommen. Die Anzahl der in der nachfolgenden Analyse berücksichtigten Fälle (nach Bereinigung) beträgt n = 875.
+
+Über die für die nachfolgende Hauptkomponentenanalyse verwendeten Variablen wurde abgefragt, inwieweit die befragten Personen a) dem eigenen Empfinden nach über verschiedene studienübergreifende Kompetenzen verfügen (A020_A021 - A020_A030) und b) in welchem Maße sie einen Ausbau dieser Kompetenzen als wichtig erachten (A040_A041 - A040_A050). Über den Fragebogen sowie die Legende zum Datensatz können die Fragestellungen sowie die Bezeichnungen für die einzelnen Variablen nachgelesen werden.
 ## Daten einlesen und inspizieren
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "irll.csv" befindet sich im Projektordner "data". -->
@@ -208,7 +211,16 @@ hka_rotiert$criteria <- NULL
 print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-**Bitte inhaltliche Interpretation einfügen.**
+Die sechs Faktoren lassen sich inhaltlich wie folgt bezeichnen:
+
+1.  A020_A021 - A020-A024: Internationale Kompetenz (Kompetenzempfinden)
+2.  A040_A041 - A040-A044: Internationale Kompetenz (Relevanzempfinden Kompetenzausbau)
+3.  A020_A025 - A020-A027: Wiss. Kompetenz (Kompetenzempfinden)
+4.  A040_A045 - A040-A047: Wiss. Kompetenz (Relevanzempfinden Kompetenzausbau)
+5.  A020_A028 - A020-A030: Organisations- und Selbstkompetenz (Kompetenzempfinden)
+6.  A040_A048 - A040-A050: Organisations- und Selbstkompetenz (Relevanzempfinden Kompetenzausbau)
+
+Das Ergebnis zeigt, dass die befragten Studierenden innerhalb dreier voneinander abgrenzbarer Kompetenzdimensionen ("Organisations- und Selbstkompetenz", "Wissenschaftliche Kompetenz", "Internationale Kompetenz") über ein unterschiedliches Kompetenzempfinden sowie verschiedene Bedarfe eines Ausbaus verfügen. Zudem wird deutlich, dass Kompetenzempfinden und -bedarf voneinander losgelöst zu betrachten sind. Ein Bedarf an Kompetenzausbau kann unabhängig von einem bestehenden Kompetenzempfinden in derselben Dimension vorhanden sein.
 
 # Your Turn
 
@@ -223,5 +235,7 @@ install.packages("HDclassif")
 library(HDclassif)
 
 data(wine)
+wine <- wine[, -1]
+names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline")
 ```
 

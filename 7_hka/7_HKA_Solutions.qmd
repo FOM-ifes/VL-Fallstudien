@@ -29,11 +29,15 @@ library(here)
 
 Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. Das Ziel dieser Hauptkomponenten ist, Datensätze übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
 
-Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als  "normale" Variablen für weitere statistische Tests verwendet werden.
+Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als "normale" Variablen für weitere statistische Tests verwendet werden.
 
 # Projekt IRLL (International Readiness in Lifelong Learning)
 
-*Studie und Daten erklären (+ evtl. Verlinkung Fragebogen)*
+Selbstgesteuertes Lernen und überfachliche Kompetenzen gewinnen vor dem Hintergrund dynamischer und volatiler Arbeits- und Gesellschaftsprozesse zunehmend an Bedeutung. Um dem gerecht zu werden, bedarf es der Herausbildung und Stärkung einer fächerübergreifenden „Learning Readiness" im Studium. Außercurriculare Angebote stellen in diesem Zusammenhang wichtige Bausteine dar. Im Projekt IRLL (<https://forschung.fom.de/forschung/institute/iap-institut-fuer-arbeit-und-personal/irll.html/)> der FOM Hochschule wurde untersucht, inwieweit Hürden bei der Wahrnehmung studienübergreifender Angebote bestehen und wie entsprechenden Bedarfen von Hochschulseite begegnet werden kann.
+
+Im Zeitraum von September bis November 2022 wurden Bachelor- und Masterstudierende sowie Promovierende aller Fachbereiche, Semester und Standorte der FOM Hochschule befragt. Schwerpunkte der Befragung waren die Wahrnehmung und Entwicklung von Kompetenzen, die Motivation zum überfachlichen Kompetenzerwerb sowie die Wahrnehmung bestehender Auslands- und Zusatzprogramme. Insgesamt haben 1.421 Studierende teilgenommen. Die Anzahl der in der nachfolgenden Analyse berücksichtigten Fälle (nach Bereinigung) beträgt n = 875.
+
+Über die für die nachfolgende Hauptkomponentenanalyse verwendeten Variablen wurde abgefragt, inwieweit die befragten Personen a) dem eigenen Empfinden nach über verschiedene studienübergreifende Kompetenzen verfügen (A020_A021 - A020_A030) und b) in welchem Maße sie einen Ausbau dieser Kompetenzen als wichtig erachten (A040_A041 - A040_A050). Über den Fragebogen sowie die Legende zum Datensatz können die Fragestellungen sowie die Bezeichnungen für die einzelnen Variablen nachgelesen werden.
 
 ## Daten einlesen und inspizieren
 
@@ -100,9 +104,9 @@ corrplot(cor_mtx)
 -   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
     -   *Antwort (blau): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.*
-    
+    -   *Interpretation: Je besser Teilnehmende wissenschaftliche Texte in englischer Sprache verstehen, desto besser können sie Fachvorträgen in englischer Sprache folgen.* 
     -   *Antwort (rot): Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.*
-    -   *Inhaltliche Interpretation?*
+    -   *Interpretation: Je kompetenter Teilnehmende sich im Bereich Stressmanagement einschätzen, desto weniger Bedarf sehen sie in einem zusätzlichen Ausbau dieser Kompetenz.*
 
 -   Warum sind manche Flächen im Korrelationsplot weiß und was bedeutet das?
 
@@ -144,9 +148,9 @@ Frage:
 
 ## Anzahl der Hauptkomponenten
 
-Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte^[Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.] unserer Datenmatrix.
+Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte[^1] unserer Datenmatrix.
 
-
+[^1]: Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.
 
 ### Screeplot
 
@@ -203,7 +207,9 @@ round(cumsum(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values)), 3)
 
 ## Analyse
 
-Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.^[Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.]
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.[^2]
+
+[^2]: Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.
 
 ```{r}
 # Hauptkomponentenanalyse ohne Rotation
@@ -233,7 +239,16 @@ hka_rotiert$criteria <- NULL
 print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-**Bitte inhaltliche Interpretation einfügen.**
+Die sechs Faktoren lassen sich inhaltlich wie folgt bezeichnen:
+
+1.  A020_A021 - A020-A024: Internationale Kompetenz (Kompetenzempfinden)
+2.  A040_A041 - A040-A044: Internationale Kompetenz (Relevanzempfinden Kompetenzausbau)
+3.  A020_A025 - A020-A027: Wiss. Kompetenz (Kompetenzempfinden)
+4.  A040_A045 - A040-A047: Wiss. Kompetenz (Relevanzempfinden Kompetenzausbau)
+5.  A020_A028 - A020-A030: Organisations- und Selbstkompetenz (Kompetenzempfinden)
+6.  A040_A048 - A040-A050: Organisations- und Selbstkompetenz (Relevanzempfinden Kompetenzausbau)
+
+Das Ergebnis zeigt, dass die befragten Studierenden innerhalb dreier voneinander abgrenzbarer Kompetenzdimensionen ("Organisations- und Selbstkompetenz", "Wissenschaftliche Kompetenz", "Internationale Kompetenz") über ein unterschiedliches Kompetenzempfinden sowie verschiedene Bedarfe eines Ausbaus verfügen. Zudem wird deutlich, dass Kompetenzempfinden und -bedarf voneinander losgelöst zu betrachten sind. Ein Bedarf an Kompetenzausbau kann unabhängig von einem bestehenden Kompetenzempfinden in derselben Dimension vorhanden sein.
 
 # Your Turn
 
@@ -248,6 +263,28 @@ install.packages("HDclassif")
 library(HDclassif)
 
 data(wine)
+wine <- wine[, -1]
+names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline")
+
+
+### Musterlösung: ###
+
+# Daten standardisieren
+wine_norm <- as.data.frame(scale(wine))
+
+# Korrelationsplot
+cor_mtx <- cor(wine_norm)
+corrplot(cor_mtx)
+
+# Hauptkomponentenanalyse durchführen
+hka_wine <- prcomp(wine_norm)
+summary(hka_wine)
+
+screeplot(hka_wine, type = "l")
+
+#Varimax Rotation
+hka_rotiert <- principal(wine_norm, 3, rotate = "varimax")
+hka_rotiert$criteria <- NULL
+print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-*Soll ich hierfür auch eine Musterlösung erstellen?*
