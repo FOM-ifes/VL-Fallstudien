@@ -318,7 +318,7 @@ Im folgenen wird unter Nutzung des `caret`Paketes ein Trainingsdatensatz mit 70 
 
 # Datenaufteilung in Trainings- und Testdaten
 #(caretPaket)
-set.seed(42)
+set.seed(1896)
 trainIndex <- createDataPartition(bodyfat$bodyfat_siri, p = 0.7, list = FALSE)
 trainData <- bodyfat_siri[trainIndex, ]
 testData <- bodyfat_siri[-trainIndex, ]
@@ -349,7 +349,7 @@ Standardmäßig ist `mtry`bei $\sqrt{p}$ für die Klassifikation und $\frac{p}{3
 #| label: train-the-model
 
 # Training des Random Forest Modells
-set.seed(42)
+set.seed(1896)
 rf_model1 <- randomForest(bodyfat_siri ~ ., data = trainData, ntree = 500, importance = TRUE)
 
 # Überblick über das Modell
@@ -576,7 +576,7 @@ control <- trainControl(method = "cv", number = 5)
 tuneGrid <- expand.grid(.mtry = c(2, 4, 6, 8, 10))
 
 # Trainieren des Modells mit Hyperparameter-Tuning
-set.seed(42)
+set.seed(1896)
 rf_tuned <- train(bodyfat_siri ~ ., data = trainData, method = "rf", trControl = control, tuneGrid = tuneGrid)
 rf_tuned
 
