@@ -25,13 +25,13 @@ bibliography: references.bib
 
 @breiman_random_2001 entwickelte den Algorithmus des Random Forests, eine nicht-parametrische Klassifikations- und Regressionsmethode zur Identifikation von Prädiktoren.
 
-Der RF erstellt viele Entscheidungsbäume mit einer zufällig ausgewählten Teilmenge der (Trainings)Daten und Merkmalen und kombiniert aus diesen die Ergebnisse. 
+Der Random Forest erstellt viele Entscheidungsbäume mit einer zufällig ausgewählten Teilmenge der (Trainings)Daten und Merkmalen und kombiniert aus diesen die Ergebnisse. 
 
 
 
 ## Daten und Hintergrund zur Fallstudie 
 
-In dieser Fallstudie werden wir den Random Forest Algorithmus nutzen, um den Körperfettanteil vorherzusagen. Wir verwenden dazu den Body Fat Datensatz, der verschiedene Messungen wie Gewicht, Größe und Hautfalten enthält.
+In dieser Fallstudie werden wir den Random Forest Algorithmus nutzen, um den Körperfettanteil vorherzusagen. Wir verwenden dazu den Body Fat Datentabelle, welche verschiedene Messungen wie Gewicht, Größe und Hautfalten enthält.
 
 Die genaue Bestimmung des Körperfettanteils ist sehr aufwendig und teuer und im Alltag nicht zu vollziehen. Die Bestimmung des Körperfettanteils eines menschlichen Körpers erfolgte in den vorliegenden Daten mittels der Goldstandardmethode der sog. Unterwasserwägung nach dem archimedischen Prinzip. Je schwerer jemand unter Wasser ist, desto höher ist die Dichte des Körpers. Muskeln haben eine höhere Volumendichte als Fettgewebe. Je höher das Gewicht unter Wasser ist, desto mehr fettfreie Masse hat dieser Körper.
 
