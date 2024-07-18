@@ -436,7 +436,7 @@ ____________________________________________________________
 
 \
 
-  * Lösung: `r rf_model1$rsq[500]` = `r round(rf_model1$rsq[500]*100, 2)` %
+  * Lösung: $R^2=$`r rf_model1$rsq[500]` = `r round(rf_model1$rsq[500]*100, 2)` %
 
 2. Interpretieren Sie den Wert der Varianzaufklärung. 
 
@@ -478,7 +478,7 @@ round(sqrt(rf_model1$mse[500]), 2)
 
 Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(rf_model1$mse[500]), 2)` %.   
 
-Bedenkt man, dass ein "normaler" Körperfettanteil im Bereich von 10 - 22 % (Männer) bzw. 20 - 30 % (Frauen) scheint `r round(sqrt(rf_model1$mse[500]), 2)` % nicht niedrig.  
+Bedenkt mensch, dass ein "normaler" Körperfettanteil im Bereich von 10 - 22 % (Männer) bzw. 20 - 30 % (Frauen) scheint `r round(sqrt(rf_model1$mse[500]), 2)` % recht niedrig.  
  
 :::
 
@@ -488,7 +488,7 @@ ____________________________________________________________
 
 ## MSE und Out-of-bag error (OOB)
 
-Das Model des Random FOrest wird mittels Bootstrap-Aggregation, das sog. Bagging traininert.
+Das Model des Random Forest wird mittels Bootstrap-Aggregation, das sog. Bagging traininert.
 D.h. jeder Baum wird aus einer Bootstrap-Stichprobe des Trainingsdatensatzes erstellt.
 
 Der Out-of-Bag (OOB) Fehler ist der durchschnittliche Fehler jeden einzelnen Baum/Bootstrapstichprobe $x_i$. 
@@ -569,8 +569,8 @@ Auch bereits bekannt ist das $R^2$:
 #| label: modellguetemaße_IIII
 
 # r2
-rss <- sum((predictions - observed)^2) # residual sum of squares
-tss <- sum((observed - mean(observed)) ^ 2)  # total sum of squares
+rss <- sum((predictions - observed)**2) # residual sum of squares
+tss <- sum((observed - mean(observed))**2)  # total sum of squares
 rsq <- 1 - rss/tss
 
 rsq
@@ -617,20 +617,20 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 
 ```{r}
 #| label: gf_point_observed_predicted
+#| warning: false
 
 df <- data.frame(observed = observed, predictions = predictions)
 
 # Streudiagramm der vorhergesagten vs. tatsächlichen Werte
-gf_point(predictions ~ observed, data = df) |> gf_lm(color = "red")|> 
-  #gf_abline(color = "red") |>
+gf_point(predictions ~ observed, data = df) |> 
+  gf_lm(color = "red")|> 
   gf_labs(title = "Vorhergesagt vs. Beobachtet",
           x = "Beobachtete Werte",
           y = "Vorhergesagte Werte") |>
    gf_theme(theme_minimal())
 
 #ggf. 
-#gf_smooth()|>
-
+# gf_smooth()|>
 ```
 
 
@@ -646,11 +646,16 @@ Dafür benutzen wir wieder das Caret Paket.
 
 Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
 
+
 **Vorgehen:**
-* der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt. 
-* es efolgt ein iteratives Training und Testen. 
-* in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
-*  Ablauf wird k-fach (k-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
+
+- der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt. 
+
+- es efolgt ein iteratives Training und Testen. 
+
+- in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
+
+- Ablauf wird k-fach (k-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
 
 
 Legen wir los:
@@ -674,8 +679,6 @@ best_mtry
 # Vorhersage auf den Testdaten mit dem getunten Modell
 predictions_tuned <- predict(rf_tuned, testData)
 
-
-
 ```
 
 
@@ -688,10 +691,11 @@ predictions_tuned <- predict(rf_tuned, testData)
 #| label: hypertuning-2
 
 mse_tuned <- mean((predictions_tuned - testData$bodyfat_siri)^2)
+mse_tuned
 
 rmse_tuned <- sqrt(mse_tuned)
+rmse_tuned
 
-mse_tuned
 
 ```
 
