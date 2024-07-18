@@ -27,27 +27,41 @@ library(here)
 
 # Grundidee
 
-Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. Das Ziel dieser Hauptkomponenten ist, Datensätze übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
+Die Hauptkomponentenanalyse (engl. Principal Component Analysis, "PCA") ist eine statistische Methode, mit der sich eine Vielzahl von Variablen (Spalten) zu wenigen, möglichst aussagekräftigen Hauptkomponenten zusammenfassen lassen. 
+Das Ziel dieser Hauptkomponenten ist, Datentabellen übersichtlicher zu machen (Dimensionsreduktion) und dabei gleichzeitig so wenige Informationen wie möglich zu verlieren.
 
 Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als "normale" Variablen für weitere statistische Tests verwendet werden.
 
 # Projekt IRLL (International Readiness in Lifelong Learning)
 
-Selbstgesteuertes Lernen und überfachliche Kompetenzen gewinnen vor dem Hintergrund dynamischer und volatiler Arbeits- und Gesellschaftsprozesse zunehmend an Bedeutung. Um dem gerecht zu werden, bedarf es der Herausbildung und Stärkung einer fächerübergreifenden „Learning Readiness" im Studium. Außercurriculare Angebote stellen in diesem Zusammenhang wichtige Bausteine dar. Im Projekt IRLL (<https://forschung.fom.de/forschung/institute/iap-institut-fuer-arbeit-und-personal/irll.html/)> der FOM Hochschule wurde untersucht, inwieweit Hürden bei der Wahrnehmung studienübergreifender Angebote bestehen und wie entsprechenden Bedarfen von Hochschulseite begegnet werden kann.
+Selbstgesteuertes Lernen und überfachliche Kompetenzen gewinnen vor dem Hintergrund dynamischer und volatiler Arbeits- und Gesellschaftsprozesse zunehmend an Bedeutung. 
+Um dem gerecht zu werden, bedarf es der Herausbildung und Stärkung einer fächerübergreifenden „Learning Readiness" im Studium. 
+Außercurriculare Angebote stellen in diesem Zusammenhang wichtige Bausteine dar. 
+Im Projekt IRLL (<https://forschung.fom.de/forschung/institute/iap-institut-fuer-arbeit-und-personal/irll.html/)> der FOM Hochschule wurde untersucht, inwieweit Hürden bei der Wahrnehmung studienübergreifender Angebote bestehen und wie entsprechenden Bedarfen von Hochschulseite begegnet werden kann.
 
-Im Zeitraum von September bis November 2022 wurden Bachelor- und Masterstudierende sowie Promovierende aller Fachbereiche, Semester und Standorte der FOM Hochschule befragt. Schwerpunkte der Befragung waren die Wahrnehmung und Entwicklung von Kompetenzen, die Motivation zum überfachlichen Kompetenzerwerb sowie die Wahrnehmung bestehender Auslands- und Zusatzprogramme. Insgesamt haben 1.421 Studierende teilgenommen. Die Anzahl der in der nachfolgenden Analyse berücksichtigten Fälle (nach Bereinigung) beträgt n = 875.
+Im Zeitraum von September bis November 2022 wurden Bachelor- und Masterstudierende sowie Promovierende aller Fachbereiche, Semester und Standorte der FOM Hochschule befragt.
+Schwerpunkte der Befragung waren die Wahrnehmung und Entwicklung von Kompetenzen, die Motivation zum überfachlichen Kompetenzerwerb sowie die Wahrnehmung bestehender Auslands- und Zusatzprogramme. Insgesamt haben 1.421 Studierende teilgenommen. 
+Die Anzahl der in der nachfolgenden Analyse berücksichtigten Fälle (nach Bereinigung) beträgt $n = 875$.
 
-Über die für die nachfolgende Hauptkomponentenanalyse verwendeten Variablen wurde abgefragt, inwieweit die befragten Personen a) dem eigenen Empfinden nach über verschiedene studienübergreifende Kompetenzen verfügen (A020_A021 - A020_A030) und b) in welchem Maße sie einen Ausbau dieser Kompetenzen als wichtig erachten (A040_A041 - A040_A050). Über den Fragebogen sowie die Legende zum Datensatz können die Fragestellungen sowie die Bezeichnungen für die einzelnen Variablen nachgelesen werden.
+Über die für die nachfolgende Hauptkomponentenanalyse verwendeten Variablen wurde abgefragt, inwieweit die befragten Personen a) dem eigenen Empfinden nach über verschiedene studienübergreifende Kompetenzen verfügen (A020_A021 - A020_A030) und b) in welchem Maße sie einen Ausbau dieser Kompetenzen als wichtig erachten (A040_A041 - A040_A050). 
+Über den Fragebogen sowie die Legende zum Datensatz können die Fragestellungen sowie die Bezeichnungen für die einzelnen Variablen nachgelesen werden.
+
 
 ## Daten einlesen und inspizieren
 
-<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "irll.csv" befindet sich im Projektordner "data". -->
+<!-- 
+Technischer Hinweis: 
+Das Paket "here" (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. 
+Die csv Datei "irll.csv" befindet sich im Projektordner "data". 
+-->
 
 ```{r}
 # Datei (inkl. Pfad)
 pfad_irll <- here("data", "irll.csv")
+
 # Daten einlesen
-irll <- read.csv2(pfad_irll, sep = ",")
+irll <- read.csv(pfad_irll)
+
 # Datenstruktur
 str(irll)
 ```
@@ -58,7 +72,7 @@ str(irll)
 
     -   *Antwort: Eine befragte Person.*
 
--   Wie wurden die Variablen erhoben? Welches Skalenniveau besitzen die Variablen?
+-   Wie wurden die Variablen erhoben und welches Skalenniveau besitzen die Variablen?
 
     -   *Antwort: Die Variablen wurden mit einer 5-Punkt-Likert Skala erhoben. Das Skalenniveau der Variablen ist quasi-metrisch.*
 
@@ -66,26 +80,30 @@ str(irll)
 
     -   *Antwort: Alle Variablen des Datensatzes (zumindest in meiner Version des Datensatzes) können mithilfe der HKA zusammengefasst werden.*
 
-## Daten standardisieren
+## Daten studentisieren
 
-Die Hauptkomponentenanalyse ist sensitiv bezüglich unterschiedlicher Varianzen. Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von z-standardisierten Variablen durchgeführt.
+Die Hauptkomponentenanalyse ist sensitiv bezüglich unterschiedlicher Varianzen. Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. 
+Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von studentisierten Variablen durchgeführt.
 
 ```{r}
-# Standardisierung
+# Studentisierung
 irll_norm <- as.data.frame(scale(irll))
 ```
 
 **Frage:**
 
--   Warum löst die Standardisierung das Problem der Varianz-Sensitivität der HKA?
+-   Warum löst die Studentisierung das Problem der Varianz-Sensitivität der HKA?
 
-    -   *Antwort: Da die standardisierten Variablen alle eine Varianz von 1 haben.*
+    -   *Antwort: Da die studentisierten Variablen alle eine Varianz von 1 haben.*
 
 ## Eignung der Daten
 
-Die Bildung der einzelnen Hauptkomponenten geschieht durch das Zusammenfassen von hoch korrelierten Variablen. Eine hohe Korrelation zwischen zwei Variablen deutet darauf hin, dass diese ähnliche oder nahezu gleiche Informationen beinhalten (Redundanz). Die HKA benutzt diese Redundanz, um sich ähnelnde Variablen zu einer Hauptkomponente zusammenzufassen.
+Die Bildung der einzelnen Hauptkomponenten geschieht durch das Zusammenfassen von hoch korrelierten Variablen. 
+Eine hohe Korrelation zwischen zwei Variablen deutet darauf hin, dass diese ähnliche oder nahezu gleiche Informationen beinhalten (Redundanz). 
+Die HKA benutzt diese Redundanz, um sich ähnelnde Variablen zu einer Hauptkomponente zusammenzufassen.
 
-Die Korrelation kann deshalb Hinweise darüber geben, ob sich die Daten für eine Hauptkomponentenanalyse eignen. Einen guten Überblick über die Korrelation zwischen den Variablen verschafft ein Korrelationsplot:
+Die Korrelation kann deshalb Hinweise darüber geben, ob sich die Daten für eine Hauptkomponentenanalyse eignen. 
+Einen guten Überblick über die Korrelation zwischen den Variablen verschafft ein Korrelationsplot:
 
 ```{r}
 # Korrelationsmatrix
@@ -99,7 +117,7 @@ corrplot(cor_mtx)
 
 -   Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Warum?
 
-    -   *Antwort: In diesem Fall schon, da die Daten standardisiert wurden und cor(X)==cov(X).*
+    -   *Antwort: In diesem Fall schon, da die Daten studentisiert wurden und cor(X)==cov(X).*
 
 -   Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
@@ -118,7 +136,10 @@ corrplot(cor_mtx)
 
 ### KMO-Kriterium
 
-Zusätzlich zur Betrachtung des Korrelationsplot gibt es Tests, welche die Eignung der Daten für eine HKA überprüfen. Einer dieser Tests ist das Kaiser-Meyer-Olkin-Kriterium (Kaiser und Rice, 1974), welches aus den partiellen Korrelationen zwischen Variablenpaaren, also der Korrelationen jeder Variable mit jeder anderen Variablen, berechnet wird. Die möglichen Ergebnisse des KMO-Kriteriums variieren zwischen 0 und 1. Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 0.5 nicht unterschreiten.
+Zusätzlich zur Betrachtung des Korrelationsplot gibt es Tests, welche die Eignung der Daten für eine HKA überprüfen. 
+Einer dieser Tests ist das Kaiser-Meyer-Olkin-Kriterium (Kaiser und Rice, 1974), welches aus den partiellen Korrelationen zwischen Variablenpaaren, also der Korrelationen jeder Variable mit jeder anderen Variablen, berechnet wird. 
+Die möglichen Ergebnisse des KMO-Kriteriums variieren zwischen 0 und 1. 
+Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 0.5 nicht unterschreiten.
 
 ```{r}
 # Kaiser-Maier-Olkin-Kriterium
@@ -133,7 +154,9 @@ Frage:
 
 ### Bartlett-Test
 
-Ein weiterer Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. Dieser überprüft, ob sich die Korrelationsmatrix von einer Einheitsmatrix unterscheidet. Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Nullhypothese, die Korrelationsmatrix unterscheidet sich nicht von einer Einheitsmatrix, verwerfen.
+Ein weiterer Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. 
+Dieser überprüft, ob sich die Korrelationsmatrix von einer Einheitsmatrix unterscheidet.
+Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Nullhypothese, die Korrelationsmatrix unterscheidet sich nicht von einer Einheitsmatrix, verwerfen.
 
 ```{r}
 # Bartlett-Test
@@ -148,13 +171,16 @@ Frage:
 
 ## Anzahl der Hauptkomponenten
 
-Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. Dies geschieht unter anderem anhand der Eigenwerte[^1] unserer Datenmatrix.
+Da sich die Daten für eine Hauptkomponentenanalyse eignen, wird im Anschluss die Anzahl der Hauptkomponenten bestimmt, welche ausreichend sind, um die wesentliche Struktur der betrachteten Merkmale abzubilden. 
+Dies geschieht unter anderem anhand der Eigenwerte[^1] unserer Datenmatrix.
 
 [^1]: Multipliziert man eine Matrix mit einem Vektor, erhält man als Ergebnis wieder einen Vektor. Für quadratische Matrizen existieren bestimmte Vektoren - sogenannte **Eigenvektoren** -, die, wenn sie mit der Matrix multipliziert werden, ein Vielfaches des ursprünglichen Vektors ergeben. D. h. der Eigenvektor ändert seine Richtung nicht, er wird lediglich skaliert. Den Skalierungsfaktor bezeichnet man als **Eigenwert** einer Matrix.
 
 ### Screeplot
 
-Eine Möglichkeit zur Bestimmung der optimalen Anzahl der Hauptkomponenten ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
+Eine Möglichkeit zur Bestimmung der optimalen Anzahl der Hauptkomponenten ist die grafische Darstellung der Eigenwerte, der sog. Screeplot. 
+Dabei entspricht die optimale Anzahl der Hauptkomponenten der Anzahl der Eigenwerte, die vor dem Knick des Graphen ("Ellenbogen") liegen. 
+Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick zu berücksichtigen.
 
 ```{r}
 # Screeplot
@@ -165,11 +191,13 @@ scree(irll_norm, factors = FALSE)
 
 -   Wie viele Hauptkomponenten würden Sie auf Basis des Screeplots bestimmen? Warum?
 
-Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer einfach zu lesen. In solchen Fällen kann man auf andere Methoden und Faustregeln zurückgreifen.
+Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer einfach zu lesen. 
+In solchen Fällen kann man auf andere Methoden und Faustregeln zurückgreifen.
 
 ### Eigenwert über 1 (Kaiser-Dickman-Kriterium)
 
-Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer als 1 ist.
+Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. 
+Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer als 1 ist.
 
 **Frage:**
 
@@ -179,9 +207,12 @@ Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten 
 
 ### Varianz
 
-Auch der Anteil an Varianz, welcher durch die Hauptkomponenten erklärt werden kann, dient als Maßstab zur Bestimmung der optimalen Anzahl. Demnach sollte durch die Hauptkomponenten ein möglichst großer Teil der ursprünglichen Variation erklärt werden.
+Auch der Anteil an Varianz, welcher durch die Hauptkomponenten erklärt werden kann, dient als Maßstab zur Bestimmung der optimalen Anzahl. 
+Demnach sollte durch die Hauptkomponenten ein möglichst großer Teil der ursprünglichen Variation erklärt werden.
 
-Dies kann mithilfe der Eigenwerte der Korrelationsmatrix abgeschätzt werden. Die einzelnen Eigenwerte werden in Relation zu der Summe aller Eigenwerte gesetzt. Zusätzlich zum Anteil der Varianz der einzelnen Hauptkomponenten an der Gesamtvarianz wird die kumulierte Varianz ausgegeben.
+Dies kann mithilfe der Eigenwerte der Korrelationsmatrix abgeschätzt werden. 
+Die einzelnen Eigenwerte werden in Relation zu der Summe aller Eigenwerte gesetzt. 
+Zusätzlich zum Anteil der Varianz der einzelnen Hauptkomponenten an der Gesamtvarianz wird die kumulierte Varianz ausgegeben.
 
 ```{r}
 # Varianzanteil der Hauptkomponenten
@@ -207,7 +238,9 @@ round(cumsum(eigen(cor_mtx)$values/sum(eigen(cor_mtx)$values)), 3)
 
 ## Analyse
 
-Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.[^2]
+Im folgenden Abschnitt wird die Hauptkomponentenanalyse mithilfe der *principal*-Funktion durchgeführt. 
+Im Output werden die Ladungen (Korrelationen der ursprünglichen Variablen mit den Hauptkomponenten) ab einem Betrag von 0.5 angezeigt, gerundet und sortiert (jeweils innerhalb einer Komponente nach absteigenden Beträgen der Ladungen). 
+Im unteren Teil des Output werden die Eigenwerte (`SS (sum of squares) loadings`), der Anteil der Hauptkomponenten an der Gesamtvarianz (`Proportion Var`), sowie die kumulierte Varianz (`Cumulative Var`) angegeben.[^2]
 
 [^2]: Um die Ausgabe etwas übersichtlicher zu gestalten, wird anschließend an die Analyse noch ein nicht benötigter Teil der Ausgabe gelöscht.
 
@@ -220,13 +253,17 @@ hka$criteria <- NULL
 print(hka, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
-Schaut man sich die Ladungen der einzelnen Variablen auf die Hauptkomponenten an, so erkennt man, dass einige Variablen auf mehrere Hauptkomponenten hoch laden. Dieser Umstand erschwert eine inhaltliche Interpretation der einzelnen Hauptkomponenten.
+Schaut man sich die Ladungen der einzelnen Variablen auf die Hauptkomponenten an, so erkennt man, dass einige Variablen auf mehrere Hauptkomponenten hoch laden. 
+Dieser Umstand erschwert eine inhaltliche Interpretation der einzelnen Hauptkomponenten.
 
 ## Rotation
 
-Um die Hauptkomponenten inhaltlich besser interpretieren zu können, wird eine Rotation der Hauptkomponenten vorgenommen. Das Ziel der Rotation ist, dass auf jeder Hauptkomponente einige Variablen hoch und die übrigen Variablen möglichst niedrig laden. Zusätzlich sollte jede Variable nur auf eine einzelne Hauptkomponente hoch laden, auf die übrigen niedrig.
+Um die Hauptkomponenten inhaltlich besser interpretieren zu können, wird eine Rotation der Hauptkomponenten vorgenommen. 
+Das Ziel der Rotation ist, dass auf jeder Hauptkomponente einige Variablen hoch und die übrigen Variablen möglichst niedrig laden. 
+Zusätzlich sollte jede Variable nur auf eine einzelne Hauptkomponente hoch laden, auf die übrigen niedrig.
 
-Es gibt zwei verschiedene Arten von Rotationsverfahren, orthogonale und oblique Verfahren. Orthogonale Rotationsverfahren nehmen Unabhängigkeit zwischen den extrahierten Hauptkomponenten an und produzieren einfache Modelle, die sich gut interpretieren lassen. Allerdings bilden orthogonale Verfahren durch die Annahme der Unabhängigkeit die Realität meistens nicht so gut ab, wie oblique Rotationsverfahren, welche wiederum etwas schwieriger zu interpretieren sind.
+Es gibt zwei verschiedene Arten von Rotationsverfahren, orthogonale und oblique Verfahren. Orthogonale Rotationsverfahren nehmen Unabhängigkeit zwischen den extrahierten Hauptkomponenten an und produzieren einfache Modelle, die sich gut interpretieren lassen.
+Allerdings bilden orthogonale Verfahren durch die Annahme der Unabhängigkeit die Realität meistens nicht so gut ab, wie oblique Rotationsverfahren, welche wiederum etwas schwieriger zu interpretieren sind.
 
 Eine oft verwendete orthogonale Rotationsmethode zur besseren Interpretation der Hauptkomponenten ist die Varimax-Rotation:
 
@@ -248,13 +285,18 @@ Die sechs Faktoren lassen sich inhaltlich wie folgt bezeichnen:
 5.  A020_A028 - A020-A030: Organisations- und Selbstkompetenz (Kompetenzempfinden)
 6.  A040_A048 - A040-A050: Organisations- und Selbstkompetenz (Relevanzempfinden Kompetenzausbau)
 
-Das Ergebnis zeigt, dass die befragten Studierenden innerhalb dreier voneinander abgrenzbarer Kompetenzdimensionen ("Organisations- und Selbstkompetenz", "Wissenschaftliche Kompetenz", "Internationale Kompetenz") über ein unterschiedliches Kompetenzempfinden sowie verschiedene Bedarfe eines Ausbaus verfügen. Zudem wird deutlich, dass Kompetenzempfinden und -bedarf voneinander losgelöst zu betrachten sind. Ein Bedarf an Kompetenzausbau kann unabhängig von einem bestehenden Kompetenzempfinden in derselben Dimension vorhanden sein.
+Das Ergebnis zeigt, dass die befragten Studierenden innerhalb dreier voneinander abgrenzbarer Kompetenzdimensionen ("Organisations- und Selbstkompetenz", "Wissenschaftliche Kompetenz", "Internationale Kompetenz") über ein unterschiedliches Kompetenzempfinden sowie verschiedene Bedarfe eines Ausbaus verfügen. 
+Zudem wird deutlich, dass Kompetenzempfinden und -bedarf voneinander losgelöst zu betrachten sind. 
+Ein Bedarf an Kompetenzausbau kann unabhängig von einem bestehenden Kompetenzempfinden in derselben Dimension vorhanden sein.
 
 # Your Turn
 
-Jetzt sind Sie an der Reihe! Im folgenden Code-Anfang wird das Paket *"HDclassif"* installiert. Dieses Paket enthält den Datensatz **wine**. Dieser Datensatz ist das Ergebnis einer chemischen Analyse von Weinen, die in der gleichen Region in Italien angebaut werden, aber von drei verschiedenen Weinsorten (barolo, grignolino, barbera) stammen. Bei der Analyse wurden 13 Inhaltsstoffe bestimmt, die in jeder der drei Weinsorten enthalten sind.
+Jetzt sind Sie an der Reihe! Im folgenden Code-Anfang wird das Paket *"HDclassif"* installiert. 
+Dieses Paket enthält den Datensatz **wine**. Dieser Datensatz ist das Ergebnis einer chemischen Analyse von Weinen, die in der gleichen Region in Italien angebaut werden, aber von drei verschiedenen Weinsorten (barolo, grignolino, barbera) stammen. 
+Bei der Analyse wurden 13 Inhaltsstoffe bestimmt, die in jeder der drei Weinsorten enthalten sind.
 
-Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ein. Nachdem Sie diesen ausgeführt haben, können Sie mit ihrer Hauptkomponentenanalyse starten.
+Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ein. 
+Nachdem Sie diesen ausgeführt haben, können Sie mit ihrer Hauptkomponentenanalyse starten.
 
 ```{r}
 #| eval: false
@@ -269,7 +311,7 @@ names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium
 
 ### Musterlösung: ###
 
-# Daten standardisieren
+# Daten studentisieren
 wine_norm <- as.data.frame(scale(wine))
 
 # Korrelationsplot
