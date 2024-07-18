@@ -117,18 +117,25 @@ Fügen wir zwei neue Variablen mit der jeweiligen Berechnung nach @siri_gross_19
 ```{r}
 #| label: formula-check
 
-bodyfat <- mutate(bodyfat, bodyfat_brozeck = ((4.58/Density)-4.142)*100) # Brozeck et al.
-bodyfat <- mutate(bodyfat, bodyfat_siri = ((4.95/Density)-4.5)*100)  # hier nach Siri berechnet
-bodyfat$BodyFat <- NULL # entfernen der variable
+# bodyfat nach Brozeck et al. berechnet
+bodyfat <- mutate(bodyfat, bodyfat_brozeck = ((4.58/Density) - 4.142) * 100) 
 
+# bidyfat nach Siri berechnet
+bodyfat <- mutate(bodyfat, bodyfat_siri = ((4.95/Density) - 4.5) * 100)  
+
+bodyfat$BodyFat <- NULL # entfernen der variable
 ```
  
 
 
-Da die Dichtebestimmung sehr aufwendig und teuer ist, werden heute Surrogatparameter zur Bestimmung des Körperfettanteils genutzt, eingie kennen Sie;  
+Da die Dichtebestimmung sehr aufwendig und teuer ist, werden heute Surrogatparameter zur Bestimmung des Körperfettanteils genutzt, einige kennen Sie:
+
  - BMI  
+
  - Waist-to-Hip Ratio (WHR)  
+
  - Waist-to-Height Ratio (wHtR)  
+
  - Oberarmumfang    
 
 Erstellen wir aus den vorliegenden Daten einige der genannten Parameter.
