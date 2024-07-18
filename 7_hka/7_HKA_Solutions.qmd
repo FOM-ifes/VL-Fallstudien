@@ -299,9 +299,10 @@ Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ei
 Nachdem Sie diesen ausgeführt haben, können Sie mit ihrer Hauptkomponentenanalyse starten.
 
 ```{r}
-#| eval: false
+#| eval: true
+
 # Wine-Datensatz laden
-install.packages("HDclassif")
+# ggf.: install.packages("HDclassif")
 library(HDclassif)
 
 data(wine)
@@ -324,7 +325,7 @@ summary(hka_wine)
 
 screeplot(hka_wine, type = "l")
 
-#Varimax Rotation
+# Varimax Rotation
 hka_rotiert <- principal(wine_norm, 3, rotate = "varimax")
 hka_rotiert$criteria <- NULL
 print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)

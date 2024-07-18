@@ -277,9 +277,10 @@ Bitte kopieren Sie den folgenden Code-Block und fügen ihn in Ihre R-Umgebung ei
 Nachdem Sie diesen ausgeführt haben, können Sie mit ihrer Hauptkomponentenanalyse starten.
 
 ```{r}
-#| eval: false
-#Wine-Datensatz laden
-install.packages("HDclassif")
+#| eval: true
+
+# Wine-Datensatz laden
+# ggf.: install.packages("HDclassif")
 library(HDclassif)
 
 data(wine)
