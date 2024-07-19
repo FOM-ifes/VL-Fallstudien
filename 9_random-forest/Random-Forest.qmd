@@ -218,7 +218,7 @@ ____________________________________________________________
 
 ### BMI 
 
-Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist.  
+Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist.  
 
 
 ```{r}
@@ -320,7 +320,7 @@ str(bodyfat_siri)
 
 ## Trainingsdaten erstellen
 
-Die Daten werden in Trainings- und Testdaten aufteilen.
+Die Daten werden in Trainings- und Testdaten aufgeteilt.
 Anhand der Trainingsdaten wird das Modell des Random Forest trainiert und dann auf die Testdaten angewandt.
 Die vorherzusagende Variable liegt im Testdatensatz vor, das Modell bzw. die Korrektheit/ Präzision der Modellvorhersage lässt sich somit auf den Testdaten überprüfen bzw. mittels Maße der Modellgüte bestimmen.
 
@@ -631,13 +631,14 @@ Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getu
 
 ```{r}
 #| label: compare_models
-cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
-cat("Tuned Root Mean Squared Error (RMSE): ", rmse_tuned, "\n")
 
-cat("Mean Squared Error (MSE): ", mse, "\n")
-cat("Root Mean Squared Error (RMSE): ", rmse, "\n")
+# Ursprungsmodel
+mse
+rmse
 
-
+#optimiertes Modell
+mse_tuned
+rmse_tuned
 
 ```
 
