@@ -1,0 +1,163 @@
+---
+title: "1b_Musterlösung"
+lang: de
+author: "Celine Widera"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+# Paket mosaic aktivieren
+library(mosaic)
+# Paket googlesheets4 aktivieren
+library(googlesheets4)
+gs4_deauth()
+```
+
+# Eine Lüge. Erkannt?
+
+Wie gut können wir Lügen erkennen?
+
+Dazu haben wir die Daten folgendermaßen erhoben:
+
+Innerhalb einer Gruppe:
+
+1.  Eine Person erzählt drei kurze Aussagen über sich. Eins davon ist eine Lüge.
+2.  Die Anderen diskutieren welche der drei Aussagen die Lüge ist. Anschließend legen Sie gemeinsam auf einer Skala von 0-10 fest, wie sicher Sie sich sind die Lüge erkannt zu haben.
+3.  Die Person enthüllt, ob die Anderen richtig lagen.
+
+## Daten
+
+Die Daten vieler Versuche davon sind in einer Google-Tabelle[^1] hinterlegt.
+
+[^1]: <https://docs.google.com/spreadsheets/d/1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4>
+
+Diese lesen wir in `R` ein (Befehl `read_sheet()` mit dem Funktionsargument der Tabellen ID) und weisen sie `EineLuege` zu.
+
+```{r}
+EineLuege <- read_sheet("1rNdph1RbTv15lKTNzoex6_Uhw4t9Lp9Bvzi3Q1ShAS4")
+```
+
+Betrachten wir die Daten:
+
+```{r}
+# Struktur
+str(EineLuege)
+# Obere Beobachtungen
+head(EineLuege)
+# Untere Beobachtunge
+tail(EineLuege)
+```
+
+#### Frage
+
+-   Wie viele Spalten (Variablen) liegen vor?
+    -   *Antwort: Es liegen 3 Variablen vor.*
+
+------------------------------------------------------------------------
+
+Leider sind die Variablennamen sehr unhandlich, daher nennen wir diese um (`rename()`):
+
+```{r}
+EineLuege <- EineLuege |>
+  rename(Sicherheit = "Wie sicher sind Sie, die Lüge erkannt zu haben?",
+         Richtig = "Lagen Sie richtig?")
+```
+
+#### Frage
+
+-   Ist die Sicherheit beim Erkennen der Lüge direkt messbar?
+    -   *Antwort: Nein, die Sicherheit beim Erkennen einer Lüge ist eine nicht direkt messbare, latente Variable.*
+
+## Sicherheit
+
+Um die Verteilung der Variable `Sicherheit` zu betrachten können wir wieder den Befehl `gf_bar()` verwenden:
+
+```{r}
+gf_bar( ~ Sicherheit, data = EineLuege)
+```
+
+#### Fragen
+
+-   Wie würden Sie das Ergebnis beschreiben?
+
+    -   *Antwort (für den aktuellen Datensatz): Die Teilnehmer:innen sind überwiegend relativ bis ganz sicher die Lüge erkannt zu haben.*
+
+-   Kann sich das Ergebnis mit mehr Daten ändern?
+
+    -   *Antwort: Ja, das Ergebnis kann sich mit mehr Daten ändern.*
+
+-   Angenommen die Teilnehmer:innen hätten sich sehr gut gekannt. Würde sich das Ergebnis ändern?
+
+    -   *Antwort: Es ist wahrscheinlich, dass wenn sich die Teilnehmer:innensehr gut kennen, sie sich seicherer sind die Lüge zu erkennen.*
+
+## Verzerrung
+
+Insgesamt - also ohne Betrachtung der Sicherheit - liegen `r prop( ~ Richtig, data = EineLuege)` richtig:
+
+```{r}
+prop( ~ Richtig, data = EineLuege)
+```
+
+#### Fragen
+
+-   Heißt dass, das $p=`r prop( ~ Richtig, data = EineLuege)`$ in der Stichprobe die Lüge erkannt haben?
+
+    -   *Antwort: Ja. (53,3% der Teilnehmer:innen, im aktuellen Datensatz, haben die Lüge erkannt)*
+
+-   Angenommen wir hätten nur Daten von Teilnehmenden, die sich sehr sicher waren (z.B. `Sicherheit` von 8 oder höher). Kann sich dann das Ergebnis ändern?
+
+    -   *Antwort: Ja, das Ergebnis kann sich ändern, da wir nur einen Teil des Datensatzes (mit extremen Werten in einer Variable) betrachten.*
+
+------------------------------------------------------------------------
+
+Über `filter()` können Beobachtungen (= Zeilen) anhand eines Kriteriums ausgewählt werden.
+
+```{r}
+EineLuege_sicher <- EineLuege |>
+  filter(Sicherheit >= 8)
+```
+
+#### Fragen
+
+-   Wird die neue Datentabelle `EineLuege_sicher` mehr oder weniger Beobachtungen haben als die Datentabelle `EineLuege`?
+
+    -   *Antwort: Weniger, danur einen Subdatensatz betrachtet wird.*
+
+-   Ändern Sie den folgenden Code entsprechend, um den Anteil der Richtigen unter denjenigen, die eine `Sicherheit` von 8 oder höher haben, zu berechnen. Wie hoch ist der Anteil?
+
+```{r}
+# Anteil (in aktuellen Datensatz): 68,4%
+prop( ~ Richtig[Sicherheit >= 8], data = EineLuege)
+```
+
+## Zusammenhang Sicherheit und Richtig
+
+Den Zusammenhang können wir darstellen
+
+```{r}
+gf_bar( ~ Sicherheit, fill = ~ Richtig, position = "fill", 
+        data = EineLuege)
+```
+
+#### Fragen
+
+-   Wie würden Sie den Zusammenhang beschreiben?
+
+    -   *Antwort (Richtig = Nein): Negativer linearer Zusammenhang. Je sicherer sich eine Person im Durchschnitt ist, die Lüge erkannt zu haben, desto weiter sinkt die Anzahl der nicht erkannten Lügen.*
+
+    -   *Antwort (Richtig = Ja): Positiver linearer Zusammenhang. Je sicherer sich eine Person im Durchschnitt ist, die Lüge erkannt zu haben, desto eher wird die Lüge erkannt.*
+
+-   Wie sähe die Abbildung aus, wenn es keinen Zusammenhang geben würde?
+
+    -   *Antwort: Der Graph wäre bis zu count = 0.5 (untere Hälfte) blau gefärbt und ab count = 0.5 (obere Hälfte) rot gefärbt.*
