@@ -1,0 +1,216 @@
+---
+title: "5a_Musterlösung"
+lang: de
+date: last-modified
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+set.seed(1896) # Zufallszahlengenerator festlegen
+```
+
+# Entfernung zum Studienzentrum
+
+Zu Beginn des Sommersemesters 2022 wurden in 5 Kursen Studierende der FOM in einem freiwilligen, anonymen Online-Fragebogen nach Ihrem Fahrtweg zum Studienzentrum gefragt.
+
+Die genaue Frage lautet:
+
+> Wie weit (gerundet auf ganze km) ist Ihr üblicher Fahrtweg zum Studienzentrum?
+
+Die Antworten darauf liegen in der Datei `results-survey592526.csv` vor.
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "results-survey592526.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Datei (inkl. Pfad)
+pfad_entfernung <- here("data", "results-survey592526.csv")
+# Daten einlesen
+Umfrage <- read.csv2(pfad_entfernung)
+# Datenstruktur
+str(Umfrage)
+# Obere Beobachtungen
+head(Umfrage)
+```
+
+#### Fragen
+
+-   Wie viele Beobachtungen hat die Datentabelle?
+
+    -   *Antwort: 105 Beobachtungen*
+
+-   Wie viele Variablen hat die Datentabelle?
+
+    -   *Antwort: 1 Variable*
+
+-   Welches Skalenniveau hat die Variable `Entfernung`?
+
+    -   *Antwort: metrisch*
+
+-   Auf welche Zielpopulation kann das Ergebnis generalisiert werden?
+
+    -   *Antwort: Studierende an der FOM.*
+
+## Analyse Entfernung
+
+### Grafisch
+
+```{r}
+# Histogramm
+gf_histogram( ~ Entfernung, data = Umfrage)
+```
+
+#### R Übung
+
+-   Passen Sie das Histogramm über `center =` und `binwidth =` so an, dass Ihrer Meinung nach zentrale Eigenschaften der Verteilung gut sichtbar sind.
+
+```{r}
+# Histogramm
+gf_histogram( ~ Entfernung, data = Umfrage, center = 0.5, binwidth = 1) #2,4?
+```
+
+#### Fragen
+
+-   Wie würden Sie die Verteilung beschreiben?
+
+    -   *Antwort: Eine rechtsschiefe Verteilung.*
+
+### Kennzahlen
+
+Es ergeben sich folgende Statistiken der Stichprobe:
+
+```{r}
+favstats( ~ Entfernung, data = Umfrage)
+```
+
+Betrachten wir besonders den arithmetischen Mittelwert:
+
+```{r}
+mw_Umfrage <- mean( ~ Entfernung, data = Umfrage)
+```
+
+$$\bar{x}=`r round(mw_Umfrage, 2)`$$
+
+#### Fragen
+
+-   Ist *Ihre* Entfernung zum Studienzentrum *überdurchschnittlich*?
+
+    -   *Individuelle Antwort.*
+
+-   Hat eine Mehrheit in der Stichprobe eine *überdurchschnittliche* Entfernung?
+
+    -   *Antwort: Nein, denn der Median liegt bei 20.*
+
+-   Wird für den Mittelwert der Zielpopulation gelten $\mu = `r round(mw_Umfrage, 2)`$?
+
+    -   *Antwort: Nein.*
+
+-   Wird bei einer erneuten Stichprobe aus derselben Zielpopulation das Ergebnis wieder $\bar{x}=`r round(mw_Umfrage, 2)`$ lauten?
+
+    -   *Antwort: Nein, mit sehr großer Wahrschinlichkeit wird der Wert abweichen.*
+
+## Re-Sampling
+
+Das Ergebnis bei einer anderen Stichprobe wird vermutlich leicht anders sein, als das der vorhandenen Stichprobe.
+
+Simulieren wir das zufällige Ziehen einer Stichprobe aus einer Population (= hier alle Studierenden der befragten Kurse) durch zufälliges Re-Sampling der Stichprobe.
+
+`do(3)*` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein zufälliges Re-Sample - mit Zurücklegen.
+
+```{r}
+do(3)* mean( ~ Entfernung, data = resample(Umfrage))
+```
+
+#### Fragen
+
+-   Variiert der arithmetische Mittelwert bei zufälligen Re-Samples?
+
+    -   *Antwort: Ja, da die Re-Samples durch das Ziehen mit Zurücklegen unterschiedlich zusammengesetzt sind.*
+
+-   Erhöht Re-Sampling den ursprünglichen Stichprobenumfang?
+
+    -   *Nein, beim Bootstraping wird die Anzahl der Beobachtungen nicht verändert.*
+
+------------------------------------------------------------------------
+
+Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
+
+```{r}
+Bootvtlg <- do(10000) * mean( ~ Entfernung, data = resample(Umfrage))
+# Obere Beobachtungen
+head(Bootvtlg)
+```
+
+Die Verteilung der Variable `mean`, d.h., des arithmetischen Mittelwerts in den Re-Samples aus der Datentabelle `Bootvtlg` kann auch über ein Histogramm dargestellt werden:
+
+```{r}
+gf_histogram( ~ mean, data = Bootvtlg)
+```
+
+#### Fragen
+
+-   Welche Verteilungsform zeigt das Histogramm des Mittelwertes der Entfernung in den Re-Samples?
+
+    -   *Antwort: Es zeigt eine Normalverteilung.*
+
+-   Wo liegt das Zentrum der Verteilung?
+
+    -   *Antwort: Das Zentrum liegt bei 25 km.*
+
+### Standardfehler
+
+Wie bereits erwähnt: Werden verschiedene Stichproben aus einer Population gezogen, so variiert auch eine Statistik, die auf Basis der Stichprobe berechnet wird. Daher sind wir unsicher, wenn wir von einer Stichprobe auf die Population schließen. Der Standardfehler gibt die Standardabweichung der Statistik bei zufälligen Stichproben an. Wir können ihn schätzen über die Standardabweichung (`sd()`) der Variable `mean` in unseren zufälligen Re-Samples.
+
+```{r}
+se <- sd( ~ mean, data = Bootvtlg)
+se
+```
+
+#### Fragen
+
+-   Beschreibt der Standardfehler die Streuung der Beobachtungen?
+
+    -   *Antwort: Nein, der Standardfehler beschreibt die Streuung der errechneten Mittelwerte.*
+
+-   Wann wird der Standardfehler kleiner?
+
+    -   *Antwort: Der Standardfehler wird kleiner, wenn neue Beobachtungen zum Datensatz hinzukommen.*
+
+### Konfidenzintervall
+
+Außerdem können wir unsere Schätzunsicherheit für den wahren Mittelwert $\mu$ durch ein Konfidenzintervall beschreiben. Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das 97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
+
+```{r}
+ki95 <- qdata( ~ mean, data = Bootvtlg, p = c(0.025, 0.975))
+ki95
+```
+
+Eingezeichnet:
+
+```{r}
+gf_histogram( ~ mean, data = Bootvtlg) |>
+  gf_vline(xintercept = ki95)
+```
+
+#### Fragen
+
+-   Stimmt die Aussage: Mit einer Wahrscheinlichkeit von 95% wird der Wert einer Beobachtung $x_i$ zwischen `r qdata( ~ mean, data = Bootvtlg, p = 0.025)` und `r qdata( ~ mean, data = Bootvtlg, p = 0.975)` liegen?
+
+    -   *Antwort: Nein. 1. Es müsste "Mittelwert einer Bootstrap-Stichprobe* $\mu_i$*" und nicht "Wert einer Beobachtung* $x_i$*" heißen. 2. Die frequentistisch korrekte Interpretation eines KIs lautet, dass der Mittelwert einer Bootstrap-Stichprobe* $\mu_i$ *in 95% der Fälle in den Grenzen des KIs liegt.*
+
+-   Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu bestimmen. Wird das Konfidenzintervall schmaler oder breiter?
+
+```{r}
+qdata( ~ mean, data = Bootvtlg, p = c(0.005, 0.995))
+```
