@@ -1,7 +1,6 @@
 ---
 title: "1b_Musterlösung"
 lang: de
-author: "Celine Widera"
 date: last-modified
 format: 
   html:
