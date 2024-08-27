@@ -1,7 +1,7 @@
 ---
-title: "Schlaganfallrisiko"
+title: "Lösungsskizze: Schlaganfallrisiko"
 lang: de
-author: "FOM-Dozierende und Mitarbeiter:innen"
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: last-modified
 format: 
   html:

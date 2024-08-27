@@ -1,6 +1,7 @@
 ---
-title: "5b_Musterlösung"
+title: "Lösungsskizze: Covid-19 Impfung"
 lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: last-modified
 format: 
   html:

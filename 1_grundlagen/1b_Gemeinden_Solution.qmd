@@ -1,6 +1,7 @@
 ---
-title: "1b_Musterlösung"
+title: "Lösungsskizze: Bevölkerung Deutscher Gemeinden"
 lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: last-modified
 format: 
   html:
