@@ -1,0 +1,312 @@
+---
+title: "Lösungsskizze: Kausale Modellierung"
+lang: de
+execute:
+  warning: false
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: last-modified
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+---
+
+## Verwendete Pakete
+
+```{r}
+#| label: setup
+
+library(here)         # Pfad-Handling
+library(dplyr)        # Datenhandling
+library(tidyr)        # "tidy" Datenformat 
+library(ggplot2)      # Grammar of Graphics
+library(ggformula)    # Pipelining und Formelinterface für ggplot2
+library(dagitty)      # DAGs erzeugen
+library(ggdag)        # DAGs mit ggplot2
+library(ggfortify)    # automatische Übertragung verschiedener Formate in ggplot2
+library(gridExtra)    # Anordnung mehrerer ggplot2-Objekte
+```
+
+## Warum brauchen wir die kausale Modellierung?
+
+Kausale Modellierung hilft, den datengenerierenden Prozess nachvollziehen zu können.
+So können idealerweise kausale Wirkungen auch aus Beobachtungsstudien abgeleitet werden.
+Unabhängig davon hilft die kausale Modellierung aber, Verzerrungen (*Bias*) zu vermeiden, z. B. durch fehlende Variablen oder nicht-zufällige Stichproben.
+
+Der hier gewählte Ansatz zur kausalen Modellierung nutzt sogenannte Directed Acyclic Graphs (DAGs).
+In diesen werden qualitative, kausale Modellannahmen dargestellt.^[siehe Pearl (2009)]
+
+Cunningham^[siehe Cunningham (2021), S. 98] gibt dazu eine praxisorientierte Definition: 
+Ein DAG ist eine theoretische Darstellung der Forschungsfrage, die auf dem aktuellen Wissensstand zu einer Fragestellung beruht. 
+Mögliche Quellen sind daher u. a. theoretische Konzepte, aktuelle Beiträge in der wissenschaftlichen Literatur, eigene Beobachtungen und Erfahrungen sowie Diskussionen mit Expert:innen.
+
+
+## Grundelelemente der DAGs
+
+In DAGs werden kausale Beziehungen durch einen Pfeil ausgedrückt:
+
+- $X \rightarrow Y$
+
+$X$ kann kausal auf $Y$ wirken, aber $Y$ nicht auf $X$.
+$X$ ist ein Elternteil (*parent*) von $Y$, $Y$ ein Kind (*child*) von $X$.
+
+Aus drei Variablen können folgende Grundelemente der DAGs gebildet werden:
+
+- Chain (Kette): $X \rightarrow C \rightarrow Y$
+- Fork (Gabel): $X \leftarrow C \rightarrow Y$
+- Inverted Fork (umgedrehte Gabel): $X \rightarrow C \leftarrow Y$
+
+In der Chain ist $X$ jetzt ein Vorfahre (*ancestor*) von $Y$ und $Y$ ein Nachfahre (*descendant*) von $X$.
+
+
+## Grundelemente am Beispiel
+
+Als Beispiel wird der Datensatz `kreditstatus.csv`^[Die Daten stammen ursprünglich von Lending Club, wurden durch DataCamp bearbeitet und bereitgestellt und hier mit einigen weiteren Modifikationen eingesetzt. Lending Club ist ein Peer-to-Peer-Kreditvermittler, der Daten zu angenommenen und abgelehnten Krediten über viele Jahre frei veröffentlicht hat. Mittlerweile ist der Zugriff nicht mehr möglich. Eine wichtige Änderung in der Datentabelle im Vergleich zu den Originaldaten betrifft den Kreditstatus, der ursprünglich statt Ausfall (ja/nein) den Kreditstatus (laufend/zurückgezahlt/ausgefallen) gezeigt hat -- daraus wurden nur die Datensätze mit Status *zurückgezahlt* und *ausgefallen* auswählt. ] genutzt, der folgende Variablen enthält:
+
+Variable | Bedeutung 
+--- | ---  
+`ausfall` | Zahlungsausfall: nein -- kein Zahlungsausfall, ja -- Zahlungsausfall
+`betrag` | Kredithöhe in USD
+`zins` | Zinssatz in %
+`(n)bonitaet` | Ergebnis der Kreditwürdigkeitsprüfung: A (7) -- höchste Bonität, G (1) -- niedrigste Bonität
+`alter` | Alter in Jahren
+`wohnen` | Wohnstatus: Eigentum, Grundschuld, Miete, Sonstige
+`arbeit` | Dauer des Anstellungsverhältnisses in Jahren^[Hinweis: Hier gibt es einige unplausible Werte, z. B. im Alter von 23 schon über 60 Jahre im Anstellungsverhältnis.]
+`einkommen` | jährliches Einkommen in 1000 USD
+
+
+## Laden und Vorbereiten des Datensatzes
+
+
+```{r}
+# Einlesen des Datensatzes
+KRED <- read.csv2(here("data", "Kreditstatus.csv"))
+# Kategoriale Variablen in Faktoren umwandeln
+KRED <- KRED |> mutate(
+  ausfall = factor(ausfall, levels = c("nein", "ja")),
+  bonitaet = as.factor(bonitaet),
+  wohnen = as.factor(wohnen)
+)
+# Ergänzen einer diskret numerischen Variable
+KRED <- KRED |> mutate(nbonitaet = as.integer(bonitaet))
+# Reihenfolge der Stufen umkehren
+KRED <- KRED |> mutate(nbonitaet = max(nbonitaet) + 1 - nbonitaet)
+# erste Beobachtungen zeigen
+head(KRED)
+```
+
+Bonität wird (weiter unten für die Übersichtlichkeit) zusätzlich als numerische Variable angelegt.
+
+## Explorative Datenanalyse
+
+### Your turn
+
+- Führen Sie eine explorative Datenanalyse durch.
+
+```{r}
+mosaic::inspect(KRED)
+```
+
+
+## Chain
+
+Vermutlich wird sich das Alter (`alter`) positiv auf das Einkommen (`einkommen`) auswirken.
+Ein höheres Einkommen wird zur einer geringeren Ausfallwahrscheinlichkeit (`ausfall`) führen.
+Einkommen ist hier ein *Mediator* zwischen Alter und Bonität.
+
+```{r}
+#| label: figChain
+
+# Koordinaten festlegen
+co <- data.frame(x = c(0, 1, 2), y = c(0, 0, 0), 
+                 name = c("alter", "einkommen", "ausfall"))
+# DAG erzeugen und ausgeben
+dagify(ausfall ~ einkommen,
+       einkommen ~ alter,
+       coords = co) |> 
+  ggdag(text_size = 2) |> 
+  # Hintergrund entfernen 
+  gf_theme(theme_dag_blank())
+  # statt |> ... geht auch + theme_dag_blank
+```
+
+*Hinweis:* Ohne Koordinaten werden die Elemente zufällig angeordnet. 
+Dann empfiehlt es sich für die Reproduzierbarkeit, `set.seed(...)` zu nutzen.
+
+## Fork
+
+In einer Fork haben zwei Variablen eine gemeinsame Ursache.
+Im Beispieldatensatz kann das die Variable Alter sein, die auf das Einkommen und die Dauer des Anstellungsverhältnisses (`arbeit`) wirkt.
+Alter ist dann ein sogenannter *Confounder*.
+
+### Your turn: DAG einer Fork
+
+- Erzeugen Sie den entsprechenden DAG.
+
+```{r}
+#| label: figFork
+
+# Koordinaten festlegen
+co <- data.frame(x = c(1, 2, 3), y = c(0, 1, 0), 
+                 name = c("einkommen", "alter", "arbeit"))
+# DAG erzeugen und ausgeben
+dagify(arbeit ~ alter,
+       einkommen ~ alter,
+       coords = co) |> 
+  ggdag(text_size = 2) |> 
+  # Hintergrund entfernen 
+  gf_theme(theme_dag_blank())
+
+```
+
+
+## Inverted Fork
+
+In einer Inverted Fork gehen die Pfeile in die entgegengesetzte Richtung.
+Jetzt gibt es eine gemeinsame Wirkung der zwei Variablen.
+Im Beispiel kann das die Ausfallwahrscheinlichkeit, die nicht nur vom Einkommen abhängt, sondern möglicherweise auch vom Alter.
+Die Ausfallwahrscheinlichkeit ist ein sogenannter *Collider*.
+
+### Your turn: DAG einer Inverted Fork
+
+- Erzeugen Sie den entsprechenden DAG.
+
+```{r}
+#| label: figInvFork
+
+# Koordinaten festlegen
+co <- data.frame(x = c(0, 1, 2), y = c(1, 0, 1), 
+                 name = c("alter", "ausfall", "einkommen"))
+# DAG erzeugen und ausgeben
+dagify(ausfall ~ einkommen,
+       ausfall ~ alter,
+       coords = co) |> 
+  ggdag(text_size = 2) |> 
+  # Hintergrund entfernen 
+  gf_theme(theme_dag_blank())
+
+```
+
+
+### Your turn: DAG mit allen Variablen
+
+- Erzeugen Sie einen DAG mit allen Variablen im Datensatz.
+
+```{r}
+#| label: figDAGall
+
+# Die Elemente werden zufällig angeordnet, daher reproduzierbar machen
+set.seed(4711)
+dagify(arbeit ~ alter,
+       einkommen ~ arbeit + alter,
+       bonitaet ~ alter + einkommen + wohnen + arbeit,
+       zins ~ bonitaet,
+       ausfall ~ alter + arbeit + einkommen + betrag + bonitaet + zins) |> 
+  ggdag(text_size = 2) |> 
+  gf_theme(theme_dag_blank())
+```
+
+
+## Effekte in einer Chain, Fork und Inverted Fork
+
+Es soll jeweils die Wirkung von $X$ auf $Y$ bestimmt werden.
+
+Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet.
+
+### Your turn: Paradoxa
+
+- Recherchieren Sie: *Simpson*- und *Berkson*-Paradoxa.
+
+### Your turn: Modell `ausfall ~ nbonitaet` 
+
+- Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und Hintertüren.
+
+  - Vordertüren (Pfeile zeigen in die richtige Richtung)  
+    `bonitaet` $\rightarrow$ `ausfall`  
+    `bonitaet` $\rightarrow$ `zins` $\rightarrow$ `ausfall`  
+    (Chain, `zins` nicht mit ins Modell aufnehmen)
+  - Hintertüren (mindestens ein Pfeil in die falsche Richtung)  
+    `bonitaet` $\leftarrow$ `alter` $\rightarrow$ `ausfall`  
+    `bonitaet` $\leftarrow$ `arbeit` $\rightarrow$ `ausfall`  
+    `bonitaet` $\leftarrow$ `einkommen` $\rightarrow$ `ausfall`  
+    `bonitaet` $\leftarrow$ diverse Kombinationen $\rightarrow$ `ausfall`  
+    (alle Hintertüren sind Forks, daher müssen `alter`, `arbeit` und `einkommen` mit in das Modell aufgenommen werden)
+  
+- Bestimmen Sie das Modell, das den totalen kausalen Effekt von `nbonitaet` auf `ausfall` wiedergibt.
+
+  `ausfall ~ nbonitaet + alter + arbeit + einkommen`
+  
+- Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`. *Hinweis*: Da `ausfall` eine binäre kategoriale Variable ist, wird hier die logistische Regression genutzt.
+
+```{r}
+KRED.mod1 <- glm(ausfall ~ nbonitaet + alter + einkommen + arbeit, 
+                 data = KRED, family = binomial(logit))
+summary(KRED.mod1)
+```
+
+- Welche Variablen dürfen Sie interpretieren?
+
+   nur `nbonitaet`  
+   Der Koeffizient kann direkt nur mit dem Vorzeichen interpretiert werden, hier negativ, die Ausfallwahrscheinlichkeit nimmt ab.
+  
+   Die Chance, wenn sich `nbonitaet` um eine Einheit erhöht, ändert sich im Modell der Stichprobe im Mittel um $e^\text{Koeffizient}$:
+  
+```{r}
+coef(KRED.mod1) |> exp()
+```
+  
+  
+- Gibt es noch offene Pfade anderer Variablen zur abhängigen Variable $Y$, auf denen die Pfeile in die richtige Richtung zeigen? Was sollte damit passieren?
+
+  `betrag` zeigt nur auf `ausfall`, kann daher in das Modell aufgenommen werden, um die Erklärungsgüte zu erhöhen (hier gemessen in AIC)
+
+```{r}
+KRED.mod2 <- glm(ausfall ~ nbonitaet + alter + einkommen + arbeit + betrag, 
+                 data = KRED, family = binomial(logit))
+summary(KRED.mod2)
+```
+
+AIC ist etwas höher, die Erklärungsgüte verbessert sich also nicht.
+Daher sollte die Variable *nicht* mit in das Modell aufgenommen werden.
+
+Der Koeffizient von `nbonitaet` ändert sich nur in den hinteren Nachkommastellen, daher scheint der aufgestellte DAG diesbezüglich korrekt zu sein.
+
+## Bias
+
+Verzerrungen können auftreten, wenn ...
+
+- Variablen (Confounder) im Modell fehlen: *Omitted-Variable-Bias*;
+- Collider oder Nachfahren eines Colliders in das Modell aufgenommen werden: *Collider-Bias*; 
+  auch die Verzerrung durch die Stichprobenwahl (*Sample-Selection-Bias*) ist häufig ein Collider-Bias;
+- Messfehler in den unabhängigen Variablen vorliegen;
+- simultane Kausalität vorliegt.
+
+### Your turn: Verzerrungen im Modell `arbeit ~ alter`
+
+Es gilt der DAG mit allen Variablen (siehe oben).
+Der Einfluss des Alters auf die Arbeitszeit soll untersucht werden.
+
+- Berechnen Sie ein lineares Regressionsmodell `arbeit ~ alter` unter Berücksichtigung der notwendigen Kontrollvariablen, um eine mögliche Verzerrung auszuschließen.
+
+   Die Variablen `einkommen`, `ausfall` und `bonitaet` sind Collider jeweils in einer Inverted Fork und dürfen daher nicht mit in das Modell aufgenommen werden.
+
+```{r}
+lm(arbeit ~ alter, data = KRED) |> coef()
+```
+
+
+- Berechnen Sie dasselbe Regressionsmodell, nehmen aber nur eine Teilstichprobe mit einem Einkommen zwischen 50 und 100 Tausend USD. Vergleichen Sie die Koeffizienten der beiden Regressionen.
+
+```{r}
+lm(arbeit ~ alter, data = KRED |> filter(einkommen > 50 & einkommen <= 100)) |> coef()
+KRED |> filter(einkommen > 50 & einkommen <= 100) |> nrow()
+```
+
+- Vermutlich hat sich der Koeffizient für `alter` geändert. Was ist der Grund dafür?
+
+   Sample-Selection-Bias: Verzerrung durch Auswahl der Stichprobe nach einem Collider.
+

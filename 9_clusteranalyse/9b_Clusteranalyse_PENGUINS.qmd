@@ -1,0 +1,235 @@
+---
+title: "PENGUINS Datensatz (Clusteranalyse)"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(cluster)
+library(palmerpenguins)
+penguins <- na.omit(penguins) # Ausschluss von Fehlwerten
+set.seed(1896) # Zufallszahlengenerator
+```
+
+# Hintergrundwissen zum PENGUINS Datensatz
+
+Über den Befehl `penguins` können Sie in R auf den PENGUINS Datensatz zugreifen. Im PENGUINS Datensatz befinden sich insgesamt 333 Beobachtungen von insgesamt drei verschiedenen Pinguinarten. Die unterschiedlichen Pinguinarten werden dabei als Adelie, Chinstrap und Gentoo bezeichnet. Von den insgesamt acht hinterlegten Merkmalsvariablen sind vier für die Unterscheidung der verschiedenen Pinguinarten zweckdienlich: Die `bill_length_mm` und die `bill_depth_mm` sind Längenangaben zur Vermessung des Schnabels der Pinguine und jeweils in Millimetern (mm) hinterlegt. Auch die Flügel sind als Merkmalsvariable `flipper_length_mm` in Millimetern (mm) hinterlegt. Das Gewicht der Pinguine ist schließlich in der Merkmalsvariable `body_mass_g` in Gramm (g) hinterlegt.
+
+Dieser Fallstudie liegen zwei Fragestellungen zugrunde:
+
+> (1) Wie unterscheiden sich Adelie, Chinstrap und Gentoo in den Ausprägungen der Merkmalsvariablen?
+
+> (2) Fallen die Unterschiede deutlich genug aus, um erkennen zu können, dass es sich um drei verschiedene Pinguinarten handelt?
+
+Dafür wird in dieser Fallstudie die Clusteranalyse vorgestellt. Die Clusteranalyse kommt bspw. in der Markt- und Meinungsforschung zur Anwendung. Dort geht es dann selbstverständnlich nicht um Schwertlilienarten, sondern bspw. um Kundinnen und Kunden, die zwar allesamt verschieden sein können, von denen sich einige aber doch so sehr ähneln können, dass es sich lohnen könnte, diese zu einem Cluster, d.h. zu einer Gruppe von ähnlichen Kundinnen und Kunden, zusammenzufassen. Dies ermöglicht bspw. die Entwicklung effizienter Marketingstrategien.
+
+# Datenverständnis
+
+## Univariate Statistik des PENGUINS Datensatzes
+
+Einen ersten Einblick in den PENGUINS Datensatz über die Ausweisung der Minimum- und Maximumwerte sowie Median und Mean als ausgewählte Lagemaße der Merkmalsvariablen ist über den Befehl `df_stats (...)` möglich. Alternativ könnte natürlich auch der Befehl `inspect(...)` genutzt werden. Diese deskriptiven Kennwerte beziehen sich zunächst auf alle Pinguinarten und ermöglichen daher noch keinen Einblick in die Ausprägungen der Merkmalsvariablen innerhalb der verschiedenen Pinguinarten:
+
+```{r}
+# Deskriptive Kennwerte des PENGUINS Datensatzes (UV)
+df_stats( ~ bill_length_mm + bill_depth_mm
+          + flipper_length_mm + body_mass_g,
+              data = penguins, min, median, mean, max)
+```
+
+Der Befehl `tally(...)` ermöglicht darüber hinaus eine erste tabellarische Übersicht über die Anzahl an verschiedenen Pinguinarten:
+
+```{r}
+#| warning: false
+# Deskriptive Kennwerte des PENGUINS Datensatzes (AV)
+tally( ~ species, data = penguins)
+```
+
+#### Fragen
+
+- Vergleichen Sie `bill_length_mm` mit `bill_depth_mm`. Welche Merkmalsvariable ist länger?
+
+- Wie viele Fälle der verschiedenen Pinguinarten liegen jeweils vor?
+
+## Univariate Statistik, ausdifferenziert nach Pinguinarten
+
+Mit dem Befehl `df_stats(...)` lassen sich die Ausprägungen der Merkmalsvariablen selbstverständlich auch nach den verschiedenen Pinguinarten ausdifferenzieren Dies ermöglicht einen systematischen Vergleich der Ausprägungen der Merkmalsvariablen zwischen den verschiedenen Pinguinarten:
+
+```{r, warning = FALSE}
+df_stats(bill_length_mm + bill_depth_mm + flipper_length_mm
+         + body_mass_g ~ species, data = penguins, min, median, mean, max)
+```
+
+#### Fragen
+
+- Welche Pinguinart hat die längsten Flügel (`flipper_length_mm`)?
+
+- Welche Pinguinart weist die kürzeste `bill_depth_mm` auf?
+
+## Bivariate Statistik des PENGUINS Datensatzes
+
+Die Unterschiede zwischen den verschiedenen Pinguinarten lassen sich auch mittels Scatterplot grafisch darstellen In einem Scatterplot werden jeweils zwei der Merkmalsvariablen auf der Y-Achse und der X-Achse abgetragen. Dies ermöglicht der Befehl `gf_point(...)` inklusive farblicher Unterscheidung zwischen den verschiedenen Pinguinarten:
+
+```{r}
+# Scatterplot zur Visualisierung der Unterschiede
+gf_point(flipper_length_mm ~ body_mass_g, color = ~ species, data = penguins)
+```
+Es ist deutlich zu erkennen, dass sich die Pinguinart Gentoo in der rechten oberen Ecke zu konzentrieren und somit von den anderen beiden Pinguinarten zu unterscheiden scheint. Diese Erkenntnis in Verbindung mit den konkreten Werten aus der univariaten Statistik ermöglichen eine detaillierte Beschreibung der Pinguinart Gentoo.
+
+## Detaillierte Beschreibung der Pinguinarten
+
+Nun geht es darum, die aus der univariaten und bivariaten Statistik gewonnenen Erkenntnisse zu validieren. Hierbei kommt es auf die möglichst detaillierte Beschreibung der jeweiligen Pinguinarten an. Über den Befehl `filter(...)` in Verbindung mit den Vergleichsoperatoren `<=` sowie `>=` können die Ausprägungen der jeweiligen Pinguinarten in den entsprechenden Merkmalsvariablen spezifiziert werden.
+
+Die Pinguinart Gentoo ist bspw. die einzige Pinguinart, bei der die Ausprägungen in der Merkmalsvariable `flipper_length_mm` stets größer als der Wert `200` (hier: Minimum von 203) ist und die `body_mass_g` unterschreitet den Wert `4.000` (hier: Minimum von 3.950) nur einmalig und ganz knapp. Diese Bedingungen lassen sich über ein `&` entsprechend festhalten:
+
+```{r}
+# Beschreibung der Pinguinart Gentoo
+erste_pinguinart <-
+  filter(penguins, flipper_length_mm >= "203" & body_mass_g >= "3950")
+tally( ~ species, data = erste_pinguinart)
+```
+Dadurch kann über die detaillierte Beschreibung und als Folge der Ähnlichkeiten der einzelnen Beobachtungen innerhalb der Pinguinart Gentoo diese über den Befehl `tally(...)` vollständig (hier: 119 von 119) aufgerufen werden, wobei fälschlicherweise auch andere Pinguinarten mit aufgerufen werden. Über einen erweiterten Fokus auf die anderen Merkmalsvariablen lässt sich dieses Ergebnis jedoch weiter präzisieren. 
+
+#### R Übung
+
+Wenn auch bei den Pinguinarten Adelie und Chinstrap von Ähnlichkeiten zwischen den Beobachtungen innerhalb einer Pinguinart und somit von Unterschieden zwischen den verschiedenen Pinguinarten ausgegangen werden kann, dann müssten sich auch diese Pinguinarten über eine ähnliche Herangehensweise identifizieren lassen.
+
+- Wie unterscheiden sich Adelie und Chinstrap jeweils von den anderen Pinguinarten?
+
+- Wie viele Bobchtungen der Pinguinart Adelie, respektive Chinstrap, können Sie auf diese Weise aufrufen?
+
+- Wieso werden bei Adelie und Chinstrap so viele Beobachtungen einer anderen Pinguinart ebenfalls aufgerufen?
+
+Setzen Sie Ihre Erkenntnisse jeweils für Adelie und Chinstrap (jeweils ohne `#`) an der Stelle `IHRE_EINGABE` entsprechend ein. Orientieren Sie sich hierfür insbesondere an den Minimum- und Maximumwerten der Merkmalsvariablen:
+
+#### Ihre Lösung für Adelie und Chinstrap
+
+```{r}
+# Beschreibung der Pinguinart Adelie
+# zweite_pinguinart <- filter(penguins, IHRE_EINGABE)
+# tally( ~ species, data = zweite_pinguinart)
+```
+
+```{r}
+# Beschreibung der Pinguinart Chinstrap
+# dritte_pinguinart <- filter(penguins, IHRE_EINGABE)
+# tally( ~ species, data = dritte_pinguinart)
+```
+
+# Clusteranalyse
+
+## k-Means Clustering
+
+Die bisherige Datenanalyse diente dem Datenverständnis und war nur deshalb möglich, weil die Information über die drei verschiedenen Pinguinarten vorab in der Merkmalsvariable `species` hinterlegt war. Oftmals ist diese Information allerdings nicht vorab bekannt, bspw. bei der Kundensegmentierung: Kundinnen und Kunden sind nicht gleich, manche sind sich aber ähnlich. Bevor also die Frage nach den Ähnlichkeiten (oder Unterschieden) zwischen den Beobachtungen beantwortet werden kann, ist zunächst die Frage nach der Anzahl an zu unterscheidenden Gruppen von Kundinnen und Kunden zu beantworten.
+
+Bei den Pinguinarten waren drei Pinguinarten zu unterscheiden. Aber wie viele Gruppen wären bei einer Kundensegmentierung zu unterscheiden? Zur Beantwortung dieser Frage kann auf eine Clusteranalyse zurückgegriffen werden, die anhand des k-Means Clusterings und ebenfalls am PENGUINS Datensatz vorgestellt werden soll. Arten und Gruppen von Beobachtungen mit Ähnlichkeiten zueinander werden hierbei zu Clustern zusammengefasst.
+
+Das Ziel beim k-Means Clustering ist demnach die Einteilung eines Datensatzes in eine Anzahl `k` an Clustern, so dass die Summe der quadrierten Abweichungen von den Cluster-Schwerpunkten (hier besteht eine Analogie zu den Lagemaßen, respektive dem Mean-Wert) innerhalb eines jeden Clusters minimal ist.
+
+## Within Cluster Sum of Squares
+
+Within Cluster Sum of Squares (WCSS) ist eine Methode zur Bewertung der Qualität von Clustering-Ergebnissen und zur Vorabbestimmung der Anzahl `k` an Clustern. Dabei wird zunächst die Summe der quadratischen Abweichungen (Sum of Squares) aller Punkte innerhalb eines Clusters von dessen Zentrum ermittelt.
+
+Die Berechnung der WCSS beginnt damit, dass jeder Punkt im Datensatz einem bestimmten Cluster zugeordnet wird. Anschließend wird für jedes Cluster das Zentrum berechnet, das als der durchschnittliche Wert aller Punkte innerhalb des Clusters definiert ist. Dann wird die Summe der quadratischen Abweichungen jedes Punktes innerhalb des Clusters von seinem Zentrum berechnet und aufsummiert. Dies wird für jedes Cluster im Datensatz durchgeführt und die Ergebnisse werden addiert, um den Gesamtwert des WCSS zu erhalten.
+
+Ein niedriger WCSS-Wert bedeutet, dass die Punkte innerhalb jedes Clusters näher beieinander liegen und somit eine höhere Dichte aufweisen. Das bedeutet, dass das Clustering besser ist, da es klarere und besser definierte Cluster gibt. Ein hoher WCSS-Wert deutet hingegen darauf hin, dass die Punkte innerhalb jedes Clusters weiter auseinander liegen und somit eine geringere Dichte aufweisen, was darauf hinweisen kann, dass das Clustering schlechter ist.
+
+Zur Ermittlung der WCSS empfielt es sich, die relevanten Merkmalsvariablen zunächst zu standardisieren, bzw. zu z-transformieren. Dies kann über den Befehl `scale(...)` erreicht werden:
+
+```{r}
+# Relevante Merkmalsvariablen standardisieren
+z_penguins <- scale(penguins[c(3:6)])
+z_penguins <- as.data.frame(z_penguins)
+```
+
+Die Überprüfung der Standardisierung kann anschließend über die Befehle `mean(...)` und `sd(...)` erfolgen, wobei für alle standardisierten Variablen ein Mittelwerte  von `0` und eine Standadabweichung von `1` vorliegen sollte; Nachfolgend am Beispiel für die Merkmalsvariable `flipper_length_mm` dargestellt.
+
+Arithmetisches Mittel:
+
+```{r}
+# Arithmetisches Mittel
+round(mean( ~ flipper_length_mm, data = z_penguins))
+```
+Standardabweichung: 
+
+```{r}
+# Standardabweichung
+sd( ~ flipper_length_mm, data = z_penguins)
+```
+Nachfolgend soll die WCSS mit dem standardisierten PENGUINS Datensatz exemplarisch ermittelt werden. Hierbei wird wie folgt vorgegangen: Die Summe der quadratischen Abweichungen aller Punkte (`x`) innerhalb jedes Clusters von dessen Zentrum (`c`) lässt sich über die Anzahl der Fälle `n` und die Anzahl der Cluster `k` formal über folgende Optimierungsfunktion `J` minimieren:
+
+$$
+J = \sum_{j = 1}^k \sum_{i = 1}^n ||{( {x_i}^{(j)} - c_j )}||²
+$$
+
+Ausgehend von den vorherigen Analyseschritten kann für den PENGUINS Datensatz davon ausgegangen werden, dass die Clusteranzahl zwischen 1 und 10 (die Anzahl der vermuteten Cluster ist demnach vorab zu schätzen) liegen wird. In R ist die WCSS dabei wie folgt zu ermitteln:
+
+```{r}
+# Within Cluster Sum of Squares (WCSS) ermitteln
+set.seed(2000) # Zufallszahlengenerator
+wcss = vector()
+for (i in 1:10) wcss[i] <- sum(kmeans(z_penguins, i)$withinss)
+```
+
+Grafisch lässt sich die WCSS zusätzlich über den Befehl `gf_line(...)` abbilden. Da die Ermittlung der WCSS über eine voreingestellte Clusteranzahl zwischen 1 und 10 Clustern erfolgt ist, wird auch die Visualisierung für eine Clusteranzahl zwischen 1 und 10 vorgenommen. Die nachfolgende Abbildung wird auch `Ellenbogenknick-Grafik` genannt. An der Knickstelle flacht der fallende Verlauf deutlich ab, woraus sich ableiten lässt, dass ein zusätzliches Cluster den WCSS-Wert nicht mehr wesentlich senken wird. Die Knickstelle ist nachfolgend über die Befehle `gf_hline(...)` und `gf_vline(...)` hervorgehoben. Der X-Achse kann die somit ermittelte Anzahl `k` an Clustern entnommen werden:
+
+```{r}
+# Within Cluster Sum of Squares (WCSS) visualisieren
+gf_line(wcss ~ 1:10, xlab = "cluster") %>%
+  gf_hline(yintercept = 369.6527, linetype = 2) %>%
+    gf_vline(xintercept = 3, linetype = 2)
+```
+Demnach konnten 3 Cluster im PENGUINS Datensatz identifiziert werden.
+
+#### Fragen
+
+- Ist die Standardisierung der Merkmalsvariablen beim PENGUINS Datensatz erforderlich?
+
+- Wie verändert sich die Anzahl `k` an Clustern, wenn Sie die hier explizierten Schritte ohne vorherige Standardisierung wiederholen?
+
+## Clusterlösung
+
+Da im PENGUINS Datensatz mehr Merkmalsvariablen als für die Clusteranalyse erforderlich enthalten sind, wird der Fokus zunächst auf die entsprechenden Merkmalsvariablen gelegt:
+
+```{r}
+# K-Means Clustering
+uv <- z_penguins
+av <- penguins[c(1)]
+penguins_cluster <- cbind(uv,av)
+```
+
+Schließlich kann das k-Means Clustering unter Spezifizierung der Anzahl `k` an Clustern durchgeführt werden. Hierfür steht der Befehl `kmeans(...)` zur Verfügung. Der Befehl `clusplot(...)` visualisiert die Clusterlösung entsprechend:
+
+```{r}
+# K-Means Clustering
+k_means_cluster <- kmeans(penguins_cluster[,-5], 3, nstart=20)
+clusplot(penguins_cluster, k_means_cluster$cluster,
+         color = TRUE, shade = TRUE, lines = 0)
+```
+
+Wie gut die verschiedenen Pinguinarten den jeweiligen Clustern zugeordnet worden sind, kann über den Befehl `table(...)` eingesehen werden:
+
+```{r}
+# Größe der identifizierten Cluster
+k_means_cluster$size
+```
+
+Demnach hat die Clusteranalyse die Anzahl `k` an Clustern im PENGUINS Datensatz korrekt identifiziert, hat aber Schwierigkeiten mit der Zuordnung der einzelnen Pinguinarten in die jeweiligen Cluster. Dies liegt daran, dass die Identifikation der Anzahl `k` an Clustern vornehmlich eine Aufgabe für die Clusteranalyse darstellt, wohingegen die Identifikation und Zuordnung als Klassifikationsverfahren auf andere Algorithmen setzen würde.
+
+#### R Übung
+
+- Was passiert, wenn Sie mehr als 3 Cluster im Befehl `kmeans(...)` spezifizieren?
+
+- Spezifizieren Sie 30 statt 20 Beobachtungen zum Start der Clusteranalyse im Befehl `kmeans(...)`. Wie verändert sich die Clusterlösung?
