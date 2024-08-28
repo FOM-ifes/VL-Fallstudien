@@ -2,8 +2,6 @@
 title: "Lösungsskizze: Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
-execute:
-  warning: false
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: last-modified
 format: 
@@ -16,10 +14,7 @@ format:
     number-sections: true
     colorlinks: true 
     papersize: a4
-bibliography: references.bib    
-editor: 
-  markdown: 
-    wrap: sentence
+bibliography: rf-references.bib
 ---
 
 ```{r}
@@ -173,7 +168,6 @@ head(bodyfat$groesse_m)
 
 # löschen der alten Variable
 bodyfat$Height <- NULL
-
 ```
 
 #### Gewicht in Kilogramm \[kg\]
@@ -251,9 +245,94 @@ bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
 
 # überprüfen der Eingabe
 head(bodyfat$bmi)
-
 ```
 
+
+### Werte auf Plausibilität prüfen
+
+
+Wie in der Graphik zu Verteilung der Körpergröße aufgefallen gibt es einen nicht plausiblen Wert.
+
+
+```{r}
+#| label: plausibility-check
+
+# Körpergröße
+favstats(~groesse_m, data = bodyfat)  # Körpergröße von 75 cm nicht plausibel
+
+# BMI
+favstats(~bmi, data = bodyfat)  # ein sehr hoher Wert von 145 
+
+subset(bodyfat, bmi > 140) # Zeige nur Datenzeilen mit bmi > 160
+                           # Beobachtung 42 
+ 
+# nicht plausibel - Beobachtung entfernen! 
+bodyfat <- bodyfat[-42, ] # entfernen der Beobachtung
+
+# Größe und Gewicht
+favstats(~groesse_m, data = bodyfat)
+favstats(~gewicht_kg, data = bodyfat)
+```
+
+
+### Check Ausreißer
+
+Überprüfung weiterer Ausreißer kann z.B. mittes Boxplots erfolgen.
+
+```{r}
+#| label: outlier
+
+dataset <- bodyfat |>
+  pivot_longer(cols = 1:18, names_to = "variable", values_to = "values")
+
+
+options(repr.plot.width = 18, repr.plot.height = 14)
+
+gf_boxplot(values ~ variable, data = dataset, fill = "lightblue") %>%
+  gf_facet_wrap(~ variable, ncol = 3, scales = "free") %>%
+  gf_theme(strip.text.x = element_blank(),
+           text = element_text(size = 12))
+```
+
+
+
+____________________________________________________________
+
+
+::: {.callout-tip title="Aufgabe & Frage - Ausreißer"}
+1. Überprüfen Sie den Ausreißer der Variable `Biceps`. 
+
+  * Lösung:
+```{r}
+#| label: biceps
+subset(bodyfat,Biceps > 40)
+```
+
+
+2. Handelt es sich hierbei um einen plausiblen Wert?
+
+
+  * Lösung: ja, der Wert ist plausibel. Der Umfang passt zu den anderen Parametern.
+
+:::
+
+____________________________________________________________
+
+
+### Prüfen auf fehlende Werte
+
+Die Überprüfung auf fehlende Werte, welche imputiert werden sollten.
+
+```{r}
+#| label: NA
+
+# Überprüfen auf fehlende Werte
+sum(is.na(bodyfat))
+```
+
+
+=======
+>>>>>>> 1d942207c80ae5129d28bebfea76829146536d5f
 ### Data-Subset generieren
 
 Variablen aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
@@ -317,13 +396,63 @@ Im letzten Schritt hatte das Modell die Möglichkeit anhand des Trainingsdatensa
 Wie gut das dem Modell gelungen ist, kann man herausfinden, in dem man das Modell auf unbekannten Daten (Testdaten) Vorhersagen treffen lässt:
 
 ```{r}
+#| label: sqrt_mse
+
+round(sqrt(rf_model1$mse[500]), 2)
+```
+
+Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(rf_model1$mse[500]), 2)` %.   
+
+Bedenkt mensch, dass ein "normaler" Körperfettanteil im Bereich von 10 - 22 % (Männer) bzw. 20 - 30 % (Frauen) scheint `r round(sqrt(rf_model1$mse[500]), 2)` % recht niedrig.  
+ 
+:::
+
+____________________________________________________________
+
+
+
+## MSE und Out-of-bag error (OOB)
+
+Das Model des Random Forest wird mittels Bootstrap-Aggregation, das sog. Bagging traininert.
+D.h. jeder Baum wird aus einer Bootstrap-Stichprobe des Trainingsdatensatzes erstellt.
+
+Der Out-of-Bag (OOB) Fehler ist der durchschnittliche Fehler jeden einzelnen Baum/Bootstrapstichprobe $x_i$. 
+
+Da nicht alle Trainingsdaten für das Training des Modells verwendet werden, berechnet sich der Fehler berechnet sich der OOB aus der Vorhersage, der Stichproben bzw. Bäume, die nicht für das Modell genutzt wurden.
+
+Die folgende Graphik zeigt die Veränderung des OOB Fehlers mit jedem zusätzlich berechneten Baum. 
+
+
+```{r}
+#| label: plot_rf_model_error
+
+plot(rf_model1)
+```
+
+Die Graphik zeigt eine Stabilisierung des OOB Fehlers bei ca. 200 Bäumen. 
+
+
+## Modellgüte und Modellbewertung
+
+Oben haben wir bereits gesehen, dass Modellgütemaße quantifizieren, wie gut ein statistisches Modell zu den vorliegenden Daten passt. 
+Der Fokus dieser liegt oft auf der Prädiktionsfähigkeit des Modells liegt.  
+
+Die Modellgüte wird im Folgenden auf den Residuen basierend berechnet, welche eine Likelihood-Interpretation ermöglichen.
+
+
+Vorhersage des Körperfettanteils auf den Testdaten:
+
+```{r}
+#| label: predict
+
+=======
+>>>>>>> 1d942207c80ae5129d28bebfea76829146536d5f
 # Definition der Beobachteten Werte
 observed <- testData$bodyfat_siri
 
 # Vorhersage auf den Testdaten
 predictions <- predict(rf_model1, testData)
 predictions
-
 ```
 
 ## Modellgüte
@@ -498,7 +627,6 @@ Lassen Sie uns die wichtigsten Variablen identifizieren, die das erste (nicht ge
 # Wichtige Variablen
 importance <- importance(rf_model1)
 importance
-
 ```
 
 %IncMSE (Percent Increase in MSE): bezieht sich auf die prozentuale Zunahme des MSE.
@@ -517,7 +645,6 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
   gf_labs(title = "Variable Importance Modell1", 
           x = "Variables", 
           y = "Importance")
-
 ```
 
 ------------------------------------------------------------------------
@@ -528,7 +655,122 @@ Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat
 - Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
 ```{r}
+#| label: gf_point_observed_predicted
+#| warning: false
 
+df <- data.frame(observed = observed, predictions = predictions)
+
+# Streudiagramm der vorhergesagten vs. tatsächlichen Werte
+gf_point(predictions ~ observed, data = df) |> 
+  gf_lm(color = "red")|> 
+  gf_labs(title = "Vorhergesagt vs. Beobachtet",
+          x = "Beobachtete Werte",
+          y = "Vorhergesagte Werte") |>
+   gf_theme(theme_minimal())
+
+#ggf. 
+# gf_smooth()|>
+```
+
+
+
+##  Modelloptimierung
+
+
+Um das Modell zu verbessern, können wir verschiedene Parameter des Random Forest Modells anpassen oder Hyperparameter-Optimierung durchführen.
+
+Dafür benutzen wir wieder das Caret Paket.
+
+### Kreuzvalidierung
+
+Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
+
+
+**Vorgehen:**
+
+- der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt. 
+
+- es efolgt ein iteratives Training und Testen. 
+
+- in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
+
+- Ablauf wird k-fach (k-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
+
+
+Legen wir los:
+
+```{r}
+#| label: hypertuning
+
+# Hyperparameter-Tuning mit dem caret Paket
+control <- trainControl(method = "cv", number = 5)
+tuneGrid <- expand.grid(.mtry = c(2, 4, 6, 8, 10))
+
+# Trainieren des Modells mit Hyperparameter-Tuning
+set.seed(1896)
+rf_tuned <- train(bodyfat_siri ~ ., data = trainData, method = "rf", trControl = control, tuneGrid = tuneGrid)
+rf_tuned
+
+# Beste Parameter
+best_mtry <- rf_tuned$bestTune$mtry
+best_mtry
+
+# Vorhersage auf den Testdaten mit dem getunten Modell
+predictions_tuned <- predict(rf_tuned, testData)
+```
+
+
+
+
+
+#### Berechnung der Vorhersagegenauigkeit des getunten Modells
+
+```{r}
+#| label: hypertuning-2
+
+mse_tuned <- mean((predictions_tuned - testData$bodyfat_siri)^2)
+mse_tuned
+
+rmse_tuned <- sqrt(mse_tuned)
+rmse_tuned
+
+```
+
+
+#### Vergleich der Modelle
+
+Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
+
+
+```{r}
+#| label: compare_models
+#| echo: false
+
+# Ursprungsmodel
+mse
+rmse
+
+#optimiertes Modell
+mse_tuned
+rmse_tuned
+```
+
+
+
+____________________________________________________________
+
+
+::: {.callout-tip title="Your-turn"}
+
+1. Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
+
+1a. Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
+
+  *Lösung: 
+```{r}
+=======
+
+>>>>>>> 1d942207c80ae5129d28bebfea76829146536d5f
 bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
 str(bodyfat_brozeck)
 ```
@@ -548,7 +790,6 @@ testData2 <- bodyfat_brozeck[-trainIndex, ]
 # Training des Random Forest Modells
 set.seed(42)
 rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData2, ntree = 500, importance = TRUE)
-
 
 # Überblick über das Modell
 rf_model2
@@ -573,6 +814,10 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance2, fill 
 - Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
 
 ```{r}
+
+rf_model1
+rf_model2
+
 # Modell 1
 mse
 
