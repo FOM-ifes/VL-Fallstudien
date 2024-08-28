@@ -1,0 +1,342 @@
+---
+title: "Lösungsskizze: Früherkennung - Inferenz"
+lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true
+    papersize: a4
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+# Zufallszahlengenerator festlegen
+set.seed(1896)
+# Vektor für \pi bereitstellen
+vpi <- seq(0,1, by = 1/1000)
+```
+
+# Einführung
+
+#### Frage
+
+Angenommen Sie gehen zu Ihrer Ärztin zu einer Routineuntersuchung. Sie
+haben keine Symptome.
+
+Ihnen wird ein diagnostischer Test für eine Krankheit vorgeschlagen, die
+1% der Bevölkerung betrifft.[^1]
+
+[^1]: Dies ist die *Prävalenz*.
+
+Wenn Sie erkrankt sind, wird dies mit einer Wahrscheinlichkeit von 80%
+richtig erkannt.[^2]
+
+[^2]: Dies ist die *Sensitivität*.
+
+Wenn Sie nicht erkrankt, also gesund sind, wird dies mit einer
+Wahrscheinlichkeit von 90% richtig erkannt.[^3]
+
+[^3]: Dies ist die *Spezifität*.
+
+-   Wie hoch ist die Wahrscheinlichkeit, bei einem positiven
+    Testergebnis erkrankt zu sein?
+
+    -   A: Ca. 90%
+    -   B: Ca. 85%
+    -   C: Ca. 80%
+    -   D: Ca. 7.5%
+
+------------------------------------------------------------------------
+
+## Satz von Bayes
+
+Ein paar Symbole:
+
+-   $K^+$: Krankheit liegt vor.
+-   $K^-$: Krankheit liegt nicht vor.
+-   $T^+$: Test postiv. (Testergebnis: krank)
+-   $T^-$: Test negativ.(Testergebnis: nicht krank)
+
+Dann liegt uns folgende Information aus der Aufgabe vor:
+
+-   $Pr(K^+) = 0.01$.
+-   $Pr(T^+ \mid K^+) = 0.8$.
+-   $Pr(T^- \mid K^-) = 0.9$.
+
+Da $Pr(K^+) + Pr(K^-)=1$ gelten muss, wissen wir außerdem das
+$Pr(K^-)= 1 - 0.01 = 0.99$ gilt.
+
+Was wir suchen ist die Wahrscheinlichkeit $Pr(K^+ \mid T^+)$.
+
+Der weltberühmte **Satz von Bayes**[^4] lautet hier:
+
+[^4]: Gutes Erklärvideo: <https://youtu.be/HZGCoVF3YvM>.
+
+$$Pr(K^+ \mid T^+)=\frac{Pr(T^+ \mid K^+) \cdot Pr(K^+)}{Pr(T^+)}$$
+$Pr(T^+)$ kann mit Hilfe des **Satzes der totalen Wahrscheinlichkeit**
+
+$$Pr(T^+) = Pr(T^+ \mid K^+) \cdot Pr(K^+) + Pr(T^+ \mid K^-) \cdot Pr(K^-)$$
+
+berechnet werden...
+
+Aber oft ist es leichter, mit natürlichen Häufigkeiten zu rechnen:
+Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen
+wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind
+-- und $1000-10=9990$ sind gesund.
+
+Von den $10$ Erkrankten erhalten
+$10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives
+Testergebnis.
+
+Von den $990$ Gesunden erhalten
+$990 \cdot \underbrace{0.1}_{1-Pr(T^-\mid K^-)} = 99$ fälschlicherweise
+ebenfalls ein positives Testergebnis.
+
+Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen
+aber nur $8$ korrekt sind, also
+
+$$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
+
+*Tipp*: Mit der App <https://fomshinyapps.shinyapps.io/riskyrApp-DE/>
+können Sie verschiedene Formen der Risikokommunikation ausprobieren.
+
+#### Frage
+
+-   Es gibt in der Zielpopulation der FOM-Studierenden dieses
+    Studienganges einen unbekannten Anteil $\pi$, der die obige Frage
+    richtig beantworten kann. Was schätzen Sie? Wie groß ist dieser --
+    und wie sicher sind Sie sich? Nutzen Sie zur Beantwortung dieser
+    Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> und
+    notieren Sie die ausgegeben Werte für $\alpha$ und $\beta$. Wenn für
+    Sie z. B. alle Werte für $\pi$ gleich plausibel sind, dann gilt
+    $\alpha=\beta=1$:
+
+*Hinweis*: Erklärung und Auflösung folgen weiter unten.
+
+```{r}
+#| label: Prior
+
+alpha_prior <- 1
+beta_prior <- 1
+```
+
+# Punktschätzung
+
+Geben wir das Ergebnis unseres Kurses ein:[^5]
+
+[^5]: *Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese
+    Zahlen müssen angepasst werden.
+
+```{r}
+#| label: Evidenz
+
+# Anzahl Beobachtungen:
+n <- 40
+# Anzahl Richtige:
+y <- 15
+```
+
+#### Frage
+
+-   Nur mit diesen Daten, der Stichprobe: Was würden Sie tippen, wie
+    groß ist der Anteil Richtige in der Zielpopulation? Ersetzen Sie den
+    unten fehlenden Wert (`NA`) für `pi_tipp`:
+
+```{r}
+#| label: Tipp
+
+pi_tipp <- 15/40
+pi_tipp
+```
+
+------------------------------------------------------------------------
+
+Unter der Bedingung, dass für jeden unser $n$ Versuche die gleiche
+Erfolgswahrscheinlichket $\pi$ vorliegt, kann die Wahrscheinlichkeit für
+$y$ Erfolge mit Hilfe einer **Binomialverteilung**
+($Y \sim Bin(n, \pi)$) berechnet werden:
+
+$$f(y) = Pr(Y=y) = \binom{n}{y} \cdot \pi^y \cdot (1-\pi)^{n-y}, \text{ für } y \in \{0,1, \ldots, n\}$$
+
+#### Frage
+
+-   Angenommen die Erfolgswahrscheinlichkeit liegt bei
+    $\pi=\frac{1}{2}$. Welche Anzahl Erfolge $y$ ist dann bei $n=`r n`$
+    Versuchen am wahrscheinlichsten?
+    -   *Antwort: 20 Erfolge*
+
+------------------------------------------------------------------------
+
+```{r}
+#| label: Dichte-Binomialverteilung
+
+gf_dist("binom", size = n, prob = 1/2)
+```
+
+## Maximum-Likelihood
+
+Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher* (engl.: likely) ist
+unser Ergebnis:
+
+```{r}
+#| label: Likelihood
+
+# Likelihood
+like <- dbinom(y, size = n, prob = vpi)
+# Zeichnen 
+gf_line(like ~ vpi) |>
+  gf_labs(x = expression(pi), 
+          y = expression(L(pi)), 
+          title = paste0("Likelihood bei n=", n, " und y=" , y))
+```
+
+Ein guter Punktschätzer für den Wert des Parameters $\pi$ in der
+Zielpopulation ist also der Anteilwert $p$ in unser Stichprobe:
+
+$$\hat{\pi} = p = \frac{y}{n} = \frac{`r y`}{`r n`} = `r round(y/n, 2)`.$$
+
+# Standardfehler
+
+Aber: Der Punktschätzer variiert mit der zufälligen Stichprobe. Eine
+andere zufällige Stichprobe aus derselben Population hätte ein anderes
+Ergebnis ergeben können.
+
+-   Wie anders?
+
+    -   *Antwort:*
+
+-   Wie groß ist die Stichprobenvariation des Stichprobenanteils?
+
+    -   *Antwort:*
+
+Simulieren wir das zufällige Ziehen einer Stichprobe aus einer
+Population durch zufälliges Re-Sampling der Stichprobe.
+
+`do(3)*` wiederholt den folgenden Befehl $3\times$,
+`resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein
+zufälliges Re-Sample - mit Zurücklegen.
+
+*Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das
+Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die
+mathematische Lösung (s. u.) zu bevorzugen.
+
+```{r}
+#| label: Re-Sampling
+
+# Bereitstellen Stichprobenvektor
+stichprobe <- rep(c("richtig","falsch"), times = c(y, n-y)) |>
+  as.factor()
+# 3x Re-Sample
+do(3)* prop( ~ resample(stichprobe), success = "richtig")
+```
+
+Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und
+speichern das Ergebnis als Datentabelle `Bootvtlg`.
+
+```{r}
+#| label: Bootstrapping
+
+Bootvtlg <- do(10000) * prop( ~ resample(stichprobe), success = "richtig")
+# Obere Beobachtungen
+head(Bootvtlg)
+```
+
+Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig
+in den Re-Samples aus der Datentabelle `Bootvtlg` kann über ein
+Säulendiagramm dargestellt werden:
+
+```{r}
+#| label: Säulendiagramm
+gf_bar( ~ prop_richtig, data = Bootvtlg)
+```
+
+Der über Simulationen geschätze Standardfehler liegt damit bei:
+
+```{r}
+#| label: Standardfehler-Bootstrap
+
+sd( ~ prop_richtig, data = Bootvtlg)
+```
+
+Mathematisch ergibt sich eine Schätzung über
+
+$$\hat{se} = \sqrt{\frac{p\cdot(1-p)}{n}}$$
+
+also:
+
+```{r}
+#| label: Standardfehler-Mathematisch
+
+p <- y/n
+sqrt((p*(1-p)) / n)
+```
+
+#### Frage
+
+-   Wie ändert sich der Standardfehler, wenn $n$ größer wird?
+    -   Antwort: Der Standardfehler wird kleiner.
+
+# Konfidenzintervall
+
+Außerdem können wir unsere Schätzunsicherheit für den wahren Anteil
+$\pi$ durch ein Konfidenzintervall beschreiben.
+
+Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das
+97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
+
+```{r}
+#| label: Konfidenzintervall
+
+ki95 <- qdata( ~ prop_richtig, p = c(0.025, 0.975), data = Bootvtlg)
+ki95
+```
+
+Eingezeichnet:
+
+```{r}
+#| label: Konfidenzintervall-Erweitert
+
+gf_bar( ~ prop_richtig, data = Bootvtlg) |>
+  gf_vline(xintercept = ki95)
+```
+
+#### Fragen
+
+-   Stimmt die Aussage: Mit einer Wahrscheinlichkeit von 95% wird der
+    Wert einer Beobachtung $x_i$ zwischen
+    `r qdata( ~ prop_richtig, p = 0.025, data = Bootvtlg)` und
+    `r qdata( ~ prop_richtig, p = 0.975, data = Bootvtlg)` liegen?
+
+    -   *Antwort: Nein.*
+
+-   Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu
+    bestimmen. Wird das Konfidenzintervall schmaler oder breiter?
+
+    -   Antwort: Das KI wird breiter.
+
+```{r}
+#| label: Konfidenzintervall-Übung
+qdata( ~ prop_richtig, p = c(0.005, 0.995), data = Bootvtlg)
+```
+
+## Mathematische Lösung
+
+Die Funktion `binom.test()` rechnet direkt über die Binomialverteilung
+und berechnet damit auch ein Konfidenzintervall:
+
+```{r}
+#| label: Konfidenzintervall-binom.test
+binom.test(y, n) |> 
+  confint()
+```
