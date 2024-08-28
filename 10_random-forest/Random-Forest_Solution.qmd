@@ -3,7 +3,7 @@ title: "Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
 author: "Ihr Name"
-date: last-modified
+date: today
 execute:
   warning: false
 format: 
@@ -16,7 +16,7 @@ format:
     number-sections: true
     colorlinks: true 
     papersize: a4
-bibliography: references.bib    
+bibliography: rf-references.bib
 ---
 
 
@@ -177,7 +177,6 @@ head(bodyfat$groesse_m)
 
 # löschen der alten Variable
 bodyfat$Height <- NULL
-
 ```
 
 
@@ -271,9 +270,9 @@ Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit
 #| label: bmi
 
 bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
+
 # überprüfen der Eingabe
 head(bodyfat$bmi)
-
 ```
 
 
@@ -289,6 +288,7 @@ Wie in der Graphik zu Verteilung der Körpergröße aufgefallen gibt es einen ni
 
 # Körpergröße
 favstats(~groesse_m, data = bodyfat)  # Körpergröße von 75 cm nicht plausibel
+
 # BMI
 favstats(~bmi, data = bodyfat)  # ein sehr hoher Wert von 145 
 
@@ -301,7 +301,6 @@ bodyfat <- bodyfat[-42, ] # entfernen der Beobachtung
 # Größe und Gewicht
 favstats(~groesse_m, data = bodyfat)
 favstats(~gewicht_kg, data = bodyfat)
-
 ```
 
 
@@ -391,7 +390,6 @@ trainIndex <- createDataPartition(bodyfat$bodyfat_siri, p = 0.7, list = FALSE)
 trainData <- bodyfat_siri[trainIndex, ]
 testData <- bodyfat_siri[-trainIndex, ]
 
-
 # Überblick über die aufgeteilten Daten
 dim(trainData)
 dim(testData)
@@ -422,7 +420,6 @@ rf_model1 <- randomForest(bodyfat_siri ~ ., data = trainData, ntree = 500, impor
 
 # Überblick über das Modell
 rf_model1
-
 ```
 
 
@@ -473,7 +470,6 @@ Das Wurzelziehen ermöglicht eine einfachere Interpretation (RMSE).
 #| label: sqrt_mse
 
 round(sqrt(rf_model1$mse[500]), 2)
-
 ```
 
 Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(rf_model1$mse[500]), 2)` %.   
@@ -526,7 +522,6 @@ observed <- testData$bodyfat_siri
 # Vorhersage auf den Testdaten
 predictions <- predict(rf_model1, testData)
 predictions
-
 ```
 
 ### MSE und RMSE
@@ -572,7 +567,6 @@ Auch bereits bekannt ist das $R^2$:
 rss <- sum((predictions - observed)**2) # residual sum of squares
 tss <- sum((observed - mean(observed))**2)  # total sum of squares
 rsq <- 1 - rss/tss
-
 rsq
 ```
 
@@ -588,7 +582,6 @@ Im nächsten Schritt lassen Sie uns die wichtigsten Variablen identifizieren, di
 # Wichtige Variablen
 importance <- importance(rf_model1)
 importance
-
 ```
 
 **%IncMSE (Percent Increase in MSE)**: bezieht sich auf die prozentuale Zunahme des MSE.   
@@ -608,7 +601,6 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
   gf_labs(title = "Variable Importance Modell1", 
           x = "Variables", 
           y = "Importance")
-
 ```
 
 
@@ -678,7 +670,6 @@ best_mtry
 
 # Vorhersage auf den Testdaten mit dem getunten Modell
 predictions_tuned <- predict(rf_tuned, testData)
-
 ```
 
 
@@ -696,7 +687,6 @@ mse_tuned
 rmse_tuned <- sqrt(mse_tuned)
 rmse_tuned
 
-
 ```
 
 
@@ -709,7 +699,6 @@ Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getu
 #| label: compare_models
 #| echo: false
 
-
 # Ursprungsmodel
 mse
 rmse
@@ -717,7 +706,6 @@ rmse
 #optimiertes Modell
 mse_tuned
 rmse_tuned
-
 ```
 
 
@@ -733,7 +721,6 @@ ____________________________________________________________
 
   *Lösung: 
 ```{r}
-
 bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
 str(bodyfat_brozeck)
 ```
@@ -759,11 +746,8 @@ testData <- bodyfat_brozeck[-trainIndex, ]
 set.seed(1896)
 rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData, ntree = 500, importance = TRUE)
 
-
 # Überblick über das Modell
 rf_model2
-
-
 ```
 
 1d. Eruieren Sie die wichtigsten Variablen
@@ -790,7 +774,6 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance2, fill 
 ```{r}
 rf_model1
 rf_model2
-
 ```
 
 
