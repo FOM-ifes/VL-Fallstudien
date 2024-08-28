@@ -156,7 +156,7 @@ y <- 15
 ```{r}
 #| label: Tipp
 
-pi_tipp <- 15/40
+pi_tipp <- y/n
 pi_tipp
 ```
 
@@ -174,7 +174,7 @@ $$f(y) = Pr(Y=y) = \binom{n}{y} \cdot \pi^y \cdot (1-\pi)^{n-y}, \text{ für } y
 -   Angenommen die Erfolgswahrscheinlichkeit liegt bei
     $\pi=\frac{1}{2}$. Welche Anzahl Erfolge $y$ ist dann bei $n=`r n`$
     Versuchen am wahrscheinlichsten?
-    -   *Antwort: 20 Erfolge*
+    -   *Antwort: n/2 Erfolge*
 
 ------------------------------------------------------------------------
 
@@ -214,11 +214,7 @@ Ergebnis ergeben können.
 
 -   Wie anders?
 
-    -   *Antwort:*
-
 -   Wie groß ist die Stichprobenvariation des Stichprobenanteils?
-
-    -   *Antwort:*
 
 Simulieren wir das zufällige Ziehen einer Stichprobe aus einer
 Population durch zufälliges Re-Sampling der Stichprobe.

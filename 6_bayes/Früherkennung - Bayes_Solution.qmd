@@ -141,12 +141,14 @@ gf_line(d_prior ~ vpi,
 
 -   Welche Verteilungsform hat *Ihre* Prior-Verteilung?
 
-    -   *Antwort: Uniformverteilung*
+    -   *Antwort: Individuelle Lösung. Hängt von den gewählten
+        Parametern (alpha, beta) ab.*
 
 -   Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen
     diese?
 
-    -   *Antwort: Es gibt keine Modalwerte.*
+    -   *Antwort: Individuelle Lösung. Hängt von den gewählten
+        Parametern (alpha, beta) ab.*
 
 ## Likelihood
 
@@ -222,16 +224,14 @@ ki
 -   Sind die Kennzahlen der Posterior-Verteilung unabhängig von der
     Prior-Verteilung?
 
-    -   *Antwort: Normalerweise nicht, da wir hier aber einen
-        uninformativen Prior haben, stimmt die Aussage.*
+    -   *Antwort: Nein, außer bei uninformativen Prior wie Beta(1,1).*
 
 -   Wo liegt der Erwartungswert der Posterior-Verteilung im Verhältnis
     zum Erwartungswert der Prior-Verteilung und dem entsprechenden Wert
     der Likelihood?
 
-    -   *Antwort: Wegen des uninformativen Priors unterscheidet sich der
-        Erwartungswert der Posterior-Verteilung nicht vom Erwartungswert
-        der Likelihood.*
+    -   *Antwort: I.d.R. liegt er Erwartungswert zwischen dem
+        Erwartungswert der Prior-Verteilung und dem der Likelihood.*
 
 *Tipp*: Zur Beantwortung der ersten beiden Fragen können Sie auch gerne
 wieder die App <https://fomshinyapps.shinyapps.io/BaBeBi/> nutzen!
