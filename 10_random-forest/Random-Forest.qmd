@@ -463,9 +463,11 @@ rmse_tuned <- sqrt(mse_tuned)
 Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
 
 ```{r}
+mse <- mean(abs(predictions - observed)^2)
 cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
 cat("Mean Squared Error (MSE): ", mse, "\n")
 
+rmse <- sqrt(mse)
 cat("Tuned Root Mean Squared Error (RMSE): ", rmse_tuned, "\n")
 cat("Root Mean Squared Error (RMSE): ", rmse, "\n")
 ```
