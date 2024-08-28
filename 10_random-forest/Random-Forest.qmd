@@ -2,10 +2,10 @@
 title: "Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
 execute:
   warning: false
-author: "Tanja Kistler"
-date: "`r Sys.Date()`"
 format: 
   html:
     toc: true
@@ -16,10 +16,7 @@ format:
     number-sections: true
     colorlinks: true 
     papersize: a4
-bibliography: references.bib    
-editor: 
-  markdown: 
-    wrap: sentence
+bibliography: rf-references.bib
 ---
 
 ```{r}
@@ -63,7 +60,7 @@ Es können zwei Arten von Entscheidungsbäumen unterschieden werden, Klassifikat
 Klassifikationsbäume werden zur Vorhersage einer kategorischen Zielvariablen verwendet, während Regressionsbäume zur Vorhersage einer stetigen Zielvariablen eingesetzt werden.
 Der CART-Algorithmus ist nur eine von vielen Methoden um Entscheidungsbäume zu erzeugen, sie ist aber die Grundlage für viele baumbasierte Machine-Learning-Algorithmen wie Random Forest.
 
-![Quelle: eigene Darstellung](../img/Beispiel-Klassifikationsbaum.png)
+![Quelle: eigene Darstellung](img/Beispiel-Klassifikationsbaum.png)
 
 ## Random Forest
 
@@ -78,7 +75,7 @@ Zusammengefasst werden die einzelnen Entscheidungsbäume also auf zufällig zusa
 Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus' zusammengefasst und geben ein Modell zurück, mit dem neue Werte vorhergesagt werden können.
 
 
-![Quelle: eigene Darstellung](../img/RF-Algorithmus.png)
+![Quelle: eigene Darstellung](img/RF-Algorithmus.png)
 
 
 ## Daten laden
@@ -101,7 +98,6 @@ head(bodyfat)
 
 #struktur der Daten (bodyfat)
 str(bodyfat)
-
 ```
 
 ------------------------------------------------------------------------
@@ -119,12 +115,16 @@ str(bodyfat)
 Der vorliegende Wert des Körperfettanteils im Datensatz wurde aus der ermittelten Dichte mit der Formel nach @siri_gross_1956 berechnet.
 Eine Erklärung können Sie bei @rashmi_evaluation_2019 nachlesen.
 
-$$ bodyfat_{Siri}[\%] = (\frac{4.95}{density} - 4.500) *100$$
+$$ 
+  bodyfat_{Siri}[\%] = \left(\frac{4.95}{density} - 4.500\right) *100
+$$
 
 Eine neuere Formel nach @brozek_densitometric_1963 zeigt eine etwas genauere Schätzung des Körperfettanteils (@guerra_accuracy_2010).
 Die Formel ist im Folgenden aufgeführt.
 
-$$ bodyfat_{Brožek}[\%] = (\frac{4.575}{density} - 4.142) *100$$
+$$ 
+   bodyfat_{Brožek}[\%] = \left(\frac{4.575}{density} - 4.142\right) *100
+$$
 
 Fügen wir die neue Variable mit der Berechnung nach @brozek_densitometric_1963 in den Datensatz ein:
 
@@ -169,7 +169,6 @@ head(bodyfat$groesse_m)
 
 # löschen der alten Variable
 bodyfat$Height <- NULL
-
 ```
 
 #### Gewicht in Kilogramm \[kg\]
@@ -199,7 +198,6 @@ Um diesen Parameter zu berechnen, wird die Variable `abdomen` in waist umbenannt
 # Umbenennen der Variablen
 bodyfat <- bodyfat |> rename(waist = Abdomen )
 
-
 # whr berechnen
 bodyfat <- mutate(bodyfat, whr = (waist/Hip))
 
@@ -227,6 +225,7 @@ Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio.
 
 # wHtR berechnen
 bodyfat <- mutate(bodyfat, wHtR = (waist/groesse_m))
+
 # überprüfen der Eingabe
 head(bodyfat$wHtR)
 ```
@@ -240,9 +239,9 @@ Der BMI wird wie folgt berechnet:
 #| label: bmi
 
 bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
+
 # überprüfen der Eingabe
 head(bodyfat$bmi)
-
 ```
 
 ### Data-Subset generieren
@@ -314,7 +313,6 @@ observed <- testData$bodyfat_siri
 # Vorhersage auf den Testdaten
 predictions <- predict(rf_model1, testData)
 predictions
-
 ```
 
 ## Modellgüte
@@ -332,9 +330,11 @@ Diese sind unteranderem: MSE, RMSE, MAE, $R^2$.
 Der MSE (Mean Squared Error) ist die mittlere quadratische Abweichung, auch mittlerer quadratischer Fehler genannt, zwischen dem vorhergesagten und dem wahren Wert.
 Berechnet wird der MSE indem die Differenz von vorhergesagten und wahren Wert quadriert, aufsummiert und dann durch die Anzahl der vorhergesahten Werte geteilt wird:
 
-$$ MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2$$
+$$ 
+  MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2
+$$
 
-jJe größer das Ergebnis des MSE, desto größer sind die Vorhersagefehler, die vom Madell gemacht wurden.
+Je größer das Ergebnis des MSE, desto größer sind die Vorhersagefehler, die vom Madell gemacht wurden.
 Dementsprechend gilt, je kleiner das Ergebnis, desto besser das Modell.
 
 ### RMSE
@@ -342,7 +342,9 @@ Dementsprechend gilt, je kleiner das Ergebnis, desto besser das Modell.
 Der RMSE (Root Mean Squared Error) ist die Wurzel des MSE.
 Der RMSE hat gegenüber dem MSE den Vorteil, dass dieser besser zu interpretieren ist, da durch das Ziehen der Wurzel die Größe der Fehler wieder der Einheit der tatsächlichen Werte entspricht.
 
-$$ RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2} $$
+$$ 
+  RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2} 
+$$
 
 Allerdings hat sowohl der MSE als auch der RMSE das Problem, dass durch den quadrierten Therm Ausreißer stark gewichtet werden.
 
@@ -351,7 +353,9 @@ Allerdings hat sowohl der MSE als auch der RMSE das Problem, dass durch den quad
 Der MAE (Mean Absolute Error) ist definiert als der Duchschnitt der absoluten Differenz zwischen vorhergesagten Wert und tatsächlichem Wert.
 Wie beim MSE und RMSE gilt, je niedrieger der Wert des MAE's desto kleiner sind die Fehler und desto besser ist das Modell.
 
-$$ MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y_i}| $$
+$$ 
+  MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y_i}| 
+$$
 
 Der MAE ist im Vergleich zum MSE und RMSE robuter gegenüber Ausreißern und hat, ähnlich wie der RMSE, die gleiche Einheit wie die ursprünglichen Werte der Datentabelle wodurch er besser zu interpretieren ist als der MSE.
 Allderdings bestraft der MAE große Fehler nicht so stark wie kleine Fehler und ist anders als der MSE und RMSE nicht differenzierbar, was eine Verwendung des MAE's für weitere mathematische Operationen nicht einfach macht.
@@ -360,7 +364,9 @@ Allderdings bestraft der MAE große Fehler nicht so stark wie kleine Fehler und 
 
 Das $R^2$ gibt den Anteil der Varianz in der Zielvariable an, der durch das Modell erklärt wird. Der Ergebnisraum reicht dabei von 0 bis 1, wobei höhere Werte eine bessere Leistung des Modells wiederspiegeln.
 
-$$ R^2 = 1 - \frac{RSS}{TSS} $$
+$$ 
+  R^2 = 1 - \frac{RSS}{TSS} 
+$$
 
 Wobei:
 
@@ -456,22 +462,17 @@ predictions_tuned <- predict(rf_tuned, testData)
 
 # Berechnung der Vorhersagegenauigkeit des getunten Modells
 mse_tuned <- mean((predictions_tuned - observed)^2)
-
 rmse_tuned <- sqrt(mse_tuned)
 ```
 
 Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
 
 ```{r}
-
 cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
 cat("Mean Squared Error (MSE): ", mse, "\n")
 
 cat("Tuned Root Mean Squared Error (RMSE): ", rmse_tuned, "\n")
 cat("Root Mean Squared Error (RMSE): ", rmse, "\n")
-
-
-
 ```
 
 ------------------------------------------------------------------------
@@ -488,7 +489,6 @@ Lassen Sie uns die wichtigsten Variablen identifizieren, die das erste (nicht ge
 # Wichtige Variablen
 importance <- importance(rf_model1)
 importance
-
 ```
 
 %IncMSE (Percent Increase in MSE): bezieht sich auf die prozentuale Zunahme des MSE.
@@ -496,8 +496,6 @@ Ein hoher %IncMSE deutet auf eine wichtige Variable für die Vorhersagegenauigke
 %IncMSE erlaubt eine Erstellung einer Rangordnung der Variablen im RF und der Identifizierung der einflussreichsten Prädiktoren im Modell.
 
 ```{r}
-
-
 # erstellen df von varImportance
 varImportance <- data.frame(Variables = row.names(importance), Importance = importance[, 1])
 
@@ -507,7 +505,6 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
   gf_labs(title = "Variable Importance Modell1", 
           x = "Variables", 
           y = "Importance")
-
 ```
 
 ------------------------------------------------------------------------
@@ -519,7 +516,6 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
 ```{r}
-
 bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
 str(bodyfat_brozeck)
 ```
@@ -542,11 +538,8 @@ Erstellen Sie das RF-Modell
 set.seed(42)
 rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData2, ntree = 500, importance = TRUE)
 
-
 # Überblick über das Modell
 rf_model2
-
-
 ```
 
 1d.
@@ -579,8 +572,6 @@ predictions2 <- predict(rf_model2, testData2)
 
 mse2 <- mean(abs(predictions2 - observed2)^2)   
 mse2
-
-
 ```
 :::
 
