@@ -1,11 +1,11 @@
 ---
-title: "Random Forest"
+title: "Random Forrest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
 execute:
   warning: false
-author: "Tanja Kistler"
-date: "`r Sys.Date()`"
+author: "Ihr Name"
+date: today
 format: 
   html:
     toc: true
@@ -77,9 +77,7 @@ Damit die Entscheidungsbäume noch verschiedener zueinander werden, werden für 
 Zusammengefasst werden die einzelnen Entscheidungsbäume also auf zufällig zusammengesetzten Subdatensätzen, die bei jedem Split eine neue, zufällige Zusammensetzung von Variablen besitzen, erstellt.
 Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus' zusammengefasst und geben ein Modell zurück, mit dem neue Werte vorhergesagt werden können.
 
-
 ![Quelle: eigene Darstellung](../img/RF-Algorithmus.png)
-
 
 ## Daten laden
 
@@ -111,7 +109,8 @@ str(bodyfat)
 
 2.  Was ist eine Beobachtungseinheit in diesem Datensatz?
 
-3.  Eruieren Sie in welchen Einheiten die Variablen Waist, Height und Weight vorliegen.
+3.  Eruieren Sie in welchen Einheiten die Variablen Height, Weight und Abdomen vorliegen.
+
 :::
 
 ## Berechnung des Körperfettanteils
@@ -163,7 +162,9 @@ Zusäztlich werden die oben genannten Surrogatparameter berechnet.
 ```{r}
 #| label: groesse in m
 
-bodyfat <- mutate(bodyfat, groesse_m = Height*0.0254) |> round(2)
+# Größe umrechnen
+bodyfat <- mutate(bodyfat, groesse_m = round(Height*0.0254, 2))
+
 # überprüfen der Eingabe
 head(bodyfat$groesse_m)
 
@@ -177,7 +178,9 @@ bodyfat$Height <- NULL
 ```{r}
 #| label: gewicht_kg
 
-bodyfat <- mutate(bodyfat, gewicht_kg = Weight*0.453592) |> round(1)
+# Gewicht umrechnen
+bodyfat <- mutate(bodyfat, gewicht_kg = round(Weight*0.453592, 1))
+
 # überprüfen der Eingabe
 head(bodyfat$gewicht_kg, 10)
 
@@ -198,7 +201,6 @@ Um diesen Parameter zu berechnen, wird die Variable `abdomen` in waist umbenannt
 # abdomen = taille =  waist
 # Umbenennen der Variablen
 bodyfat <- bodyfat |> rename(waist = Abdomen )
-
 
 # whr berechnen
 bodyfat <- mutate(bodyfat, whr = (waist/Hip))
@@ -225,10 +227,12 @@ Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio.
 ```{r}
 #| label: wHtR
 
-# wHtR berechnen
-bodyfat <- mutate(bodyfat, wHtR = (waist/groesse_m))
-# überprüfen der Eingabe
-head(bodyfat$wHtR)
+# 1. Graphik
+
+# 2. wHtR berechnen
+
+# 3. überprüfen der Eingabe
+
 ```
 
 #### BMI
@@ -239,7 +243,9 @@ Der BMI wird wie folgt berechnet:
 ```{r}
 #| label: bmi
 
+# BMI berechnen
 bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
+
 # überprüfen der Eingabe
 head(bodyfat$bmi)
 
@@ -247,11 +253,12 @@ head(bodyfat$bmi)
 
 ### Data-Subset generieren
 
-Werte aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
+Variablen aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
 
 ```{r}
 #| label: remove_density
 
+# Variablen löschen
 bodyfat_siri <- bodyfat |> select(c(-Density, -bodyfat_brozeck))
 str(bodyfat_siri)
 ```
@@ -265,8 +272,7 @@ Dafür werden unter Nutzung des `caret`Paketes zufällig 70% der Beobachtungen d
 ```{r}
 #| label: trainings-test-data
 
-# Datenaufteilung in Trainings- und Testdaten
-#(caretPaket)
+# Datenaufteilung in Trainings- und Testdaten (caretPaket)
 set.seed(42)
 trainIndex <- createDataPartition(bodyfat$bodyfat_siri, p = 0.7, list = FALSE)
 trainData <- bodyfat_siri[trainIndex, ]
@@ -358,7 +364,8 @@ Allderdings bestraft der MAE große Fehler nicht so stark wie kleine Fehler und 
 
 ### $R^2$
 
-Das $R^2$ gibt den Anteil der Varianz in der Zielvariable an, der durch das Modell erklärt wird. Der Ergebnisraum reicht dabei von 0 bis 1, wobei höhere Werte eine bessere Leistung des Modells wiederspiegeln.
+Das $R^2$ gibt den Anteil der Varianz in der Zielvariable an, der durch das Modell erklärt wird.
+Der Ergebnisraum reicht dabei von 0 bis 1, wobei höhere Werte eine bessere Leistung des Modells wiederspiegeln.
 
 $$ R^2 = 1 - \frac{RSS}{TSS} $$
 
@@ -375,42 +382,31 @@ Wobei:
 
 ```{r}
 #MSE 
-mse <- mean(abs(predictions - observed)^2) 
-mse
-```
 
-MSE zeigt den quadrierten Fehler, die Einheit ist ebenfalls quadriert.
-Die mittlere quadratische Abweichung zwischen dem vorhergesagten und dem tatsächlichen Körperfettanteil beträgt somit `r round(mse, 2)` $\%^2$.
+```
 
 2.  Das Ziehen der Wurzel ermöglicht eine einfachere Interpretation (RMSE).
 
 ```{r}
 # RMSE
-rmse <- sqrt(mse)
-rmse
-```
 
-Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(mse), 2)` %.
+```
 
 3.  Berechnen Sie den MAE. Ist eine Verwendung des MAE's hier sinnvoll?
 
 ```{r}
 #MAE 
-mae <- mean(abs(predictions - observed))
-mae
+
 ```
 
-3.  Berechnen Sie nun noch das $R^2$ und interpretieren Sie es.
+4.  Berechnen Sie nun noch das $R^2$ und interpretieren Sie es.
 
 ```{r}
 # R2 
-rss <- sum((predictions-observed)^2) ## residual sum of squares 
-tss <- sum((observed - mean(observed)) ^ 2)  ## total sum of squares 
-rsq <- 1 - rss/tss
-rsq
+
 ```
 
-Es wird `r round(rsq, 2)` % der Varianz der Zielvariable durch das Modell erklärt.
+
 :::
 
 ## Modelloptimierung
@@ -512,74 +508,36 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 
 ------------------------------------------------------------------------
 
-::: {.callout-tip title="Your-turn"}
-1.  Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
+::: {.callout-tip title="Your Turn"}
+Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
 
-1a.
-Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
-
-```{r}
-
-bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
-str(bodyfat_brozeck)
-```
-
-1b.
-Erstellen Sie einen Test- und Trainingsdatensatz
+- Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
 ```{r}
-set.seed(42)
-trainIndex <- createDataPartition(bodyfat$bodyfat_brozeck, p = 0.7, list = FALSE)
-trainData2 <- bodyfat_brozeck[trainIndex, ]
-testData2 <- bodyfat_brozeck[-trainIndex, ]
-```
-
-1c.
-Erstellen Sie das RF-Modell
-
-```{r}
-# Training des Random Forest Modells
-set.seed(42)
-rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData2, ntree = 500, importance = TRUE)
-
-
-# Überblick über das Modell
-rf_model2
-
 
 ```
 
-1d.
-Eruieren Sie die wichtigsten Variablen
+- Erstellen Sie einen Test- und Trainingsdatensatz
 
 ```{r}
-# Wichtige Variablen
-importance2 <- importance(rf_model2)
 
-varImportance2 <- data.frame(Variables = row.names(importance2), Importance = importance2[, 1])
-
-gf_col(Importance ~ reorder(Variables, Importance), data = varImportance2, fill = "darkgreen") |>
-  gf_refine(coord_flip()) |>
-  gf_theme(theme_minimal()) |>
-  gf_labs(title = "Variable Importance Modell2", 
-          x = "Variables", 
-          y = "Importance")
 ```
 
-1e.
-Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
+- Erstellen Sie das RF-Modell
 
 ```{r}
-# Modell 1
-mse
 
-#Modell 2 
-observed2 <- testData2$bodyfat_brozeck
-predictions2 <- predict(rf_model2, testData2)
+```
 
-mse2 <- mean(abs(predictions2 - observed2)^2)   
-mse2
+- Eruieren Sie die wichtigsten Variablen
 
+```{r}
+
+```
+
+- Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
+
+```{r}
 
 ```
 :::

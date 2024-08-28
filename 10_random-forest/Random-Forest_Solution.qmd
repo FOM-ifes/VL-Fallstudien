@@ -1,11 +1,11 @@
 ---
-title: "Random Forest"
+title: "Lösungsskizze: Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
-author: "Ihr Name"
-date: last-modified
 execute:
   warning: false
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: last-modified
 format: 
   html:
     toc: true
@@ -17,161 +17,157 @@ format:
     colorlinks: true 
     papersize: a4
 bibliography: references.bib    
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
-
-## Was ist ein Random Forest
-
-
-@breiman_random_2001 entwickelte den Algorithmus des Random Forests, eine nicht-parametrische Klassifikations- und Regressionsmethode zur Identifikation von Prädiktoren.
-
-Der Random Forest erstellt viele Entscheidungsbäume mit einer zufällig ausgewählten Teilmenge der (Trainings)Daten und Merkmalen und kombiniert aus diesen die Ergebnisse. 
-
-
-
-## Daten und Hintergrund zur Fallstudie 
-
-In dieser Fallstudie werden wir den Random Forest Algorithmus nutzen, um den Körperfettanteil vorherzusagen. Wir verwenden dazu den Body Fat Datentabelle, welche verschiedene Messungen wie Gewicht, Größe und Hautfalten enthält.
-
-Die genaue Bestimmung des Körperfettanteils ist sehr aufwendig und teuer und im Alltag nicht zu vollziehen. Die Bestimmung des Körperfettanteils eines menschlichen Körpers erfolgte in den vorliegenden Daten mittels der Goldstandardmethode der sog. Unterwasserwägung nach dem archimedischen Prinzip. Je schwerer jemand unter Wasser ist, desto höher ist die Dichte des Körpers. Muskeln haben eine höhere Volumendichte als Fettgewebe. Je höher das Gewicht unter Wasser ist, desto mehr fettfreie Masse hat dieser Körper.
-
-Eine Unterwasserwägung ist sehr aufwendig. Mit dieser Fallstudie analysieren wir welche weiteren, einfacheren anthropometrischen Parameter^[Als Anthropometrie bezeichnet man die Lehre von den Maßen und Maßverhältnissen des menschlichen Körpers.] den Körperfettanteil gut vorhersagen.
-
-
-Der Datensatz wird aufbereitet, um anthropometrische Parameter aus den Daten zu generieren, die derzeit als aussagekräftig diskutiert werden.
-
-
-### Laden der Pakete
-
 ```{r}
-#| label: packages
+#| label: setup
 #| include: false
 
 library(mosaic)
 library(here)
-library(tidyverse)
 library(randomForest)
+library(ggplot2)
 library(caret)
+library(tidyverse)
 ```
 
-### Daten laden 
+## Einleitung
 
-Wir verwenden die Body Fat Datentabelle von kaggle 
+In dieser Fallstudie werden wir den Random Forest Algorithmus nutzen, um den Körperfettanteil vorherzusagen.
+Wir verwenden dazu den Body Fat Datensatz, der verschiedene Messungen wie Gewicht, Größe und Hautfalten enthält.
 
-[Link Body fat Daten](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset)
+Die genaue Bestimmung des Körperfettanteils ist sehr aufwendig und teuer und im Alltag nicht zu vollziehen.
+Die Bestimmung des Körperfettanteils eines menschlichen Körpers erfolgte in den vorliegenden Daten mittels der Goldstandardmethode der sog.
+Unterwasserwägung nach dem archimedischen Prinzip.
+Je schwerer jemand unter Wasser ist, desto höher ist die Dichte des Körpers.
+Muskeln haben eine höhere Volumendichte als Fettgewebe.
+Je höher das Gewicht unter Wasser ist, desto mehr fettfreie Masse hat dieser Körper.
 
+Eine Unterwasserwägung ist sehr aufwendig.
+Mit dieser Fallstudie analysieren wir welche weiteren, einfacheren anthropometrischen Parameter den Körperfettanteil gut vorhersagen.
+
+Der Datensatz wird aufbereitet, um anthropometrische Parameter aus den Daten zu generieren, die derzeit als aussagekräftig diskutiert werden.
+
+## Entscheidungsbäume (CART)
+
+Um zu verstehen, was der Random-Forest Algorithmus ist und was er macht, ist es zunächst nützlich zu wissen, was Entscheidungsmäume sind.
+
+Entscheidungsbäume basieren auf der Idee komplexe Beziehungen, mithilfe von Daten, in einfache "ja/nein"-Fragen aufzubrechen.
+Die Struktur eines Entscheidungsbaumes ergibt sich dabei wie folgt: an jedem Knotenpunkt (Node), beginnend mit der Wurzel des Baumes (Root Node), splittet der Entscheidungsbaum die Beobachtungen der Zielvariable (abhängige Variable) anhand der Prädiktorvariablen (unabhängige Variablen) in jeweils zwei Submengen.
+Dies passiert so lange, bis ein definiertes Abbruchkriterium erreicht wird.
+
+Es können zwei Arten von Entscheidungsbäumen unterschieden werden, Klassifikations- und Regressionsbäume (Classification- an Regression Trees - CART).
+Klassifikationsbäume werden zur Vorhersage einer kategorischen Zielvariablen verwendet, während Regressionsbäume zur Vorhersage einer stetigen Zielvariablen eingesetzt werden.
+Der CART-Algorithmus ist nur eine von vielen Methoden um Entscheidungsbäume zu erzeugen, sie ist aber die Grundlage für viele baumbasierte Machine-Learning-Algorithmen wie Random Forest.
+
+![Quelle: eigene Darstellung](../img/Beispiel-Klassifikationsbaum.png)
+
+## Random Forest
+
+Random Forest ist ein von @breiman_random_2001 entwickelter Machine-Learning-Algorithmus, der die Ergebnisse vieler verschiedener Entscheidungsbäume kombiniert, um bestmögliche Vorhersagen zu treffen.
+
+Die Entscheidungungbäume werden dazu auf Basis eines Trainingsdatensatzes erstellt.
+Wobei die einzelnen Entscheidungsbäume des RF-Algorithmus' auf jeweils leicht verschiedenen Subdatensätzen des ursprünglichen Trainigsdatensatzes trainiert.
+Diese verschiedenen Subdatensätze werden mithilfe von Bagging (Bootstrap Aggregation) erstellt.
+Bagging funktioniert indem eine festgelegte Menge von Bootstrap-Stichproben (d.h. Stichproben der selben Größe) durch zufälliges Ziehen von Beobachtungen mit Zurücklegen aus dem Trainigsdatensatz generiert werden.
+Damit die Entscheidungsbäume noch verschiedener zueinander werden, werden für die einzelnen Splits der Bäume nicht alle Variablen des Subdatensatzes, auf dem sie trainiert werden, genommen, sondern eine zufällige Teilmenge dieser Variablen.
+Zusammengefasst werden die einzelnen Entscheidungsbäume also auf zufällig zusammengesetzten Subdatensätzen, die bei jedem Split eine neue, zufällige Zusammensetzung von Variablen besitzen, erstellt.
+Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus' zusammengefasst und geben ein Modell zurück, mit dem neue Werte vorhergesagt werden können.
+
+![Quelle: eigene Darstellung](../img/RF-Algorithmus.png)
+
+## Daten laden
+
+Als Datengrundlage verwenden wir den Body Fat Datensatz von Kaggle:
+
+[Link Body Fat Daten](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset)
 
 ```{r}
 #| label: data
 
 # Datei (inkl. Pfad)
-pfad_bodyfat <- here("data", "bodyfat_kaggle.csv")
+pfad_bodyfat <- here("data", "Bodyfat.csv")
 
 # Daten einlesen
 bodyfat <- read.csv(pfad_bodyfat)
 
-```
-
-
-
-____________________________________________________________
-
-
-::: {.callout-tip title="Fragen & Aufgabe zum Datensatz"}
-1. Verschaffen Sie sich einen Überblick über die Daten.   
-  
-```{r}
-#| label: check_data
-#| eval: false
-
 # Überblick über die Daten
 head(bodyfat)
 
-# Struktur der Daten
+#struktur der Daten (bodyfat)
 str(bodyfat)
-inspect(bodyfat)
+
 ```
 
+------------------------------------------------------------------------
 
+::: {.callout-tip title="Fragen & Aufgabe zum Datensatz"}
+1.  Verschaffen Sie sich einen Überblick über die Daten.
 
-2. Was ist eine Beobachtungseinheit in diesem Datensatz?
-  * Lösung: eine Beobachtungseinheit ist ein Individuum, bei dem die Dichtemessung und Umfänge gemessen wurden.
+2.  Was ist eine Beobachtungseinheit in diesem Datensatz?
 
-3. Eruieren Sie in welchen Einheiten die Variablen Waist, Height und Weight vorliegen.
-    * Lösung: [Angaben auf kaggle](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset)
-    * Waist in [cm]
-    * Height in [inches]
-    * Weight in Pounds [lbs]
-    * restliche Umfänge in [cm]
+    *Antwort: Eine Beobachtungseinheit ist ein Mensch*
+
+3.  Eruieren Sie in welchen Einheiten die Variablen Height, Weight und Abdomen vorliegen.
+
+    *Antwort: Height - inches, Weight - lbs, Abdomen - cm.*
 :::
-
-____________________________________________________________
-
 
 ## Berechnung des Körperfettanteils
 
-
-<!--
-Beispiel einfügen - wie Umgang mit NAs?? 
-NM: Ich denke: ja!
--->  
-
-Der vorliegende Wert des Körperfettanteils wurde aus der ermittelten Dichte mit der Formel nach @siri_gross_1956  berechnet.
+Der vorliegende Wert des Körperfettanteils im Datensatz wurde aus der ermittelten Dichte mit der Formel nach @siri_gross_1956 berechnet.
 Eine Erklärung können Sie bei @rashmi_evaluation_2019 nachlesen.
- 
- 
-$$ 
-  bodyfat_{Siri}[\%] = \left(\frac{4.95}{density} - 4.500\right) *100
-$$
 
-Eine neuere Formel nach @brozek_densitometric_1963 zeigt eine etwas genauere Schätzung des Körperfettanteils (@guerra2010). Die Formel ist im Folgenden aufgeführt.
- 
-$$ 
-  bodyfat_{Brožek}[\%] = \left(\frac{4.575}{density} - 4.142\right) *100
-$$
+$$ bodyfat_{Siri}[\%] = (\frac{4.95}{density} - 4.500) *100$$
 
-Fügen wir zwei neue Variablen mit der jeweiligen Berechnung nach @siri_gross_1956 und @brozek_densitometric_1963 in den Datensatz ein:
+Eine neuere Formel nach @brozek_densitometric_1963 zeigt eine etwas genauere Schätzung des Körperfettanteils (@guerra_accuracy_2010).
+Die Formel ist im Folgenden aufgeführt.
 
+$$ bodyfat_{Brožek}[\%] = (\frac{4.575}{density} - 4.142) *100$$
+
+Fügen wir die neue Variable mit der Berechnung nach @brozek_densitometric_1963 in den Datensatz ein:
 
 ```{r}
 #| label: formula-check
 
-# bodyfat nach Brozeck et al. berechnet
-bodyfat <- mutate(bodyfat, bodyfat_brozeck = ((4.58/Density) - 4.142) * 100) 
+# Existierende BodyFat-Variable umbenennen
+bodyfat <- rename(bodyfat, bodyfat_siri = BodyFat)
 
-# bidyfat nach Siri berechnet
-bodyfat <- mutate(bodyfat, bodyfat_siri = ((4.95/Density) - 4.5) * 100)  
-
-bodyfat$BodyFat <- NULL # entfernen der variable
+# Bodyfat nach Brozeck berechnet
+bodyfat <- mutate(bodyfat, bodyfat_brozeck = ((4.58/Density)-4.142)*100)
 ```
- 
 
+Da die Dichtebestimmung sehr aufwendig und teuer ist, werden heute Surrogatparameter zur Bestimmung des Körperfettanteils genutzt, eingie kennen Sie:
 
-Da die Dichtebestimmung sehr aufwendig und teuer ist, werden heute Surrogatparameter zur Bestimmung des Körperfettanteils genutzt, einige kennen Sie:
+-   BMI
 
- - BMI  
+-   Waist-to-Hip Ratio (WHR)
 
- - Waist-to-Hip Ratio (WHR)  
+-   Waist-to-Height Ratio (wHtR)
 
- - Waist-to-Height Ratio (wHtR)  
+-   Oberarmumfang
 
- - Oberarmumfang    
-
-Erstellen wir aus den vorliegenden Daten einige der genannten Parameter.
-Vorab ändern wir noch relevante Einheiten
+Erstellen wir aus den vorliegenden Daten einige der genannten Parameter und ändern noch relevante Einheiten.
 
 ## Datenmanagement
 
-Die Struktur `str()`der Daten zeigte bereits, dass die Körpergröße in [inch] und das Gewicht  in Pfund [lbs] angegeben ist.   
-Als erstes werden beide Variablen in SI-Einheiten umgerechnet.  
+Die Struktur `str()`der Daten zeigte bereits, dass die Körpergröße in \[inch\] und das Gewicht in Pfund \[lbs\] angegeben ist.
+Diese Variablen werden in diesem Kapitel in SI-Einheiten umgerechnet.
+Zusäztlich werden die oben genannten Surrogatparameter berechnet.
 
-### Körpergröße in Meter [m] umrechnen
+### Einheiten umrechnen
 
+#### Körpergröße in Meter \[m\]
 
 ```{r}
 #| label: groesse in m
 
-bodyfat <- mutate(bodyfat, groesse_m = Height*0.0254) |> round(2)
+# Größe umrechnen
+bodyfat <- mutate(bodyfat, groesse_m = round(Height*0.0254, 2))
+
 # überprüfen der Eingabe
 head(bodyfat$groesse_m)
 
@@ -180,13 +176,14 @@ bodyfat$Height <- NULL
 
 ```
 
-
-### Gewicht in [kg]  umrechnen
+#### Gewicht in Kilogramm \[kg\]
 
 ```{r}
 #| label: gewicht_kg
 
-bodyfat <- mutate(bodyfat, gewicht_kg = Weight*0.453592) |> round(1)
+# Gewicht umrechnen
+bodyfat <- mutate(bodyfat, gewicht_kg = round(Weight*0.453592, 1))
+
 # überprüfen der Eingabe
 head(bodyfat$gewicht_kg, 10)
 
@@ -194,21 +191,19 @@ head(bodyfat$gewicht_kg, 10)
 bodyfat$Weight <- NULL
 ```
 
+### Surrogatparameter berechnen
 
-### Waist-to-hip-ratio berechnen
+#### Waist-to-hip-ratio (whr)
 
-Ein Surrogatmarker ist die Waist-to-Hip Ratio.
-Als nächstes wird die Variable `abdomen` in waist umbenannt und eine  
-neue Variable `whr` (_w_aist _h_ip _r_atio) erstellt:
-
+Ein Surrogatparameter ist die Waist-to-Hip Ratio.
+Um diesen Parameter zu berechnen, wird die Variable `abdomen` in waist umbenannt und die Variable `waist` durch `hip` geteilt:
 
 ```{r}
 #| label: rename_whr
 
-# abdomen = taille = waist
+# abdomen = taille =  waist
 # Umbenennen der Variablen
 bodyfat <- bodyfat |> rename(waist = Abdomen )
-
 
 # whr berechnen
 bodyfat <- mutate(bodyfat, whr = (waist/Hip))
@@ -217,309 +212,111 @@ bodyfat <- mutate(bodyfat, whr = (waist/Hip))
 head(bodyfat$whr)
 ```
 
-### Waist to height ratio
+#### Waist to height ratio (wHtR)
 
-Ein weiterer Surrogatmarker ist die Waist-to-Height Ratio. 
+Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio.
 
-____________________________________________________________
-
+------------------------------------------------------------------------
 
 ::: {.callout-tip title="Aufgabe - Variable wHtR erstellen"}
+1.  Erstellen Sie eine adäquate Graphik zur Darstellung der Verteilung der Variable Körpergröße.
+    Was fällt Ihnen auf?
 
-1. Erstellen Sie eine adäquate Graphik zur Darstellung der Verteilung der Variable Körpergröße. Was fällt Ihnen auf?
-  * Lösung: 
-```{r}
-#| label: loesung_histogram_favstats
-#| eval: false
+2.  Erstellen Sie eine neue Variable mit dem Namen `wHtR` im gleichen Datensatz.
 
-gf_histogram(~ groesse_m, data = bodyfat, binwidth = 0.1)
-favstats(~ groesse_m, data = bodyfat)
-
-```
-  
-
-2. Erstellen Sie eine neue Variable mit dem Namen `wHrT` (Waist-to-Height Ratio) im gleichen Datensatz.
-  * Lösung:
+3.  Überprüfen Sie die Eingabe
+:::
 
 ```{r}
 #| label: wHtR
 
-# wHtR berechnen
+# 1. Graphik
+histogram(~groesse_m, data = bodyfat)
+# 2. wHtR berechnen
 bodyfat <- mutate(bodyfat, wHtR = (waist/groesse_m))
-```
-
-
-3. Überprüfen Sie die Eingabe
-  * Lösung: 
-```{r}
-#| label: check_wHtR
-
-
-# überprüfen der Eingabe
+# 3. überprüfen der Eingabe
 head(bodyfat$wHtR)
 ```
 
-:::
-____________________________________________________________
+#### BMI
 
-### BMI 
-
-Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist.  
-
+Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist.
+Der BMI wird wie folgt berechnet:
 
 ```{r}
 #| label: bmi
 
+# BMI berechnen
 bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
+
 # überprüfen der Eingabe
 head(bodyfat$bmi)
 
 ```
 
-
-
-### Werte auf Plausibilität prüfen
-
-
-Wie in der Graphik zu Verteilung der Körpergröße aufgefallen gibt es einen nicht plausiblen Wert.
-
-
-```{r}
-#| label: plausibility-check
-
-# Körpergröße
-favstats(~groesse_m, data = bodyfat)  # Körpergröße von 75 cm nicht plausibel
-# BMI
-favstats(~bmi, data = bodyfat)  # ein sehr hoher Wert von 145 
-
-subset(bodyfat, bmi > 140) # Zeige nur Datenzeilen mit bmi > 160
-                           # Beobachtung 42 
- 
-# nicht plausibel - Beobachtung entfernen! 
-bodyfat <- bodyfat[-42, ] # entfernen der Beobachtung
-
-# Größe und Gewicht
-favstats(~groesse_m, data = bodyfat)
-favstats(~gewicht_kg, data = bodyfat)
-
-```
-
-
-### Check Ausreißer
-
-Überprüfung weiterer Ausreißer kann z.B. mittes Boxplots erfolgen.
-
-```{r}
-#| label: outlier
-
-dataset <- bodyfat |>
-  pivot_longer(cols = 1:18, names_to = "variable", values_to = "values")
-
-
-options(repr.plot.width = 18, repr.plot.height = 14)
-
-gf_boxplot(values ~ variable, data = dataset, fill = "lightblue") %>%
-  gf_facet_wrap(~ variable, ncol = 3, scales = "free") %>%
-  gf_theme(strip.text.x = element_blank(),
-           text = element_text(size = 12))
-```
-
-
-
-____________________________________________________________
-
-
-::: {.callout-tip title="Aufgabe & Frage - Ausreißer"}
-1. Überprüfen Sie den Ausreißer der Variable `Biceps`. 
-
-  * Lösung:
-```{r}
-#| label: biceps
-subset(bodyfat,Biceps > 40)
-```
-
-
-2. Handelt es sich hierbei um einen plausiblen Wert?
-
-
-  * Lösung: ja, der Wert ist plausibel. Der Umfang passt zu den anderen Parametern.
-
-:::
-
-____________________________________________________________
-
-
-### Prüfen auf fehlende Werte
-
-Die Überprüfung auf fehlende Werte, welche imputiert werden sollten.
-
-```{r}
-#| label: NA
-
-# Überprüfen auf fehlende Werte
-sum(is.na(bodyfat))
-```
-
-
 ### Data-Subset generieren
 
-Werte aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
+Variablen aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
 
 ```{r}
 #| label: remove_density
 
+# Variablen löschen
 bodyfat_siri <- bodyfat |> select(c(-Density, -bodyfat_brozeck))
 str(bodyfat_siri)
 ```
 
-
 ## Trainingsdaten erstellen
 
 Die Daten werden in Trainings- und Testdaten aufgeteilt.
-Anhand der Trainingsdaten wird das Modell des Random Forest trainiert und dann auf die Testdaten angewandt.
-Die vorherzusagende Variable liegt im Testdatensatz vor, das Modell bzw. die Korrektheit/ Präzision der Modellvorhersage lässt sich somit auf den Testdaten überprüfen bzw. mittels Maße der Modellgüte bestimmen.
-
-Im folgenen wird unter Nutzung des `caret`Paketes ein Trainingsdatensatz mit 70 % der Daten erstellt.
+Diese Einteilung der Daten erlaubt es die Leistung des Random-Forest-Algorithmus zu bewerten, indem man dem Algorithmus nach dem Training unbekannte Daten zur Evaluation der Generalisierbarkeit des Modells gibt.
+Dafür werden unter Nutzung des `caret`Paketes zufällig 70% der Beobachtungen des Datensatzes in den Trainigsdatensatz gezogen und die restlichen 30% bilden den Testdatensatz.
 
 ```{r}
 #| label: trainings-test-data
 
-# Datenaufteilung in Trainings- und Testdaten
-# (caretPaket)
-set.seed(1896)
+# Datenaufteilung in Trainings- und Testdaten (caretPaket)
+set.seed(42)
 trainIndex <- createDataPartition(bodyfat$bodyfat_siri, p = 0.7, list = FALSE)
 trainData <- bodyfat_siri[trainIndex, ]
 testData <- bodyfat_siri[-trainIndex, ]
-
 
 # Überblick über die aufgeteilten Daten
 dim(trainData)
 dim(testData)
 ```
 
-
 ## Trainineren des Modells
 
-Training des Random Forest Modell auf den Trainingsdaten.
+Vor dem Trainieren des Models muss man beachten, dass es sog.
+Hyperparameter gibt, die beim RF-Algorithmus eingestellt werden können.
+Zu diesen Hyperparameter zählen unter anderem:
 
-Mit dem  Random Forest werden Enscheidungsbäume erstellt.
+`ntree:` gibt die Anzahl der Entscheigungsbäume im RF an.
+Die Voreinstellung (default) ist 500.
 
-`ntree:` gibt die Anzahl der Bäume des RF an. Die Voreinstellung (default) ist 500. 
+`mtry:` gibt die Anzahl der zufällig ausgewählten Prädiktorvariablen an jedem Split an.
 
-`mtry:` gibt die Anzahl der zufällig ausgewählten Variablen an jedem Knoten an.
-
-Standardmäßig ist `mtry`bei $\sqrt{p}$ für die Klassifikation und $\frac{p}{3}$ bei der Regression gesetzt - ändert man diese nicht ab, muss `mtry` nicht angegeben werden. ($p$ ist die Anzahl der Prädiktorvariablen).
-
-
-
+Standardmäßig ist `mtry`bei $\sqrt{p}$ für die Klassifikation und $\frac{p}{3}$ bei der Regression gesetzt - ändert man diese nicht ab, muss `mtry` auch nicht angegeben werden.
+($p$ ist die Anzahl der Prädiktorvariablen).
 
 ```{r}
 #| label: train-the-model
 
 # Training des Random Forest Modells
-set.seed(1896)
+set.seed(42)
 rf_model1 <- randomForest(bodyfat_siri ~ ., data = trainData, ntree = 500, importance = TRUE)
 
 # Überblick über das Modell
 rf_model1
-
 ```
 
+## Testen des Modells
 
-
-____________________________________________________________
-
-
-::: {.callout-tip title="Frage - Varianz"}
-
-1. Wie hoch ist der Wert des $R^2$ des Modells? 
-
-\
-
-  * Lösung: $R^2=$`r rf_model1$rsq[500]` = `r round(rf_model1$rsq[500]*100, 2)` %
-
-2. Interpretieren Sie den Wert der Varianzaufklärung. 
-
-\
-  * Lösung: Der Anteil der Varianz des Körperfettanteils, der durch das Modell erklärt wird, liegt bei `r round(rf_model1$rsq[500]*100, 2)` %.
-            Siehe Lineare Regression.
-:::
-
-____________________________________________________________
-
-
-
-## Mittelwert der quadrierten Residuen (MSE)
-
-Der Mittelwert der **quadrierten** Residuen und der Prozentsatz der erklärten Varianz zeigen an, wie gut das Modell zu den Daten passt.
-
-Der MSE berechnet den durchschnittlichen quadratischen Fehler zwischen den vorhergesagten und tatsächlichen Werten. 
-
-
-
-____________________________________________________________
-
-
-::: {.callout-tip title="Frage - MSE-interpretierbar"}
-
-1. Wie ist der MSE hier sinnvoll zu interpretieren? 
-
-\
-
-  * Lösung: MSE zeigt den quadrierten Fehler, die Einheit ist ebenfalls quadriert. Die mittlere quadratische Abweichung zwischen dem vorhergesagten und dem tatsächlichen Körperfettanteil beträgt somit $`r round(rf_model1$mse[500], 2)` \,\% ^2$.  
-Das Wurzelziehen ermöglicht eine einfachere Interpretation (RMSE).
+Im letzten Schritt hatte das Modell die Möglichkeit anhand des Trainingsdatensatzes Muster und Zusammenhänge in den Daten zu lernen.
+Wie gut das dem Modell gelungen ist, kann man herausfinden, in dem man das Modell auf unbekannten Daten (Testdaten) Vorhersagen treffen lässt:
 
 ```{r}
-#| label: sqrt_mse
-
-round(sqrt(rf_model1$mse[500]), 2)
-
-```
-
-Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(rf_model1$mse[500]), 2)` %.   
-
-Bedenkt mensch, dass ein "normaler" Körperfettanteil im Bereich von 10 - 22 % (Männer) bzw. 20 - 30 % (Frauen) scheint `r round(sqrt(rf_model1$mse[500]), 2)` % recht niedrig.  
- 
-:::
-
-____________________________________________________________
-
-
-
-## MSE und Out-of-bag error (OOB)
-
-Das Model des Random Forest wird mittels Bootstrap-Aggregation, das sog. Bagging traininert.
-D.h. jeder Baum wird aus einer Bootstrap-Stichprobe des Trainingsdatensatzes erstellt.
-
-Der Out-of-Bag (OOB) Fehler ist der durchschnittliche Fehler jeden einzelnen Baum/Bootstrapstichprobe $x_i$. 
-
-Da nicht alle Trainingsdaten für das Training des Modells verwendet werden, berechnet sich der Fehler berechnet sich der OOB aus der Vorhersage, der Stichproben bzw. Bäume, die nicht für das Modell genutzt wurden.
-
-Die folgende Graphik zeigt die Veränderung des OOB Fehlers mit jedem zusätzlich berechneten Baum. 
-
-
-```{r}
-#| label: plot_rf_model_error
-
-plot(rf_model1)
-```
-
-Die Graphik zeigt eine Stabilisierung des OOB Fehlers bei ca. 200 Bäumen. 
-
-
-## Modellgüte und Modellbewertung
-
-Oben haben wir bereits gesehen, dass Modellgütemaße quantifizieren, wie gut ein statistisches Modell zu den vorliegenden Daten passt. 
-Der Fokus dieser liegt oft auf der Prädiktionsfähigkeit des Modells liegt.  
-
-Die Modellgüte wird im Folgenden auf den Residuen basierend berechnet, welche eine Likelihood-Interpretation ermöglichen.
-
-
-Vorhersage des Körperfettanteils auf den Testdaten:
-
-```{r}
-#| label: predict
-
 # Definition der Beobachteten Werte
 observed <- testData$bodyfat_siri
 
@@ -529,75 +326,187 @@ predictions
 
 ```
 
-### MSE und RMSE
+## Modellgüte
 
-Den MSE und RMSE haben wir oben schon kennengelernt und interpretiert. 
-Größere Residuen werden stärker gewichtet (siehe auch Varianz). 
-Im Folgenden die Berechnung anhand des MSE vorhergesagten zu den tatsächlich beobachteten Werten:
+Wie gut sind die Vorhersagen des RF-Modells denn jetzt?
+
+Um das herauszufinden, gibt es sogenannte Modellgütekriterien.
+Diese Kriterien quantifizieren, wie weit die vorhergesagten Werte von den tatsächlichen Werten entfernt sind.
+Beispiele für Modellgütekriterien bei der Klassifikation sind: Accuracy, Precision, Recall, F1-Score, ROC, AUC etc.
+Da wir in dieser Fallstudie allerdings eine stetige Zielvariable untersuchen, konzentrieren wir uns auf Modellgütekriterien für die Regression.
+Diese sind unteranderem: MSE, RMSE, MAE, $R^2$.
+
+### MSE
+
+Der MSE (Mean Squared Error) ist die mittlere quadratische Abweichung, auch mittlerer quadratischer Fehler genannt, zwischen dem vorhergesagten und dem wahren Wert.
+Berechnet wird der MSE indem die Differenz von vorhergesagten und wahren Wert quadriert, aufsummiert und dann durch die Anzahl der vorhergesahten Werte geteilt wird:
+
+$$ MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2$$
+
+jJe größer das Ergebnis des MSE, desto größer sind die Vorhersagefehler, die vom Madell gemacht wurden.
+Dementsprechend gilt, je kleiner das Ergebnis, desto besser das Modell.
+
+### RMSE
+
+Der RMSE (Root Mean Squared Error) ist die Wurzel des MSE.
+Der RMSE hat gegenüber dem MSE den Vorteil, dass dieser besser zu interpretieren ist, da durch das Ziehen der Wurzel die Größe der Fehler wieder der Einheit der tatsächlichen Werte entspricht.
+
+$$ RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2} $$
+
+Allerdings hat sowohl der MSE als auch der RMSE das Problem, dass durch den quadrierten Therm Ausreißer stark gewichtet werden.
+
+### MAE
+
+Der MAE (Mean Absolute Error) ist definiert als der Duchschnitt der absoluten Differenz zwischen vorhergesagten Wert und tatsächlichem Wert.
+Wie beim MSE und RMSE gilt, je niedrieger der Wert des MAE's desto kleiner sind die Fehler und desto besser ist das Modell.
+
+$$ MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y_i}| $$
+
+Der MAE ist im Vergleich zum MSE und RMSE robuter gegenüber Ausreißern und hat, ähnlich wie der RMSE, die gleiche Einheit wie die ursprünglichen Werte der Datentabelle wodurch er besser zu interpretieren ist als der MSE.
+Allderdings bestraft der MAE große Fehler nicht so stark wie kleine Fehler und ist anders als der MSE und RMSE nicht differenzierbar, was eine Verwendung des MAE's für weitere mathematische Operationen nicht einfach macht.
+
+### $R^2$
+
+Das $R^2$ gibt den Anteil der Varianz in der Zielvariable an, der durch das Modell erklärt wird.
+Der Ergebnisraum reicht dabei von 0 bis 1, wobei höhere Werte eine bessere Leistung des Modells wiederspiegeln.
+
+$$ R^2 = 1 - \frac{RSS}{TSS} $$
+
+Wobei:
+
+-   RSS (Residual Sum of Squares): $\sum_{i=1}^{n}(y_i - \hat{y_i})^2$
+
+-   TSS (Total Sum of Squares): $\sum_{i=1}^{n}(y_i - \overline{y})^2$
+
+------------------------------------------------------------------------
+
+::: {.callout-tip title="Frage - Modellgüte"}
+1.  Berechnen Sie den MSE. Wie ist er sinnvoll zu interpretieren?
 
 ```{r}
-#| label: modellguetemaße_I
-# mse
-mse <- mean(abs(predictions - observed)^2)
+#MSE 
+mse <- mean(abs(predictions - observed)^2) 
 mse
+```
 
-# rmse
+MSE zeigt den quadrierten Fehler, die Einheit ist ebenfalls quadriert.
+Die mittlere quadratische Abweichung zwischen dem vorhergesagten und dem tatsächlichen Körperfettanteil beträgt somit `r round(mse, 2)` $\%^2$.
+
+2.  Das Ziehen der Wurzel ermöglicht eine einfachere Interpretation (RMSE).
+
+```{r}
+# RMSE
 rmse <- sqrt(mse)
 rmse
 ```
 
+Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(mse), 2)` %.
 
-### Mean Absolute Error (MAE)
-
-Der MAE misst den mittleren absoluten Fehler.
-Der MAE ist bei AUsreißern robuster als der MSE. Zeigt bei Extremwerten somit ggf. eine robustere Metrik für die Vorhersage.
+3.  Berechnen Sie den MAE. Ist eine Verwendung des MAE's hier sinnvoll?
 
 ```{r}
-#| label: modellguetemaße_II
-
-#MAE
+#MAE 
 mae <- mean(abs(predictions - observed))
 mae
 ```
-  
 
-### $R^2$
-
-Auch bereits bekannt ist das $R^2$: 
+4.  Berechnen Sie nun noch das $R^2$ und interpretieren Sie es.
 
 ```{r}
-#| label: modellguetemaße_IIII
-
-# r2
-rss <- sum((predictions - observed)**2) # residual sum of squares
-tss <- sum((observed - mean(observed))**2)  # total sum of squares
+# R2 
+rss <- sum((predictions-observed)^2) ## residual sum of squares 
+tss <- sum((observed - mean(observed)) ^ 2)  ## total sum of squares 
 rsq <- 1 - rss/tss
-
 rsq
 ```
 
+Es wird `r round(rsq, 2)` % der Varianz der Zielvariable durch das Modell erklärt.
+:::
 
+## Modelloptimierung
 
-## Wichtige Variablen identifizieren
+Dem vorherigen Kapitel können wir entnehmen, wie gut das Model performt bspw.
+wieviel der Varianz der Zielvariable erklärt wird.
+Allerdings sind das die Ergebnisse eines Modells bei welchem wir einfach die Standardeinstellungen der Hyperparameter übernommen haben.
+Es gibt eine Möglichkeit diese Hyperparameter so einzustellen, dass unser Model noch bessere Vorhersagen macht: das Hyperparameter-Tuning.
 
-Im nächsten Schritt lassen Sie uns die wichtigsten Variablen identifizieren, die das Modell verwendet hat, um die Vorhersagen zu treffen.
+Für das Tunen der Hyperparameter brauchen wir das caret-Paket.
+
+### Grid-Search
+
+Bei der Rastersuche oder Grid Search werden alle möglichen Kombinationen der angegebenen Hyperparameterwerte ausprobiert, um das beste Modell zu finden.
+Das beste Modell findet der RF-Algorithmus mit Hilfe der Kreuzvalidierung.
+
+Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
+
+**Vorgehen:** \* der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt.
+\* es efolgt ein iteratives Training und Testen.
+\* in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
+\* Ablauf wird $k$-fach ($k$-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
+
+Um die Rechenzeit nicht zu groß werden zu lassen, tunen wir nur den mtry-Hyperparameter.
+Legen wir los:
 
 ```{r}
-#| label: important_var
+# Hyperparameter-Tuning mit dem caret Paket
+control <- trainControl(method = "cv", number = 5)
+tuneGrid <- expand.grid(.mtry = c(2, 4, 6, 8, 10))
 
+# Trainieren des Modells mit Hyperparameter-Tuning
+set.seed(42)
+rf_tuned <- train(bodyfat_siri ~ ., data = trainData, method = "rf", trControl = control, tuneGrid = tuneGrid)
+rf_tuned
+
+# Beste Parameter
+best_mtry <- rf_tuned$bestTune$mtry
+best_mtry
+
+# Vorhersage auf den Testdaten mit dem getunten Modell
+predictions_tuned <- predict(rf_tuned, testData)
+
+# Berechnung der Vorhersagegenauigkeit des getunten Modells
+mse_tuned <- mean((predictions_tuned - observed)^2)
+
+rmse_tuned <- sqrt(mse_tuned)
+```
+
+Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
+
+```{r}
+
+cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
+cat("Mean Squared Error (MSE): ", mse, "\n")
+
+cat("Tuned Root Mean Squared Error (RMSE): ", rmse_tuned, "\n")
+cat("Root Mean Squared Error (RMSE): ", rmse, "\n")
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Variablen identifizieren
+
+Zum Schluss kann man sich noch anschauen, welche Variable bei der Vorhersage besonders relevant war und welche Variablen nicht so relevant gewesen sind.
+Dabei bezieht sich die Relevanz einer Variable darauf, wie sehr ein bestimmtes Modell diese Variable „nutzt“, um möglichst genaue Vorhersagen zu treffen.
+Je mehr ein Modell diese Variable „nutzt“, um Vorhersagen zu treffen, desto wichtiger ist sie für das Modell.
+
+Lassen Sie uns die wichtigsten Variablen identifizieren, die das erste (nicht getunte) Modell verwendet hat, um die Vorhersagen zu treffen.
+
+```{r}
 # Wichtige Variablen
 importance <- importance(rf_model1)
 importance
 
 ```
 
-**%IncMSE (Percent Increase in MSE)**: bezieht sich auf die prozentuale Zunahme des MSE.   
+%IncMSE (Percent Increase in MSE): bezieht sich auf die prozentuale Zunahme des MSE.
 Ein hoher %IncMSE deutet auf eine wichtige Variable für die Vorhersagegenauigkeit des Modells hin.
 %IncMSE erlaubt eine Erstellung einer Rangordnung der Variablen im RF und der Identifizierung der einflussreichsten Prädiktoren im Modell.
 
-
 ```{r}
-#| label: important_var_graphic
+
 
 # erstellen df von varImportance
 varImportance <- data.frame(Variables = row.names(importance), Importance = importance[, 1])
@@ -611,164 +520,42 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 
 ```
 
+------------------------------------------------------------------------
 
+::: {.callout-tip title="Your Turn"}
+Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
 
-## Predicted vs. obeserved Values im Streudiagramm
+- Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
-```{r}
-#| label: gf_point_observed_predicted
-#| warning: false
-
-df <- data.frame(observed = observed, predictions = predictions)
-
-# Streudiagramm der vorhergesagten vs. tatsächlichen Werte
-gf_point(predictions ~ observed, data = df) |> 
-  gf_lm(color = "red")|> 
-  gf_labs(title = "Vorhergesagt vs. Beobachtet",
-          x = "Beobachtete Werte",
-          y = "Vorhergesagte Werte") |>
-   gf_theme(theme_minimal())
-
-#ggf. 
-# gf_smooth()|>
-```
-
-
-
-##  Modelloptimierung
-
-
-Um das Modell zu verbessern, können wir verschiedene Parameter des Random Forest Modells anpassen oder Hyperparameter-Optimierung durchführen.
-
-Dafür benutzen wir wieder das Caret Paket.
-
-### Kreuzvalidierung
-
-Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
-
-
-**Vorgehen:**
-
-- der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt. 
-
-- es efolgt ein iteratives Training und Testen. 
-
-- in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
-
-- Ablauf wird k-fach (k-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
-
-
-Legen wir los:
-
-```{r}
-#| label: hypertuning
-
-# Hyperparameter-Tuning mit dem caret Paket
-control <- trainControl(method = "cv", number = 5)
-tuneGrid <- expand.grid(.mtry = c(2, 4, 6, 8, 10))
-
-# Trainieren des Modells mit Hyperparameter-Tuning
-set.seed(1896)
-rf_tuned <- train(bodyfat_siri ~ ., data = trainData, method = "rf", trControl = control, tuneGrid = tuneGrid)
-rf_tuned
-
-# Beste Parameter
-best_mtry <- rf_tuned$bestTune$mtry
-best_mtry
-
-# Vorhersage auf den Testdaten mit dem getunten Modell
-predictions_tuned <- predict(rf_tuned, testData)
-
-```
-
-
-
-
-
-#### Berechnung der Vorhersagegenauigkeit des getunten Modells
-
-```{r}
-#| label: hypertuning-2
-
-mse_tuned <- mean((predictions_tuned - testData$bodyfat_siri)^2)
-mse_tuned
-
-rmse_tuned <- sqrt(mse_tuned)
-rmse_tuned
-
-
-```
-
-
-#### Vergleich der Modelle
-
-Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
-
-
-```{r}
-#| label: compare_models
-#| echo: false
-
-
-# Ursprungsmodel
-mse
-rmse
-
-#optimiertes Modell
-mse_tuned
-rmse_tuned
-
-```
-
-
-
-____________________________________________________________
-
-
-::: {.callout-tip title="Your-turn"}
-
-1. Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
-
-1a. Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
-
-  *Lösung: 
 ```{r}
 
 bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
 str(bodyfat_brozeck)
 ```
 
+- Erstellen Sie einen Test- und Trainingsdatensatz
 
-1b. Erstellen Sie einen Trainingsdatensatz
-
-  *Lösung: 
 ```{r}
-set.seed(1896)
+set.seed(42)
 trainIndex <- createDataPartition(bodyfat$bodyfat_brozeck, p = 0.7, list = FALSE)
-trainData <- bodyfat_brozeck[trainIndex, ]
-testData <- bodyfat_brozeck[-trainIndex, ]
+trainData2 <- bodyfat_brozeck[trainIndex, ]
+testData2 <- bodyfat_brozeck[-trainIndex, ]
 ```
 
+- Erstellen Sie das RF-Modell
 
-
-1c. Erstellen Sie das RF-Modell
-
-  *Lösung: 
 ```{r}
 # Training des Random Forest Modells
-set.seed(1896)
-rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData, ntree = 500, importance = TRUE)
+set.seed(42)
+rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData2, ntree = 500, importance = TRUE)
 
 
 # Überblick über das Modell
 rf_model2
-
-
 ```
 
-1d. Eruieren Sie die wichtigsten Variablen
-  
-  *Lösung: 
+- Eruieren Sie die wichtigsten Variablen
+
 ```{r}
 # Wichtige Variablen
 importance2 <- importance(rf_model2)
@@ -783,19 +570,19 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance2, fill 
           y = "Importance")
 ```
 
+- Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
 
-1e. Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE? 
-
-  *Lösung: 
 ```{r}
-rf_model1
-rf_model2
+# Modell 1
+mse
 
+#Modell 2 
+observed2 <- testData2$bodyfat_brozeck
+predictions2 <- predict(rf_model2, testData2)
+
+mse2 <- mean(abs(predictions2 - observed2)^2)   
+mse2
 ```
-
-
 :::
 
-____________________________________________________________
-
-
+------------------------------------------------------------------------
