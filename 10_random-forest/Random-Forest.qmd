@@ -17,6 +17,9 @@ format:
     colorlinks: true 
     papersize: a4
 bibliography: rf-references.bib    
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r}
@@ -106,7 +109,6 @@ str(bodyfat)
 2.  Was ist eine Beobachtungseinheit in diesem Datensatz?
 
 3.  Eruieren Sie in welchen Einheiten die Variablen Height, Weight und Abdomen vorliegen.
-
 :::
 
 ## Berechnung des Körperfettanteils
@@ -199,7 +201,7 @@ Um diesen Parameter zu berechnen, wird die Variable `abdomen` in waist umbenannt
 
 # abdomen = taille = waist
 # Umbenennen der Variablen
-bodyfat <- bodyfat |> rename(waist = Abdomen )
+bodyfat <- bodyfat |> rename(waist = Abdomen)
 
 # whr berechnen
 bodyfat <- mutate(bodyfat, whr = (waist/Hip))
@@ -252,6 +254,17 @@ head(bodyfat$bmi)
 ### Data-Subset generieren
 
 Variablen aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
+
+```{r}
+#| include: false
+# Dieser Code-Block existiert, damit die Werte der Gütekriterien nicht von denen der Lösung abweichen, obwohl die Variable wHtR in einer Aufgabe erstellt werden muss.
+ 
+if(ncol(bodyfat) == 18){
+  bodyfat <- mutate(bodyfat, wHtR = (waist/groesse_m))
+  bodyfat <- bodyfat[, c(1:17, 19, 18)]
+} else {}
+
+```
 
 ```{r}
 #| label: remove_density
@@ -410,8 +423,6 @@ Wobei:
 # R2 
 
 ```
-
-
 :::
 
 ## Modelloptimierung
@@ -463,7 +474,14 @@ rmse_tuned <- sqrt(mse_tuned)
 Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
 
 ```{r}
-mse <- mean(abs(predictions - observed)^2)
+#| include: false
+# Dieser Code-Block existiert, damit die Fallstudie ohne Fehler durchläuft, obwohl der MSE in einer Aufgabe berechnet werden soll.
+
+mse <- mean((predictions - observed)^2)
+
+```
+
+```{r}
 cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
 cat("Mean Squared Error (MSE): ", mse, "\n")
 
@@ -493,9 +511,10 @@ Ein hoher %IncMSE deutet auf eine wichtige Variable für die Vorhersagegenauigke
 %IncMSE erlaubt eine Erstellung einer Rangordnung der Variablen im RF und der Identifizierung der einflussreichsten Prädiktoren im Modell.
 
 ```{r}
-# erstellen df von varImportance
+# Dataframe varImportance erstellen
 varImportance <- data.frame(Variables = row.names(importance), Importance = importance[, 1])
 
+# Importance Graphik
 gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill = "darkblue") |>
   gf_refine(coord_flip()) |>
   gf_theme(theme_minimal()) |>
@@ -509,55 +528,31 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 ::: {.callout-tip title="Your Turn"}
 Erstellen Sie ein Random Forest Modell mit der Berechnung nach Brozek (`body_fat_brozek`)
 
-- Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
-
-```{r}
-bodyfat_brozeck <- bodyfat |> select(c(-Density, -bodyfat_siri))
-str(bodyfat_brozeck)
-```
-
-1b.
-Erstellen Sie einen Test- und Trainingsdatensatz
-
-```{r}
-set.seed(42)
-trainIndex <- createDataPartition(bodyfat$bodyfat_brozeck, p = 0.7, list = FALSE)
-trainData2 <- bodyfat_brozeck[trainIndex, ]
-testData2 <- bodyfat_brozeck[-trainIndex, ]
-```
-
-1c.
-Erstellen Sie das RF-Modell
-
-```{r}
-# Training des Random Forest Modells
-set.seed(42)
-rf_model2 <- randomForest(bodyfat_brozeck ~ ., data = trainData2, ntree = 500, importance = TRUE)
-
-# Überblick über das Modell
-rf_model2
-```
-
-- Erstellen Sie einen Test- und Trainingsdatensatz
+-   Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
 ```{r}
 
 ```
 
-- Erstellen Sie das RF-Modell
+-   Erstellen Sie einen Test- und Trainingsdatensatz
 
 ```{r}
 
 ```
 
-
-- Eruieren Sie die wichtigsten Variablen
+-   Erstellen Sie ein RF-Modell mit den Standardeinstellungen für die Hyperparameter
 
 ```{r}
 
 ```
 
-- Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
+-   Eruieren Sie die wichtigsten Variablen
+
+```{r}
+
+```
+
+-   Zeigt sich ein Unterschied in den Modellen bei den wichtigen Variablen und der MSE?
 
 ```{r}
 
