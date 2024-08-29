@@ -258,18 +258,7 @@ head(bodyfat$bmi)
 Variablen aus denen das Körperfett berechnet wurde, werden nicht mit in den Analysedatensatz genommen!
 
 ```{r}
-#| include: false
-# Dieser Code-Block existiert, damit die Werte der Gütekriterien nicht von denen der Lösung abweichen, obwohl die Variable wHtR in einer Aufgabe erstellt werden muss.
- 
-if(ncol(bodyfat) == 18){
-  bodyfat <- mutate(bodyfat, wHtR = (waist/groesse_m))
-  bodyfat <- bodyfat[, c(1:17, 19, 18)]
-} else {}
-
-```
-
-```{r}
-#| label: remove_density
+#| eval= exists("wHtR")
 
 # Variablen löschen
 bodyfat_siri <- bodyfat |> select(c(-Density, -bodyfat_brozeck))
@@ -283,7 +272,7 @@ Diese Einteilung der Daten erlaubt es die Leistung des Random-Forest-Algorithmus
 Dafür werden unter Nutzung des `caret`Paketes zufällig 70% der Beobachtungen des Datensatzes in den Trainigsdatensatz gezogen und die restlichen 30% bilden den Testdatensatz.
 
 ```{r}
-#| label: trainings-test-data
+#| eval= exists("wHtR")
 
 # Datenaufteilung in Trainings- und Testdaten (caretPaket)
 set.seed(42)
@@ -311,7 +300,7 @@ Standardmäßig ist `mtry`bei $\sqrt{p}$ für die Klassifikation und $\frac{p}{3
 ($p$ ist die Anzahl der Prädiktorvariablen).
 
 ```{r}
-#| label: train-the-model
+#| eval= exists("wHtR")
 
 # Training des Random Forest Modells
 set.seed(42)
@@ -327,6 +316,8 @@ Im letzten Schritt hatte das Modell die Möglichkeit anhand des Trainingsdatensa
 Wie gut das dem Modell gelungen ist, kann man herausfinden, in dem man das Modell auf unbekannten Daten (Testdaten) Vorhersagen treffen lässt:
 
 ```{r}
+#| eval= exists("wHtR")
+
 # Definition der Beobachteten Werte
 observed <- testData$bodyfat_siri
 
@@ -455,6 +446,8 @@ Um die Rechenzeit nicht zu groß werden zu lassen, tunen wir nur den mtry-Hyperp
 Legen wir los:
 
 ```{r}
+#| eval= exists("wHtR")
+
 # Hyperparameter-Tuning mit dem caret Paket
 control <- trainControl(method = "cv", number = 5)
 tuneGrid <- expand.grid(.mtry = c(2, 4, 6, 8, 10))
@@ -478,15 +471,10 @@ rmse_tuned <- sqrt(mse_tuned)
 
 Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
 
-```{r}
-#| include: false
-# Dieser Code-Block existiert, damit die Fallstudie ohne Fehler durchläuft, obwohl der MSE in einer Aufgabe berechnet werden soll.
-
-mse <- mean((predictions - observed)^2)
-
-```
 
 ```{r}
+#| eval = exists("mse")
+
 
 # Ursprungsmodel
 mse
@@ -509,7 +497,10 @@ Je mehr ein Modell diese Variable „nutzt“, um Vorhersagen zu treffen, desto 
 
 Lassen Sie uns die wichtigsten Variablen identifizieren, die das erste (nicht getunte) Modell verwendet hat, um die Vorhersagen zu treffen.
 
+
 ```{r}
+#| eval= exists("wHtR")
+
 # Wichtige Variablen
 importance <- importance(rf_model1)
 importance
@@ -520,6 +511,8 @@ Ein hoher %IncMSE deutet auf eine wichtige Variable für die Vorhersagegenauigke
 %IncMSE erlaubt eine Erstellung einer Rangordnung der Variablen im RF und der Identifizierung der einflussreichsten Prädiktoren im Modell.
 
 ```{r}
+#| eval= exists("wHtR")
+
 # Dataframe varImportance erstellen
 varImportance <- data.frame(Variables = row.names(importance), Importance = importance[, 1])
 
