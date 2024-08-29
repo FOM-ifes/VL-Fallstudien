@@ -31,8 +31,9 @@ library(tidyverse)
 
 ## Einleitung
 
+
 In dieser Fallstudie werden wir den Random Forest Algorithmus nutzen, um den Körperfettanteil vorherzusagen.
-Wir verwenden dazu den Body Fat Datensatz, der verschiedene Messungen wie Gewicht, Größe und Hautfalten enthält.
+Wir verwenden dazu den Body Fat Datensatz, der verschiedene Messungen wie Gewicht, Größe und Umfänge unterschiedlicher Körperregionen enthält.
 
 Die genaue Bestimmung des Körperfettanteils ist sehr aufwendig und teuer und im Alltag nicht zu vollziehen.
 Die Bestimmung des Körperfettanteils eines menschlichen Körpers erfolgte in den vorliegenden Daten mittels der Goldstandardmethode der sog.
@@ -41,36 +42,42 @@ Je schwerer jemand unter Wasser ist, desto höher ist die Dichte des Körpers.
 Muskeln haben eine höhere Volumendichte als Fettgewebe.
 Je höher das Gewicht unter Wasser ist, desto mehr fettfreie Masse hat dieser Körper.
 
-Eine Unterwasserwägung ist sehr aufwendig.
+Da eine Unterwasserwägung sehr aufwendig ist und eine große Apparatur benötigt braucht es für den Alltag Parameter, die leicht zu erheben sind.
 Mit dieser Fallstudie analysieren wir welche weiteren, einfacheren anthropometrischen Parameter den Körperfettanteil gut vorhersagen.
 
 Der Datensatz wird aufbereitet, um anthropometrische Parameter aus den Daten zu generieren, die derzeit als aussagekräftig diskutiert werden.
 
 ## Entscheidungsbäume (CART)
 
-Um zu verstehen, was der Random-Forest Algorithmus ist und was er macht, ist es zunächst nützlich zu wissen, was Entscheidungsmäume sind.
+
+Um zu verstehen, was der Random-Forest Algorithmus ist und was er macht, ist es zunächst nützlich zu wissen, was Entscheidungsbäume sind.
 
 Entscheidungsbäume basieren auf der Idee komplexe Beziehungen, mithilfe von Daten, in einfache "ja/nein"-Fragen aufzubrechen.
-Die Struktur eines Entscheidungsbaumes ergibt sich dabei wie folgt: an jedem Knotenpunkt (Node), beginnend mit der Wurzel des Baumes (Root Node), splittet der Entscheidungsbaum die Beobachtungen der Zielvariable (abhängige Variable) anhand der Prädiktorvariablen (unabhängige Variablen) in jeweils zwei Submengen.
-Dies passiert so lange, bis ein definiertes Abbruchkriterium erreicht wird.
+Die Struktur eines Entscheidungsbaumes ergibt sich dabei wie folgt:  
+an jedem Knotenpunkt (Node), beginnend mit der Wurzel des Baumes (Root Node), splittet der Entscheidungsbaum die Beobachtungen der Zielvariable (abhängige Variable) anhand der Prädiktorvariablen (unabhängige Variablen) in jeweils zwei Submengen.
+Dies passiert so lange, bis ein zuvor definiertes Abbruchkriterium erreicht wird.
 
-Es können zwei Arten von Entscheidungsbäumen unterschieden werden, Klassifikations- und Regressionsbäume (Classification- an Regression Trees - CART).
-Klassifikationsbäume werden zur Vorhersage einer kategorischen Zielvariablen verwendet, während Regressionsbäume zur Vorhersage einer stetigen Zielvariablen eingesetzt werden.
-Der CART-Algorithmus ist nur eine von vielen Methoden um Entscheidungsbäume zu erzeugen, sie ist aber die Grundlage für viele baumbasierte Machine-Learning-Algorithmen wie Random Forest.
+Es können zwei Arten von Entscheidungsbäumen unterschieden werden, Klassifikations- und Regressionsbäume (Classification- an Regression Trees - CART).  
+**Klassifikationsbäume** werden zur Vorhersage einer kategorialen Zielvariablen verwendet, während  
+**Regressionsbäume** zur Vorhersage einer metrischen Zielvariablen eingesetzt werden.  
+
+Der CART-Algorithmus ist nur eine von vielen Methoden, um Entscheidungsbäume zu erzeugen, sie ist aber die Grundlage für viele baumbasierte Machine-Learning-Algorithmen wie Random Forest.
 
 ![Quelle: eigene Darstellung](img/Beispiel-Klassifikationsbaum.png)
 
 ## Random Forest
 
+
 Random Forest ist ein von @breiman_random_2001 entwickelter Machine-Learning-Algorithmus, der die Ergebnisse vieler verschiedener Entscheidungsbäume kombiniert, um bestmögliche Vorhersagen zu treffen.
 
 Die Entscheidungungbäume werden dazu auf Basis eines Trainingsdatensatzes erstellt.
-Wobei die einzelnen Entscheidungsbäume des RF-Algorithmus' auf jeweils leicht verschiedenen Subdatensätzen des ursprünglichen Trainigsdatensatzes trainiert.
+Wobei die einzelnen Entscheidungsbäume des RF-Algorithmus auf jeweils leicht verschiedenen Subdatensätzen des ursprünglichen Trainigsdatensatzes trainiert werden.
 Diese verschiedenen Subdatensätze werden mithilfe von Bagging (Bootstrap Aggregation) erstellt.
-Bagging funktioniert indem eine festgelegte Menge von Bootstrap-Stichproben (d.h. Stichproben der selben Größe) durch zufälliges Ziehen von Beobachtungen mit Zurücklegen aus dem Trainigsdatensatz generiert werden.
-Damit die Entscheidungsbäume noch verschiedener zueinander werden, werden für die einzelnen Splits der Bäume nicht alle Variablen des Subdatensatzes, auf dem sie trainiert werden, genommen, sondern eine zufällige Teilmenge dieser Variablen.
-Zusammengefasst werden die einzelnen Entscheidungsbäume also auf zufällig zusammengesetzten Subdatensätzen, die bei jedem Split eine neue, zufällige Zusammensetzung von Variablen besitzen, erstellt.
-Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus' zusammengefasst und geben ein Modell zurück, mit dem neue Werte vorhergesagt werden können.
+Bagging funktioniert indem eine festgelegte Menge von Bootstrap-Stichproben (d.h. Stichproben der gleichen Größe) durch zufälliges Ziehen von Beobachtungen mit Zurücklegen aus dem Trainigsdatensatz generiert werden.
+Damit die Entscheidungsbäume noch verschiedener zueinander werden, werden für die einzelnen Splits der Bäume nicht alle Variablen des Subdatensatzes, auf dem sie trainiert werden, genommen, sondern eine zufällige Teilmenge dieser Variablen.  
+
+Zusammengefasst werden die einzelnen Entscheidungsbäume auf zufällig zusammengesetzten Subdatensätzen, die bei jedem Split eine neue, zufällige Zusammensetzung von Variablen besitzen, erstellt.
+Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus zusammengefasst und geben ein Modell zurück, mit dem neue Werte vorhergesagt werden können.
 
 ![Quelle: eigene Darstellung](img/RF-Algorithmus.png)
 
@@ -153,7 +160,7 @@ Erstellen wir aus den vorliegenden Daten einige der genannten Parameter und änd
 
 Die Struktur `str()`der Daten zeigte bereits, dass die Körpergröße in \[inch\] und das Gewicht in Pfund \[lbs\] angegeben ist.
 Diese Variablen werden in diesem Kapitel in SI-Einheiten umgerechnet.
-Zusätzlich werden die oben genannten Surrogatparameter berechnet.
+Zusätzlich werden die oben genannten Parameter berechnet.
 
 ### Einheiten umrechnen
 
@@ -216,15 +223,18 @@ Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio.
 
 ::: {.callout-tip title="Aufgabe - Variable wHtR erstellen"}
 1.  Erstellen Sie eine adäquate Graphik zur Darstellung der Verteilung der Variable Körpergröße.
-    Was fällt Ihnen auf?
+    Welche Verteilung zeigt sich?
+    
+    *Antwort: Die Daten zeigen eine Normalverteilung*
 
 2.  Erstellen Sie eine neue Variable mit dem Namen `wHtR` im gleichen Datensatz.
+
 
 3.  Überprüfen Sie die Eingabe
 :::
 
 ```{r}
-#| label: wHtR
+#| label: wHtR-loesung
 
 # 1. Graphik
 histogram(~groesse_m, data = bodyfat)
@@ -236,7 +246,7 @@ head(bodyfat$wHtR)
 
 #### BMI
 
-Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist.
+Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist und als Parameter diskutiert wird.  
 Der BMI wird wie folgt berechnet:
 
 ```{r}
@@ -264,7 +274,7 @@ str(bodyfat_siri)
 
 ## Trainingsdaten erstellen
 
-Die Daten werden in Trainings- und Testdaten aufgeteilt.
+Die Daten werden zuerst in Trainings- und Testdaten aufgeteilt.
 Diese Einteilung der Daten erlaubt es die Leistung des Random-Forest-Algorithmus zu bewerten, indem man dem Algorithmus nach dem Training unbekannte Daten zur Evaluation der Generalisierbarkeit des Modells gibt.
 Dafür werden unter Nutzung des `caret`Paketes zufällig 70% der Beobachtungen des Datensatzes in den Trainigsdatensatz gezogen und die restlichen 30% bilden den Testdatensatz.
 
@@ -423,7 +433,7 @@ rsq <- 1 - rss/tss
 rsq
 ```
 
-Es wird `r round(rsq, 2)` % der Varianz der Zielvariable durch das Modell erklärt.
+Es werden `r round(rsq, 2)` % der Varianz der Zielvariable durch das Modell erklärt.
 :::
 
 ## Modelloptimierung
@@ -433,7 +443,7 @@ wieviel der Varianz der Zielvariable erklärt wird.
 Allerdings sind das die Ergebnisse eines Modells bei welchem wir einfach die Standardeinstellungen der Hyperparameter übernommen haben.
 Es gibt eine Möglichkeit diese Hyperparameter so einzustellen, dass unser Model noch bessere Vorhersagen macht: das Hyperparameter-Tuning.
 
-Für das Tunen der Hyperparameter brauchen wir das caret-Paket.
+Für das Tunen der Hyperparameter brauchen wir das `caret`-Paket.
 
 ### Grid-Search
 
@@ -442,10 +452,12 @@ Das beste Modell findet der RF-Algorithmus mit Hilfe der Kreuzvalidierung.
 
 Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
 
-**Vorgehen:** \* der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt.
-\* es efolgt ein iteratives Training und Testen.
-\* in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.
-\* Ablauf wird $k$-fach ($k$-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.
+**Vorgehen:**
+
+* der Trainingsdatensatz in $k$ gleichgroße Teilmengen geteilt.  
+* es efolgt ein iteratives Training und Testen.  
+* in jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensatz.  
+* Ablauf wird $k$-fach ($k$-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.  
 
 Um die Rechenzeit nicht zu groß werden zu lassen, tunen wir nur den mtry-Hyperparameter.
 Legen wir los:
@@ -475,11 +487,16 @@ rmse_tuned <- sqrt(mse_tuned)
 Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
 
 ```{r}
-cat("Tuned Mean Squared Error (MSE): ", mse_tuned, "\n")
-cat("Mean Squared Error (MSE): ", mse, "\n")
 
-cat("Tuned Root Mean Squared Error (RMSE): ", rmse_tuned, "\n")
-cat("Root Mean Squared Error (RMSE): ", rmse, "\n")
+# Ursprungsmodel
+mse
+rmse <- sqrt(mse)
+rmse
+
+#optimiertes Modell
+mse_tuned
+rmse_tuned
+
 ```
 
 ------------------------------------------------------------------------
