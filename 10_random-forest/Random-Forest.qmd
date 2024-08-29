@@ -78,7 +78,7 @@ Die einzelnen Entscheidungsbäume werden am Ende des Algorithmus' zusammengefass
 
 ## Daten laden
 
-Als Datengrundlage verwenden wir den Body Fat Datensatz von Kaggle:
+Als Datengrundlage verwenden wir die Body Fat Datentabelle von Kaggle:
 
 [Link Body Fat Daten](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset)
 
@@ -94,7 +94,7 @@ bodyfat <- read.csv(pfad_bodyfat)
 # Überblick über die Daten
 head(bodyfat)
 
-#struktur der Daten (bodyfat)
+# Struktur der Daten (bodyfat)
 str(bodyfat)
 ```
 
@@ -125,7 +125,7 @@ $$
    bodyfat_{Brožek}[\%] = \left(\frac{4.575}{density} - 4.142\right) *100
 $$
 
-Fügen wir die neue Variable mit der Berechnung nach @brozek_densitometric_1963 in den Datensatz ein:
+Fügen wir die neue Variable mit der Berechnung nach @brozek_densitometric_1963 in die Datentabelle ein:
 
 ```{r}
 #| label: formula-check
@@ -153,7 +153,7 @@ Erstellen wir aus den vorliegenden Daten einige der genannten Parameter und änd
 
 Die Struktur `str()`der Daten zeigte bereits, dass die Körpergröße in \[inch\] und das Gewicht in Pfund \[lbs\] angegeben ist.
 Diese Variablen werden in diesem Kapitel in SI-Einheiten umgerechnet.
-Zusäztlich werden die oben genannten Surrogatparameter berechnet.
+Zusätzlich werden die oben genannten Surrogatparameter berechnet.
 
 ### Einheiten umrechnen
 
@@ -163,12 +163,12 @@ Zusäztlich werden die oben genannten Surrogatparameter berechnet.
 #| label: groesse in m
 
 # Größe umrechnen
-bodyfat <- mutate(bodyfat, groesse_m = round(Height*0.0254, 2))
+bodyfat <- mutate(bodyfat, groesse_m = round(Height * 0.0254, 2))
 
-# überprüfen der Eingabe
+# Überprüfen der Eingabe
 head(bodyfat$groesse_m)
 
-# löschen der alten Variable
+# Löschen der alten Variable
 bodyfat$Height <- NULL
 ```
 
@@ -180,10 +180,10 @@ bodyfat$Height <- NULL
 # Gewicht umrechnen
 bodyfat <- mutate(bodyfat, gewicht_kg = round(Weight*0.453592, 1))
 
-# überprüfen der Eingabe
+# Überprüfen der Eingabe
 head(bodyfat$gewicht_kg, 10)
 
-# löschen der alten Variable
+# Löschen der alten Variable
 bodyfat$Weight <- NULL
 ```
 
@@ -197,14 +197,14 @@ Um diesen Parameter zu berechnen, wird die Variable `abdomen` in waist umbenannt
 ```{r}
 #| label: rename_whr
 
-# abdomen = taille =  waist
+# abdomen = taille = waist
 # Umbenennen der Variablen
 bodyfat <- bodyfat |> rename(waist = Abdomen )
 
 # whr berechnen
 bodyfat <- mutate(bodyfat, whr = (waist/Hip))
 
-# überprüfen der Eingabe
+# Überprüfen der Eingabe
 head(bodyfat$whr)
 ```
 
@@ -226,11 +226,11 @@ Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio.
 ```{r}
 #| label: wHtR
 
-# 1. Graphik
+# 1. Graphik erstellen
 
 # 2. wHtR berechnen
 
-# 3. überprüfen der Eingabe
+# 3. Überprüfen der Eingabe
 
 ```
 
@@ -245,7 +245,7 @@ Der BMI wird wie folgt berechnet:
 # BMI berechnen
 bodyfat <- mutate(bodyfat, bmi = gewicht_kg/groesse_m^2)
 
-# überprüfen der Eingabe
+# Überprüfen der Eingabe
 head(bodyfat$bmi)
 ```
 
@@ -507,7 +507,7 @@ gf_col(Importance ~ reorder(Variables, Importance), data = varImportance, fill =
 ------------------------------------------------------------------------
 
 ::: {.callout-tip title="Your Turn"}
-Erstellen Sie ein Random Forest Modell mit der Berechnung nacn Brozek (`body_fat_brozek`)
+Erstellen Sie ein Random Forest Modell mit der Berechnung nach Brozek (`body_fat_brozek`)
 
 - Erstellen Sie einen Datensatz mit der Zielvariable `bodyfat_brozeck`:
 
