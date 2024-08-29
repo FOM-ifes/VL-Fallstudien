@@ -17,9 +17,7 @@ format:
     colorlinks: true 
     papersize: a4
 bibliography: rf-references.bib    
-editor: 
-  markdown: 
-    wrap: sentence
+
 ---
 
 ```{r}
