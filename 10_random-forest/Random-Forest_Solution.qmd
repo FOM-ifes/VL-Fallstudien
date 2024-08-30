@@ -7,11 +7,10 @@ date: last-modified
 format: 
   html:
     toc: true
-    number-sections: true
     html-math-method: katex
   pdf:
     toc: true
-    number-sections: true
+    number-sections: false
     colorlinks: true 
     papersize: a4
 bibliography: rf-references.bib
