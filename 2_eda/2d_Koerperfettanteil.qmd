@@ -75,7 +75,7 @@ In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in 
 `favstats()` liefert einen Überblick über die gängigen Kennzahlen einer metrischen Variable:
 
 ```{r}
-favstats( ~ Körperfettanteil, data = body_data)
+favstats( ~ Koerperfettanteil, data = body_data)
 ```
 
 ------------------------------------------------------------------------
@@ -85,7 +85,7 @@ favstats( ~ Körperfettanteil, data = body_data)
 Eine Methode zur indirekten Schätzung des Körperfettanteils ist der BMI (Body-Mass-Index). Der BMI wird mithilfe des Körpergewichts und der Körpergröße einer Person berechnet.
 
 $$
-  BMI = \frac{Körpergewicht\ in\ kg}{(Körpergröße\ in\ m)^2}
+  BMI = \frac{Koerpergewicht\ in\ kg}{(Koerpergroesse\ in\ m)^2}
 $$
 
 #### Umrechnung
@@ -99,7 +99,7 @@ Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechn
 ```{r}
 body_data <- body_data |>
   mutate(Gewicht_kg = Gewicht * 0.453592) |>
-  mutate(Größe_cm = Größe * 2.54)
+  mutate(Groesse_cm = Groesse * 2.54)
 ```
 
 #### Frage
@@ -117,13 +117,13 @@ Berechnen Sie mithilfe der `mutate()`-Funktion (s. o.) den BMI mit einer Nachkom
 
 ```{r}
 body_data <- body_data |>
-  mutate(BMI = round((Gewicht_kg / (Größe_cm / 100)^2), 1))
+  mutate(BMI = round((Gewicht_kg / (Groesse_cm / 100)^2), 1))
 ```
 
 Streudiagramm (`gf_point()`) für den Zusammenhang zwischen Körperfettanteil und BMI:
 
 ```{r}
-gf_point(Körperfettanteil ~ BMI, data = body_data)
+gf_point(Koerperfettanteil ~ BMI, data = body_data)
 ```
 
 #### Fragen
@@ -140,7 +140,7 @@ gf_point(Körperfettanteil ~ BMI, data = body_data)
 Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenbeschriftungen und Titel (`gf_labs()`) hinzufügen:
 
 ```{r}
-gf_point(Körperfettanteil ~ BMI, data = body_data) |>
+gf_point(Koerperfettanteil ~ BMI, data = body_data) |>
   gf_smooth() |>
   gf_labs(x = "BMI", 
           y = "Körperfettanteil in %",
@@ -200,15 +200,15 @@ Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichti
 ```{r}
 # Umkodieren der Varbiable
 body_data <- body_data |>
-  mutate(Übergewicht = case_when(Körperfettanteil <= 25 ~ "nicht übergewichtig",
-                          Körperfettanteil > 25 ~ "übergewichtig"))
+  mutate(Uebergewicht = case_when(Koerperfettanteil <= 25 ~ "nicht übergewichtig",
+                          Koerperfettanteil > 25 ~ "übergewichtig"))
 
 # Boxplot
-gf_boxplot(BMI ~ Übergewicht, data = body_data) + 
+gf_boxplot(BMI ~ Uebergewicht, data = body_data) + 
   geom_hline(yintercept=25, color = "red")
 
 # Kennzahlen
-favstats(BMI ~ Übergewicht, data = body_data)
+favstats(BMI ~ Uebergewicht, data = body_data)
 ```
 
 #### Fragen:
