@@ -52,7 +52,7 @@ n <- 40
 y <- 15
 ```
 
-# Bayessche Analyse
+# Bayes'sche Analyse
 
 Bisher haben wir ausschließlich die erhobenen Daten genutzt -- und nicht
 unser Vorwissen!
@@ -68,19 +68,19 @@ unser Vorwissen!
 Wir können unser *Wissen* über den Parameter in der Population $\pi$ mit
 Hilfe des Satzes von Bayes anhand der Daten $n$ und $y$ aktualisieren!
 
-**Bayes Statistik**: Um auf Basis von Statistiken Aussagen über die
+**Bayes-Statistik**: Um auf Basis von Statistiken Aussagen über die
 Wahrscheinlichkeiten von Parametern tätigen zu können, brauchen wir
-zusätzlich eine *Priori* Wahrscheinlichkeit $Pr({\pi})$:
+zusätzlich eine *Priori*-Wahrscheinlichkeit $Pr({\pi})$:
 
 $$\overbrace{Pr{(\pi} \mid {p})}^{\text{Posterior}} = Pr(\pi)\frac{Pr(p|\pi)}{Pr(p)}\propto \overbrace{Pr({\pi})}^{\text{Prior}} \cdot {\overbrace{Pr({p} \mid {\pi})}^{\text{Likelihood}}}$$
 
--   **Prior-Verteilung** $Pr({\pi})$: Wahrscheinlichkeitsverteilung von
+-   **Priori-Verteilung** $Pr({\pi})$: Wahrscheinlichkeitsverteilung von
     $\pi$, *bevor* wir unsere Daten haben.
 
 -   **Likelihood** $Pr({p} \mid {\pi})$: *Mutmaßlichkeit* von $p$ bei
     gegebenem $\pi$.
 
--   **Posterior-Verteilung** $Pr({\pi} \mid {p})$:
+-   **Posteriori-Verteilung** $Pr({\pi} \mid {p})$:
     Wahrscheinlichkeitsverteilung von $\pi$ *nachdem* wir unsere Daten
     haben.
 
@@ -89,14 +89,14 @@ $$\overbrace{Pr{(\pi} \mid {p})}^{\text{Posterior}} = Pr(\pi)\frac{Pr(p|\pi)}{Pr
 Für diese Analyse verwenden wir das **Beta-Binomial-Model**, welches
 folgende Verteilungen nutzt:
 
--   **Prior-Verteilung**: Grundlage Beta-Verteilung mit Parametern:
+-   **Priori-Verteilung**: Grundlage Beta-Verteilung mit Parametern:
     $\alpha_{prior}, \beta_{prior}$:
     $$\pi \sim Beta(\alpha_{prior}, \beta_{prior})$$
 
 -   **Likelihood**: Grundlage Binomialverteilung mit Parametern $n$ und
     $\pi$: $$Y \sim Bin(n, \pi)$$
 
--   **Posterior-Verteilung**: Beta-Verteilung mit Parametern:
+-   **Posteriori-Verteilung**: Beta-Verteilung mit Parametern:
     $\alpha_{post}, \beta_{post}$:
     $$\pi|_{(Y=y)} \sim Beta(\alpha_{post}, \beta_{post})$$ mit
     $$\alpha_{post} = \alpha_{prior} + y, \quad \beta_{post} = \beta_{prior} + n - y$$
@@ -117,9 +117,9 @@ Desweiteren ergeben sich:
 -   Varianz:
     $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
 
-## Prior-Verteilung
+## Priori-Verteilung
 
-Die Parameter *Ihrer* Prior Verteilung haben Sie oben festgelegt:
+Die Parameter *Ihrer* Priori-Verteilung haben Sie oben festgelegt:
 $$\alpha_{prior}=`r alpha_prior`, \beta_{prior}=`r beta_prior`$$
 
 Und damit ergibt sich folgende Dichte:
@@ -139,7 +139,7 @@ gf_line(d_prior ~ vpi,
 
 #### Fragen
 
--   Welche Verteilungsform hat *Ihre* Prior-Verteilung?
+-   Welche Verteilungsform hat *Ihre* Priori-Verteilung?
 
 -   Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen
     diese?
@@ -215,17 +215,17 @@ ki
 
 #### Fragen
 
--   Sind die Kennzahlen der Posterior-Verteilung unabhängig von der
-    Prior-Verteilung?
+-   Sind die Kennzahlen der Posteriori-Verteilung unabhängig von der
+    Priori-Verteilung?
 
--   Wo liegt der Erwartungswert der Posterior-Verteilung im Verhältnis
-    zum Erwartungswert der Prior-Verteilung und dem entsprechenden Wert
+-   Wo liegt der Erwartungswert der Posteriori-Verteilung im Verhältnis
+    zum Erwartungswert der Priori-Verteilung und dem entsprechenden Wert
     der Likelihood?
 
 *Tipp*: Zur Beantwortung der ersten beiden Fragen können Sie auch gerne
 wieder die App <https://fomshinyapps.shinyapps.io/BaBeBi/> nutzen!
 
--   Stimmt die Aussage: Auf Grundlage der Prior-Verteilung und einer
+-   Stimmt die Aussage: Auf Grundlage der Priori-Verteilung und einer
     Binomial-Verteilung der beobachteten Daten kann mit einer
     Wahrscheinlichkeit von 95% davon ausgegangen werden, dass der Anteil
     $\pi$ in der Zielpopulation zwischen `{r} floor(ki[1]*100)/100` und
