@@ -32,7 +32,7 @@ Um den Körperfettanteil so genau wie möglich zu bestimmen, sind medizinisch au
 
 -   Kennen Sie eine dieser Methoden?
 
-Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
+Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset]https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
 -   Körperfettanteil in %
 
@@ -235,7 +235,7 @@ Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94
 
 [^4]: https://www.bzfe.de/ernaehrung/ernaehrungswissen/gesundheit/bauchumfang-entscheidend-fuer-das-gesundheitliche-risiko/
 
--   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestüften Teilnehmern?
+-   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestuften Teilnehmern?
 
 ```{r}
 
