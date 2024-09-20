@@ -269,7 +269,7 @@ Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94
 
 [^4]: https://www.bzfe.de/ernaehrung/ernaehrungswissen/gesundheit/bauchumfang-entscheidend-fuer-das-gesundheitliche-risiko/
 
--   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestüften Teilnehmern?
+-   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestuften Teilnehmern?
 
 ```{r}
 
