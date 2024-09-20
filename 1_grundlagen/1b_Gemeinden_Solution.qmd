@@ -60,7 +60,7 @@ datatable(gv)
 
     -   *Antwort: Individuell zu beantworten.*
 
--   Zentrale Elemente einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable die untersucht wird?
+-   Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable die untersucht wird?
 
     -   *Antwort: Für die einzelnen Beobachtungen, die Gemeinden, liegen die Variablen Fläche und Bevölkerung vor.*
 
@@ -84,12 +84,13 @@ tail(gv)
 
 ## Bevölkerungsgröße
 
-Die Summe einer Variable kann über den Befehl `sum()` berechnet werden, die Anzahl Zeilen einer Datentabelle, hier also die Anzahl Beobachtungen über `nrow()`.
+Die Summe einer Variable kann über den Befehl `sum()` berechnet werden, die Anzahl Zeilen einer Datentabelle, hier also die Anzahl Beobachtungen, über `nrow()`.
 
 ```{r}
 # Summe Bevölkerung
 summe_bevoelkerung <- sum( ~ Bevoelkerung, data = gv)
 summe_bevoelkerung
+
 # Anzahl Gemeinden
 anzahl_gemeinden <- nrow(gv)
 anzahl_gemeinden
@@ -100,6 +101,7 @@ Der arithmetische Mittelwert (*Durchschnitt*, `mean()`) ist die Summe aller Beob
 ```{r}
 # Berechnung aus Summe geteilt durch Anzahl
 summe_bevoelkerung/anzahl_gemeinden
+
 # Direkte Berechnung durch mean()
 mean( ~ Bevoelkerung, data = gv)
 ```
@@ -114,8 +116,11 @@ mean( ~ Bevoelkerung, data = gv)
 Nicht immer steht uns wie hier die Grundgesamtheit, die Population zur Verfügung. Wir haben oft nur eine Stichprobe. Simulieren können wir dies durch den Befehl `sample()`:
 
 ```{r}
+# Stichprobe im Umfang von n = 100
 gv_stipro100 <- gv |>
   sample(size = 100)
+
+# arithmetisches Mittel
 mean( ~ Bevoelkerung, data = gv_stipro100)
 ```
 
@@ -129,8 +134,11 @@ mean( ~ Bevoelkerung, data = gv_stipro100)
 Über `size = 100` haben wir festgelegt, dass unsere Stichprobe aus 100 Beobachtungen besteht. Vielleicht lösen ja 1000 Beobachtungen in der Stichprobe das Problem?
 
 ```{r}
+# Stichprobe im Umfang von n = 1000
 gv_stipro1000 <- gv |>
   sample(size = 1000)
+
+# arithmetisches Mittel
 mean( ~ Bevoelkerung, data = gv_stipro1000)
 ```
 
@@ -146,8 +154,11 @@ Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil de
 [^2]: Über `prob = gv$Bevoelkerung` legen wir fest, dass die Wahrscheinlichkeitsauswahl innerhalb des Befehls `sample()` davon abhängt, wie groß der Wert der Variable `Bevoelkerung` in der Datentabelle `gv` ist.
 
 ```{r}
+# Stichprobe im Umfang von n = 1000, Wahrscheinlichkeitsauswahl über die Variable Bevoelkerung
 gv_bevoelkerung <- gv |>
   sample(size = 1000, prob = gv$Bevoelkerung)
+
+# arithmetisches Mittel
 mean( ~ Bevoelkerung, data = gv_bevoelkerung)
 ```
 
@@ -160,10 +171,12 @@ Da jetzt größere Gemeinden eher Teil der Stichprobe als kleinere Gemeinden sin
 ```{r}
 gv_bevoelkerung2 <- gv |>
   sample(size = 1000, prob = gv$Bevoelkerung, replace = TRUE)
-mean( ~ Bevoelkerung, data = gv_bevoelkerung2)
 
-# Antwort: Der Mittelwert der Stichprobe wird noch größer.
+# arithmetisches Mittel
+mean( ~ Bevoelkerung, data = gv_bevoelkerung2)
 ```
+
+-   *Antwort: Der Mittelwert der Stichprobe wird noch größer.*
 
 ## Konzentration (Exkurs)
 
@@ -172,11 +185,13 @@ Es gibt sehr viele kleine Gemeinden, und sehr wenig große. Trotzdem leben viele
 [^3]: row_number()`gibt die aktuelle Zeilennummer aus,`cumsum()\` berechnet die kummulierte Summe.
 
 ```{r}
+# Sortieren, Anteil an Summe, kumulierte Summe
 gv <- gv |>
   arrange(desc(Bevoelkerung)) |>
   mutate(Anteil_Gemeinde = row_number() / anzahl_gemeinden,
          Anteil_Bevoelkerung = cumsum(Bevoelkerung) / summe_bevoelkerung)
 
+# Visualisierung
 gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv)
 ```
 
