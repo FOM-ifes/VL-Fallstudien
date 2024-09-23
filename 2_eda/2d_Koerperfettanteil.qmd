@@ -68,9 +68,7 @@ str(body_data)
 -   Welches Skalenniveau besitzen die Variablen?
 
 
-In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 50 Prozent liegt.
-
--   Stimmt der Bereich mit den Werten unserer Stichprobe überein?
+In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 33 Prozent liegt. Stimmt der Bereich mit den Werten unserer Stichprobe überein? Hier hilft ein Blick in die Kennzahlen.
 
 `favstats()` liefert einen Überblick über die gängigen Kennzahlen einer metrischen Variable:
 
@@ -78,7 +76,13 @@ In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in 
 favstats( ~ Koerperfettanteil, data = body_data)
 ```
 
-------------------------------------------------------------------------
+#### Fragen
+
+- Wie hoch ist der arithmetische Mittelwert des Körperfettanteils?
+
+- In welchem Bereich liegen 50% der Werte für den Körperfettanteil?
+
+***
 
 ### Body-Mass-Index (BMI):
 
@@ -135,7 +139,7 @@ gf_point(Koerperfettanteil ~ BMI, data = body_data)
 -   Wie lässt sich dieser Zusammenhang interpretieren?
 
 
-------------------------------------------------------------------------
+***
 
 Dem Streudiagramm können wir eine Glättungslinie (`gf_smooth()`) sowie Achsenbeschriftungen und Titel (`gf_labs()`) hinzufügen:
 
@@ -146,6 +150,18 @@ gf_point(Koerperfettanteil ~ BMI, data = body_data) |>
           y = "Körperfettanteil in %",
           title = "Zusammenhang Körperfettanteil und BMI")
 ```
+
+### Histogramm
+
+Ein Histogramm visualisiert die Verteilung von metrischen Variablen. Die Verteilung des BMI sieht folgendermaßen aus: 
+
+```{r}
+gf_histogram( ~ BMI, data = body_data)
+```
+
+#### Frage
+
+- Was können Sie dem Histogramm entnehmen?
 
 ### Verteilungs- und Quantilsfunktion
 
@@ -189,7 +205,21 @@ pdata( ~ BMI, q = 24.9, data = body_data)
 ```{r}
 ```
 
-------------------------------------------------------------------------
+***
+
+`qdata()` gibt an, welcher Wert für eine gegebene relative Häufigkeit `p` nicht überschritten wird, d. h. die jeweiligen Quantile. Z. B. gilt für 10% der Männer, dass der BMI nicht größer als `r qdata( ~ BMI, p = 0.1, data = body_data)` war:
+
+```{r}
+qdata( ~ BMI, p = 0.1, data = body_data)
+```
+
+- Welcher BMI wird von 50% der Männer nicht überschritten?
+
+```{r}
+
+```
+
+***
 
 Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
 
