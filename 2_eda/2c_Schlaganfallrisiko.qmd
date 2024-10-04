@@ -179,10 +179,13 @@ prop( ~ Herzkrankheit, data = stroke_data, success = "Ja")
 
 -   Wie viel Prozent der männlichen Teilnehmenden haben einen Schlaganfall erlitten?
 
--   Wie alt sind die Personen mit Schlaganfall im Mittel?
+```{r}
+
+```
+
+
+-   Wie alt sind die Personen mit Schlaganfall im Durchschnitt?
 
 ```{r}
-prop(Schlaganfall ~ Geschlecht, data = stroke_data, success = "Ja")[2]
 
-mean(stroke_data$Alter[stroke_data$Schlaganfall == "Ja"])
 ```
