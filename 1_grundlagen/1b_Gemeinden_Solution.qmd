@@ -33,7 +33,7 @@ Bitte geben Sie, freiwillig und anonym, Ihre Vermutung über die Bevölkerungsgr
 
 Das Statistische Bundesamt hat Daten über
 
-> Alle politisch selbständigen Gemeinden mit ausgewählten Merkmalen am 31.12.2022
+> alle politisch selbständigen Gemeinden mit ausgewählten Merkmalen am 31.12.2022
 
 [hier](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122022_Auszug_GV.html) veröffentlicht.
 
@@ -60,7 +60,7 @@ datatable(gv)
 
     -   *Antwort: Individuell zu beantworten.*
 
--   Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable die untersucht wird?
+-   Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable, die untersucht wird?
 
     -   *Antwort: Für die einzelnen Beobachtungen, die Gemeinden, liegen die Variablen Fläche und Bevölkerung vor.*
 
@@ -147,7 +147,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 -   Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
     -   *Antwort: Nein - die Mittelwerte schwanken je nach Stichprobe, da diese zufällig gezogen wird.*
 
-## Auswahlverzerrrung
+## Auswahlverzerrung
 
 Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^2]:
 
