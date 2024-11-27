@@ -23,8 +23,6 @@ editor:
 library(mosaic)
 # Zufallszahlengenerator festlegen
 set.seed(1896)
-# Vektor für \pi bereitstellen
-vpi <- seq(0,1, by = 1/1000)
 ```
 
 # Einführung
@@ -52,10 +50,13 @@ Wahrscheinlichkeit von 90% richtig erkannt.[^3]
 -   Wie hoch ist die Wahrscheinlichkeit, bei einem positiven
     Testergebnis erkrankt zu sein?
 
-    -   A: Ca. 90%
-    -   B: Ca. 85%
-    -   C: Ca. 80%
-    -   D: Ca. 7.5%
+    a.  ca. 90%
+    b.  ca. 85%
+    c.  ca. 80%
+    d.  ca. 60%
+    e.  ca. 30%
+    f.  ca. 15%
+    g.  ca. 7.5%
 
 ------------------------------------------------------------------------
 
@@ -65,7 +66,7 @@ Ein paar Symbole:
 
 -   $K^+$: Krankheit liegt vor.
 -   $K^-$: Krankheit liegt nicht vor.
--   $T^+$: Test postiv. (Testergebnis: krank)
+-   $T^+$: Test positiv. (Testergebnis: krank)
 -   $T^-$: Test negativ.(Testergebnis: nicht krank)
 
 Dann liegt uns folgende Information aus der Aufgabe vor:
@@ -77,9 +78,9 @@ Dann liegt uns folgende Information aus der Aufgabe vor:
 Da $Pr(K^+) + Pr(K^-)=1$ gelten muss, wissen wir außerdem das
 $Pr(K^-)= 1 - 0.01 = 0.99$ gilt.
 
-Was wir suchen ist die Wahrscheinlichkeit $Pr(K^+ \mid T^+)$.
+Was wir suchen, ist die Wahrscheinlichkeit $Pr(K^+ \mid T^+)$.
 
-Der weltberühmte **Satz von Bayes**[^4] lautet hier:
+Der **Satz von Bayes**[^4] lautet hier:
 
 [^4]: Gutes Erklärvideo: <https://youtu.be/HZGCoVF3YvM>.
 
@@ -88,12 +89,12 @@ $Pr(T^+)$ kann mit Hilfe des **Satzes der totalen Wahrscheinlichkeit**
 
 $$Pr(T^+) = Pr(T^+ \mid K^+) \cdot Pr(K^+) + Pr(T^+ \mid K^-) \cdot Pr(K^-)$$
 
-berechnet werden...
+berechnet werden ...
 
 Aber oft ist es leichter, mit natürlichen Häufigkeiten zu rechnen:
 Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen
 wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind
--- und $1000-10=9990$ sind gesund.
+und $1000-10=9990$ sind gesund.
 
 Von den $10$ Erkrankten erhalten
 $10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives
@@ -104,7 +105,9 @@ $990 \cdot \underbrace{0.1}_{1-Pr(T^-\mid K^-)} = 99$ fälschlicherweise
 ebenfalls ein positives Testergebnis.
 
 Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen
-aber nur $8$ korrekt sind, also
+aber nur $8$ korrekt sind[^5], also
+
+[^5]: Das ist die Präzision (englisch: *precision*).
 
 $$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
 
@@ -112,15 +115,22 @@ $$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
 können Sie verschiedene Formen der Risikokommunikation ausprobieren.
 
 #### Fragen
-Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten kann. 
+
+Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges
+einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten
+kann.
 
 -   Was schätzen Sie? Wie groß ist dieser Anteil?
+-   Und wie sicher sind Sie sich, dass Ihre Antwort richtig ist?
 
--   Und wie sicher sind Sie sich, dass Ihre Antwort richtig ist? 
+Nutzen Sie zur Beantwortung dieser Frage die App
+<https://fomshinyapps.shinyapps.io/BaBeBi/> ***(Anteil und Sicherheit
+einstellen)*** und notieren Sie die ***bei der Betabinomialfunktion***
+ausgegebenen Werte für $\alpha$ und $\beta$. Wenn für Sie z.$\,$B. alle
+Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
 
-Nutzen Sie zur Beantwortung dieser Fragen die App <https://fomshinyapps.shinyapps.io/BaBeBi/> und notieren Sie die ausgegeben Werte für $\alpha$ und $\beta$. Wenn für Sie z. B. alle Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
-
-*Hinweis*: Erklärung und Auflösung folgen weiter unten.
+*Hinweis*: Erklärung und Auflösung folgen in der Fallstudie zur
+Bayesschen Statistik.
 
 ```{r}
 #| label: Prior
@@ -131,9 +141,9 @@ beta_prior <- 1
 
 # Punktschätzung
 
-Geben wir das Ergebnis unseres Kurses ein:[^5]
+Geben wir das Ergebnis unseres Kurses ein:[^6]
 
-[^5]: *Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese
+[^6]: *Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese
     Zahlen müssen angepasst werden.
 
 ```{r}
@@ -149,13 +159,13 @@ y <- 15
 
 -   Nur mit diesen Daten, der Stichprobe: Was würden Sie tippen, wie
     groß ist der Anteil Richtige in der Zielpopulation? Ersetzen Sie den
-    unten fehlenden Wert (`NA`) für `pi_tipp`:
+    unten fehlenden Wert (`NA`) für `pi_dach`:
 
 ```{r}
 #| label: Tipp
 
-pi_tipp <- NA
-pi_tipp
+pi_dach <- NA
+pi_dach
 ```
 
 ------------------------------------------------------------------------
@@ -183,23 +193,26 @@ gf_dist("binom", size = n, prob = 1/2)
 
 ## Maximum-Likelihood
 
-Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher* (engl.: likely) ist
-unser Ergebnis:
+Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher* (engl.: *likely*)
+ist unser Ergebnis:
 
 ```{r}
 #| label: Likelihood
 
+# Vektor für \pi erzeugen
+vpi <- seq(0,1, by = 1/1000)
 # Likelihood
 like <- dbinom(y, size = n, prob = vpi)
 # Zeichnen 
 gf_line(like ~ vpi) |>
   gf_labs(x = expression(pi), 
-          y = expression(L(pi)), 
-          title = paste0("Likelihood bei n=", n, " und y=" , y))
+    y = expression(L(pi)), 
+    title = paste0("Likelihood bei n=", n, " und y=" , y))
 ```
 
-Ein guter Punktschätzer für den Wert des Parameters $\pi$ in der
-Zielpopulation ist also der Anteilwert $p$ in unser Stichprobe:
+Ein guter Punktschätzer (Maximum der Likelihoodfunktion) für den Wert
+des Parameters $\pi$ in der Zielpopulation ist also der Anteilwert $p$
+in unser Stichprobe:
 
 $$\hat{\pi} = p = \frac{y}{n} = \frac{`r y`}{`r n`} = `r round(y/n, 2)`.$$
 
@@ -210,31 +223,30 @@ andere zufällige Stichprobe aus derselben Population hätte ein anderes
 Ergebnis ergeben können.
 
 -   Wie anders?
-
 -   Wie groß ist die Stichprobenvariation des Stichprobenanteils?
 
 Simulieren wir das zufällige Ziehen einer Stichprobe aus einer
-Population durch zufälliges Re-Sampling der Stichprobe.
+Population durch zufälliges Resampling der Stichprobe.
 
-`do(3)*` wiederholt den folgenden Befehl $3\times$,
-`resample(Stichprobe)` zieht aus der Stichprobe (engl. sample) ein
-zufälliges Re-Sample - mit Zurücklegen.
+`do(3) *` wiederholt den folgenden Befehl $3\times$,
+`resample(Stichprobe)` zieht aus der Stichprobe (engl. *sample*) ein
+zufälliges Resample - mit Zurücklegen.
 
 *Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das
-Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die
-mathematische Lösung (s. u.) zu bevorzugen.
+Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die Lösung
+*unter theoretischer Verteilungsannahme* (s. u.) zu bevorzugen.
 
 ```{r}
-#| label: Re-Sampling
+#| label: Resampling
 
 # Bereitstellen Stichprobenvektor
 stichprobe <- rep(c("richtig","falsch"), times = c(y, n-y)) |>
   as.factor()
-# 3x Re-Sample
-do(3)* prop( ~ resample(stichprobe), success = "richtig")
+# 3x Resample
+do(3) * prop( ~ resample(stichprobe), success = "richtig")
 ```
 
-Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und
+Simulieren wir den Vorgang des zufälligen Resampling 10000-mal und
 speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
 ```{r}
@@ -245,8 +257,8 @@ Bootvtlg <- do(10000) * prop( ~ resample(stichprobe), success = "richtig")
 head(Bootvtlg)
 ```
 
-Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig
-in den Re-Samples aus der Datentabelle `Bootvtlg` kann über ein
+Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig
+in den Resamples aus der Datentabelle `Bootvtlg` kann über ein
 Säulendiagramm dargestellt werden:
 
 ```{r}
@@ -254,13 +266,20 @@ Säulendiagramm dargestellt werden:
 gf_bar( ~ prop_richtig, data = Bootvtlg)
 ```
 
-Der über Simulationen geschätze Standardfehler liegt damit bei:
+Der über Simulationen geschätzte Standardfehler liegt damit bei:
 
 ```{r}
 #| label: Standardfehler-Bootstrap
 
 sd( ~ prop_richtig, data = Bootvtlg)
 ```
+
+### Frage
+
+-   Wie ändert sich der Standardfehler, wenn mehr Bootstrap-Stichproben
+    gezogen werden?
+
+------------------------------------------------------------------------
 
 Mathematisch ergibt sich eine Schätzung über
 
@@ -275,7 +294,7 @@ p <- y/n
 sqrt((p*(1-p)) / n)
 ```
 
-#### Frage
+#### Fragen
 
 -   Wie ändert sich der Standardfehler, wenn $n$ größer wird?
 
@@ -318,7 +337,9 @@ gf_bar( ~ prop_richtig, data = Bootvtlg) |>
 qdata( ~ prop_richtig, p = c(0.025, 0.975), data = Bootvtlg)
 ```
 
-## Mathematische Lösung
+-   Was ist die Bedeutung des Konfidenzintervalls?
+
+## Lösung mit theoretischer Verteilungsannahme
 
 Die Funktion `binom.test()` rechnet direkt über die Binomialverteilung
 und berechnet damit auch ein Konfidenzintervall:
