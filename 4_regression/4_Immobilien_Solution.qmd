@@ -475,7 +475,7 @@ Nullvtlg <- do(1000) * lm(shuffle(totalrent) ~ livingspace + haskitchen, data = 
 Um das Nullmodell zu testen wird der F-Test herangezogen, welcher die modellierte Variation ins Verhältnis zur nicht-modellierten Variation setzt und dabei die Anzahl der Parameter $(p : \beta_1, \beta_2, \dots, \beta_p)$ und die Anzahl der Beobachtungen $(n)$ berücksichtigt:
 
 $$
-  F = \frac{R^2}{1 - R^2} \cdot \frac{n -p}{k}
+  F = \frac{R^2}{1 - R^2} \cdot \frac{n - k - 1}{k}
 $$
 
 ```{r}
