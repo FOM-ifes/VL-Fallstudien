@@ -23,9 +23,7 @@ editor:
 library(mosaic)
 # Zufallszahlengenerator festlegen
 set.seed(1896)
-# Vektor für \pi bereitstellen
-vpi <- seq(0,1, by = 1/1000)
-#Priors
+# Priors
 alpha_prior <- 1
 beta_prior <- 1
 ```
@@ -35,13 +33,13 @@ beta_prior <- 1
 Diese Fallstudie ist eine Fortsetzung der Inferenz-Fallstudie zur
 Früherkennung. In dieser wurden Sie gefragt:
 
--   Wie groß ist der Anteil $\pi$ der FOM-Studierenden, die die
-    gestellte Frage[^1] richtig beantworten konnten?
+- Wie groß ist der Anteil $\pi$ der FOM-Studierenden, die die
+  gestellte Frage[^1] richtig beantworten konnten?
 
--   Wie sicher sind Sie selbst in Bezug auf Ihre gegebene Antwort?
+- Wie sicher sind Sie selbst in Bezug auf Ihre gegebene Antwort?
 
 [^1]: Die Frage lautete: *Wie hoch ist die Wahrscheinlichkeit, bei einem
-    positiven Testergebnis erkrankt zu sein?*
+  positiven Testergebnis erkrankt zu sein?*
 
 Das Ergebnis aus unserem Kurs lautete:
 
@@ -52,7 +50,7 @@ n <- 40
 y <- 15
 ```
 
-# Bayes'sche Analyse
+# Bayessche Analyse
 
 Bisher haben wir ausschließlich die erhobenen Daten genutzt -- und nicht
 unser Vorwissen!
@@ -68,38 +66,38 @@ unser Vorwissen!
 Wir können unser *Wissen* über den Parameter in der Population $\pi$ mit
 Hilfe des Satzes von Bayes anhand der Daten $n$ und $y$ aktualisieren!
 
-**Bayes-Statistik**: Um auf Basis von Statistiken Aussagen über die
+**Bayes Statistik**: Um auf Basis von Statistiken Aussagen über die
 Wahrscheinlichkeiten von Parametern tätigen zu können, brauchen wir
-zusätzlich eine *Priori*-Wahrscheinlichkeit $Pr({\pi})$:
+zusätzlich eine *Priori* Wahrscheinlichkeit $Pr({\pi})$:
 
-$$\overbrace{Pr{(\pi} \mid {p})}^{\text{Posterior}} = Pr(\pi)\frac{Pr(p|\pi)}{Pr(p)}\propto \overbrace{Pr({\pi})}^{\text{Prior}} \cdot {\overbrace{Pr({p} \mid {\pi})}^{\text{Likelihood}}}$$
+$$\overbrace{Pr{(\pi} \mid {p})}^{\text{Posterior}} = Pr(\pi)\frac{Pr(p\mid\pi)}{Pr(p)}\propto \overbrace{Pr({\pi})}^{\text{Prior}} \cdot {\overbrace{Pr({p} \mid {\pi})}^{\text{Likelihood}}}$$
 
--   **Priori-Verteilung** $Pr({\pi})$: Wahrscheinlichkeitsverteilung von
-    $\pi$, *bevor* wir unsere Daten haben.
+- **Prior-Verteilung** $Pr({\pi})$: Wahrscheinlichkeitsverteilung von
+  $\pi$, *bevor* wir unsere Daten haben.
 
--   **Likelihood** $Pr({p} \mid {\pi})$: *Mutmaßlichkeit* von $p$ bei
-    gegebenem $\pi$.
+- **Likelihood** $Pr({p} \mid {\pi})$: *Mutmaßlichkeit* von $p$ bei
+  gegebenem $\pi$.
 
--   **Posteriori-Verteilung** $Pr({\pi} \mid {p})$:
-    Wahrscheinlichkeitsverteilung von $\pi$ *nachdem* wir unsere Daten
-    haben.
+- **Posterior-Verteilung** $Pr({\pi} \mid {p})$:
+  Wahrscheinlichkeitsverteilung von $\pi$ *nachdem* wir unsere Daten
+  haben.
 
 ## Beta-Binomial-Model
 
 Für diese Analyse verwenden wir das **Beta-Binomial-Model**, welches
 folgende Verteilungen nutzt:
 
--   **Priori-Verteilung**: Grundlage Beta-Verteilung mit Parametern:
-    $\alpha_{prior}, \beta_{prior}$:
-    $$\pi \sim Beta(\alpha_{prior}, \beta_{prior})$$
+- **Prior-Verteilung**: Grundlage Beta-Verteilung mit Parametern:
+  $\alpha_{prior}, \beta_{prior}$:
+  $$\pi \sim Beta(\alpha_{prior}, \beta_{prior})$$
 
--   **Likelihood**: Grundlage Binomialverteilung mit Parametern $n$ und
-    $\pi$: $$Y \sim Bin(n, \pi)$$
+- **Likelihood**: Grundlage Binomialverteilung mit Parametern $n$ und
+  $\pi$: $$Y \sim Bin(n, \pi)$$
 
--   **Posteriori-Verteilung**: Beta-Verteilung mit Parametern:
-    $\alpha_{post}, \beta_{post}$:
-    $$\pi|_{(Y=y)} \sim Beta(\alpha_{post}, \beta_{post})$$ mit
-    $$\alpha_{post} = \alpha_{prior} + y, \quad \beta_{post} = \beta_{prior} + n - y$$
+- **Posterior-Verteilung**: Beta-Verteilung mit Parametern:
+  $\alpha_{post}, \beta_{post}$:
+  $$\pi\mid(Y=y) \sim Beta(\alpha_{post}, \beta_{post})$$ mit
+  $$\alpha_{post} = \alpha_{prior} + y, \quad \beta_{post} = \beta_{prior} + n - y$$
 
 Dabei gilt für die Dichtefunktion der **Betaverteilung**
 ($\pi \sim Beta(\alpha, \beta)$):
@@ -109,17 +107,17 @@ $$f(\pi) \propto \pi^{\alpha-1} \cdot (1-\pi)^{\beta-1}, \text{ für } \pi \in [
 Und $\alpha > 0, \beta >0$ bestimmen die Form der Verteilung.
 Desweiteren ergeben sich:
 
--   Erwartungswert (*Mittelwert* der Verteilung):
-    $E(\pi)=\frac{\alpha}{\alpha+\beta}$,
--   Modus (Modalwert):
-    $Modus(\pi)=\frac{\alpha-1}{\alpha+\beta-2}, \text{ für } \alpha, \beta > 1$
-    und
--   Varianz:
-    $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
+- Erwartungswert (*Mittelwert* der Verteilung):
+  $E(\pi)=\frac{\alpha}{\alpha+\beta}$,
+- Modus (Modalwert):
+  $Modus(\pi)=\frac{\alpha-1}{\alpha+\beta-2}, \text{ für } \alpha, \beta > 1$
+  und
+- Varianz:
+  $Var(\pi)=\frac{\alpha \cdot \beta}{(\alpha+\beta)^2 \cdot (\alpha+\beta+1)}$.
 
-## Priori-Verteilung
+## Prior-Verteilung
 
-Die Parameter *Ihrer* Priori-Verteilung haben Sie oben festgelegt:
+Die Parameter *Ihrer* Prior Verteilung haben Sie oben festgelegt:
 $$\alpha_{prior}=`r alpha_prior`, \beta_{prior}=`r beta_prior`$$
 
 Und damit ergibt sich folgende Dichte:
@@ -127,22 +125,24 @@ Und damit ergibt sich folgende Dichte:
 ```{r}
 #| label: Prior-Verteilung
 
+# Vektor für \pi bereitstellen
+vpi <- seq(0,1, by = 1/1000)
+
 # Dichte
 d_prior <- dbeta(vpi, shape1 = alpha_prior, shape2 = beta_prior)
 
 # Visualisierung
 gf_line(d_prior ~ vpi,
-         color= "#D55E00", linewidth = 1.2) |>
+   color = "orange", linewidth = 1.2) |>
   gf_labs(x = expression(pi), y = expression(f(pi)),
-          title = paste0("Beta(", alpha_prior, ", " , beta_prior, ")"))
+    title = paste0("Beta(", alpha_prior, ", " , beta_prior, ")"))
 ```
 
 #### Fragen
 
--   Welche Verteilungsform hat *Ihre* Priori-Verteilung?
+- Welche Verteilungsform hat *Ihre* Prior-Verteilung?
 
--   Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen
-    diese?
+- Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen diese?
 
 ## Likelihood
 
@@ -157,9 +157,9 @@ like <- dbinom(y, n, vpi)
 
 # Visualisierung
 gf_line(like ~ vpi,
-        color= "#CC79A7", linewidth = 1.2) |>
+    color = "darkviolet", linewidth = 1.2) |>
   gf_labs(x = expression(pi), y = expression(L(pi)), 
-          title = paste0("n = ", n, " und y = " , y))
+    title = paste0("n = ", n, " und y = " , y))
 ```
 
 ## Posterior-Verteilung
@@ -179,26 +179,26 @@ d_post <- dbeta(vpi, shape1 = alpha_post, shape2 = beta_post)
 
 # Visualisierung
 gf_line(d_post ~ vpi,
-         color= "#009E73", linewidth = 1.2) |>
+   color = "darkcyan", linewidth = 1.2) |>
   gf_labs(x = expression(pi), y = expression(f(pi)),
-          title = paste0("Beta(", alpha_post, ", " , beta_post, ")"))
+    title = paste0("Beta(", alpha_post, ", " , beta_post, ")"))
 ```
 
-Wir können jetzt z. B. Modus oder Erwartungswert der Posteriorverteilung
+Wir können jetzt z. B. Modus oder Erwartungswert der Posteriorverteilung
 berechnen:
+
+#### Your turn
 
 ```{r}
 #| label: Posterior-Kennzahlen
 
 # Erwartungswert
-mittelwert_post <- alpha_post / (alpha_post + beta_post)
-mittelwert_post
+
 # Modus
-modus_post <- (alpha_post-1) / (alpha_post + beta_post-2)
-modus_post
+
 ```
 
-Und es kann das **Kredibilitätsintervall** berechnet werden:
+Und es kann das **Kredibilitätsintervall** (oder Glaubwürdigkeitsintervall, entspricht dem Konfidenzintervall in der frequentistischen Statistik) berechnet werden:
 
 ```{r}
 #| label: Kredibilitätsintervall
@@ -215,18 +215,18 @@ ki
 
 #### Fragen
 
--   Sind die Kennzahlen der Posteriori-Verteilung unabhängig von der
-    Priori-Verteilung?
+- Sind die Kennzahlen der Posterior-Verteilung unabhängig von der
+  Prior-Verteilung?
 
--   Wo liegt der Erwartungswert der Posteriori-Verteilung im Verhältnis
-    zum Erwartungswert der Priori-Verteilung und dem entsprechenden Wert
-    der Likelihood?
+- Wo liegt der Erwartungswert der Posterior-Verteilung im Verhältnis
+  zum Erwartungswert der Prior-Verteilung und dem entsprechenden Wert
+  der Likelihood?
 
 *Tipp*: Zur Beantwortung der ersten beiden Fragen können Sie auch gerne
 wieder die App <https://fomshinyapps.shinyapps.io/BaBeBi/> nutzen!
 
--   Stimmt die Aussage: Auf Grundlage der Priori-Verteilung und einer
-    Binomial-Verteilung der beobachteten Daten kann mit einer
-    Wahrscheinlichkeit von 95% davon ausgegangen werden, dass der Anteil
-    $\pi$ in der Zielpopulation zwischen `{r} floor(ki[1]*100)/100` und
-    `{r} ceiling(ki[2]*100)/100` liegt?
+- Stimmt die Aussage: Auf Grundlage der Prior-Verteilung und einer
+  Binomial-Verteilung der beobachteten Daten kann mit einer
+  Wahrscheinlichkeit von 95% davon ausgegangen werden, dass der Anteil
+  $\pi$ in der Zielpopulation zwischen `{r} floor(ki[1]*100)/100` und
+  `{r} ceiling(ki[2]*100)/100` liegt?

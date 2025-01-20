@@ -186,7 +186,7 @@ gf_histogram( ~ BMI, bins = 20, data = body_data)
 
 - Was können Sie dem Histogramm entnehmen?
 
-Am häufigsten lagen die BMI-Wert zwischen 24 und 26. Die Verteilung ist rechtsschief. Der BMI weist insgesamt eine Spannweite von 18 bis 38 auf. Es gibt einen Ausreißer mit einem über einem BMI über 35.
+Am häufigsten lagen die BMI-Wert zwischen 24 und 26. Die Verteilung ist rechtsschief. Der BMI weist insgesamt eine Spannweite von 18 bis 38 auf. Es gibt einen Ausreißer mit einem BMI über 35.
 
 ### Verteilungs- und Quantilsfunktion
 

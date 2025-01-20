@@ -26,76 +26,131 @@ set.seed(1896)
 
 #### Frage
 
--   Unter 170 Covid-19 Fällen sind 8 geimpfte Personen und 162 nicht geimpfte Personen. Können Sie allein aus dieser Information schließen, dass die Impfung vor der Erkrankung schützt?
+- Unter 170 Covid-19 Fällen sind 8 geimpfte Personen und 162 nicht geimpfte Personen. Können Sie allein aus dieser Information schließen, dass die Impfung vor der Erkrankung schützt?
 
-    -   *Antwort: Nein, da man keine Informationen über die Population hat.*
+  Nein, da man keine Informationen über die Population hat.
 
 ## Studie
 
 Das Design der Studie für den Covid-19 Impfstoff von Biontech/Pfizer sah wie folgt aus:
 
--   Randomisiertes Experiment mit $\approx 43660$ Teilnehmenden.
-
--   Multinationale Studie, Teilnehmende über 16 Jahre.
-
--   Zufällige (!) Zuordnung zu Impf- oder Placebogruppe, jeweils $\approx 21830$ Personen.
-
--   Für Details der Originalstudie siehe z.B. <https://www.nejm.org/doi/full/10.1056/NEJMoa2034577>
+- Randomisiertes Experiment mit $\approx 43660$ Teilnehmenden.
+- Multinationale Studie, Teilnehmende über 16 Jahre.
+- Zufällige (!) Zuordnung zu Impf- oder Placebogruppe, jeweils $\approx 21830$ Personen.
+- Für Details der Originalstudie siehe z.B. <https://www.nejm.org/doi/full/10.1056/NEJMoa2034577>
 
 *Hinweis*: Aufgrund von Ausschlusskriterien weichen die echten Daten leicht ab.
 
-Das Risiko einer Erkrankung im Studienzeitraum ist gegeben durch:
+## Risiko und Impfwirksamkeit
 
-$$ir = \frac{\text{Fälle}}{\text{Personen}}.$$
+- Wie hoch ist die Risiko einer Erkrankung in der Impf- und in Placebogruppe?
 
-Für die Placebogruppe ergibt sich damit ein Risiko von:
+  *Antwort:* Das Risiko einer Erkrankung im Studienzeitraum ist gegeben durch:
+
+  $$rk = \frac{\text{Fälle}}{\text{Personen}}.$$
+
+  Für die beiden Gruppen ergeben sich damit folgende Risiken:
 
 ```{r}
-ir_placebo <- 162/21830
-ir_placebo
+#| label: Erkrankungsrisiko
+
+# Placebogruppe
+rk_placebo <- 162/21830
+rk_placebo
+
+# Impfgruppe
+rk_impf <- 8/21830
+rk_impf
 ```
 
-Und für die Impfgruppe von:
+- Wie stark verringert sich das Risiko einer Erkrankung durch die Impfung?
+
+  *Antwort:*\
+  Das ist das relative Risiko, also
+  
+  $$\frac{rk_{Impfung}}{rk_{Placebo}}.$$
 
 ```{r}
-ir_impf <- 8/21830
-ir_impf
+#| label: RelativesRisiko
+rk_impf / rk_placebo
 ```
 
-Die Wirksamkeit einer Impfung ist definiert als
+- Wie hoch ist die Impfwirksamkeit?
 
-$$IW=1-\frac{ir_{Impfung}}{ir_{Placebo}}.$$
+  *Antwort:* Die Wirksamkeit einer Impfung ist definiert als
 
-*Hinweis*: Die Impfwirksamkeit bezieht sich also auf die relative Reduktion des Risikos.
+  $$IW=1-\frac{rk_{Impfung}}{rk_{Placebo}}.$$
 
 ```{r}
-iw <- 1- (ir_impf / ir_placebo)
+#| label: Impfwirksamkeit
+iw <- 1 - (rk_impf / rk_placebo)
 iw
 ```
 
+------------------------------------------------------------------------
+
 Die Impfwirksamkeit in der Studie liegt bei $$iw=`r round(iw*100)`\,\%.$$
 
-Da hier $n$ in der Impfgruppe und Placebogruppe gleich groß ist reduziert sich die Formel zu:
+Da hier $n$ in der Impfgruppe und Placebogruppe gleich groß ist, reduziert sich die Formel zu:
 
 $$IW = 1- \frac{\text{Fälle in Impfgruppe}}{\text{Fälle in Placebogruppe}}$$
 
-Sei $\pi$ der Anteil der Fälle aus der Impfgruppe, hier $8$ von $170$, dann kann die Formel der Impfwirksamkeit wie folgt dargestellt werden (wenn Impf- und Placebogruppe gleich groß sind):
+Sei $\pi$ der Anteil der Fälle aus der Impfgruppe an allen Fällen, hier $8$ von $170$, dann kann die Formel der Impfwirksamkeit wie folgt dargestellt werden (wenn Impf- und Placebogruppe gleich groß sind):
 
 $$IW=\frac{1-2\pi}{1- \pi}.$$
 
-### Frage
+#### Fragen
 
--   Wie groß ist $\pi$, wenn die Imfung nicht wirken würde?
+- Wie groß ist $\pi$, wenn die Impfung nicht wirken würde?^[Bei, wie hier, gleich großer Impf- und Placebogruppe.]
 
-    -   *Antwort:* $\pi$ *= 0.5, wenn die Impfung nicht wirken würde.*
+  *Antwort:* $\pi$ = 0.5.
 
--   Wie groß ist der Punktschätzer $\hat{\pi}$ für die unbekannte Wahrscheinlichkeit $\pi$?
+- Wie groß ist der Punktschätzer $\hat{\pi}$ für die unbekannte Wahrscheinlichkeit $\pi$, dass ein Erkrankter aus der Impfgruppe stammt?
 
-    -   *Antwort:* $\hat{\pi}$ *= 8/170*
+  *Antwort:* $\hat{\pi}$ = 8/170.
 
 ```{r}
+#| label: PiDach
 pi_dach <- 8/170
 ```
+
+
+## Hypothesenprüfung
+
+*Skeptische, kritische* Vermutung: 
+Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
+Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt, der Hypothese:
+
+$$H_0: \pi = \pi_0 = 0.5$$
+
+*Hinweis*: Die formulierte Hypothese in der Originalstudie und die Auswertung weichen ab.
+
+#### Frage
+
+- Was ist unsere Forschungshypothese?
+
+  *Antwort:*
+  
+  Uns interessiert, ob die Impfung wirkt, dass ist die Forschungshypothese.
+  Der Anteil muss also geringer sein als 0.5.
+  Da wir diese nicht beweisen können, versuchen wir die Gegenhypothese (Impfung wirkt nicht) zu widerlegen.
+  
+  - Nullhypothese: Impfung wirkt nicht  $H_0: \pi = \pi_0 = 0.5$.
+  - Forschungshypothese: Impfung wirkt $H_A: \pi < \pi_0 = 0.5$ (einseitige oder gerichtete Hypothese).
+  - modifizierte Nullhypothese: $H_0: \pi \geq \pi_0 = 0.5$.
+
+- Wie viel Geimpfte erwarten Sie unter den insgesamt $170$ Fällen, wenn die Nullhypothese stimmen würde?
+
+  *Antwort:* $170 \cdot 0.5 = 85$ Geimpfte.
+
+- Muss genau diese Anzahl rauskommen?
+
+  *Antwort:* Nein, leichte Abweichungen sind Zufall.
+
+- Wie groß wäre $\pi$, wenn der Impfstoff wirken würde?
+
+  *Antwort:* Wenn der Impfstoff vollständig vor einer Erkrankung schützen würde, wäre $\pi = 0$.
+
 
 ## Zufallssimulation
 
@@ -103,71 +158,84 @@ Eine einfache Möglichkeit, eine Erfolgswahrscheinlichkeit von $\pi=0.5$ zu simu
 
 #### Frage
 
--   Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf?
+- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf?
 
-    -   *Antwort: 4x Kopf*
+  *Antwort:* 4x Kopf
 
-## Hypothesenprüfung
-
-*Skeptische, kritische* Vermutung: Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts. Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt der Hypothese:
-
-$$H_0: \pi_0 =0.5$$
-
-*Hinweis*: Die formulierte Hypothese in der Originalstudie und die Auswertung weichen ab.
-
-#### Fragen
-
--   Wie viel Geimpfte erwarten Sie unter den insgesamt $170$ Fällen, wenn die Nullhypothese stimmen würde?
-
-    -   *Antwort: 85 Geimpfte.*
-
--   Muss genau diese Anzahl rauskommen?
-
-    -   *Antwort: Nein, leichte Abweichungen sind Zufall.*
-
--   Wie groß wäre $\pi$, wenn der Impfstoff wirken würde?
-
-    -   *Antwort: Wenn der Impfstoff vollständig vor einer Erkrankung schützen würde, wäre* $\pi = 0$*.*
-
-------------------------------------------------------------------------
-
-Der Befehl `rflip()` simuliert den Münzwurf.
+Der Befehl `rflip()` simuliert den Münzwurf. 
 
 ```{r}
+#| label: rflip
+# Drei Simulation mit 170 Versuchen
+do(3) * rflip(n = 170)
+```
+
+Auch wenn $\pi=0.5$ stimmt kommen mal mehr oder weniger als 85x Kopf (`heads`, entspricht unser Anzahl Geimpfter unter den Fällen) in einem Experiment vor.
+
+Hier werden jetzt $10000$ Simulation der Anzahl Geimpfter unter den $170$ Fällen mit $\pi_0 =0.5$ durchgeführt:
+
+```{r}
+#| label: Nullverteilung
 Nullvtlg <- do(10000) * rflip(n = 170)
 ```
 
 #### Frage
 
--   Wie viele Zeilen hat die Datentabelle `Nullvtlg`?
+- Wie viele Zeilen hat die Datentabelle `Nullvtlg`?
 
-    -   *Antwort: 10.000 Zeilen.*
+  10.000 Zeilen.
 
 ------------------------------------------------------------------------
 
 In der Variable (Spalte) `heads` der Datentabelle `Nullvtlg` steht die zufällige Anzahl Geimpfter der Simulationen (Zeile) von Daten, wenn die Nullhypothese stimmen würde.
 
 ```{r}
+#| label: Grafik Nullverteilung
+gf_bar( ~ heads, data = Nullvtlg) |>
+  gf_labs(x = "Anzahl Fälle",
+          y = "Anzahl Simulationen")
+```
+
+#### Fragen
+
+- Wie oft kam in der Simulation die Anzahl Geimpfter vor, die sich in der Studie ergeben hat?
+
+  *Antwort:* In keiner der 10000 simulierten Stichproben unter dem Modell der Nullhypothese gab es 8 oder weniger Fälle in der Impfgruppe. 
+
+```{r}
+#| label: Grafik Nullverteilung mit Punktschaetzer
 gf_bar( ~ heads, data = Nullvtlg) |>
   gf_vline(xintercept = 8) |>
   gf_labs(x = "Anzahl Fälle",
           y = "Anzahl Simulationen")
 ```
 
-In keiner der 10000 simulierten Stichproben unter dem Modell der Nullhypothese gab es 8 oder weniger Fälle in der Impfgruppe. Daher: p-Wert $< \frac{1}{10000}$. Die Wahrscheinlichkeit des Ergebnisses der Stichprobe (8 (oder weniger) von 170 Fällen) ist sehr gering, wenn das Modell der Nullhypothese $H_0: \pi_0=0.5$ stimmen würde.
+- Wie groß ist der p-Wert?
 
-*Hinweis*: Mathematisch haben wir Daten gemäß einer Binomialverteilung simuliert: $$Pr(Y=y |\pi, n) = \binom{n}{y} \cdot \pi \cdot (1-\pi)^{n-y}.$$ Konfidenzintervalle und p-Werte können hier auch über die Funktion `binom.test()` bestimmt werden:
+  *Antwort:* Der p-Wert ist kleiner als $\frac{1}{10000}$. 
+  
+  Die Wahrscheinlichkeit des Ergebnisses der Stichprobe (8 (oder weniger) von 170 Fällen) ist sehr gering, wenn das Modell der Nullhypothese $H_0: \pi_0=0.5$ stimmen würde.
+
+------------------------------------------------------------------------
+
+*Hinweis*: Mathematisch haben wir Daten gemäß einer Binomialverteilung simuliert: 
+$$Pr(Y=y |\pi, n) = \binom{n}{y} \cdot \pi \cdot (1-\pi)^{n-y}.$$
+Konfidenzintervalle und p-Werte können hier auch über die Funktion `binom.test()` bestimmt werden:
 
 ```{r}
+#| label: binom.test
 binom.test(8, 170, alternative = "less")
 ```
 
+*Hinweis:* Wir testen die einseitige Alternativhypothese $H_A: \pi < \pi_0 = 0.5$.
+Die Impfung kann nur wirken, wenn der Anteil geringer ist als unter der Nullhypothese angenommen.
+
 #### Fragen
 
--   Ein Ergebnis wird *statistisch signifikant zum Niveau* $\alpha=5\%$ genannt, wenn der p-Wert kleiner als $\alpha$ ist. Ist dieses Ergebnis statistisch signifikant?
+- Ein Ergebnis wird *statistisch signifikant zum Niveau* $\alpha=5\%$ genannt, wenn der p-Wert kleiner als $\alpha$ ist. Ist dieses Ergebnis statistisch signifikant?
 
-    -   *Antwort: Ja, das Ergebnis ist signifikant, da* $p-Wert < \alpha$*.*
+  *Antwort:* Ja, das Ergebnis ist signifikant, da p-Wert $< \alpha$.
 
--   Angenommen es gilt $\pi<0.5$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
+- Angenommen es gilt $\pi<0.5$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
 
-    -   *Antwort: Nein, dann liegt kein Fehler vor.*
+  *Antwort:* Nein, dann liegt kein Fehler vor.
