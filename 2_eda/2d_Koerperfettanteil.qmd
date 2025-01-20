@@ -221,6 +221,16 @@ qdata( ~ BMI, p = 0.1, data = body_data)
 
 ***
 
+Die Umkehrfunktion zur Verteilungsfunktion ist die Quantilsfunktion. Mit Hilfe der Quantilsfunktion (`qdata`) kann angegeben werden, welcher Wert für eine gegebene relative Häufigkeit $p$ nicht überschritten wird (das sind die jeweiligen Quantile). Z. B. gilt für 10% der Männer, dass der BMI nicht größer als 21.3 war:
+
+```{r}
+qdata( ~ BMI, p = 0.1, data = body_data)
+```
+
+- Welcher BMI wird von 50% der Männer nicht überschritten?
+
+*** 
+
 Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
 
 [^3]: https://iris.who.int/bitstream/handle/10665/37003/WHO_TRS_854.pdf;%20jsessionid=56CD01367D58BF71F68E62627A1904CD?sequence=1
