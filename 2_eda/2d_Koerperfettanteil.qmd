@@ -229,11 +229,14 @@ qdata( ~ BMI, p = 0.1, data = body_data)
 
 - Welcher BMI wird von 50% der Männer nicht überschritten?
 
+<<<<<<< HEAD
 ```{r}
 
 ```
 
 
+=======
+>>>>>>> f3b9eb2981cd85e3e149b455d5c06d90dc0b8eb7
 *** 
 
 Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
