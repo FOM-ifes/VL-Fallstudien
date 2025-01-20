@@ -106,6 +106,8 @@ $$
 Visuell:
 
 ```{r}
+#| warning: false
+
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm()
 ```
@@ -291,6 +293,8 @@ gf_histogram( ~ livingspace, data = Bootvtlg,
 Visualisierung Schätzunsicherheit:
 
 ```{r}
+#| warning: false
+
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm(interval = "confidence")
 ```
@@ -411,7 +415,7 @@ $$
 
 ## Preismodellierung mit kategorialer erklärender Variable
 
-Die Variable `balcony`ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
+Die Variable `balcony` ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
 
 ```{r}
 # Visualisierung über "verwackeltes" Streudiagram
@@ -483,7 +487,7 @@ summary(erg2)
 Was wäre, wenn alle Regressionskoeffizienten dieses Modells gleich Null wären und insgesamt keinen Einfluss auf die abhängige Variable hätten? 
 Dann würde folgende Nullhypothese gelten:
 
-$$H_0 : \beta_1 = \beta_2 = ... = \beta_p = 0$$
+$$H_0 : \beta_1 = \beta_2 = ... = \beta_k = 0$$
 
 Alternativ kann diese Nullhypothese auch durch $H_0 : R^2 = 0$ formuliert werden.
 
@@ -578,7 +582,7 @@ plotModel(erg3) |>
   *Antwort:* Beide Geraden fallen quasi aufeinander. 
   Die Punktewolken unterscheiden sich in Ihrer Form allerdings.
   
-- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace`und `balcony` ins Modell integrieren.
+- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace` und `balcony` ins Modell integrieren.
 
 ```{r}
 # Lineare Modellierung
