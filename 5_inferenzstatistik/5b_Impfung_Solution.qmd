@@ -94,8 +94,7 @@ Die Impfwirksamkeit in der Studie liegt bei $$iw=`r round(iw*100)`\,\%.$$
 Da hier $n$ in der Impfgruppe und Placebogruppe gleich groß ist, reduziert sich die Formel zu:
 
 $$IW = 1- \frac{\text{Fälle in Impfgruppe}}{\text{Fälle in Placebogruppe}}$$
-
-Sei $\pi$ der Anteil der Fälle aus der Impfgruppe an allen Fällen, hier $8$ von $170$, dann kann die Formel der Impfwirksamkeit wie folgt dargestellt werden (wenn Impf- und Placebogruppe gleich groß sind):
+Sei $\pi$ der Anteil der Fälle (Erkrankungen), die aus der Impfgruppe stammen, dann kann die Formel der Impfwirksamkeit wie folgt dargestellt werden (wenn Impf- und Placebogruppe gleich groß sind):
 
 $$IW=\frac{1-2\pi}{1- \pi}.$$
 
@@ -118,7 +117,7 @@ pi_dach <- 8/170
 ## Hypothesenprüfung
 
 *Skeptische, kritische* Vermutung: 
-Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
+Dass nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
 Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt, der Hypothese:
 
 $$H_0: \pi = \pi_0 = 0.5$$
@@ -149,7 +148,7 @@ $$H_0: \pi = \pi_0 = 0.5$$
 
 - Wie groß wäre $\pi$, wenn der Impfstoff wirken würde?
 
-  *Antwort:* Wenn der Impfstoff vollständig vor einer Erkrankung schützen würde, wäre $\pi = 0$.
+  *Antwort:* Wenn der Impfstoff vollständig vor einer Erkrankung schützen würde, dann kämen weniger als die Hälfte der Fälle aus der Impfgruppe, also $\pi < 0.5$.
 
 
 ## Zufallssimulation
@@ -170,7 +169,7 @@ Der Befehl `rflip()` simuliert den Münzwurf.
 do(3) * rflip(n = 170)
 ```
 
-Auch wenn $\pi=0.5$ stimmt kommen mal mehr oder weniger als 85x Kopf (`heads`, entspricht unser Anzahl Geimpfter unter den Fällen) in einem Experiment vor.
+Auch wenn $\pi=0.5$ stimmt, kommen mal mehr oder weniger als 85x Kopf (`heads`, entspricht unser Anzahl Geimpfter unter den Fällen) in einem Experiment vor.
 
 Hier werden jetzt $10000$ Simulation der Anzahl Geimpfter unter den $170$ Fällen mit $\pi_0 =0.5$ durchgeführt:
 
@@ -192,7 +191,7 @@ In der Variable (Spalte) `heads` der Datentabelle `Nullvtlg` steht die zufällig
 ```{r}
 #| label: Grafik Nullverteilung
 gf_bar( ~ heads, data = Nullvtlg) |>
-  gf_labs(x = "Anzahl Fälle",
+  gf_labs(x = "Anzahl Geimpfter (unter 170 Fällen)",
           y = "Anzahl Simulationen")
 ```
 
@@ -206,7 +205,7 @@ gf_bar( ~ heads, data = Nullvtlg) |>
 #| label: Grafik Nullverteilung mit Punktschaetzer
 gf_bar( ~ heads, data = Nullvtlg) |>
   gf_vline(xintercept = 8) |>
-  gf_labs(x = "Anzahl Fälle",
+  gf_labs(x = "Anzahl Geimpfter (unter 170 Fällen)",
           y = "Anzahl Simulationen")
 ```
 

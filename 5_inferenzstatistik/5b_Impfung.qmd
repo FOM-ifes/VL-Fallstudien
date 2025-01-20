@@ -51,12 +51,12 @@ Das Design der Studie für den Covid-19 Impfstoff von Biontech/Pfizer sah wie fo
 
 ------------------------------------------------------------------------
 
-Sei $\pi$ der Anteil der Fälle (Erkrankungen), die aus der Impfgruppe stammen, an allen Fällen.
+Sei $\pi$ der Anteil der Fälle (Erkrankungen), die aus der Impfgruppe stammen.
 
 
 #### Fragen
 
-- Wie groß ist $\pi$, wenn die Imfung nicht wirken würde?^[Bei, wie hier, gleich großer Impf- und Placebogruppe.]
+- Wie groß ist $\pi$, wenn die Impfung nicht wirken würde?^[Bei, wie hier, gleich großer Impf- und Placebogruppe.]
 
 - Wie groß ist bei dieser Studie der Punktschätzer $\hat{\pi}$ für die unbekannte Wahrscheinlichkeit $\pi$, dass ein Erkrankter aus der Impfgruppe stammt?
 
@@ -68,7 +68,7 @@ Sei $\pi$ der Anteil der Fälle (Erkrankungen), die aus der Impfgruppe stammen, 
 ## Hypothesenprüfung
 
 *Skeptische, kritische* Vermutung: 
-Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
+Dass nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
 Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt, der Hypothese:
 
 $$H_0: \pi = \pi_0 = 0.5$$
@@ -102,7 +102,7 @@ Der Befehl `rflip()` simuliert den Münzwurf.
 do(3) * rflip(n = 170)
 ```
 
-Auch wenn $\pi=0.5$ stimmt kommen mal mehr oder weniger als 85x Kopf (`heads`, entspricht unser Anzahl Geimpfter unter den Fällen) in einem Experiment vor.
+Auch wenn $\pi=0.5$ stimmt, kommen mal mehr oder weniger als 85x Kopf (`heads`, entspricht unser Anzahl Geimpfter unter den Fällen) in einem Experiment vor.
 
 Hier werden jetzt $10000$ Simulation der Anzahl Geimpfter unter den $170$ Fällen mit $\pi_0 =0.5$ durchgeführt:
 
@@ -116,9 +116,7 @@ Nullvtlg <- do(10000) * rflip(n = 170)
 
 - Wie viele Zeilen hat die Datentabelle `Nullvtlg`?
 
-  10.000 Zeilen.
-
-------------------------------------------------------------------------
+***
 
 In der Variable (Spalte) `heads` der Datentabelle `Nullvtlg` steht die zufällige Anzahl Geimpfter unter den simulierten Fällen (Zeile) von Daten, wenn die Nullhypothese stimmen würde.
 
