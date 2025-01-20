@@ -128,7 +128,7 @@ $$\alpha_{prior}=`r alpha_prior`, \beta_{prior}=`r beta_prior`$$
 Und damit ergibt sich folgende Dichte:
 
 ```{r}
-#| label: Prior-Verteilung
+#| label: Priori-Verteilung
 
 # Vektor für \pi bereitstellen
 vpi <- seq(0,1, by = 1/1000)
@@ -145,7 +145,7 @@ gf_line(d_prior ~ vpi,
 
 #### Fragen
 
--   Welche Verteilungsform hat *Ihre* Prior-Verteilung?
+-   Welche Verteilungsform hat *Ihre* Priori-Verteilung?
 
     *Antwort:* Individuelle Lösung. Hängt von den gewählten Parametern
     (`alpha`, `beta`) ab.
@@ -175,13 +175,13 @@ gf_line(like ~ vpi,
     title = paste0("n = ", n, " und y = " , y))
 ```
 
-## Posterior-Verteilung
+## Posteriori-Verteilung
 
 Wir aktualisieren jetzt unser Wissen (und unsere Unsicherheit) über
 $\pi$:
 
 ```{r}
-#| label: Posterior-Verteilung
+#| label: Posteriori-Verteilung
 
 # Posterior
 alpha_post <- alpha_prior + y
@@ -203,7 +203,7 @@ berechnen:
 #### Your turn
 
 ```{r}
-#| label: Posterior-Kennzahlen
+#| label: Posteriori-Kennzahlen
 
 # Erwartungswert
 alpha_post / (alpha_post + beta_post)
