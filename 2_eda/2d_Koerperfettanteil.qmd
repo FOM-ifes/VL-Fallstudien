@@ -229,6 +229,11 @@ qdata( ~ BMI, p = 0.1, data = body_data)
 
 - Welcher BMI wird von 50% der Männer nicht überschritten?
 
+```{r}
+
+```
+
+
 *** 
 
 Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
@@ -281,7 +286,7 @@ Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94
 
 ```
 
--   Gibt es Männer in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
+-   Wie hoch ist der Anteil an Männern in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
 
 ```{r}
 
