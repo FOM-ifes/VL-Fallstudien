@@ -296,7 +296,11 @@ Auch der Bauchumfang weist auf gesundheitsschädliches Fett hin.
 -   Wie sieht der Zusammenhang zwischen Körperfettanteil und Bauchumfang aus?
 
 ```{r}
+# Streudiagramm
+gf_point(Koerperfettanteil ~ Bauchumfang, data = body_data)
 
+# Korrelation
+cor(Koerperfettanteil ~ Bauchumfang, data = body_data)
 ```
 
 Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94 cm und mehr das Risiko für übergewichtsbedingte Krankheiten erhöht.[^4]
@@ -306,11 +310,19 @@ Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94
 -   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestuften Teilnehmern?
 
 ```{r}
-
+# Empirische Verteilungsfunktion
+1 - pdata( ~ Bauchumfang, q = 94, data = body_data)
 ```
 
--   Gibt es Männer in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
+-   Wie hoch ist der Anteil an Männern in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
 
 ```{r}
+# Datentabelle filtern
+body_data_subset <- body_data |>
+filter(Bauchumfang >= 94)
 
+str(body_data_subset)
+
+# Empirische Verteilungsfunktion
+pdata( ~ BMI, q = 25, data = body_data_subset)
 ```
