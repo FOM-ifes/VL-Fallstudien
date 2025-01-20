@@ -94,7 +94,7 @@ berechnet werden ...
 Aber oft ist es leichter, mit natürlichen Häufigkeiten zu rechnen:
 Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen
 wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind
-und $1000-10=9990$ sind gesund.
+und $1000-10=990$ sind gesund.
 
 Von den $10$ Erkrankten erhalten
 $10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives
@@ -171,7 +171,7 @@ pi_dach
 ------------------------------------------------------------------------
 
 Unter der Bedingung, dass für jeden unserer $n$ Versuche die gleiche
-Erfolgswahrscheinlichket $\pi$ vorliegt, kann die Wahrscheinlichkeit für
+Erfolgswahrscheinlichkeit $\pi$ vorliegt, kann die Wahrscheinlichkeit für
 $y$ Erfolge mit Hilfe einer **Binomialverteilung**
 ($Y \sim Bin(n, \pi)$) berechnet werden:
 
