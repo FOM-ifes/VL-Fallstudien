@@ -34,15 +34,13 @@ Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
 - `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
 - `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
 - `floor`: Stockwerk der Wohnung
-- `interiorqual`: Qualität der Innenausstattung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von null bis vier (nicht verfügbar -- einfach -- normal -- gehoben -- Luxus)
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_immo <- here("data", "Immo-Datensatz.csv")
 # Daten einlesen
-immo <- read.csv2(pfad_immo)
+here("data", "Immo-Datensatz.csv") |>  read.csv2() -> immo
 # Datenstruktur
 str(immo)
 # Obere 6 Beobachtungen
@@ -94,8 +92,6 @@ $$y_i = b_0 + b_1 \cdot x_i + e_i$$
 Visuell:
 
 ```{r}
-#| warning: false
-
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm()
 ```
@@ -113,7 +109,7 @@ Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: 
 
 #### Fragen
 
-- Welchen modellierten Wert hat eine Wohnung mit $x_0=100$ Quadratmetern?
+- Welche modellierte Miete hat eine Wohnung mit $x_0=100$ Quadratmetern?
 
 - Gilt immer $\hat{y}_0 = y_0$?
 
@@ -140,7 +136,7 @@ $$R^2 = `r r2`$$
 
 ### Schätzunsicherheit
 
-In der zugrundeliegenden Population unserer Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
+In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i.$$
 
@@ -182,7 +178,7 @@ Bootvtlg <- do(1000) * lm(totalrent ~ livingspace, data = resample(immo))
 head(Bootvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ livingspace, data = Bootvtlg,
-      bins = 20, center = b[2]) |> # Anpassung Histogramm 
+      bins = 20, center = betadach[2]) |> # Anpassung Histogramm 
   # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = betadach[2], color = "blue")
 ```
@@ -243,8 +239,6 @@ gf_histogram( ~ livingspace, data = Bootvtlg,
 Visualisierung Schätzunsicherheit:
 
 ```{r}
-#| warning: false
-
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm(interval = "confidence")
 ```
@@ -405,6 +399,7 @@ Alternativ kann diese Nullhypothese auch durch $H_0 : R^2 = 0$ formuliert werden
 Dieses Nullmodell kann durch Mischen der y-Werte erzeugt werden:
 
 ```{r}
+set.seed(1896)
 Nullvtlg <- do(1000) * lm(shuffle(totalrent) ~ livingspace + haskitchen, data = immo)
 ```
 
@@ -446,7 +441,7 @@ confint(Bootvtlg)
   
 #### Frage
 
-- Ist eine Steigung von Null für `haskitchen` kompatibel zum Ergebnis der Stichprobe?
+- Ist eine Steigung von null für `haskitchenja` kompatibel zum Ergebnis der Stichprobe?
 
 
 #### Your turn

@@ -1,8 +1,8 @@
 ---
-title: "Lösungsskizze: Bevölkerung Deutscher Gemeinden"
+title: "Bevölkerung deutscher Gemeinden"
 lang: de
-author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
-date: last-modified
+author: "Ihr Name"
+date: today
 format: 
   html:
     toc: true
@@ -31,21 +31,19 @@ Bitte geben Sie, freiwillig und anonym, Ihre Vermutung über die Bevölkerungsgr
 
 ## Daten
 
-Das Statistische Bundesamt hat Daten über
+Das Statistische Bundesamt hat Daten über 
 
 > alle politisch selbständigen Gemeinden mit ausgewählten Merkmalen am 31.12.2022
 
 [hier](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122022_Auszug_GV.html) veröffentlicht.
 
-Eine vereinfachte Version[^1] steht im Ordner `data` als `csv` Datei unter dem Namen `GV2022.csv` zur Verfügung.
+Eine vereinfachte Version[^filter] steht im Ordner `data` als `csv` Datei unter dem Namen `GV2022.csv` zur Verfügung.
 
-[^1]: Außerdem gefiltert auf Gemeinden mit einer Bevölkerung\>0.
+[^filter]: Außerdem gefiltert auf Gemeinden mit einer Bevölkerung > 0.
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_gv <- here("data", "GV2022.csv")
 # Daten einlesen
-gv <- read.csv2(pfad_gv)
+here("data", "GV2022.csv") |> read.csv2() -> gv
 ```
 
 Eine interaktive Übersicht erhalten wir über die Funktion `datatable()` aus dem Paket `DT`:
@@ -56,15 +54,11 @@ datatable(gv)
 
 #### Fragen
 
--   Suchen Sie die Gemeinde in der Sie gerade leben. Wie gut war Ihre Schätzung?
+- Suchen Sie die Gemeinde in der Sie gerade leben. Wie gut war Ihre individuelle Schätzung?
 
-    -   *Antwort: Individuell zu beantworten.*
+- Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable, die untersucht wird?
 
--   Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable, die untersucht wird?
-
-    -   *Antwort: Für die einzelnen Beobachtungen, die Gemeinden, liegen die Variablen Fläche und Bevölkerung vor.*
-
-------------------------------------------------------------------------
+***
 
 Über die Befehle `str()` und `head()` bzw. `tail()` erhalten wir ebenfalls einen Eindruck von der vorliegenden Datentabelle.
 
@@ -79,8 +73,7 @@ tail(gv)
 
 #### Frage
 
--   Wie viele Gemeinden gibt es gemäß dieser Datentabelle in Deutschland?
-    -   *Antwort: 10786 Gemeinen (obs. für Observations)*
+- Wie viele Gemeinden gibt es gemäß dieser Datentabelle in Deutschland?
 
 ## Bevölkerungsgröße
 
@@ -106,10 +99,10 @@ summe_bevoelkerung/anzahl_gemeinden
 mean( ~ Bevoelkerung, data = gv)
 ```
 
+
 #### Frage
 
--   Wie gut war Ihre Schätzung?
-    -   *Antwort: Individuell zu beantworten.*
+- Wie gut war Ihre Schätzung?
 
 ## Stichproben
 
@@ -126,10 +119,9 @@ mean( ~ Bevoelkerung, data = gv_stipro100)
 
 #### Frage
 
--   Stimmt der Mittelwert der Stichprobe mit dem Mittelwert in der Population überein?
-    -   *Antwort: Nein.*
+- Stimmt der Mittelwert der Stichprobe mit dem Mittelwert in der Population überein?
 
-------------------------------------------------------------------------
+***
 
 Über `size = 100` haben wir festgelegt, dass unsere Stichprobe aus 100 Beobachtungen besteht. Vielleicht lösen ja 1000 Beobachtungen in der Stichprobe das Problem?
 
@@ -144,17 +136,17 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 
 #### Frage
 
--   Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
-    -   *Antwort: Nein - die Mittelwerte schwanken je nach Stichprobe, da diese zufällig gezogen wird.*
+- Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
 
 ## Auswahlverzerrung
 
-Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^2]:
+Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^prob]:
 
-[^2]: Über `prob = gv$Bevoelkerung` legen wir fest, dass die Wahrscheinlichkeitsauswahl innerhalb des Befehls `sample()` davon abhängt, wie groß der Wert der Variable `Bevoelkerung` in der Datentabelle `gv` ist.
+[^prob]: Über `prob = gv$Bevoelkerung` legen wir fest, dass die Wahrscheinlichkeitsauswahl innerhalb des Befehls `sample()` davon abhängt, wie groß der Wert der Variable `Bevoelkerung` in der Datentabelle `gv` ist.
 
 ```{r}
-# Stichprobe im Umfang von n = 1000, Wahrscheinlichkeitsauswahl über die Variable Bevoelkerung
+# Stichprobe im Umfang von n = 1000
+# Wahrscheinlichkeitsauswahl über die Variable Bevoelkerung
 gv_bevoelkerung <- gv |>
   sample(size = 1000, prob = gv$Bevoelkerung)
 
@@ -166,23 +158,21 @@ Da jetzt größere Gemeinden eher Teil der Stichprobe als kleinere Gemeinden sin
 
 #### Frage
 
--   Auch in der Stichprobe `gv_bevoelkerung` kommt jede Gemeinde, egal wie groß, nur einmal vor. Über die Option `replace = TRUE` im Befehl `sample()` können wir auch simulieren, was passieren würde wenn eine Gemeinde mehrfach in der Stichprobe vorkommen kann. Ändern Sie den Code entsprechend. Wie ändert sich das Ergebnis?
+- Auch in der Stichprobe `gv_bevoelkerung` kommt jede Gemeinde, egal wie groß, nur einmal vor. Über die Option `replace = TRUE` im Befehl `sample()` können wir auch simulieren, was passieren würde wenn eine Gemeinde mehrfach in der Stichprobe vorkommen kann. Ändern Sie den Code entsprechend. Wie ändert sich das Ergebnis?
 
 ```{r}
 gv_bevoelkerung2 <- gv |>
-  sample(size = 1000, prob = gv$Bevoelkerung, replace = TRUE)
+  sample(size = 1000, prob = gv$Bevoelkerung)
 
 # arithmetisches Mittel
 mean( ~ Bevoelkerung, data = gv_bevoelkerung2)
 ```
 
--   *Antwort: Der Mittelwert der Stichprobe wird noch größer.*
-
 ## Konzentration (Exkurs)
 
-Es gibt sehr viele kleine Gemeinden, und sehr wenig große. Trotzdem leben viele Menschen in einer großen Gemeinde. Wenn wir die Gemeinde der Größe nach absteigend (`desc()`) sortieren (`arrange()`) und den jeweiligen Anteil an der Summe berechnen [^3], können wir dies visualisieren:
+Es gibt sehr viele kleine Gemeinden, und sehr wenig große. Trotzdem leben viele Menschen in einer großen Gemeinde. Wenn wir die Gemeinde der Größe nach absteigend (`desc()`) sortieren (`arrange()`) und den jeweiligen Anteil an der Summe berechnen [^row], können wir dies visualisieren:
 
-[^3]: row_number()`gibt die aktuelle Zeilennummer aus,`cumsum()\` berechnet die kummulierte Summe.
+[^row]: `row_number()` gibt die aktuelle Zeilennummer aus, `cumsum()` berechnet die kumulierte Summe.
 
 ```{r}
 # Sortieren, Anteil an Summe, kumulierte Summe
@@ -197,5 +187,6 @@ gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv)
 
 #### Frage
 
--   Wie viel Prozent der Bevölkerung wohnt ungefähr in den 20% größten Gemeinden?
-    -   *Antwort: Knapp 80%.*
+- Wie viel Prozent der Bevölkerung wohnt ungefähr in den 20 % Prozent größten Gemeinden?
+
+

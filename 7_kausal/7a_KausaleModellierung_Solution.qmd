@@ -15,10 +15,9 @@ format:
     colorlinks: true 
 ---
 
-## Verwendete Pakete
-
 ```{r}
 #| label: setup
+#| include: false
 
 library(here)         # Pfad-Handling
 library(dplyr)        # Datenhandling
@@ -31,7 +30,10 @@ library(ggfortify)    # automatische Übertragung verschiedener Formate in ggplo
 library(gridExtra)    # Anordnung mehrerer ggplot2-Objekte
 ```
 
-## Warum brauchen wir die kausale Modellierung?
+
+## Einführung
+
+### Warum brauchen wir die kausale Modellierung?
 
 Kausale Modellierung hilft, den datengenerierenden Prozess nachvollziehen zu können.
 So können idealerweise kausale Wirkungen auch aus Beobachtungsstudien abgeleitet werden.
@@ -45,7 +47,7 @@ Ein DAG ist eine theoretische Darstellung der Forschungsfrage, die auf dem aktue
 Mögliche Quellen sind daher u. a. theoretische Konzepte, aktuelle Beiträge in der wissenschaftlichen Literatur, eigene Beobachtungen und Erfahrungen sowie Diskussionen mit Expert:innen.
 
 
-## Grundelelemente der DAGs
+### Grundelelemente der DAGs
 
 In DAGs werden kausale Beziehungen durch einen Pfeil ausgedrückt:
 
@@ -63,11 +65,11 @@ Aus drei Variablen können folgende Grundelemente der DAGs gebildet werden:
 In der Chain ist $X$ jetzt ein Vorfahre (*ancestor*) von $Y$ und $Y$ ein Nachfahre (*descendant*) von $X$.
 
 
-## Grundelemente am Beispiel
+## Kausale Modellierung am Beispiel
 
-Als Beispiel wird der Datensatz `kreditstatus.csv`[^1] genutzt, der folgende Variablen enthält:
+Als Beispiel wird der Datensatz `kreditstatus.csv`[^kred] genutzt, der folgende Variablen enthält:
 
-[^1]: Die Daten stammen ursprünglich von Lending Club, wurden durch DataCamp bearbeitet und bereitgestellt und hier mit einigen weiteren Modifikationen eingesetzt. Lending Club ist ein Peer-to-Peer-Kreditvermittler, der Daten zu angenommenen und abgelehnten Krediten über viele Jahre frei veröffentlicht hat. 
+[^kred]: Die Daten stammen ursprünglich von Lending Club, wurden durch DataCamp bearbeitet und bereitgestellt und hier mit einigen weiteren Modifikationen eingesetzt. Lending Club ist ein Peer-to-Peer-Kreditvermittler, der Daten zu angenommenen und abgelehnten Krediten über viele Jahre frei veröffentlicht hat. 
 Mittlerweile ist der Zugriff nicht mehr möglich. Eine wichtige Änderung in der Datentabelle im Vergleich zu den Originaldaten betrifft den Kreditstatus, der ursprünglich statt Ausfall (ja/nein) den Kreditstatus (laufend/zurückgezahlt/ausgefallen) gezeigt hat -- daraus wurden nur die Datensätze mit Status *zurückgezahlt* und *ausgefallen* auswählt. 
 
 Variable | Bedeutung 
@@ -78,13 +80,13 @@ Variable | Bedeutung
 `(n)bonitaet` | Ergebnis der Kreditwürdigkeitsprüfung: A (7) -- höchste Bonität, G (1) -- niedrigste Bonität
 `alter` | Alter in Jahren
 `wohnen` | Wohnstatus: Eigentum, Grundschuld, Miete, Sonstige
-`arbeit` | Dauer des Anstellungsverhältnisses in Jahren[^2]
+`arbeit` | Dauer des Anstellungsverhältnisses in Jahren[^jahre]
 `einkommen` | jährliches Einkommen in 1000 USD
 
-[^2]: *Hinweis:* Hier gibt es einige unplausible Werte, z. B. im Alter von 23 schon über 60 Jahre im Anstellungsverhältnis.
+[^jahre]: *Hinweis:* Hier gibt es einige unplausible Werte, z. B. im Alter von 23 schon über 60 Jahre im Anstellungsverhältnis.
 
 
-## Laden und Vorbereiten des Datensatzes
+### Laden und Vorbereiten des Datensatzes
 
 ```{r}
 #| label: Daten
@@ -107,7 +109,7 @@ head(KRED)
 
 Bonität wird (weiter unten für die Übersichtlichkeit) zusätzlich als numerische Variable angelegt.
 
-## Explorative Datenanalyse
+### Explorative Datenanalyse
 
 #### Your turn
 
@@ -120,7 +122,7 @@ mosaic::inspect(KRED)
 ```
 
 
-## Chain
+### Chain
 
 Vermutlich wird sich das Alter (`alter`) positiv auf das Einkommen (`einkommen`) auswirken.
 Ein höheres Einkommen wird zur einer geringeren Ausfallwahrscheinlichkeit (`ausfall`) führen.
@@ -139,13 +141,12 @@ dagify(ausfall ~ einkommen,
   ggdag(text_size = 2) |> 
   # Hintergrund entfernen 
   gf_theme(theme_dag_blank())
-  # statt |> ... geht auch + theme_dag_blank
 ```
 
 *Hinweis:* Ohne Koordinaten werden die Elemente zufällig angeordnet. 
 Dann empfiehlt es sich für die Reproduzierbarkeit, `set.seed(...)` zu nutzen.
 
-## Fork
+### Fork
 
 In einer Fork haben zwei Variablen eine gemeinsame Ursache.
 Im Beispieldatensatz kann das die Variable Alter sein, die auf das Einkommen und die Dauer des Anstellungsverhältnisses (`arbeit`) wirkt.
@@ -172,7 +173,7 @@ dagify(arbeit ~ alter,
 ```
 
 
-## Inverted Fork
+### Inverted Fork
 
 In einer Inverted Fork gehen die Pfeile in die entgegengesetzte Richtung.
 Jetzt gibt es eine gemeinsame Wirkung der zwei Variablen.
@@ -203,6 +204,8 @@ dagify(ausfall ~ einkommen,
 #### Your turn: DAG mit allen Variablen
 
 - Erzeugen Sie einen DAG mit allen Variablen im Datensatz.
+
+  *Hinweis:* Arbeiten Sie am besten ohne Koordinaten und lassen `dagitty()` die Anordnung vornehmen. Dann sollten Sie vorher `set.seed()` nutzen, da die automatische Anordnung ein
 
 ```{r}
 #| label: figDAGall
@@ -251,7 +254,10 @@ Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet
   *Antwort:* 
   `ausfall ~ nbonitaet + alter + arbeit + einkommen`
   
-- Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`. *Hinweis*: Da `ausfall` eine binäre kategoriale Variable ist, wird hier die logistische Regression genutzt.
+- Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`. 
+
+  *Hinweis*: Da `ausfall` eine binäre kategoriale Variable ist, wird hier die logistische Regression genutzt.
+Diese modelliert die Wahrscheinlichkeit dafür, dass *nicht* die Referenzkategorie vorliegt, also hier die Wahrscheinlichkeit für einen Ausfall.
 
 ```{r}
 #| label: Modell1
@@ -293,7 +299,7 @@ Daher sollte die Variable *nicht* mit in das Modell aufgenommen werden.
 
 Der Koeffizient von `nbonitaet` ändert sich nur in den hinteren Nachkommastellen, daher scheint der aufgestellte DAG diesbezüglich korrekt zu sein.
 
-## Bias
+### Bias
 
 Verzerrungen können auftreten, wenn ...
 

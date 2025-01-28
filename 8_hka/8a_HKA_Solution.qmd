@@ -69,9 +69,15 @@ str(irll)
 
 - Was ist eine Beobachtungseinheit in der Datentabelle?
 
+  *Antwort:* Eine befragte Person.
+
 - Wie wurden die Variablen erhoben und welches Skalenniveau besitzen die Variablen?
 
+  *Antwort:* Die Variablen wurden mit einer 5-Punkt-Likert-Skala erhoben. Das Skalenniveau der Variablen ist quasi-metrisch. *Hinweis:* Die einzelnen Items sind eigentlich ordinal, der Einfachheit halber wird auch auch von quasi-metrisch ausgegangen.
+
 - Welche Variablen würden sich für eine Hauptkomponentenanalyse anbieten?
+
+  *Antwort:* Alle Variablen der Datentabelle können mithilfe der HKA zusammengefasst werden.
 
 ## Daten studentisieren
 
@@ -89,6 +95,8 @@ irll_norm <- irll |> scale() |> as.data.frame()
 #### Frage
 
 - Warum löst die Studentisierung das Problem der Varianz-Sensitivität der HKA?
+
+  *Antwort:* Die studentisierten Variablen haben alle eine Varianz von eins.
 
 ## Eignung der Daten
 
@@ -113,14 +121,27 @@ corrplot(cor_mtx)
 
 - Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Begründen Sie Ihre Antwort.
 
+  *Antwort:* In diesem Fall schon, da die Daten studentisiert wurden und $cor(Z)==cov(Z)$. Allgemein gilt dies aber nicht.
+
 - Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? 
 Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
+  - *Antwort (blau):* Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.
+  - *Interpretation:* Je besser Teilnehmende wissenschaftliche Texte in englischer Sprache verstehen, desto besser können sie Fachvorträgen in englischer Sprache folgen.
+  - *Antwort (rot):* Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf Stressmanagement und der Wichtigkeit der eigenen Kompetenz bei Stressmanagement ist leicht negativ.
+  - *Interpretation:* Je kompetenter Teilnehmende sich im Bereich Stressmanagement einschätzen, desto weniger Bedarf sehen sie in einem zusätzlichen Ausbau dieser Kompetenz.
+
 - Warum sind manche Flächen im Korrelationsplot weiß und was bedeutet das?
+
+  *Antwort:* Eine Korrelation von null bedeutet, dass die beiden Variablen linear nicht voneinander abhängen.
 
 - Welche Gruppen von Variablen, die sich ähnlich sind, können Sie entdecken?
 
+  *Mögliche Antwort:* A020_A021 bis A020_A024, A020_A025 bis A020_A030, A050_A051 bis A050_A054, A050_A045 bis A050_A050, 
+
 - Denken Sie, dass sich die Daten für eine Hauptkomponentenanalyse eignen?
+
+  *Antwort:* individuell
 
 ### KMO-Kriterium
 
@@ -140,6 +161,8 @@ KMOS(irll_norm)$KMO
 
 - Hat das KMO-Kriterium etwas an Ihrer Annahme über die Eignung der Daten geändert? Begründen Sie.
 
+  *Antwort:* Individuell. Begründung: Die Daten sind für eine HKA geeignet sind, da 0.817 > 0.5.
+
 ### Bartlett-Test
 
 Ein Test, um herauszufinden, ob sich die Daten für eine HKA eignen, ist der sog. Bartlett-Test. 
@@ -156,6 +179,8 @@ bart_spher(irll_norm)
 #### Frage
 
 - Zu welchem Ergebnis kommt der Bartlett-Test?
+
+  *Antwort:* Ja. Die Nullhypothese, dass sich die Korrelationsmatrix nicht von einer Einheitsmatrix unterscheidet, kann zu jeder gängigen Irrtumswahrscheinlichkeit verworfen werden.
 
 ## Anzahl der Hauptkomponenten
 
@@ -184,6 +209,8 @@ scree(irll_norm, factors = FALSE)
 
 - Wie viele Hauptkomponenten würden Sie auf Basis des Screeplots bestimmen? Begründen Sie Ihre Antwort.
   
+  *Antwort:* Der erste deutliche Knick ist bei fünf, der zweite (etwas stärkere) bei sieben, daher wären nach diesem Kriterium sechs Hauptkomponten zu wählen.
+
 Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer eindeutig. 
 In solchen Fällen kann auf andere Methoden und Faustregeln zurückgegriffen werden.
 
@@ -195,6 +222,8 @@ Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer 
 #### Frage
 
 - Wie viele Hauptkomponenten ergeben sich nach dem Kaiser-Dickmann-Kriterium?
+
+  *Antwort:* Nach diesem Kriterium ergibt sich sechs als Anzahl der Hauptkomponenten (was mit der Auswahl gemäß Screeplot übereinstimmt).
 
 ### Varianz
 
@@ -222,9 +251,15 @@ cumsum(eigenwerte/sum(eigenwerte)) |> round(3)
 
 - Wie viel Prozent der Gesamtvarianz wird durch die zweite Hauptkomponente erklärt?
 
+  *Antwort:* ca. 17.7 % (Varianzanteil)
+
 - Wie viel Prozent der Gesamtvarianz erklären die ersten 10 Hauptkomponenten?
 
+  *Antwort:* ca. 84.3 % (kumulierte Varianz)
+
 - Ändert das Varianz-Kriterium etwas an der Anzahl der ausgewählten Hauptkomponenten?
+
+  *Antwort:* Nein. 71.8% ist ausreichend viel Varianz.
 
 ## Analyse
 
@@ -290,6 +325,21 @@ Die `Mean item complexity` hat allerdings beim rotierten Modell abgenommen, im S
 
 [^ausgabe]: Die weiteren Elemente der Ausgabe werden z. B. in Gehrke (2022), S. 345 ff. erläutert.
 
+## HKA mit nicht standardisierten Daten
+
+Tatsächlich kann die Hauptkomponentenanalyse mit `principal()` (Paket `psych`) auch ohne vorherige Standardisierung durch geführt werden, da `principal()` die Korrelationsmatrix nutzt.
+
+```{r}
+#| label: hka nicht studentisiert
+
+# Varimax Rotation
+irll_nichtstd <- principal(irll, 6, rotate = "varimax")
+# Löschen des nicht benötigten Outputs
+irll_nichtstd$criteria <- NULL
+# Grenzwert, sortieren und runden
+print(irll_nichtstd, cut = 0.5, sort = TRUE, digits = 2)
+```
+
 
 # Your Turn
 
@@ -325,6 +375,35 @@ wine <- wine[, -1]
 # Variablen benennen
 names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315", "Proline")
 
-# Ihr Code
 
+### Musterlösung: ###
+
+# Daten studentisieren
+wine_norm <- wine |> scale() |> as.data.frame()
+
+# Korrelationsplot
+cor_mtx <- cor(wine_norm)
+corrplot(cor_mtx)
+
+# Eignung der Daten
+KMOS(wine_norm)$KMO
+bart_spher(wine_norm)
+
+# Screenplot
+scree(wine_norm, factors = FALSE)
+
+# HKA unter Nutzung der Varimax-Rotation
+hka_rotiert <- principal(wine_norm, 3, rotate = "varimax")
+hka_rotiert$criteria <- NULL
+print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
+
+*Antwort:* 
+
+Die Daten sind gemäß KMO-Kriterium und Bartlett-Test für eine HKA geeignet.
+
+Der Screeplot hat den Knick bei vier Hauptkomponenten, daher sollten drei gewählt werden. 
+Dies stimmt auch mit dem Eigenwertkriterium überein.
+
+Die Hauptkomponenten erklären 67 % der Varianz.
+

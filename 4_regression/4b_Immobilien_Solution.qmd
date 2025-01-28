@@ -31,15 +31,13 @@ Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? Dieser F
 - `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
 - `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
 - `floor`: Stockwerk der Wohnung
-- `interiorqual`: Qualität der Innenausstattung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von null bis vier (nicht verfügbar -- einfach -- normal -- gehoben -- Luxus)
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_immo <- here("data", "Immo-Datensatz.csv")
 # Daten einlesen
-immo <- read.csv2(pfad_immo)
+here("data", "Immo-Datensatz.csv") |>  read.csv2() -> immo
 # Datenstruktur
 str(immo)
 # Obere 6 Beobachtungen
@@ -106,8 +104,6 @@ $$
 Visuell:
 
 ```{r}
-#| warning: false
-
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm()
 ```
@@ -125,14 +121,14 @@ Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: 
 
 #### Fragen
 
-- Welchen modellierten Wert hat eine Wohnung mit $x_0=100$ Quadratmetern?
+- Welche modellierte Miete hat eine Wohnung mit $x_0=100$ Quadratmetern?
 
   *Antwort:* $-5.38 + 14.69 \cdot 100 = 1463.62$
 
 - Gilt immer $\hat{y}_0 = y_0$?
 
-  *Antwort:* Nein, die Gleichung gilt nie, da wir das Residum $e$ nicht modellieren können.* 
-  $\hat{y}_0$ *ist aber die beste Schätzung von* $y_0$, *die wir machen können.*
+  *Antwort:* Nein, die Gleichung gilt nie, da wir das Residuum $e$ nicht modellieren können. 
+  $\hat{y}_0$ ist aber die beste Schätzung von $y_0$, die wir machen können.
 
 - Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Quadratmeter mehr zur Wohnfläche hinzukommt?
 
@@ -214,7 +210,7 @@ Bootvtlg <- do(1000) * lm(totalrent ~ livingspace, data = resample(immo))
 head(Bootvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ livingspace, data = Bootvtlg,
-      bins = 20, center = b[2]) |> # Anpassung Histogramm 
+      bins = 20, center = betadach[2]) |> # Anpassung Histogramm 
   # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = betadach[2], color = "blue")
 ```
@@ -293,8 +289,6 @@ gf_histogram( ~ livingspace, data = Bootvtlg,
 Visualisierung Schätzunsicherheit:
 
 ```{r}
-#| warning: false
-
 gf_point(totalrent ~ livingspace, data = immo) |>
   gf_lm(interval = "confidence")
 ```
@@ -494,6 +488,7 @@ Alternativ kann diese Nullhypothese auch durch $H_0 : R^2 = 0$ formuliert werden
 Dieses Nullmodell kann durch Mischen der y-Werte erzeugt werden:
 
 ```{r}
+set.seed(1896)
 Nullvtlg <- do(1000) * lm(shuffle(totalrent) ~ livingspace + haskitchen, data = immo)
 ```
 
@@ -541,7 +536,7 @@ confint(Bootvtlg)
   
 #### Frage
 
-- Ist eine Steigung von Null für `hastkitchen` kompatibel zum Ergebnis der Stichprobe?
+- Ist eine Steigung von null für `hastkitchenja` kompatibel zum Ergebnis der Stichprobe?
 
   *Antwort:* Nein. Null liegt nicht im  95%-Bootstrap-Konfidenzintervall [`r confint(Bootvtlg)[3, "lower"]`, `r confint(Bootvtlg)[3, "upper"]`]. 
   Eine Steigung von Null scheint mit den beobachteten Daten nicht kompatibel zu sein. 
@@ -557,6 +552,24 @@ ergUeb <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + 
 # Zusammenfassung
 summary(ergUeb)
 ```
+
+*Antwort:*
+
+Im Modell der Stichprobe wird im Mittel c. p. beobachtet:
+
+- je m^2^ Wohnfläche ein um 14.05 € höherer Mietpreis,
+- bei einer Einbauküche ein um 119.48 € höherer Mietpreis,
+- bei einem Balkon ein um 46.30 € niedriger Mietpreis,
+- je Jahr des Baujahr ein um 2.17 € höherer Mietpreis,
+- je Stockwerk ein um 1.66 € höherer Mietpreis,
+- Ausstattungsqualität 1 (im Vergleich zu 0) ein um 46.27 € niedriger Mietpreis,
+- Ausstattungsqualität 2 (im Vergleich zu 0) ein um 79.23 € niedriger Mietpreis,
+- Ausstattungsqualität 3 (im Vergleich zu 0) ein um 75.34 € höherer Mietpreis,
+- Ausstattungsqualität 4 (im Vergleich zu 0) ein um 356.60 € höherer Mietpreis.
+
+84.4 % der Variation des Mietpreises wird durch das Modell erklärt.
+
+Alle p-Werte bis auf die der Variablen `floor` und `interiorqual1` sind sehr klein, so dass die Koeffizienten statistisch erkennbar von null verschieden sind.
 
 
 ## Preismodellierung mit Wechselwirkung (Interaktion)
@@ -610,3 +623,14 @@ summary(erg4)
 #### Frage
 
 - Interpretieren Sie das Ergebnis.
+
+  *Antwort:*
+
+  - Modelle der Stichprobe: 
+  
+    - ohne Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace$
+    - mit Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace -162.98 + 2.66 \cdot livingspace$  
+      $= (120.71 - 162.98) + (12.50 + 2.66) \cdot livingspace$
+    
+  - Population: Alle p-Werte sind sehr klein, so dass die Koeffizienten statistisch erkennbar von null verschieden sind.
+  - $R^2 = 0.7744$: 77.44 % der Variation des Preises wird durch das Modell erklärt.

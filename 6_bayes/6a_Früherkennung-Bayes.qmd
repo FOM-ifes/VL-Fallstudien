@@ -1,5 +1,5 @@
 ---
-title: "Früherkennung - Bayes"
+title: "Früherkennung -- Bayes"
 lang: de
 author: "Ihr Name"
 date: today
@@ -34,11 +34,11 @@ Diese Fallstudie ist eine Fortsetzung der Inferenz-Fallstudie zur
 Früherkennung. In dieser wurden Sie gefragt:
 
 - Wie groß ist der Anteil $\pi$ der FOM-Studierenden, die die
-  gestellte Frage[^1] richtig beantworten konnten?
+  gestellte Frage[^frage] richtig beantworten konnten?
 
 - Wie sicher sind Sie selbst in Bezug auf Ihre gegebene Antwort?
 
-[^1]: Die Frage lautete: *Wie hoch ist die Wahrscheinlichkeit, bei einem
+[^frage]: Die Frage lautete: *Wie hoch ist die Wahrscheinlichkeit, bei einem
   positiven Testergebnis erkrankt zu sein?*
 
 Das Ergebnis aus unserem Kurs lautete:
@@ -142,7 +142,8 @@ gf_line(d_prior ~ vpi,
 
 - Welche Verteilungsform hat *Ihre* Priori-Verteilung?
 
-- Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen diese?
+- Gibt es keinen, einen oder zwei Modalwerte? Und wenn ja, wo liegen
+  diese?
 
 ## Likelihood
 
@@ -159,7 +160,8 @@ like <- dbinom(y, n, vpi)
 gf_line(like ~ vpi,
     color = "darkviolet", linewidth = 1.2) |>
   gf_labs(x = expression(pi), y = expression(L(pi)), 
-    title = paste0("n = ", n, " und y = " , y))
+    title = paste0("n = ", n, " und y = " , y),
+    subtitle = expression("Dichte der Binomialverteilung für n und y an der Stelle" ~ pi))
 ```
 
 ## Posteriori-Verteilung
@@ -185,10 +187,15 @@ gf_line(d_post ~ vpi,
 ```
 
 Wir können jetzt z. B. Modus oder Erwartungswert der Posteriorverteilung
-berechnen:
+berechnen.
+Mit `qbeta()` kann das **Kredibilitätsintervall** (oder Glaubwürdigkeitsintervall, entspricht dem Konfidenzintervall in der frequentistischen Statistik) berechnet werden.
 
 #### Your turn
 
+- Berechnen Sie Modus und Erwartungswert der Posteriorverteilung.
+
+  *Antwort:*
+  
 ```{r}
 #| label: Posteriori-Kennzahlen
 
@@ -198,19 +205,19 @@ berechnen:
 
 ```
 
-Und es kann das **Kredibilitätsintervall** (oder Glaubwürdigkeitsintervall, entspricht dem Konfidenzintervall in der frequentistischen Statistik) berechnet werden:
+- Berechnen Sie das 95%-Kredibilitätsintervall
 
+  *Antwort:*
+  
 ```{r}
 #| label: Kredibilitätsintervall
 
 # Kredibilitätsintervall
-ki <- qbeta(c(0.025, 0.975), alpha_post, beta_post)
 
-# Elemente benennen
-names(ki) <- c("2.5% Quantil", "97.5% Quantil")
+# ggf. Elemente benennen
 
 # ki ausgeben
-ki
+
 ```
 
 #### Fragen
@@ -225,8 +232,13 @@ ki
 *Tipp*: Zur Beantwortung der ersten beiden Fragen können Sie auch gerne
 wieder die App <https://fomshinyapps.shinyapps.io/BaBeBi/> nutzen!
 
+```{r}
+#| include: false
+ki <- qbeta(c(0.025, 0.975), alpha_post, beta_post)
+```
+
 - Stimmt die Aussage: Auf Grundlage der Priori-Verteilung und einer
   Binomial-Verteilung der beobachteten Daten kann mit einer
   Wahrscheinlichkeit von 95% davon ausgegangen werden, dass der Anteil
-  $\pi$ in der Zielpopulation zwischen `{r} floor(ki[1]*100)/100` und
-  `{r} ceiling(ki[2]*100)/100` liegt?
+  $\pi$ in der Zielpopulation zwischen `r floor(ki[1]*100)/100` und
+  `r ceiling(ki[2]*100)/100` liegt?

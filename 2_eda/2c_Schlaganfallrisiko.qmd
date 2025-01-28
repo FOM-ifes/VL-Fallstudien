@@ -25,23 +25,21 @@ Welche Faktoren erhöhen das Risiko für einen Schlaganfall?
 
 Dazu liegt eine Tabelle mit Gesundheitsdaten von 4440 Personen vor. Für diese Fallstudie wurde die orginale Datentabelle [Stroke Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Stroke Prediction Dataset") bereinigt, von 12 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
--   Geschlecht (Mann/Frau)
+- Geschlecht (Mann/Frau)
 
--   Alter (in Jahren)
+- Alter (in Jahren)
 
--   Bluthochdruck (Ja/Nein)
+- Bluthochdruck (Ja/Nein)
 
--   Herzkrankheit (Ja/Nein)
+- Herzkrankheit (Ja/Nein)
 
--   Schlaganfall (Ja/Nein)
+- Schlaganfall (Ja/Nein)
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "stroke_prediction.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_med <- here("data", "stroke_prediction.csv")
 # Daten einlesen
-stroke_data <- read.csv2(pfad_med, sep = ";")
+here("data", "stroke_prediction.csv") |> read.csv2() -> stroke_data
 # Datenstruktur der Datentabelle stroke_data
 str(stroke_data)
 # Obere Beobachtungen der Datentabelle
@@ -50,15 +48,15 @@ head(stroke_data)
 
 #### Fragen
 
--   Um was für eine Stichprobe handelt es sich (Gelegenheitsstichprobe/randomisierte Stichprobe)?
+- Um was für eine Stichprobe handelt es sich (Gelegenheitsstichprobe/randomisierte Stichprobe)?
 
--   Wie viele Beobachtungen hat die Datentabelle?
+- Wie viele Beobachtungen hat die Datentabelle?
 
--   Wie viele Variablen hat die Datentabelle?
+- Wie viele Variablen hat die Datentabelle?
 
--   Welches Skalenniveau hat die Variable `Geschlecht`?
+- Welches Skalenniveau hat die Variable `Geschlecht`?
 
--   Welches Skalenniveau hat die Variable `Alter`?
+- Welches Skalenniveau hat die Variable `Alter`?
 
 
 ## Schlaganfall
@@ -76,9 +74,9 @@ tally( ~ Schlaganfall, data = stroke_data, format = "proportion")
 
 #### Fragen
 
--   Hatte die Mehrheit der Teilnehmer:innen einen Schlaganfall?
+- Hatte die Mehrheit der Teilnehmer:innen einen Schlaganfall?
 
--   Wie viel Prozent der Teilnehmer:innen hatten einen Schlaganfall?
+- Wie viel Prozent der Teilnehmer:innen hatten einen Schlaganfall?
 
 
 ### Bluthochdruck
@@ -89,22 +87,21 @@ Explorative Datenanalyse:
 # Säulendiagramm
 gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
         title = "Abbildung A")
-gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = position_dodge(),
-        title = "Abbildung B")
-gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, position = "fill"         ,title = "Abbildung C")
+gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
+        position = position_dodge(), title = "Abbildung B")
+gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
+        position = "fill" ,title = "Abbildung C")
 ```
 
 ------------------------------------------------------------------------
 
 #### Fragen
 
--   In welcher Gruppe gibt es insgesamt mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
+- In welcher Gruppe gibt es insgesamt mehr Teilnehmer:innen mit Bluthochdruck? In der Gruppe der Teilnehmer:innen, die einen Schlaganfall erlitten haben oder in der Gruppe der Teilnehmer:innen ohne Schlaganfall?
 
+- In welcher Gruppe (Schlaganfall *Ja* oder *Nein*) ist der Anteil an Teilnehmer:innen mit Bluthochdruck höher?
 
--   In welcher Gruppe (Schlaganfall Ja oder Nein) ist der Anteil an Teilnehmer:innen mit Bluthochdruck höher?
-
-
--   Anhand welcher Abbildung können Sie am Besten erkennen in welcher Gruppe (Schlaganfall Ja oder Nein) es anteilig mehr Teilnehmer:innen mit Bluthochdruck gibt?
+- Anhand welcher Abbildung können Sie am Besten erkennen, in welcher Gruppe (Schlaganfall *Ja* oder *Nein*) es anteilig mehr Teilnehmer:innen mit Bluthochdruck gibt?
 
 
 ------------------------------------------------------------------------
@@ -120,13 +117,13 @@ prop(Bluthochdruck ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 #### Fragen
 
--   Wie viel Prozent derjenigen, die einen Schlaganfall erlitten haben, haben auch Bluthochdruck?
+- Wie viel Prozent derjenigen, die einen Schlaganfall erlitten haben, haben auch Bluthochdruck?
 
--   Angenommen uns interessiert, wie viel Prozent derjenigen, die Bluthochdruck haben, auch einen Schlaganfall erlitten haben. Wird das Ergebnis genau so hoch sein wie bei der Frage zuvor?
+- Angenommen uns interessiert, wie viel Prozent derjenigen, die Bluthochdruck haben, auch einen Schlaganfall erlitten haben. Wird das Ergebnis genau so hoch sein wie bei der Frage zuvor?
 
 #### R Übung
 
--   Wie viel Prozent derjenigen, die Bluthochdruck haben, haben auch einen Schlaganfall erlitten?
+- Wie viel Prozent derjenigen, die Bluthochdruck haben, haben auch einen Schlaganfall erlitten?
 
 ```{r}
 
@@ -155,7 +152,8 @@ Die relative Häufigkeit von *hat Herzkrankheit*, gegeben *hat Schlaganfall*, al
 Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
 
 $$
-Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) + Pr(Herzkrankheit = Ja \mid Schlaganfall = Nein) \cdot Pr(Schlaganfall = Nein)
+Pr(Herzkrankheit = Ja) = Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) \\
++ Pr(Herzkrankheit = Ja \mid Schlaganfall = Nein) \cdot Pr(Schlaganfall = Nein)
 $$
 
 ```{r}

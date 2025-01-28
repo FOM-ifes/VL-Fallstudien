@@ -1,5 +1,5 @@
 ---
-title: "Lösungsskizze: Früherkennung - Inferenz"
+title: "Lösungsskizze: Früherkennung -- Inferenz"
 lang: de
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: today
@@ -29,34 +29,30 @@ set.seed(1896)
 
 #### Frage
 
-Angenommen Sie gehen zu Ihrer Ärztin zu einer Routineuntersuchung. Sie
-haben keine Symptome.
+Angenommen Sie gehen zu Ihrer Ärztin zu einer Routineuntersuchung. 
+Sie haben keine Symptome.
 
-Ihnen wird ein diagnostischer Test für eine Krankheit vorgeschlagen, die
-1% der Bevölkerung betrifft.[^1]
+Ihnen wird ein diagnostischer Test für eine Krankheit vorgeschlagen, die 1% der Bevölkerung betrifft.[^prae]
 
-[^1]: Dies ist die *Prävalenz*.
+[^prae]: Dies ist die *Prävalenz*.
 
-Wenn Sie erkrankt sind, wird dies mit einer Wahrscheinlichkeit von 80%
-richtig erkannt.[^2]
+Wenn Sie erkrankt sind, wird dies mit einer Wahrscheinlichkeit von 80% richtig erkannt.[^sens]
 
-[^2]: Dies ist die *Sensitivität*.
+[^sens]: Dies ist die *Sensitivität*.
 
-Wenn Sie nicht erkrankt, also gesund sind, wird dies mit einer
-Wahrscheinlichkeit von 90% richtig erkannt.[^3]
+Wenn Sie nicht erkrankt, also gesund sind, wird dies mit einer Wahrscheinlichkeit von 90% richtig erkannt.[^spez]
 
-[^3]: Dies ist die *Spezifität*.
+[^spez]: Dies ist die *Spezifität*.
 
--   Wie hoch ist die Wahrscheinlichkeit, bei einem positiven
-    Testergebnis erkrankt zu sein?
+- Wie hoch ist die Wahrscheinlichkeit, bei einem positiven Testergebnis erkrankt zu sein?
 
-    a.  ca. 90%
-    b.  ca. 85%
-    c.  ca. 80%
-    d.  ca. 60%
-    e.  ca. 30%
-    f.  ca. 15%
-    g.  ***ca. 7.5%***, wir können es selber ausrechnen.
+  a. ca. 90%
+  a. ca. 85%
+  a. ca. 80%
+  a. ca. 60%
+  a. ca. 30%
+  a. ca. 15%
+  a. ***ca. 7.5%***, wir können es selber ausrechnen.
 
 ------------------------------------------------------------------------
 
@@ -64,25 +60,24 @@ Wahrscheinlichkeit von 90% richtig erkannt.[^3]
 
 Ein paar Symbole:
 
--   $K^+$: Krankheit liegt vor.
--   $K^-$: Krankheit liegt nicht vor.
--   $T^+$: Test positiv (Testergebnis: krank).
--   $T^-$: Test negativ (Testergebnis: nicht krank).
+- $K^+$: Krankheit liegt vor.
+- $K^-$: Krankheit liegt nicht vor.
+- $T^+$: Test positiv (Testergebnis: krank).
+- $T^-$: Test negativ (Testergebnis: nicht krank).
 
 Dann liegt uns folgende Information aus der Aufgabe vor:
 
--   $Pr(K^+) = 0.01$.
--   $Pr(T^+ \mid K^+) = 0.8$.
--   $Pr(T^- \mid K^-) = 0.9$.
+- $Pr(K^+) = 0.01$.
+- $Pr(T^+ \mid K^+) = 0.8$.
+- $Pr(T^- \mid K^-) = 0.9$.
 
-Da $Pr(K^+) + Pr(K^-)=1$ gelten muss, wissen wir außerdem das
-$Pr(K^-)= 1 - 0.01 = 0.99$ gilt.
+Da $Pr(K^+) + Pr(K^-)=1$ gelten muss, wissen wir außerdem das $Pr(K^-)= 1 - 0.01 = 0.99$ gilt.
 
 Was wir suchen, ist die Wahrscheinlichkeit $Pr(K^+ \mid T^+)$.
 
-Der **Satz von Bayes**[^4] lautet hier:
+Der **Satz von Bayes**[^sb] lautet hier:
 
-[^4]: Gutes Erklärvideo: <https://youtu.be/HZGCoVF3YvM>.
+[^sb]: Gutes Erklärvideo: <https://youtu.be/HZGCoVF3YvM>.
 
 $$Pr(K^+ \mid T^+)=\frac{Pr(T^+ \mid K^+) \cdot Pr(K^+)}{Pr(T^+)}$$
 $Pr(T^+)$ kann mit Hilfe des **Satzes der totalen Wahrscheinlichkeit**
@@ -92,45 +87,38 @@ $$Pr(T^+) = Pr(T^+ \mid K^+) \cdot Pr(K^+) + Pr(T^+ \mid K^-) \cdot Pr(K^-)$$
 berechnet werden ...
 
 Aber oft ist es leichter, mit natürlichen Häufigkeiten zu rechnen:
-Stellen Sie sich eine Population von $1000$ Menschen vor. Dann wissen
-wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind
-und $1000-10=990$ sind gesund.
+Stellen Sie sich eine Population von $1000$ Menschen vor. 
+Dann wissen wir, dass davon $1000 \cdot \underbrace{0.01}_{Pr(K^+)} = 10$ krank sind und $1000-10=990$ sind gesund.
 
-Von den $10$ Erkrankten erhalten
-$10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives
-Testergebnis.
+Von den $10$ Erkrankten erhalten $10 \cdot \underbrace{0.8}_{Pr(T^+ \mid K^+)} = 8$ ein positives Testergebnis.
 
-Von den $990$ Gesunden erhalten
-$990 \cdot \underbrace{0.1}_{1-Pr(T^-\mid K^-)} = 99$ fälschlicherweise
-ebenfalls ein positives Testergebnis.
-
-Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen
-aber nur $8$ korrekt sind[^5], also
-
-[^5]: Das ist die Präzision (englisch: *precision*).
-
-$$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
-
-*Tipp*: Mit der App <https://fomshinyapps.shinyapps.io/riskyrApp-DE/>
-können Sie verschiedene Formen der Risikokommunikation ausprobieren.
+Von den $990$ Gesunden erhalten $990 \cdot \underbrace{0.1}_{1-Pr(T^-\mid K^-)} = 99$ fälschlicherweise ebenfalls ein positives Testergebnis.
 
 #### Frage
 
-Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges
-einen unbekannten Anteil $\pi$, der die obige Frage richtig beantworten
-kann.
+- Wie geht die Rechnung weiter?
 
--   Was schätzen Sie? Wie groß ist dieser Anteil?
--   Und wie sicher sind Sie sich, dass Ihre Antwort richtig ist?
+*Antwort:*
 
-Nutzen Sie zur Beantwortung dieser Frage die App
-<https://fomshinyapps.shinyapps.io/BaBeBi/> ***(Anteil und Sicherheit
-einstellen)*** und notieren Sie die ***bei der Betabinomialfunktion***
-ausgegebenen Werte für $\alpha$ und $\beta$. Wenn für Sie z.$\,$B. alle
-Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
+Insgesamt haben wir also $8+99=107$ positive Testergebnisse, von denen aber nur $8$ korrekt sind[^prec], also
 
-*Hinweis*: Erklärung und Auflösung folgen in der Fallstudie zur
-Bayesschen Statistik.
+$$Pr(K^+ \mid T^+)=\frac{8}{8+99} \approx 0.075.$$
+
+[^prec]: Das ist die Präzision (englisch: *precision*).
+
+*Tipp*: Mit der App <https://fomshinyapps.shinyapps.io/riskyrApp-DE/> können Sie verschiedene Formen der Risikokommunikation ausprobieren.
+
+#### Frage
+
+Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen unbekannten Anteil $\pi$, der die obige Frage   richtig beantworten kann. 
+  
+- Was schätzen Sie? Wie groß ist dieser Anteil?
+- Und wie sicher sind Sie sich, dass Ihre Antwort richtig ist? 
+  
+Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> ***(Anteil und Sicherheit einstellen)*** und notieren Sie die bei der ***Betabinomialfunktion*** ausgegebenen Werte für $\alpha$ und $\beta$. 
+Wenn für Sie z.$\,$B. alle Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
+
+*Hinweis*: Erklärung und Auflösung folgen in der Fallstudie zur Bayesschen Statistik.
 
 ```{r}
 #| label: Prior
@@ -141,10 +129,9 @@ beta_prior <- 1
 
 # Punktschätzung
 
-Geben wir das Ergebnis unseres Kurses ein:[^6]
+Geben wir das Ergebnis unseres Kurses ein:[^ps]
 
-[^6]: *Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese
-    Zahlen müssen angepasst werden.
+[^ps]: *Hinweis*: In der Vorlage steht `n <- 40` und `y <- 15` . Diese Zahlen müssen angepasst werden.
 
 ```{r}
 #| label: Evidenz
@@ -157,9 +144,9 @@ y <- 15
 
 #### Frage
 
--   Nur mit diesen Daten, der Stichprobe: Was würden Sie tippen, wie
-    groß ist der Anteil Richtige in der Zielpopulation? Ersetzen Sie den
-    unten fehlenden Wert (`NA`) für `pi_dach`:
+- Nur mit diesen Daten, der Stichprobe: 
+Was würden Sie tippen, wie groß ist der Anteil Richtige in der Zielpopulation? 
+Ersetzen Sie den unten fehlenden Wert (`NA`) für `pi_dach`:
 
 ```{r}
 #| label: Tipp
@@ -168,25 +155,20 @@ pi_dach <- y/n
 pi_dach
 ```
 
-*Hinweis:* $\hat\pi$ ist der Punktschätzer für den unbekannten Anteil
-$\pi$ in der Population.
+*Hinweis:* $\hat\pi$ ist der Punktschätzer für den unbekannten Anteil $\pi$ in der Population.
 
 ------------------------------------------------------------------------
 
-Unter der Bedingung, dass für jeden unser $n$ Versuche die gleiche
-Erfolgswahrscheinlichkeit $\pi$ vorliegt, kann die Wahrscheinlichkeit für
-$y$ Erfolge mit Hilfe einer **Binomialverteilung**
-($Y \sim Bin(n, \pi)$) berechnet werden:
+Unter der Bedingung, dass für jeden unser $n$ Versuche die gleiche Erfolgswahrscheinlichkeit $\pi$ vorliegt, kann die Wahrscheinlichkeit für $y$ Erfolge mit Hilfe einer **Binomialverteilung** ($Y \sim Bin(n, \pi)$) berechnet werden:
 
 $$f(y) = Pr(Y=y) = \binom{n}{y} \cdot \pi^y \cdot (1-\pi)^{n-y}, \text{ für } y \in \{0,1, \ldots, n\}$$
 
 #### Frage
 
--   Angenommen die Erfolgswahrscheinlichkeit liegt bei
-    $\pi=\frac{1}{2}$. Welche Anzahl Erfolge $y$ ist dann bei $n=`r n`$
-    Versuchen am wahrscheinlichsten?
-
-    *Antwort:* n/2 Erfolge
+- Angenommen die Erfolgswahrscheinlichkeit liegt bei   $\pi=\frac{1}{2}$. 
+Welche Anzahl Erfolge $y$ ist dann bei $n=`r n`$ Versuchen am wahrscheinlichsten?
+  
+  *Antwort:* n/2 Erfolge
 
 ------------------------------------------------------------------------
 
@@ -198,13 +180,12 @@ gf_dist("binom", size = n, prob = 1/2)
 
 ## Maximum-Likelihood
 
-Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher* (engl.: *likely*)
-ist unser Ergebnis:
+Je nachdem wie groß $\pi$ ist, desto *mutmaßlicher* (engl.: *likely*) ist unser Ergebnis:
 
 ```{r}
 #| label: Likelihood
 
-# Vektor für \pi bereitstellen
+# Vektor für pi bereitstellen
 vpi <- seq(0,1, by = 1/1000)
 # Likelihood
 like <- dbinom(y, size = n, prob = vpi)
@@ -212,34 +193,31 @@ like <- dbinom(y, size = n, prob = vpi)
 gf_line(like ~ vpi) |>
   gf_labs(x = expression(pi), 
     y = expression(L(pi)), 
-    title = paste0("Likelihood bei n = ", n, " und y = " , y))
+    title = paste0("Likelihood bei n = ", n, " und y = " , y),
+    subtitle = expression("Dichte der Binomialverteilung für gegebenes n und y an der Stelle" ~ pi))
 ```
 
-Ein guter Punktschätzer (Maximum der Likelihoodfunktion) für den Wert
-des Parameters $\pi$ in der Zielpopulation ist also der Anteilwert $p$
-in unser Stichprobe:
+Ein guter Punktschätzer (Maximum der Likelihoodfunktion) für den Wert des Parameters $\pi$ in der Zielpopulation ist also der Anteilwert $p$ in unser Stichprobe:
 
 $$\hat{\pi} = p = \frac{y}{n} = \frac{`r y`}{`r n`} = `r round(y/n, 2)`.$$
 
+
 # Standardfehler
 
-Aber: Der Punktschätzer variiert mit der zufälligen Stichprobe. Eine
-andere zufällige Stichprobe aus derselben Population hätte ein anderes
-Ergebnis ergeben können.
+Aber: Der Punktschätzer variiert mit der zufälligen Stichprobe. 
+Eine andere zufällige Stichprobe aus derselben Population hätte ein anderes Ergebnis ergeben können.
 
--   Wie anders?
--   Wie groß ist die Stichprobenvariation des Stichprobenanteils?
+- Wie anders?
+- Wie groß ist die Stichprobenvariation des Stichprobenanteils?
 
 Simulieren wir das zufällige Ziehen einer Stichprobe aus einer
 Population durch zufälliges Resampling der Stichprobe.
 
-`do(3) *` wiederholt den folgenden Befehl $3\times$,
-`resample(Stichprobe)` zieht aus der Stichprobe (engl. *sample*) ein
-zufälliges Resample - mit Zurücklegen.
+`do(3) *` wiederholt den folgenden Befehl $3\times$, `resample(Stichprobe)` zieht aus der Stichprobe (engl. *sample*) ein zufälliges Resample - mit Zurücklegen.
 
-*Hinweis*: Die folgende Herangehensweise dient der Illustration. Für das
-Vorgehen sollte $n>35$ sein. Sollte $n$ kleiner sein, ist die Lösung
-*unter theoretischer Verteilungsannahme* (s. u.) zu bevorzugen.
+*Hinweis*: Die folgende Herangehensweise dient der Illustration. 
+Für das Vorgehen sollte $n>35$ sein. 
+Sollte $n$ kleiner sein, ist die Lösung *unter theoretischer Verteilungsannahme* (s. u.) zu bevorzugen.
 
 ```{r}
 #| label: Resampling
@@ -251,8 +229,7 @@ stichprobe <- rep(c("richtig","falsch"), times = c(y, n-y)) |>
 do(3)* prop( ~ resample(stichprobe), success = "richtig")
 ```
 
-Simulieren wir den Vorgang des zufälligen Resampling 10000-mal und
-speichern das Ergebnis als Datentabelle `Bootvtlg`.
+Simulieren wir den Vorgang des zufälligen Resampling 10000-mal und speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
 ```{r}
 #| label: Bootstrapping
@@ -262,9 +239,7 @@ Bootvtlg <- do(10000) * prop( ~ resample(stichprobe), success = "richtig")
 head(Bootvtlg)
 ```
 
-Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig
-in den Resamples aus der Datentabelle `Bootvtlg` kann über ein
-Säulendiagramm dargestellt werden:
+Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig in den Resamples aus der Datentabelle `Bootvtlg` kann über ein Säulendiagramm dargestellt werden:
 
 ```{r}
 #| label: Säulendiagramm
@@ -281,17 +256,17 @@ sd( ~ prop_richtig, data = Bootvtlg)
 
 ### Frage
 
--   Wie ändert sich der Standardfehler, wenn mehr Bootstrap-Stichproben
-    gezogen werden?
+- Wie ändert sich der Standardfehler, wenn mehr Bootstrap-Stichproben gezogen werden?
 
-    *Antwort:* Keine systematische Änderung.
-
+  *Antwort:* Keine systematische Änderung.
+  
 ```{r}
 #| label: Bootstrapping 20000
 
 Bootvtlg2 <- do(20000) * prop( ~ resample(stichprobe), success = "richtig")
 sd( ~ prop_richtig, data = Bootvtlg2)
 ```
+
 
 ------------------------------------------------------------------------
 
@@ -310,17 +285,15 @@ sqrt((p*(1-p)) / n)
 
 #### Frage
 
--   Wie ändert sich der Standardfehler, wenn $n$ größer wird?
-
-    *Antwort:* Der Standardfehler wird kleiner.
+- Wie ändert sich der Standardfehler, wenn $n$ größer wird?
+  
+  *Antwort:* Der Standardfehler wird kleiner.
 
 # Konfidenzintervall
 
-Außerdem können wir unsere Schätzunsicherheit für den wahren Anteil
-$\pi$ durch ein Konfidenzintervall beschreiben.
+Außerdem können wir unsere Schätzunsicherheit für den wahren Anteil $\pi$ durch ein Konfidenzintervall beschreiben.
 
-Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das
-97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
+Für das zentrale 95%-Konfidenzintervall kann das 2.5%- sowie das 97.5%-Quantil der Bootstrap-Verteilung zur Schätzung verwendet werden:
 
 ```{r}
 #| label: Konfidenzintervall
@@ -340,48 +313,37 @@ gf_bar( ~ prop_richtig, data = Bootvtlg) |>
 
 #### Fragen
 
--   Stimmt die Aussage: Mit einer Wahrscheinlichkeit von 95% wird der
-    Wert einer Beobachtung $x_i$ zwischen
-    `r qdata( ~ prop_richtig, p = 0.025, data = Bootvtlg)` und
-    `r qdata( ~ prop_richtig, p = 0.975, data = Bootvtlg)` liegen?
+- Stimmt die Aussage: Mit einer Wahrscheinlichkeit von 95% wird der Wert einer Beobachtung $x_i$ zwischen
+  `r qdata( ~ prop_richtig, p = 0.025, data = Bootvtlg)` und
+  `r qdata( ~ prop_richtig, p = 0.975, data = Bootvtlg)` liegen?
 
-    *Antwort:* Nein, da die aus vielen Stichproben geschätzten
-    Stichprobenstatistiken mit einer 95%igen Sicherheit im Intervall
-    liegen.
+  *Antwort:* Nein, da die aus vielen Stichproben geschätzten Stichprobenstatistiken mit einer 95%igen Sicherheit im Intervall liegen.
 
--   Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu
-    bestimmen. Wird das Konfidenzintervall schmaler oder breiter?
+- Ändern Sie den Code entsprechend, um das 99%-Konfidenzintervall zu   bestimmen. 
+Wird das Konfidenzintervall schmaler oder breiter?
 
-    *Antwort:* Das KI wird breiter.
+  *Antwort:* Das KI wird breiter.
 
 ```{r}
 #| label: Konfidenzintervall-Übung
 qdata( ~ prop_richtig, p = c(0.005, 0.995), data = Bootvtlg)
 ```
 
--   Was ist die Bedeutung des Konfidenzintervalls?
+- Was ist die Bedeutung des Konfidenzintervalls?
 
-    *Antwort:*
+  *Antwort:*
+  
+  - Wenn wir die Anzahl der Resamples erhöhen, ändert sich das Konfidenzintervall nicht systematisch:
+  Daher sind wir uns zu 95% (bzw. 99%, je nach Konfidenzniveau) sicher, dass eine nächste Stichprobe ebenfalls eine Stichprobenstatistik im Intervall ergeben wird.
+  - Damit haben wir auch die Sicherheit, dass der unbekannte Wert des Parameters in der Population ebenfalls in diesem Intervall liegen wird.
+  Das Konfidenzintervall liefert uns somit einen plausiblen Wertebereich für den Wert des Parameters in der Population.
+  - Je höher das Konfidenzniveaus ist, desto breiter ist c.p. das Konfidenzintervall.
+  - Je größer der Stichprobenumfang ist, desto kleiner ist c.p. der Standardfehler und damit das Konfidenzintervall schmaler.
 
-    -   Wenn wir die Anzahl der Resamples erhöhen, ändert sich das
-        Konfidenzintervall nicht systematisch: Daher sind wir uns zu 95%
-        (bzw. 99%, je nach Konfidenzniveau) sicher, dass eine nächste
-        Stichprobe ebenfalls eine Stichprobenstatistik im Intervall
-        ergeben wird.
-    -   Damit haben wir auch die Sicherheit, dass der unbekannte Wert
-        des Parameters in der Population ebenfalls in diesem Intervall
-        liegen wird. Das Konfidenzintervall liefert uns somit einen
-        plausiblen Wertebereich für den Wert des Parameters in der
-        Population.
-    -   Je höher das Konfidenzniveaus ist, desto breiter ist c.p. das
-        Konfidenzintervall.
-    -   Je größer der Stichprobenumfang ist, desto kleiner ist c.p. der
-        Standardfehler und damit das Konfidenzintervall schmaler.
 
 ## Lösung mit theoretischer Verteilungsannahme
 
-Die Funktion `binom.test()` rechnet direkt über die Binomialverteilung
-und berechnet damit auch ein Konfidenzintervall:
+Die Funktion `binom.test()` rechnet direkt über die Binomialverteilung und berechnet damit auch ein Konfidenzintervall:
 
 ```{r}
 #| label: Konfidenzintervall-binom.test

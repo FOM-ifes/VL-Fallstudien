@@ -21,51 +21,45 @@ library(mosaic)
 library(here)
 ```
 
-Der Körperfettanteil gibt an, wie viel Prozent des Körpergewichts einer Person aus Fettmasse bestehen. Er liegt in der Regel zwischen 10 und 50 Prozent. Der Körper benötigt das Fettgewebe für verschiedene nützliche Funktionen. Zu viel oder zu wenig Körperfett kann allerdings gesundheitsschädlich sein.[^1]
+Der Körperfettanteil gibt an, wie viel Prozent des Körpergewichts einer Person aus Fettmasse bestehen. Er liegt in der Regel zwischen 10 und 50 Prozent. Der Körper benötigt das Fettgewebe für verschiedene nützliche Funktionen. Zu viel oder zu wenig Körperfett kann allerdings gesundheitsschädlich sein.[^gesund]
 
-[^1]: https://www.aok.de/pk/magazin/koerper-psyche/stoffwechsel/was-fuer-ein-koerperfettanteil-gesund-ist-und-wie-man-ihn-berechnet/
+[^gesund]: https://www.aok.de/pk/magazin/koerper-psyche/stoffwechsel/was-fuer-ein-koerperfettanteil-gesund-ist-und-wie-man-ihn-berechnet/
 
 ## Wie misst man den Körperfettanteil?
 
 Um den Körperfettanteil so genau wie möglich zu bestimmen, sind medizinisch aufwendige Verfahren notwendig. Kann oder will man diese Verfahren nicht durchlaufen, gibt es Schätz-Methoden, die ein annäherndes Ergebnis liefern. 
 
 
--   Kennen Sie eine dieser Methoden?
+- Kennen Sie eine dieser Methoden?
 
-Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männer vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset]https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset "Body Fat Prediction Dataset") bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
+Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden zur indirekten Schätzung des Körperfetts etwas genauer betrachtet. Dazu liegt eine Tabelle mit Gesundheitsdaten von 249 Männern vor. Für diese Fallstudie wurden die orginale Datentabelle [Body Fat Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset ) bereinigt (Ausreißer in den erklärenden Variablen wurden entfernt). Zusätzlich wurde die Datentabelle von 15 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
--   Körperfettanteil in %
-
--   Alter in Jahren
-
--   Gewicht in Pfund
-
--   Größe in Zoll
-
--   Bauchumfang in cm
+- Körperfettanteil in %
+- Alter in Jahren
+- Gewicht in Pfund
+- Größe in Zoll
+- Bauchumfang in cm
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(-pfaden) innerhalb von RStudio Projekten. Die csv Datei "bodyfat_prediction.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_body <- here("data", "bodyfat_prediction.csv")
 # Daten einlesen
-body_data <- read.csv2(pfad_body, sep = ";")
+here("data", "bodyfat_prediction.csv") |> read.csv2() -> body_data
 # Datenstruktur der Datentabelle med_daten
 str(body_data)
 ```
 
 #### Fragen
 
--   Handelt es sich um eine Beobachtungsstudie oder um ein randomisiertes Experiment?
+- Handelt es sich um eine Beobachtungsstudie oder um ein randomisiertes Experiment?
 
--   Was ist hier eine Beobachtungseinheit?
+- Was ist hier eine Beobachtungseinheit?
 
--   Wie viele Beobachtungen liegen vor?
+- Wie viele Beobachtungen liegen vor?
 
--   Wie viele Variablen liegen vor?
+- Wie viele Variablen liegen vor?
 
--   Welches Skalenniveau besitzen die Variablen?
+- Welches Skalenniveau besitzen die Variablen?
 
 
 In der Einleitung wurde beschrieben, dass der Körperfettanteil einer Person in der Regel zwischen 10 und 33 Prozent liegt. Stimmt der Bereich mit den Werten unserer Stichprobe überein? Hier hilft ein Blick in die Kennzahlen.
@@ -102,15 +96,16 @@ Zur besseren Lesbarkeit sollten wir diese in die uns bekannten Einheiten umrechn
 
 ```{r}
 body_data <- body_data |>
-  mutate(Gewicht_kg = Gewicht * 0.453592) |>
-  mutate(Groesse_cm = Groesse * 2.54)
+  mutate(
+    Gewicht_kg = Gewicht * 0.453592,
+    Groesse_cm = Groesse * 2.54)
 ```
 
 #### Frage
 
--   Was vermuten Sie über den Zusammenhang zwischen Größe und Gewicht?
+- Was vermuten Sie über den Zusammenhang zwischen Größe und Gewicht?
 
--   Erstellen Sie ein Streudiagramm, um Ihre Vermutung zu überprüfen:
+- Erstellen Sie ein Streudiagramm, um Ihre Vermutung zu überprüfen:
 
 ```{r}
 ```
@@ -132,11 +127,11 @@ gf_point(Koerperfettanteil ~ BMI, data = body_data)
 
 #### Fragen
 
--   Wofür steht ein Punkt in der Abbildung?
+- Wofür steht ein Punkt in der Abbildung?
 
--   Ist der Zusammenhang zwischen `BMI` und `Körperfettanteil` linear?
+- Ist der Zusammenhang zwischen `BMI` und `Körperfettanteil` linear?
 
--   Wie lässt sich dieser Zusammenhang interpretieren?
+- Wie lässt sich dieser Zusammenhang interpretieren?
 
 
 ***
@@ -165,18 +160,18 @@ gf_histogram( ~ BMI, data = body_data)
 
 ### Verteilungs- und Quantilsfunktion
 
-Laut der Adipositas Gesellschaft gelten für den BMI folgende Grenzwerte:[^2]
+Laut der Adipositas-Gesellschaft gelten für den BMI folgende Grenzwerte:[^adipositas]
 
-[^2]: https://adipositas-gesellschaft.de/bmi/
+[^adipositas]: https://adipositas-gesellschaft.de/bmi/
 
-| BMI ($kg/m^2$) | Gewichtsklassifikation |
-|----------------|------------------------|
-| ≤ 18,4         | Untergewicht           |
-| 18,5 -- 24,9   | Normalgewicht          |
-| 25 -- 29,9     | Übergewicht            |
-| 30 -- 34,9     | Adipositas Grad I      |
-| 35 -- 39,9     | Adipositas Grad II     |
-| ≥ 40           | Adipositas Grad III    |
+| BMI $(kg/m^2)$| Gewichtsklassifikation |
+|---------------|------------------------|
+| $\leq$ 18,4   | Untergewicht           |
+| 18,5 -- 24,9  | Normalgewicht          |
+| 25 -- 29,9    | Übergewicht            |
+| 30 -- 34,9    | Adipositas Grad I      |
+| 35 -- 39,9    | Adipositas Grad II     |
+| $\geq$ 40     | Adipositas Grad III    |
 
 Mit Hilfe von `pdata()` kann für beliebige Werte des BMIs `q` der Wert der empirischen Verteilungsfunktion $F_n$ ermittelt werden, d. h. hier, der Anteil der Männer, deren BMI z. B. kleiner oder gleich `q = 24.9` $kg/m^2$ ist.
 
@@ -186,28 +181,28 @@ pdata( ~ BMI, q = 24.9, data = body_data)
 
 #### Frage
 
--   Wie kann das Ergebnis inhaltlich interpretiert werden?
+- Wie kann das Ergebnis inhaltlich interpretiert werden?
 
 Ändern Sie den Code jeweils so, dass Sie die Fragen beantworten können.
 
--   Wie hoch ist der Anteil der Männer, die laut BMI untergewichtig sind (BMI kleiner gleich 18.4 $kg/m^2$)?
+- Wie hoch ist der Anteil der Männer, die laut BMI untergewichtig sind (BMI kleiner gleich 18.4 $kg/m^2$)?
 
 ```{r}
 ```
 
--   Wie hoch ist der Anteil der Männer mit Normalgewicht (BMI zwischen 18.5 und 24.9 $kg/m^2$)?
+- Wie hoch ist der Anteil der Männer mit Normalgewicht (BMI zwischen 18.5 und 24.9 $kg/m^2$)?
 
 ```{r}
 ```
 
--   Wie hoch ist der Anteil der Männer mit Adipositas (BMI größer als 29.9 $kg/m^2$)?
+- Wie hoch ist der Anteil der Männer mit Adipositas (BMI größer als 29.9 $kg/m^2$)?
 
 ```{r}
 ```
 
 ***
 
-`qdata()` gibt an, welcher Wert für eine gegebene relative Häufigkeit `p` nicht überschritten wird, d. h. die jeweiligen Quantile. Z. B. gilt für 10% der Männer, dass der BMI nicht größer als `r qdata( ~ BMI, p = 0.1, data = body_data)` war:
+`qdata()` gibt an, welcher Wert für eine gegebene relative Häufigkeit `p` nicht überschritten wird, d. h. die jeweiligen Quantile. Z. B. gilt für 10 % der Männer, dass der BMI nicht größer als `r qdata( ~ BMI, p = 0.1, data = body_data)` war:
 
 ```{r}
 qdata( ~ BMI, p = 0.1, data = body_data)
@@ -221,39 +216,22 @@ qdata( ~ BMI, p = 0.1, data = body_data)
 
 ***
 
-Die Umkehrfunktion zur Verteilungsfunktion ist die Quantilsfunktion. Mit Hilfe der Quantilsfunktion (`qdata`) kann angegeben werden, welcher Wert für eine gegebene relative Häufigkeit $p$ nicht überschritten wird (das sind die jeweiligen Quantile). Z. B. gilt für 10% der Männer, dass der BMI nicht größer als 21.3 war:
+Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^who]
 
-```{r}
-qdata( ~ BMI, p = 0.1, data = body_data)
-```
+[^who]: https://iris.who.int/bitstream/handle/10665/37003/WHO_TRS_854.pdf;%20jsessionid=56CD01367D58BF71F68E62627A1904CD?sequence=1
 
-- Welcher BMI wird von 50% der Männer nicht überschritten?
-
-<<<<<<< HEAD
-```{r}
-
-```
-
-
-=======
->>>>>>> f3b9eb2981cd85e3e149b455d5c06d90dc0b8eb7
-*** 
-
-Die WHO stuft Männer ab einem Körperfettanteil von über 25% als übergewichtig ein.[^3]
-
-[^3]: https://iris.who.int/bitstream/handle/10665/37003/WHO_TRS_854.pdf;%20jsessionid=56CD01367D58BF71F68E62627A1904CD?sequence=1
-
-`Hinweis: Medizinische Normal- und Grenzwerte bezüglich des Körperfettanteils hängen auch vom Alter und Körperbau ab. Zur besseren Verständlichkeit und Übersicht wurde hier eine allgemeine Empfehlung gewählt.`
+*Hinweis:* Medizinische Normal- und Grenzwerte bezüglich des Körperfettanteils hängen auch vom Alter und Körperbau ab. Zur besseren Verständlichkeit und Übersicht wurde hier eine allgemeine Empfehlung gewählt.
 
 ```{r}
 # Umkodieren der Varbiable
 body_data <- body_data |>
-  mutate(Uebergewicht = case_when(Koerperfettanteil <= 25 ~ "nicht übergewichtig",
-                          Koerperfettanteil > 25 ~ "übergewichtig"))
+  mutate(Uebergewicht = case_when(
+    Koerperfettanteil <= 25 ~ "nicht übergewichtig",
+    Koerperfettanteil > 25 ~ "übergewichtig"))
 
 # Boxplot
-gf_boxplot(BMI ~ Uebergewicht, data = body_data) + 
-  geom_hline(yintercept=25, color = "red")
+gf_boxplot(BMI ~ Uebergewicht, data = body_data) |> 
+  gf_hline(yintercept = 25, color = "red")
 
 # Kennzahlen
 favstats(BMI ~ Uebergewicht, data = body_data)
@@ -261,35 +239,35 @@ favstats(BMI ~ Uebergewicht, data = body_data)
 
 #### Fragen:
 
--   Was kennzeichnet die schwarze Linie in der Box der beiden Boxplots?
+- Was kennzeichnet die schwarze Linie in der Box der beiden Boxplots?
 
--   Was bedeutet der schwarze Punkt oberhalb des rechten Boxplots?
+- Was bedeutet der schwarze Punkt oberhalb des rechten Boxplots?
 
--   Stimmen die Einteilungen in nicht übergewichtig/übergewichtig der beiden Methoden überein?
+- Stimmen die Einteilungen in nicht übergewichtig/übergewichtig der beiden Methoden überein?
 
--   Woran könnte das liegen?
+- Woran könnte das liegen?
 
 ## Your Turn
 
 Auch der Bauchumfang weist auf gesundheitsschädliches Fett hin.
 
--   Wie sieht der Zusammenhang zwischen Körperfettanteil und Bauchumfang aus?
+- Wie sieht der Zusammenhang zwischen Körperfettanteil und Bauchumfang aus?
 
 ```{r}
 
 ```
 
-Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94 cm und mehr das Risiko für übergewichtsbedingte Krankheiten erhöht.[^4]
+Laut Bundeszentrum für Ernährung ist bei Männern mit einem Bauchumfang von 94 cm und mehr das Risiko für übergewichtsbedingte Krankheiten erhöht.[^bze]
 
-[^4]: https://www.bzfe.de/ernaehrung/ernaehrungswissen/gesundheit/bauchumfang-entscheidend-fuer-das-gesundheitliche-risiko/
+[^bze]: https://www.bzfe.de/ernaehrung/ernaehrungswissen/gesundheit/bauchumfang-entscheidend-fuer-das-gesundheitliche-risiko/
 
--   Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestuften Teilnehmern?
+- Wie groß ist der Anteil der Männer mit einem Bauchumfang über 94 cm? Deckt sich der Anteil mit den als vom BMI als übergewichtig eingestuften Teilnehmern?
 
 ```{r}
 
 ```
 
--   Wie hoch ist der Anteil an Männern in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
+- Gibt es Männer in der Stichprobe, die einen Bauchumfang von 94 cm oder mehr haben, deren Körperfettanteil aber nicht 25% oder mehr beträgt?
 
 ```{r}
 
