@@ -242,7 +242,7 @@ Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet
     `bonitaet` $\rightarrow$ `ausfall`  
     `bonitaet` $\rightarrow$ `zins` $\rightarrow$ `ausfall`  
     (Chain, `zins` nicht mit ins Modell aufnehmen)
-  - Hintertüren (mindestens ein Pfeil in die falsche Richtung)  
+  - Hintertüren (mindestens ein Pfeil zeigt in die falsche Richtung)  
     `bonitaet` $\leftarrow$ `alter` $\rightarrow$ `ausfall`  
     `bonitaet` $\leftarrow$ `arbeit` $\rightarrow$ `ausfall`  
     `bonitaet` $\leftarrow$ `einkommen` $\rightarrow$ `ausfall`  
