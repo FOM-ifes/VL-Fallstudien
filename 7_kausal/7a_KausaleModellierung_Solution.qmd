@@ -160,7 +160,7 @@ Alter ist dann ein sogenannter *Confounder*.
 #| label: figFork
 
 # Koordinaten festlegen
-co <- data.frame(x = c(1, 2, 3), y = c(0, 1, 0), 
+co <- data.frame(x = c(0, 1, 2), y = c(0, 1, 0), 
                  name = c("einkommen", "alter", "arbeit"))
 # DAG erzeugen und ausgeben
 dagify(arbeit ~ alter,
