@@ -138,7 +138,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 
 - Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
 
-## Auswahlverzerrung
+## Auswahlverzerrung (sample bias)
 
 Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^prob]:
 
