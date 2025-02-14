@@ -383,7 +383,7 @@ wine_norm <- wine |> scale() |> as.data.frame()
 
 # Korrelationsplot
 cor_mtx <- cor(wine_norm)
-cor_mtx
+# cor_mtx
 corrplot(cor_mtx,tl.col="black", tl.cex=0.8)
 
 # Eignung der Daten
