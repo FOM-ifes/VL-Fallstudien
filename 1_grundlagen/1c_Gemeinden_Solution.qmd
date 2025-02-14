@@ -127,7 +127,7 @@ mean( ~ Bevoelkerung, data = gv_stipro100)
 - Stimmt der Mittelwert der Stichprobe mit dem Mittelwert in der Population überein?
   *Antwort:* Nein.
 
-------------------------------------------------------------------------
+***
 
 Über `size = 100` haben wir festgelegt, dass unsere Stichprobe aus 100 Beobachtungen besteht. Vielleicht lösen ja 1000 Beobachtungen in der Stichprobe das Problem?
 
@@ -145,7 +145,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 - Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
   *Antwort:* Nein -- die Mittelwerte schwanken je nach Stichprobe, da diese zufällig gezogen wird.
 
-## Auswahlverzerrung
+## Auswahlverzerrung (sample bias)
 
 Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^prob]:
 
