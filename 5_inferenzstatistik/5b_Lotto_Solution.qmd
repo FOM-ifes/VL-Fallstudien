@@ -1,7 +1,8 @@
 ---
-title: "5b_Musterlösung (Lotto)"
+title: "Lösungsskizze: Lotto"
 lang: de
-date: last-modified
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
 format: 
   html:
     toc: true

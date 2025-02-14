@@ -1,7 +1,8 @@
 ---
-title: "2a_Musterlösung"
+title: "Lösungsskizze: Filmgenre"
 lang: de
-date: last-modified
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
 format: 
   html:
     toc: true

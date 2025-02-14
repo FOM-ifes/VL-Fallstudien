@@ -1,7 +1,8 @@
 ---
-title: "5a_Musterlösung"
+title: "Lösungsskizze: Entfernung"
 lang: de
-date: last-modified
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
 format: 
   html:
     toc: true
