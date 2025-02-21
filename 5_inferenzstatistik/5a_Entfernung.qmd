@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -71,7 +73,8 @@ gf_histogram( ~ Entfernung, data = Umfrage)
 
 ```{r}
 # Histogramm
-gf_histogram( ~ Entfernung, data = Umfrage, center = 0.5, binwidth = 1)
+gf_histogram( ~ Entfernung, data = Umfrage, 
+              center = 0.5, binwidth = 1)
 ```
 
 #### Fragen
@@ -129,7 +132,8 @@ do(3)* mean( ~ Entfernung, data = resample(Umfrage))
 Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
 ```{r}
-Bootvtlg <- do(10000) * mean( ~ Entfernung, data = resample(Umfrage))
+Bootvtlg <- do(10000) * mean( ~ Entfernung, 
+                              data = resample(Umfrage))
 # Obere Beobachtungen
 head(Bootvtlg)
 ```
