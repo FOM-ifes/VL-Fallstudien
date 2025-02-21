@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -78,6 +80,7 @@ tail(gv)
 #### Frage
 
 - Wie viele Gemeinden gibt es gemäß dieser Datentabelle in Deutschland?
+
   *Antwort:* 10786 Gemeinen (`obs.` für *observations* -- Beobachtungen).
 
 ## Bevölkerungsgröße
@@ -107,6 +110,7 @@ mean( ~ Bevoelkerung, data = gv)
 #### Frage
 
 - Wie gut war Ihre Schätzung?
+
   *Antwort:* Individuell zu beantworten.
 
 ## Stichproben
@@ -125,6 +129,7 @@ mean( ~ Bevoelkerung, data = gv_stipro100)
 #### Frage
 
 - Stimmt der Mittelwert der Stichprobe mit dem Mittelwert in der Population überein?
+
   *Antwort:* Nein.
 
 ***
@@ -143,6 +148,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 #### Frage
 
 - Wenn Sie den Code, das Skript mehrfach laufen lassen: Sind die Mittelwerte der Stichproben dann immer gleich?
+
   *Antwort:* Nein -- die Mittelwerte schwanken je nach Stichprobe, da diese zufällig gezogen wird.
 
 ## Auswahlverzerrung (sample bias)
@@ -197,4 +203,5 @@ gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv)
 #### Frage
 
 - Wie viel Prozent der Bevölkerung wohnt ungefähr in den 20 % größten Gemeinden?
+
   *Antwort:* Knapp 80 %.
