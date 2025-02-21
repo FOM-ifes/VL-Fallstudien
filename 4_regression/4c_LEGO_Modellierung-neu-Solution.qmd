@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -29,11 +31,11 @@ Wie kommt eigentlich der Preis für ein LEGO©-Set zustande? Lesen Sie dazu das 
 
 [^1]: Siehe ergänzend <https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/>
 
--   Duplo: <https://www.lego.com/de-de/themes/duplo>
+- Duplo: <https://www.lego.com/de-de/themes/duplo>
 
--   City: <https://www.lego.com/de-de/themes/city>
+- City: <https://www.lego.com/de-de/themes/city>
 
--   Friends: <https://www.lego.com/de-de/themes/friends>
+- Friends: <https://www.lego.com/de-de/themes/friends>
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "lego.csv" befindet sich im Projektordner "data". -->
 
@@ -50,13 +52,13 @@ head(lego)
 
 #### Fragen
 
--   Was ist eine Beobachtungseinheit der Datentabelle?
+- Was ist eine Beobachtungseinheit der Datentabelle?
 
-    -   *Antwort: Ein Lego-Set.*
+  *Antwort:* Ein Lego-Set.
 
--   Welche metrischen Variablen liegen in der Datentabelle vor?
+- Welche metrischen Variablen liegen in der Datentabelle vor?
 
-    -   *Antwort: Item Number, Pieces und Amazon Price*
+  *Antwort:* Item Number, Pieces und Amazon Price
 
 ***
 
@@ -70,9 +72,9 @@ lego_sub <- lego |>
 
 #### Frage
 
--   Welche Datentabelle hat mehr Beobachtungen: `lego`, `lego_sub`, oder beide gleich?
+- Welche Datentabelle hat mehr Beobachtungen: `lego`, `lego_sub`, oder beide gleich?
 
-    -   *Antwort: lego hat mehr Beobachtungen, da im lego_sub Datensatz alle Beobachtungen mit Theme == "DUPLO" exkludiert wurden.*
+  *Antwort:* `lego` hat mehr Beobachtungen, da in der `lego_sub`-Datentabelle alle Beobachtungen mit `Theme == "DUPLO"` exkludiert wurden.
 
 ***
 
@@ -92,17 +94,17 @@ $$y_i = b_0 + b_1 \cdot x_i + e_i$$
 
 #### Fragen
 
--   Wofür steht das $i$?
+- Wofür steht das $i$?
 
-    -   *Antwort: Das i steht für eine Beobachtung.*
+  *Antwort:* Das $i$ steht für eine Beobachtung.
 
--   Was ist $b_0$?
+- Was ist $b_0$?
 
-    -   *Antwort: Der y-Achsenabschnitt (Intercept).*
+  *Antwort:* Der y-Achsenabschnitt (Intercept).
 
--   Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
+- Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
 
-    -   *Antwort: Amazon_Price ist die abhängige Variable.*
+  *Antwort:* `Amazon_Price` ist die abhängige Variable.
 
 ### Lineares Modell der Stichprobe
 
@@ -126,17 +128,17 @@ Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: 
 
 #### Fragen
 
--   Welchen modellierten Wert hat ein Set mit $x_0=100$ Bauteilen?
+- Welchen modellierten Wert hat ein Set mit $x_0=100$ Bauteilen?
 
-    -   *Antwort: Laut dem Modell hat ein Set mit 100 Bauteilen einen Wert von 19.42 (Einheiten).*
+  *Antwort:* Laut dem Modell hat ein Set mit 100 Bauteilen einen Wert von 19.42 (Einheiten).
 
--   Gilt immer $\hat{y}_0 = y_0$?
+- Gilt immer $\hat{y}_0 = y_0$?
 
-    -   *Antwort: Nein, die Gleichung gilt nie, da wir Epsilon nicht modellieren können.*
+  *Antwort:* Nein, die Gleichung gilt nie, da wir Epsilon nicht modellieren können.
 
--   Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
+- Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
 
-    -   *Antwort: Der Schätzer von y steigt um 0.13 Einheiten.*
+  *Antwort:* Der Schätzer von y steigt um 0.13 Einheiten.
 
 ### Bestimmtheitsmaß
 
@@ -153,9 +155,9 @@ $$R^2 = `r r2`$$
 
 #### Frage
 
--   Interpretieren Sie $R^2 = `r r2`$.
+- Interpretieren Sie $R^2 = `r r2`$.
 
-    -   *Antwort: 66 % der Gesamtvarianz werden durch das Modell erklärt.*
+  *Antwort:* 66 % der Gesamtvarianz der abhängigen Variablen werden durch das Modell erklärt.
 
 
 ### Ergebniszusammenfassung
@@ -170,7 +172,8 @@ Betrachten wir jetzt wieder die gesamte Stichprobe (`lego`):
 
 ```{r}
 # Visualisierung über Histogramm
-gf_histogram( ~ Amazon_Price, data = lego, binwidth = 10, center = 5)
+gf_histogram( ~ Amazon_Price, data = lego, 
+              binwidth = 10, center = 5)
 
 # Arithmetischer Mittelwert
 mean(Amazon_Price ~ 1, data = lego)
@@ -187,9 +190,9 @@ $$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(Amazon_Price ~ 1, data = l
 
 #### Frage
 
--   Wie groß ist hier $R^2$?
+- Wie groß ist hier $R^2$?
 
-    -   *Antwort: 0*
+  *Antwort:* 0
 
 ## Preismodellierung mit kategorialer erklärender Variable
 
@@ -210,13 +213,13 @@ coef(erg1)
 
 #### Fragen
 
--   Bei welcher Serie ist der Mittelwert des Preises am größten?
+- Bei welcher Serie ist der Mittelwert des Preises am größten?
 
-    -   *Antwort: Der Mittelwert ist bei Lego City am größten.*
+  *Antwort:* Der Mittelwert ist bei Lego City am größten.
 
--   Wie groß ist der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
+- Wie groß ist der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
 
-    -   *Antwort: Der durschnittliche Preisunterschied liegt bei ca. 6.62 (Einheit).*
+  *Antwort:* Der durschnittliche Preisunterschied liegt bei ca. 6.62 (Einheit).
 
 ## Preismodellierung mit mehr als einer erklärenden Variable (multiple Regression)
 
@@ -233,11 +236,11 @@ coef(erg2)
 
 #### Fragen
 
--   Bei welcher Serie ist der Achsenabschnitt am größten?
+- Bei welcher Serie ist der Achsenabschnitt am größten?
 
-    -   *Antwort: Bei Lego Duplo ist der Achsenabschnitt am größten.*
+  *Antwort:* Bei Lego Duplo ist der Achsenabschnitt am größten.
 
--   Welches *Problem* dieses Modells sehen Sie?
+- Welches *Problem* dieses Modells sehen Sie?
 
 ## Preismodellierung mit Wechselwirkung
 
@@ -245,7 +248,7 @@ coef(erg2)
 
 #### Fragen
 
--   Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren.
+- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren.
 
 ```{r}
 # Lineare Modellierung
@@ -256,9 +259,9 @@ plotModel(erg3) + scale_color_npg()
 coef(erg3)
 ```
 
--   Bei welcher Serie ist die Steigung am größten?
+- Bei welcher Serie ist die Steigung am größten?
 
-    -   *Antwort: Bei Lego Duplo ist die Steigung am größten.*
+  *Antwort:* Bei Lego Duplo ist die Steigung am größten.
 
 ### Ergebniszusammenfassung
 
@@ -299,9 +302,9 @@ do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 
 #### Frage
 
--   Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+- Ergeben sich bei zufälligen Re-Sample dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
 
-    -   *Antwort: Nein, die Schätzer weichen mal mehr mal weniger stark voneinander ab.*
+  *Antwort:* Nein, die Schätzer weichen mal mehr mal weniger stark voneinander ab.
 
 ***
 
@@ -316,24 +319,24 @@ head(Bootvtlg)
 # Farbpaket laden
 library(ggsci)
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+      bins = 20, center = b[2]) |> # Anpassung Histogramm 
   # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = betadach[2], color = "blue")
 ```
 
 #### Fragen
 
--   Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
+- Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
 
-    -   *Antwort: Nein, Bootstrap-Samples haben die gleiche Anzahl an Beobachtungen wie der ursprüngliche Datensatz.*
+  *Antwort:* Nein, Bootstrap-Samples haben die gleiche Anzahl an Beobachtungen wie der ursprüngliche Datensatz.
 
--   Welche Verteilung zeigt das Histogramm?
+- Welche Verteilung zeigt das Histogramm?
 
-    -   *Antwort: Eine (annähernde) Normalverteilung.*
+  *Antwort:* Eine (annähernde) Normalverteilung.
 
--   Werden durch das Bootstrapping die Beobachtungen normalverteilt?
+- Werden durch das Bootstrapping die Beobachtungen normalverteilt?
 
-    -   *Antwort: Nein, die Beobachtungen werden nicht normalverteilt. Die Regressionsergebnisse für* $\hat{\beta}_1$ *folgen einer Normalverteilung.*
+  *Antwort:* Nein, die Beobachtungen werden nicht normalverteilt. Die Regressionsergebnisse für $\hat{\beta}_1$ folgen einer Normalverteilung.
 
 ***
 
@@ -346,17 +349,17 @@ se
 
 #### Fragen
 
--   Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigung?
+- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigung?
 
-    -   *Antwort: Die Standardabweichung der geschätzten Steigung.*
+  *Antwort:* Die Standardabweichung der geschätzten Steigung.
 
--   Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
+- Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
 
-    -   *Antwort: Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.*
+  *Antwort:* Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.
 
--   Wann würde der Standardfehler kleiner werden, d.h., die Präszision der Schätzung steigen?
+- Wann würde der Standardfehler kleiner werden, d.h., die Präzision der Schätzung steigen?
 
-    -   *Antwort: Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.*
+  *Antwort:* Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.
 
 ***
 
@@ -371,14 +374,14 @@ D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r
 
 #### Frage
 
--   Ist eine Steigung von $0$ kompatibel zu der Stichprobe?
+- Ist eine Steigung von $0$ kompatibel zu der Stichprobe?
 
-    -   *Antwort: Nein, die 0 liegt außerhalb der Grenzen des KIs.*
+  *Antwort:* Nein, die 0 liegt außerhalb der Grenzen des KIs.
 
 ```{r}
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Bootvtlg,
-              bins = 20, center = b[2]) |> # Anpassung Histogramm 
+      bins = 20, center = b[2]) |> # Anpassung Histogramm 
   # Konfidenzintervall
   gf_vline(xintercept = ki95, color = "blue") |> 
   # Steigung = 0
@@ -406,9 +409,12 @@ gf_point(Amazon_Price ~ Pieces, data = lego_sub) |>
 
 #### Frage
 
--   Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
+- Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
 
-    -   *Antwort:* $\beta_1$ *und* $\hat{\beta}_1$ *nehmen den Wert 0 an.*
+  *Antwort:*
+  
+  - $\beta_1 = 0$ 
+  - $\hat{\beta}_1\approx 0$
 
 ***
 
@@ -435,16 +441,16 @@ Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
 head(Nullvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Nullvtlg,
-              bins = 20, center = 0) |> # Anpassung Histogramm 
+      bins = 20, center = 0) |> # Anpassung Histogramm 
   gf_vline(xintercept = betadach[2], color = "blue") |> # geschätzte Steigung in Originalstichprobe
   gf_vline(xintercept = 0, color = "red") # Steigung = 0
 ```
 
 #### Frage
 
--   Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
+- Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
 
-    -   *Antwort: Nein.*
+  *Antwort:* Nein, da Wert weit außerhalb liegt.
 
 ***
 
@@ -459,7 +465,7 @@ pwert
 
 #### Frage
 
--   Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
+- Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
 
-    -   *Antwort: Nein, der p-Wert beschreibt die Wahrschinlichkeit - unter der Bedingung, dass die Nullhypothese gilt -, dass das gemessene Ergebnis der Stichtprobe zustande kommt.*
+  *Antwort:* Nein, der p-Wert beschreibt die Wahrschinlichkeit -- unter der Bedingung, dass die Nullhypothese gilt --, dass das gemessene Ergebnis der Stichtprobe zustande kommt.
 
