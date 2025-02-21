@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -154,7 +156,8 @@ Betrachten wir jetzt wieder die gesamte Stichprobe (`lego`):
 
 ```{r}
 # Visualisierung über Histogramm
-gf_histogram( ~ Amazon_Price, data = lego, binwidth = 10, center = 5)
+gf_histogram( ~ Amazon_Price, data = lego, 
+              binwidth = 10, center = 5)
 
 # Arithmetischer Mittelwert
 mean(Amazon_Price ~ 1, data = lego)
