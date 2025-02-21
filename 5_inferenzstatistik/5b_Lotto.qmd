@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -138,8 +140,7 @@ Als Visualisierung der simulierten Gewinnanteile bei $n = `r n`$ Ziehungen mit $
 ***
 
 ```{r}
-gf_histogram( ~ prop, data   = Nullvtlg,
-                      center = pi_gewinn)
+gf_histogram( ~ prop, data   = Nullvtlg, center = pi_gewinn)
 ```
 
 Auch ohne Manipulation, oder dass Sie ein besonderer Glückspilz oder Pechvogel sind, kommt es rein zufällig vor, dass der Anteil der Richtigen in einer Stichprobe variiert.
@@ -149,8 +150,7 @@ Auch ohne Manipulation, oder dass Sie ein besonderer Glückspilz oder Pechvogel 
 - Über `gf_vline(xintercept = ___)` kann eine vertikale Linie gezeichnet werden. Ergänzen Sie den Code so, dass Ihr Gewinnanteil eingezeichnet wird. Ist Ihr Ergebnis besonders außergewöhnlich?
 
 ```{r}
-gf_histogram( ~ prop, data = Nullvtlg,
-              center = pi_gewinn) 
+gf_histogram( ~ prop, data = Nullvtlg, center = pi_gewinn) 
 
 ```
 
@@ -164,11 +164,12 @@ abweichung <- p_gewinn - pi_gewinn
 abweichung
 
 # Abweichung in Simulationen ergänzen
-Nullvtlg <- Nullvtlg %>%
+Nullvtlg <- Nullvtlg |>
   mutate(abweichung0 = prop - pi_gewinn)
 
 # p-Wert
-pwert <- prop( ~ abs(abweichung0) >= abs(abweichung), data = Nullvtlg)
+pwert <- prop( ~ abs(abweichung0) >= abs(abweichung), 
+               data = Nullvtlg)
 pwert
 ```
 
