@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -25,7 +27,9 @@ library(here)
 
 Welche Filmgenres interessieren Studierende? 
 
-Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unter FOM-Studierenden in ausgewählten Fächern und Standorten vor.^[Hinweis: Aus Datenschutzgründen wurden die Daten verrauscht.]
+Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unter FOM-Studierenden in ausgewählten Fächern und Standorten vor.[^umfrage]
+
+[^umfrage]: Hinweis: Aus Datenschutzgründen wurden die Daten verrauscht.
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "film.csv" befindet sich im Projektordner "data". -->
 
