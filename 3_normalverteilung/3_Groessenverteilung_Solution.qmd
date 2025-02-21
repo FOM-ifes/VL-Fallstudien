@@ -1,16 +1,18 @@
 ---
-title: "3_Musterlösung"
+title: "Lösungsskizze: Wie groß sind wir?"
 lang: de
 date: last-modified
 format: 
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -33,9 +35,9 @@ Für die Zielpopulation (biologische) Frauen zwischen 20 und 25 gehen wir von ei
 
 #### Frage
 
--   Recherchieren Sie die durchschnittliche Körpergröße eines 20--25-jährigen (biologischen) Mannes.
+- Recherchieren Sie die durchschnittliche Körpergröße eines 20--25-jährigen (biologischen) Mannes.
 
-    -   *Antwort: ca.175 - 176 cm*
+  *Antwort:* ca.175 - 176 cm
 
 ## Normalverteilung
 
@@ -63,14 +65,14 @@ gf_dist("norm", mean = 168, sd = 6, kind = "cdf") |>
 
 Bei einer Normalverteilung gilt:
 
--   Dichtefunktion: $$f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
--   Verteilungsfunktion: $$F(x) = \int_{-\infty}^x f(u)\, du= \int_{-\infty}^x \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(u-\mu)^2}{2\sigma^2}} \,du$$
+- Dichtefunktion: $$f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+- Verteilungsfunktion: $$F(x) = \int_{-\infty}^x f(u)\, du= \int_{-\infty}^x \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(u-\mu)^2}{2\sigma^2}} \,du$$
 
 Dabei ist:
 
--   $\mu=E(X)=\int_{-\infty}^{\infty} x \cdot f(x) \, dx$ der Mittelwert der Verteilung (Erwartungswert).
+- $\mu=E(X)=\int_{-\infty}^{\infty} x \cdot f(x) \, dx$ der Mittelwert der Verteilung (Erwartungswert).
 
--   $\sigma^2=Var(X)=\int_{-\infty}^{\infty} (x-\mu)^2 \cdot f(x) \, dx$ die Varianz der Verteilung.
+- $\sigma^2=Var(X)=\int_{-\infty}^{\infty} (x-\mu)^2 \cdot f(x) \, dx$ die Varianz der Verteilung.
 
 #### Frage
 
@@ -82,9 +84,9 @@ gf_dist("norm", mean = 181, sd = 7.5) |>
           subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
 ```
 
--   Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
+- Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
 
-    -   *Antwort: Die Verteilung ist weiterhin normalverteilt. Allerdings hat sich der Mittelwert auf der x-Achse nach rechts verschoben und die Verteilung ist aufgrund der größeren Standardabweichung breiter geworden.*
+  *Antwort:* Die Verteilung ist weiterhin normalverteilt. Allerdings hat sich der Mittelwert auf der x-Achse nach rechts verschoben und die Verteilung ist aufgrund der größeren Standardabweichung breiter geworden.
 
 ## Wahrscheinlichkeiten bestimmen
 
@@ -96,15 +98,15 @@ xpnorm(q = 160, mean = 168, sd = 6)
 
 #### Fragen
 
--   Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich 180 cm ist:
+- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich 180 cm ist:
 
 ```{r}
 xpnorm(q = 180, mean = 168, sd = 6)
 ```
 
--   Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als 180 cm ist?
+- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als 180 cm ist?
 
-    -   *Antwort: Die Wahrscheinlichkeit ist 2.275 %.*
+  *Antwort:* Die Wahrscheinlichkeit ist 2.275 %.
 
 ## Quantile bestimmen
 
@@ -116,11 +118,11 @@ xqnorm(p = 0.9, mean = 168, sd = 6) |> round(2)
 
 #### Fragen
 
--   Was ist der Wert der Verteilungsfunktion an der Stelle `r xqnorm(p = 0.9, mean = 168, sd =6)`?
+- Was ist der Wert der Verteilungsfunktion an der Stelle `r xqnorm(p = 0.9, mean = 168, sd =6)`?
 
-    -   *Antwort: Der Wert der Verteilungsfunktion an stelle 175.69 ist 0.9.*
+  *Antwort:* Der Wert der Verteilungsfunktion an stelle 175.69 ist 0.9.
 
--   Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den 1 % größten gehört.
+- Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den 1 % größten gehört.
 
 ```{r}
 xqnorm(p = 0.99, mean = 168, sd = 6)
@@ -140,22 +142,16 @@ D.h., ihre Größe ist eine Standardabweichung über dem Mittelwert
 
 #### Fragen
 
--   Berechnen und interpretieren Sie den z-Wert einer Frau, die 156 cm groß ist.
+- Berechnen und interpretieren Sie den z-Wert einer Frau, die 156 cm groß ist.
 
-    -   *Antwort:* $$\frac{156-168}{6}=-2$$
+  *Antwort:* $$\frac{156-168}{6}=-2$$
 
-        *Die Größe einer Frau, die 156 cm groß ist, liegt 2 Standardabweichungen unter dem Mittelwert.*
+  Die Größe einer Frau, die 156 cm groß ist, liegt 2 Standardabweichungen unter dem Mittelwert.
 
--   Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
+- Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
 
 ```{r}
-# Codefeld für z-Wert (Frau)
-h <- "hier Alter einfügen"
-(h - 168)/6
 
-# Codefeld für z-Wert (Mann)
-h <- "hier Alter einfügen"
-(h - 181)/7.5
 ```
 
 ## 68-95-99,7%-Regel
@@ -168,21 +164,21 @@ xpnorm(c(-1, 1))
 
 #### Fragen
 
--   Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von zwei Standardabweichungen um den Mittelwert ist.
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von zwei Standardabweichungen um den Mittelwert ist.
 
 ```{r}
 xpnorm(c(-2, 2))
 ```
 
--   Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von drei Standardabweichungen um den Mittelwert ist.
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von drei Standardabweichungen um den Mittelwert ist.
 
 ```{r}
 xpnorm(c(-3, 3))
 ```
 
--   In welchem Größenbereich liegen ungefähr 95 % der Frauen?
+- In welchem Größenbereich liegen ungefähr 95 % der Frauen?
 
-    -   *Antwort: Zwischen 156 cm und 180 cm.*
+  *Antwort:* Zwischen 156 cm und 180 cm.
 
 ## Einstieg in Bayes (Exkurs)
 
@@ -206,9 +202,9 @@ favstats(groesse ~ geschlecht, data = Daten)
 
 #### Frage
 
--   Angenommen vor Ihnen steht eine Person, die 185 cm groß ist, und Sie können das Geschlecht nicht erkennnen. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
+- Angenommen vor Ihnen steht eine Person, die 185 cm groß ist, und Sie können das Geschlecht nicht erkennnen. Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
 
-    -   *Antwort: Es ist wahrscheinlicher, dass die Person männlich ist.*
+  *Antwort:* Es ist wahrscheinlicher, dass die Person männlich ist.
 
 ------------------------------------------------------------------------
 
@@ -228,18 +224,18 @@ dnorm(185, mean = 181, sd = 7.5)
 
 #### Fragen
 
--   Wären Sie sich bei einer Größe von 174.5 cm bzgl. des Geschlechts *sicher*?
+- Wären Sie sich bei einer Größe von 174.5 cm bzgl. des Geschlechts *sicher*?
 
 ```{r}
 gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) |>
   gf_vline(xintercept = 174.5)
 
-# Antwort: Nein, da der Wert der Dichtefunktionen an der Stelle 174.5 für beide               Geschlechter ungefähr groß ist.
+# Antwort: Nein, da der Wert der Dichtefunktionen an der Stelle 174.5 für beide     Geschlechter ungefähr groß ist.
 ```
 
--   Würde sich Ihre Einschätzung ändern, wenn z.B. 90 % der Zielpopulation weiblich wären?
+- Würde sich Ihre Einschätzung ändern, wenn z.B. 90 % der Zielpopulation weiblich wären?
 
-    -   *Antwort: Ja, da es anteilig mehr Frauen geben würde, die 174.5 cm groß sind.*
+  *Antwort:* Ja, da es anteilig mehr Frauen geben würde, die 174.5 cm groß sind.
 
 ### Satz von Bayes
 
@@ -273,13 +269,13 @@ dnorm(174.5, mean = 181, sd = 7.5) * (1-0.9) /
 
 #### Fragen
 
--   Welches Geschlecht ist hier wahrscheinlicher?
+- Welches Geschlecht ist hier wahrscheinlicher?
 
-    -   *Antwort: Das weibliche Geschlecht.*
+  *Antwort:* Das weibliche Geschlecht.
 
--   Wie würde sich die Wahrscheinlichkeit für eine Frau ändern, wenn die a priori Wahrscheinlichkeit, dass es eine Frau ist, kleiner wäre?
+- Wie würde sich die Wahrscheinlichkeit für eine Frau ändern, wenn die a priori Wahrscheinlichkeit, dass es eine Frau ist, kleiner wäre?
 
-    -   *Antwort: Die Wahrscheinlichkeit für eine Frau würde abnehmen.*
+  *Antwort:* Die Wahrscheinlichkeit für eine Frau würde abnehmen.
 
 ------------------------------------------------------------------------
 

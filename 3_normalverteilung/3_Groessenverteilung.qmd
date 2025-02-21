@@ -7,11 +7,13 @@ format:
   html:
     toc: true
     html-math-method: katex
+    warning: false
   pdf:
     toc: true
     number-sections: false
     colorlinks: true 
     papersize: a4
+    warning: false
 ---
 
 ```{r}
@@ -71,14 +73,14 @@ Dabei ist:
 
 #### Frage
 
--   Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
+- Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
 ```{r}
 gf_dist("norm", mean = 181, sd = 7.5) |> 
   gf_labs(title = "Größenverteilung Männer",
           subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
 ```
 
-    Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
+  Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
 
 ## Wahrscheinlichkeiten bestimmen
 
@@ -174,7 +176,7 @@ set.seed(1896)
 
 # Daten simulieren
 Daten <- data.frame(
-  geschlecht = c(rep("Frau",10000), 
+  geschlecht = c(rep("Frau",10000),
                  rep("Mann", 10000)),
   groesse = c(rnorm(n = 10000, mean = 168, sd = 6), 
               rnorm(n = 10000, mean = 181, sd = 7.5))
