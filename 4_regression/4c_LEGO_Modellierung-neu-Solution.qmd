@@ -312,7 +312,8 @@ do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 # Zufallszahlengenerator setzen
 set.seed(1896)
 # 1000x Re-Samplen
-Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
+Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, 
+                          data = resample(lego_sub))
 # Obere Beobachtungen
 head(Bootvtlg)
 # Visualisierung Verteilung 
@@ -441,9 +442,12 @@ Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
 head(Nullvtlg)
 # Visualisierung Verteilung 
 gf_histogram( ~ Pieces, data = Nullvtlg,
-      bins = 20, center = 0) |> # Anpassung Histogramm 
-  gf_vline(xintercept = betadach[2], color = "blue") |> # geschätzte Steigung in Originalstichprobe
-  gf_vline(xintercept = 0, color = "red") # Steigung = 0
+              # Anpassung Histogramm 
+              bins = 20, center = 0) |> 
+  # geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = betadach[2], color = "blue") |> 
+  # Steigung = 0
+  gf_vline(xintercept = 0, color = "red") 
 ```
 
 #### Frage
