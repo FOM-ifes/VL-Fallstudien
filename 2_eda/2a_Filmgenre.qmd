@@ -34,10 +34,8 @@ Dazu liegt eine Datentabelle einer freiwilligen und anonymen Online-Umfrage unte
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "film.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_film <- here("data", "film.csv")
 # Daten einlesen
-film <- read.csv2(pfad_film)
+here("data", "film.csv")  |> read.csv2() -> film
 # Datenstruktur der Datentabelle film
 str(film)
 # Obere Beobachtungen der Datentabelle

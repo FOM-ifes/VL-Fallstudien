@@ -47,8 +47,6 @@ Im Folgenden wird der Zusammenhang zwischen dem Körperfettanteil und Methoden z
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(-pfaden) innerhalb von RStudio Projekten. Die csv Datei "bodyfat_prediction.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_body <- 
 # Daten einlesen
 here("data", "bodyfat_prediction.csv") |> read.csv2() -> body_data
 # Datenstruktur der Datentabelle med_daten

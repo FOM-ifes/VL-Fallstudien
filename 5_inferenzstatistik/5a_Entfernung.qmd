@@ -37,10 +37,8 @@ Eine zufällige Stichprobe der Antworten darauf liegt in der Datei `results-surv
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "results-survey592526.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_entfernung <- here("data", "results-survey592526.csv")
 # Daten einlesen
-Umfrage <- read.csv2(pfad_entfernung)
+here("data", "results-survey592526.csv") |> read.csv2() -> Umfrage
 # Datenstruktur
 str(Umfrage)
 # Obere Beobachtungen

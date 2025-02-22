@@ -56,11 +56,8 @@ Die csv Datei "irll.csv" befindet sich im Projektordner "data".
 -->
 
 ```{r}
-#| label: data
-
 # Daten einlesen
-irll <- here("data", "irll.csv") |> read.csv()
-
+here("data", "irll.csv") |> read.csv() -> irll
 # Datenstruktur
 str(irll)
 ```

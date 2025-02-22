@@ -39,10 +39,8 @@ Wie kommt eigentlich der Preis für ein LEGO&copy;-Set zustande? Lesen Sie dazu 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "lego.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
-# Datei (inkl. Pfad)
-pfad_lego <- here("data", "lego.csv")
 # Daten einlesen
-lego <- read.csv2(pfad_lego)
+here("data", "lego.csv") |> read.csv2() -> lego
 # Datenstruktur
 str(lego)
 # Obere 6 Beobachtungen
