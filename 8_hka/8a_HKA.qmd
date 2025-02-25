@@ -34,7 +34,7 @@ Das Ziel dieser Hauptkomponenten ist, Datentabellen übersichtlicher zu machen (
 
 Die entstandenen Hauptkomponenten sind voneinander unabhängig und können als *normale* Variablen für weitere statistische Tests verwendet werden.
 
-# Projekt IRLL (International Readiness in Lifelong Learning)
+# Projekt IRLL (International Readiness in Lifelong Learning){#sec-Projekt}
 
 Selbstgesteuertes Lernen und überfachliche Kompetenzen gewinnen vor dem Hintergrund dynamischer und volatiler Arbeits- und Gesellschaftsprozesse zunehmend an Bedeutung. 
 Um dem gerecht zu werden, bedarf es der Herausbildung und Stärkung einer fächerübergreifenden „Learning Readiness" im Studium. 
@@ -47,7 +47,8 @@ Insgesamt haben 1.421 Studierende teilgenommen.
 Die Anzahl der in der nachfolgenden Analyse berücksichtigten Fälle (nach Bereinigung) beträgt $n = 875$.
 
 Über die für die nachfolgende Hauptkomponentenanalyse verwendeten Variablen wurde abgefragt, inwieweit die befragten Personen a) dem eigenen Empfinden nach über verschiedene studienübergreifende Kompetenzen verfügen (A020_A021 - A020_A030) und b) in welchem Maße sie einen Ausbau dieser Kompetenzen als wichtig erachten (A040_A041 - A040_A050). 
-Über den Fragebogen sowie die Legende zur Datentabelle können die Fragestellungen sowie die Bezeichnungen für die einzelnen Variablen nachgelesen werden.
+Im Anhang findet sich ein entsprechendes Code-Book zum Fragebogen - unter @tbl-Codebook-1 finden Sie die Kompetenzen, über die verfügt wird, und unter @tbl-Codebook-2 die Einschätzung zum Ausbau dieser Kompetenzen. 
+
 
 ## Daten einlesen und inspizieren
 
@@ -327,3 +328,49 @@ names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium
 # Ihr Code
 
 ```
+
+
+# Anhang
+
+Übersicht über die verwendeten Variablen im Projekt (s. @sec-Projekt):
+
+::: {#tbl-panel}
+
+1\. **Frage**: Im Studium werden neben fachspezifischen auch fachübergreifende Kompetenzen vermittelt. In welchem Maße verfügen Sie - Ihrer eigenen Einschätzung nach - über die unten genannten Fähigkeiten?
+
+| Codierung | Item                                                            |
+|:---------------|:-------------------------------------------------------|
+| A020_A021 | Verständnis von wissenschaftlichen Texten in englischer Sprache |
+| A020_A022 | Verständnis von Fachvorträgen in englischer Sprache             |
+| A020_A023 | Fachbezogene Kommunikation in englischer Sprache                |
+| A020_A024 | Zusammenarbeit in interkulturellen Teams                        |
+| A020_A025 | Verständnis wissenschaftlicher Texte (deutsch)                  |
+| A020_A026 | Bewertung der Relevanzvon Informationen und Texten              |
+| A020_A027 | Bewertung der Gültigkeit von empirischen Studien                |
+| A020_A028 | Mündliche Präsentation von Projektergebnissen                   |
+| A020_A029 | Organisation von Arbeitsabläufen                                |
+| A020_A030 | Stressmanagement                                                |
+
+: Variablen vorhandene Fähigkeiten {#tbl-Codebook-1 .striped .hover}
+
+<br>
+
+2\. **Frage**: Wie wichtig ist es Ihnen, Ihre Kompetenz in den genannten Bereichen weiter auszubauen?
+
+| Codierung | Item                                                                                                     |
+|:---------------|:-------------------------------------------------------|
+| A040_A041 | Verständnis von wissenschaftlichen Texten in englischer Sprache                                          |
+| A040_A042 | Verständnis von Fachvorträgen in englischer Sprache                                                      |
+| A040_A043 | Fachbezogene Kommunikation in englischer Sprache                                                         |
+| A040_A044 | Interkulturelle Kompetenzen (z. B. für internationale Projekte/Zusammenarbeit in interkulturellen Teams) |
+| A040_A045 | Verständnis wissenschaftlicher Texte                                                                     |
+| A040_A046 | Bewertung der Relevanz von Informationen und Texten                                                      |
+| A040_A047 | Bewertung der Gültigkeit von empirischen Studien                                                         |
+| A040_A048 | Mündliche Präsentation von Projektergebnissen                                                            |
+| A040_A049 | Organisation von Arbeitsabläufen                                                                         |
+| A040_A050 | Stressmanagement                                                                                         |
+
+: Variablen Wichtigkeit Kompetenzerwerb {#tbl-Codebook-2 .striped .hover}
+
+Code-Book IRLL
+:::
