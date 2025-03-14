@@ -2,7 +2,7 @@
 title: "Lösungsskizze: Früherkennung -- Inferenz"
 lang: de
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
-date: today
+date: last-modified
 format: 
   html:
     toc: true
