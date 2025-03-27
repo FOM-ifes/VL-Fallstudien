@@ -21,8 +21,6 @@ format:
 #| include: false
 # Paket mosaic aktivieren
 library(mosaic)
-# Paket DT aktivieren
-library(DT)
 # Paket here aktivieren
 library(here)
 ```
@@ -48,15 +46,25 @@ Eine vereinfachte Version[^filter] steht im Ordner `data` als `csv` Datei unter 
 here("data", "GV2022.csv") |> read.csv2() -> gv
 ```
 
-Eine interaktive Übersicht erhalten wir über die Funktion `datatable()` aus dem Paket `DT`:
+Eine Übersicht über die ersten 6 Beobachtungen erhalten wir über die Funktion `head()`:
 
 ```{r}
-datatable(gv)
+head(gv)
+```
+
+Wollen wir uns nun die Bevölkerungsgröße Berlins anschauen, können wir das wie folgt tun:
+
+```{r}
+gv[gv$Gemeinde == "Berlin, Stadt", ]
 ```
 
 #### Fragen
 
-- Suchen Sie die Gemeinde in der Sie gerade leben. Wie gut war Ihre individuelle Schätzung?
+- Wie können Sie den Code ändern, um die Gemeinde, in der Sie gerade leben, zu finden. Wie gut war Ihre individuelle Schätzung?
+
+```{r}
+
+```
 
 - Zentrales Element einer Datenanalyse ist immer das Festlegen der Beobachtungen und der Variablen. Was ist hier eine Beobachtung, was die Variable, die untersucht wird?
 
