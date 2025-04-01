@@ -55,7 +55,7 @@ head(gv)
 Wollen wir uns nun die Bevölkerungsgröße Berlins anschauen, können wir das wie folgt tun:
 
 ```{r}
-gv %>%
+gv |> 
   filter(Gemeinde == "Berlin, Stadt")
 ```
 
