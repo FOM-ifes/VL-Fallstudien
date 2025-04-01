@@ -37,7 +37,7 @@ Das Statistische Bundesamt hat Daten über
 
 [hier](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122022_Auszug_GV.html) veröffentlicht.
 
-Eine vereinfachte Version[^filter] steht im Ordner `data` als `csv` Datei unter dem Namen `GV2022.csv` zur Verfügung.
+Eine vereinfachte Version[^filter] steht im Ordner `data` als `csv`-Datei unter dem Namen `GV2022.csv` zur Verfügung.
 
 [^filter]: Außerdem gefiltert auf Gemeinden mit einer Bevölkerung > 0.
 
@@ -126,7 +126,7 @@ mean( ~ Bevoelkerung, data = gv)
 
 ## Stichproben
 
-Nicht immer steht uns wie hier die Grundgesamtheit, die Population zur Verfügung. Wir haben oft nur eine Stichprobe. Simulieren können wir dies durch den Befehl `sample()`:
+Nicht immer steht uns wie hier die Grundgesamtheit, die Population zur Verfügung. Wir haben oft nur eine Stichprobe. Simulieren können wir das Ziehen einer Stichprobe durch den Befehl `sample()`:
 
 ```{r}
 # Stichprobe im Umfang von n = 100
@@ -167,6 +167,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^prob]:
 
 [^prob]: Über `prob = gv$Bevoelkerung` legen wir fest, dass die Wahrscheinlichkeitsauswahl innerhalb des Befehls `sample()` davon abhängt, wie groß der Wert der Variable `Bevoelkerung` in der Datentabelle `gv` ist.
+Das Dollarzeichen `$` wählt eine Variable aus der Datentabelle aus.
 
 ```{r}
 # Stichprobe im Umfang von n = 1000
@@ -182,7 +183,7 @@ Da jetzt größere Gemeinden eher Teil der Stichprobe als kleinere Gemeinden sin
 
 #### Frage
 
-- Auch in der Stichprobe `gv_bevoelkerung` kommt jede Gemeinde, egal wie groß, nur einmal vor. Über die Option `replace = TRUE` im Befehl `sample()` können wir auch simulieren, was passieren würde wenn eine Gemeinde mehrfach in der Stichprobe vorkommen kann. Ändern Sie den Code entsprechend. Wie ändert sich das Ergebnis?
+- Auch in der Stichprobe `gv_bevoelkerung` kommt jede Gemeinde, egal wie groß, nur einmal vor. Über die Option `replace = TRUE` im Befehl `sample()` können wir auch simulieren, was passieren würde, wenn eine Gemeinde mehrfach in der Stichprobe vorkommen kann. Ändern Sie den Code entsprechend. Wie ändert sich das Ergebnis?
 
 ```{r}
 gv_bevoelkerung2 <- gv |>
