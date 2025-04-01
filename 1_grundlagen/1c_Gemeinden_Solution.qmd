@@ -55,7 +55,8 @@ head(gv)
 Wollen wir uns nun die Bevölkerungsgröße Berlins anschauen, können wir das wie folgt tun:
 
 ```{r}
-gv[gv$Gemeinde == "Berlin, Stadt", ]
+gv %>%
+  filter(Gemeinde == "Berlin, Stadt")
 ```
 
 #### Fragen
@@ -63,7 +64,9 @@ gv[gv$Gemeinde == "Berlin, Stadt", ]
 - Wie können Sie den Code ändern, um die Gemeinde, in der Sie gerade leben, zu finden. Wie gut war Ihre individuelle Schätzung?
 
 ```{r}
-gv[gv$Gemeinde == "Name der Stadt", ]
+#| eval: false
+gv %>%
+  filter(Gemeinde == "Name der Stadt")
 ```
 
   *Antwort:* Individuell zu beantworten.
