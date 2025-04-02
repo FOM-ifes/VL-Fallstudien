@@ -162,7 +162,7 @@ mean( ~ Bevoelkerung, data = gv_stipro1000)
 
   *Antwort:* Nein -- die Mittelwerte schwanken je nach Stichprobe, da diese zufällig gezogen wird.
 
-## Auswahlverzerrung (sample bias)
+## Auswahlverzerrung (sampling bias)
 
 Bisher hatte jede Gemeinde in Deutschland die gleiche Wahrscheinlichkeit Teil der Stichprobe zu sein. Wenn wir aber eine Stichprobe aus der Bevölkerung fragen würden, würden wir eher jemanden aus einer Großstadt erwischen[^prob]:
 
