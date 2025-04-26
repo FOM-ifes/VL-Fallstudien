@@ -217,3 +217,22 @@ gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv)
 - Wie viel Prozent der Bevölkerung wohnt ungefähr in den 20 % größten Gemeinden?
 
   *Antwort:* Knapp 80 %.
+  
+Lösung mit Ermittlung der genauen Werte:
+
+```{r}
+# absteigend sortiert, daher 1 - 0.8
+which(gv$Anteil_Gemeinde <= 0.2) |> max() -> idx
+# Anteil Bevölkerung
+gv[idx, "Anteil_Bevoelkerung"] |> round(4) -> pBev
+
+gf_line(Anteil_Bevoelkerung ~ Anteil_Gemeinde, data = gv) |> 
+  gf_vline(xintercept = ~ Anteil_Gemeinde[idx], 
+           data = gv, color = "blue") |> 
+  gf_hline(yintercept = ~ Anteil_Bevoelkerung[idx], 
+           data = gv, color = "blue")
+```
+
+
+Anteil: `r pBev * 100 ` %.
+
