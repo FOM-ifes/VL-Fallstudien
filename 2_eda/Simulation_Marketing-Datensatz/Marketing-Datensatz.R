@@ -1,11 +1,8 @@
-# Working Directory
-setwd("C:/Users/celine.widera/Desktop")
-
 # Für Reproduzierbarkeit
 set.seed(5926)
 
 # Einlesen der Daten
-marketing_data <- read.csv2("rintro-chapter5.csv", sep= ",")
+marketing_data <- read.csv2("https://raw.githubusercontent.com/FOM-ifes/VL-Fallstudien/refs/heads/master/2_eda/Simulation_Marketing-Datensatz/rintro-chapter5.csv", sep= ",")
 
 # Neue Kinder-Variable kodieren
 marketing_data$haveKids <- ifelse(marketing_data$kids == 0, "kidsNo", "kidsYes")
@@ -55,6 +52,17 @@ marketing_data$streaming_cost[c(which(marketing_data$subscribe == "subNo"))] <- 
 
 # Entfernen von kids_num aus dem Datensatz
 marketing_data <- marketing_data[, -which(names(marketing_data) == "kids_num")]
+
+# Negative Einkommen ändern
+
+for (i in 1:nrow(marketing_data)) {
+  
+  if (marketing_data$income[i] < 0) {
+    
+    marketing_data$income[i] <- marketing_data$income[i]*(-1)
+  }
+  
+}
 
 
 # Dtensatz speichern
