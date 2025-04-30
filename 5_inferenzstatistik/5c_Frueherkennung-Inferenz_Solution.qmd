@@ -242,7 +242,7 @@ head(Bootvtlg)
 Die Verteilung der Variable `prop_richtig`, d. h., des Anteils Richtig in den Resamples aus der Datentabelle `Bootvtlg` kann über ein Säulendiagramm dargestellt werden:
 
 ```{r}
-#| label: Säulendiagramm
+#| label: Saeulendiagramm
 gf_bar( ~ prop_richtig, data = Bootvtlg)
 ```
 
