@@ -235,7 +235,7 @@ gf_histogram(~ height_m, data = bodyfat, bins = 9)
 
 # 2. WHtR berechnen
 bodyfat <- bodyfat |> mutate(
-  WHtR = waist/height_m)
+  WHtR = waist/(height_m * 100))
 
 # 3. überprüfen der Eingabe
 head(bodyfat$WHtR)
