@@ -1,0 +1,228 @@
+---
+title: "2_Marketing"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+Marketinganalyst:innen beschäftigen sich häufig mit der Frage, wie sich verschiedene Zielgruppen voneinander unterscheiden. Wer nutzt den angebotetenen Servie häufiger -- Männer oder Frauen? Welche demografischen Gruppen können sich das Produkt am ehesten leisten? Spricht das Angebot eher Menschen mit Kindern oder ohne Kinder an? Solche Erkenntnisse sind entscheidend, um den Markt besser zu verstehen, Marketingmaßnahmen gezielt auszurichten und den Erfolg von Kampagnen wie Werbeaktionen effektiv zu gestalten. 
+
+Das Buch [R For Marketing Research and Analytics](https://link.springer.com/book/10.1007/978-3-030-14316-9) behandelt typische Vergleichsanalysen im Marketing – unter anderem anhand eines simulierten Datensatzes, der den Abschluss eines Abonnements veranschaulicht. Diese Variable wird im weiteren Verlauf der Fallstudie als Abschluss eines Streamingdienstes (beliebiger Anbieter) interpretiert. Demnach stellt sich folgende Frage:
+
+
+Welche Umstände erhöhen die Wahrscheinlichkeit ein Streaming-Abo abzuschließen?
+
+Dazu liegt eine Tabelle mit Daten von 300 Personen vor. Für diese Fallstudie wurde die orginale Datentabelle aus Kapitel 5 des Buches [R For Marketing Research and Analytics (Data)](https://r-marketing.r-forge.r-project.org/data/) (rintro-chapter5) etwas verändert. Die Variable "subcribe" wurde neu simuliert, eine zusätzliche Variable "streaming_cost" wurde simuliert und zum Datensatz hinzugefügt und aus der Variable "kids" wurde eine zusätzliche Variable ("haveKids") erzeugt. Zusätzlich wurden überflüssige Variablen aus der Datentabelle gelöscht. Der überarbeitete Datensatz hat folgende Variablen:
+
+- **age** (years) -- Alter der Person in Jahren
+
+- **gender** (Male/Female) -- Geschlecht der Person
+
+- **income** (euro) -- Jahresbruttoeinkommen in Euro
+
+- **haveKids** (kidsYes/kidsNo) -- Person hat Kinder/hat keine Kinder
+
+- **kids** (number of kids) -- Anzahl der Kinder pro Person
+
+- **subscribe** (subYes/subNO) -- Person hat Streaming-Abo/hat kein Streaming-Abo
+
+- **streaming_cost** (euro) -- Monatliche Ausgaben pro Person für Streaming-Dienste in Euro
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "stroke_prediction.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Daten einlesen
+marketing_data <- read.csv2("https://raw.githubusercontent.com/FOM-ifes/variousdata/refs/heads/main/marketing_data.csv")
+# Datenstruktur der Datentabelle stroke_data
+str(marketing_data)
+# Obere Beobachtungen der Datentabelle
+head(marketing_data)
+```
+
+#### Fragen
+
+- Um welche Art von Daten handelt es sich hier?
+
+- Wie viele Beobachtungen hat die Datentabelle?
+
+- Wie viele Variablen hat die Datentabelle?
+
+- Welches Skalenniveau hat die Variable `gender`?
+
+- Welches Skalenniveau hat die Variable `age`?
+
+
+## Streaming-Abo
+
+Explorative Datenanalyse:
+
+```{r}
+# Säulendiagramm
+gf_bar( ~ subscribe, data = marketing_data)
+# Absolute Häufigkeiten
+tally( ~ subscribe, data = marketing_data)
+# Relative Häufigkeiten
+tally( ~ subscribe, data = marketing_data, format = "proportion")
+```
+
+#### Fragen
+
+- Hat die Mehrheit der Personen ein Streaming-Abo abgeschlossen?
+
+- Wie viel Prozent der Personen haben ein Streaming-Abo abgeschlossen?
+
+
+### Kinder
+
+Explorative Datenanalyse:
+
+```{r}
+# Säulendiagramm
+gf_bar( ~ subscribe, fill = ~ haveKids, data = marketing_data, 
+        title = "Abbildung A")
+gf_bar( ~ subscribe, fill = ~ haveKids, data = marketing_data, 
+        position = position_dodge(), title = "Abbildung B")
+gf_bar( ~ subscribe, fill = ~ haveKids, data = marketing_data, 
+        position = "fill" ,title = "Abbildung C")
+```
+
+------------------------------------------------------------------------
+
+#### Fragen
+
+- In welcher Gruppe gibt es insgesamt mehr Personen mit Kindern? In der Gruppe der Personen, die ein Streaming-Abo abgeschlossen haben oder in der Gruppe der Personen ohne Streaming-Abo?
+
+- In welcher Gruppe (Streaming-Abo *Ja* oder *Nein*) ist der Anteil an Personen mit Kindern höher?
+
+- Anhand welcher Abbildung können Sie am Besten erkennen, in welcher Gruppe (Streaming-Abo *Ja* oder *Nein*) es anteilig mehr Personen mit Kindern gibt?
+
+
+------------------------------------------------------------------------
+
+```{r}
+# Absolute Häufigkeiten
+tally(haveKids ~ subscribe, data = marketing_data)
+# Relative Häufigkeiten
+tally(haveKids ~ subscribe, data = marketing_data, format = "proportion")
+# Anteile
+prop(haveKids ~ subscribe, data = marketing_data, success = "kidsYes")
+```
+
+#### Fragen
+
+- Wie viel Prozent derjenigen, die ein Streaming-Abo abgeschlossen haben, haben auch Kinder?
+
+- Angenommen uns interessiert, wie viel Prozent derjenigen, die Kinder haben, auch ein Streaming-Abo abgeschlossen haben. Wird das Ergebnis genau so hoch sein wie bei der Frage zuvor?
+
+#### R Übung
+
+- Wie viel Prozent derjenigen, die Kinder haben, haben auch ein Streaming-Abo abgeschlossen?
+
+```{r}
+
+```
+
+### Geschlecht
+
+```{r}
+# Absolute Häufigkeiten
+tally(gender ~ subscribe, data = marketing_data)
+# Relative Häufigkeiten
+tally(gender ~ subscribe, data = marketing_data, format = "proportion")
+# Anteile
+prop(gender ~ subscribe, data = marketing_data, success = "Female")
+```
+
+#### Frage
+
+-   Wie lautet die *Frage*, auf die das Ergebnis `r prop(gender ~ subscribe, data = marketing_data, success = "Female")[1]` lautet?
+
+
+## Bedingte und totale Wahrscheinlichkeit
+
+Die relative Häufigkeit von *Frau*, gegeben *hat Streaming-Abo*, also `r prop(gender ~ subscribe, data = marketing_data, success = "Female")[2]`, kann auch als bedingte Wahrscheinlichkeit $Pr(Geschleht = Frau | Streaming Abo = Ja)$ aufgefasst werden.
+
+Um die (totale) Wahrscheinlichkeit für *Frau* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *hat Streaming-Abo*, addieren:
+
+$$
+Pr(Geschlecht = Frau) = Pr(Geschlecht = Frau \mid Streaming Abo = Ja) \cdot Pr(Streaming Abo = Ja) \\
++ Pr(Geschlecht = Frau \mid Streaming Abo = Nein) \cdot Pr(Streaming Abo = Nein)
+$$
+
+```{r}
+prop( ~ gender  | subscribe, data = marketing_data, success = "Female")[2] * 
+  prop( ~ subscribe, data = marketing_data, success = "subYes") +
+  prop( ~ gender  | subscribe, data = marketing_data, success = "Female")[1] * 
+  prop( ~ subscribe, data = marketing_data, success = "subNo")
+```
+
+*Erklärung*: Die `[2]` bedeutet, dass das zweite Element des Ergebnisvektors von `prop( ~ gender | subscribe, data = marketing_data, success = "Female")`, also der Anteil der Frauen unter den Personen mit Streaming-Abo, benutzt werden soll. Entsprechend bedeutet `[1]`, dass das erste Element des Vektors, also der Anteil der Frauen unter den Personen ohne Streaming-Abo benutzt wird.
+
+Das ergibt $Pr(Geschlecht = Frau)$:
+
+```{r}
+prop( ~ gender, data = marketing_data, success = "Female")
+```
+
+## Your-Turn
+
+#### Fragen
+
+-   Wie viel Prozent der männlichen Personen haben ein Streaming-Abo abgeschlossen?
+
+```{r}
+
+```
+
+
+-   Wie alt sind die Personen mit Streaming-Abo im Durchschnitt?
+
+```{r}
+
+```
+
+
+## Streaming Ausgaben
+
+Schauen wir uns jetzt die monatlichen Ausgaben pro Person für Streaming-Dienste an. Wie viel geben die Personen im Durchschnitt für Streaming aus? Was ist das Minimus und wo liegt das Maximum? Hier hilft ein Blick in die Kennzahlen.
+
+```{r}
+# Da uns allerdings nur die Personen interessieren, die auch einen Streaming-Dienst abonniert 
+# haben, wird im folgenden ein Datensatz erstellt, der nur Personen mit Streaming-Abo umfasst.
+
+streaming_data <- marketing_data[-which(marketing_data$subscribe == "subNo"),]
+```
+
+`favstats()` liefert einen Überblick über die gängigen Kennzahlen einer metrischen Variable:
+
+```{r}
+favstats( ~ streaming_cost, data = streaming_data)
+```
+
+#### Fragen
+
+- Wie hoch ist der arithmetische Mittelwert der Streaming-Ausgaben?
+
+  *Antwort:* Der Mittelwert beträgt `r mean(~ streaming_cost, data = streaming_data)`.
+
+- In welchem Bereich liegen 50% der Werte für die Streaming-Ausgaben?
+
+  *Antwort:* Üblicherweise `Q1`--`Q3`, aber auch `min`--`median` oder `median`--`max`.
+
+***
