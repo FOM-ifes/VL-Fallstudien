@@ -68,7 +68,7 @@ Sei $\pi$ der Anteil der Fälle (Erkrankungen), die aus der Impfgruppe stammen, 
 ## Hypothesenprüfung
 
 *Skeptische, kritische* Vermutung: 
-Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
+Dass nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen, ist Zufall, eigentlich bringt die Impfung nichts.
 Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt, der Hypothese:
 
 $$H_0: \pi = \pi_0 = 0.5$$

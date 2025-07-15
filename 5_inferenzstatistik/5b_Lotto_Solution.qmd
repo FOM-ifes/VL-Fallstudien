@@ -110,11 +110,13 @@ Eine einfache Möglichkeit, eine Erfolgswahrscheinlichkeit von $\pi=0.5$ zu simu
 
 #### Fragen
 
-- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf?
+- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf, oder ist beides gleich wahrscheinlich?
 
   *Antwort:* 4x Kopf
 
 - Was müssen wir beachten, wenn wir die Gewinnwahrscheinlichkeit beim Lotto simulieren wollen?
+
+  *Antwort:* Eine Münze mit Wahrscheinlichkeit für Kopf zu haben, wie die theoretische Gewinnwahrscheinlichkeit ist.
 
 ------------------------------------------------------------------------
 
@@ -135,6 +137,7 @@ do(3) * rflip(n = n, prob = pi_gewinn)
 Führen wir 10000 solche Simulationen durch und speichern das Ergebnis als `Nullvtlg`:
 
 ```{r}
+set.seed(123)
 Nullvtlg <- do(10000)* rflip(n = n, prob = pi_gewinn)
 # Obere Beobachtungen
 head(Nullvtlg)
@@ -191,17 +194,25 @@ pwert
 
   *Antwort:* Nein, der p-Wert wird in diesem Experiment eigentlich immer größer sein als 0.05.
 
-- Ist die Wahrscheinlichkeit, dass mindestens eine:r im Kurs ein signifikantes Ergebnis hat kleiner als 5%?
+- Ist die Wahrscheinlichkeit, dass mindestens eine:r im Kurs ein signifikantes Ergebnis hat, kleiner als 5%?
 
   *Antwort:* Ja. Dass jemand ein Ergebnis hat, das überzufällig ist, ist höchst unwahrscheinlich.
 
-- Wie müsste die Nullyhpothese lauten, wenn Sie zeigen wollten, dass Sie statistisch signifikant Pech haben?
+- Wie müssten Null- und Alternativhypothese lauten, wenn Sie zeigen wollten, dass Sie Pech haben?
 
-  *Antwort:* $H_0 : (p - \pi) ≥ 0$
+  *Antwort:* \
+  $H_0 : \pi \geq pi_0 = `r pi_gewinn`$\
+  $H_A : \pi < pi_0$
 
-- Angenommen Sie würden auf die vorherige Frage einen sehr kleinen p-Wert erhalten, z.B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
+- Wie müssten Null- und Alternativhypothese lauten, wenn Sie zeigen wollten, dass Sie ein Glückspilz sind?
 
-  *Antwort:* Ja, einen alpha-Fehler (Fehler 1. Art).
+  *Antwort:* \
+  $H_0 : \pi \leq pi_0$ \
+  $H_A : \pi > pi_0$
+
+- Angenommen Sie würden auf die Frage, ob Ihre Gewinnwahrscheinlichkeit ungewöhnlich ist, einen sehr kleinen p-Wert erhalten, z. B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
+
+  *Antwort:* Ja, es liegt alpha-Fehler (Fehler 1. Art) vor, Sie haben die Nullhypothese verworfen, obwohl sie zutrifft.
 
 ## Hinweise
 

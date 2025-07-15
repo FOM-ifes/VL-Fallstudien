@@ -108,12 +108,6 @@ head(KRED)
 
 Bonität wird (weiter unten für die Übersichtlichkeit) zusätzlich als numerische Variable angelegt.
 
-### Explorative Datenanalyse
-
-#### Your turn
-
-- Führen Sie eine explorative Datenanalyse durch.
-
 ### Chain
 
 Vermutlich wird sich das Alter (`alter`) positiv auf das Einkommen (`einkommen`) auswirken.
@@ -179,14 +173,15 @@ Wann und warum muss adjustiert werden? Schauen Sie noch einmal in das Fact-Sheet
 
 - Bestimmen Sie alle Pfade von Bonität zu Ausfall mit dem DAG aller Variablen (siehe oben) und unterscheiden dabei nach Vorder- und Hintertüren.
 - Bestimmen Sie das Modell, das den totalen kausalen Effekt von `nbonitaet` auf `ausfall` wiedergibt.
-- Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`. 
+- Modellieren Sie das Modell mit `glm(..., family = binomial(logit))`.
+- Welche Variablen dürfen Sie interpretieren?
 
 *Hinweis*: Da `ausfall` eine binäre kategoriale Variable ist, wird hier die logistische Regression genutzt.
 Diese modelliert die Wahrscheinlichkeit dafür, dass *nicht* die Referenzkategorie vorliegt, also hier die Wahrscheinlichkeit für einen Ausfall.
 - Welche Variablen dürfen Sie interpretieren?
 - Gibt es noch offene Pfade anderer Variablen zur abhängigen Variable $Y$, auf denen die Pfeile in die richtige Richtung zeigen? Was sollte damit passieren?
 
-### Bias
+## Bias
 
 Verzerrungen können auftreten, wenn ...
 

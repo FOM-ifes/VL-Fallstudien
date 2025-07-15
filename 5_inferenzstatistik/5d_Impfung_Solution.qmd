@@ -119,7 +119,7 @@ pi_dach <- 8/170
 ## Hypothesenprüfung
 
 *Skeptische, kritische* Vermutung: 
-Das nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen ist Zufall, eigentlich bringt die Impfung nichts.
+Dass nur $8$ von den $8+162=170$ Covid-19 Fällen aus der Impfgruppe kommen, ist Zufall, eigentlich bringt die Impfung nichts.
 Aufgrund gleicher Gruppengröße entspricht dies mit $\pi$, der Wahrscheinlichkeit, dass ein Fall aus der Impfgruppe kommt, der Hypothese:
 
 $$H_0: \pi = \pi_0 = 0.5$$
@@ -132,7 +132,7 @@ $$H_0: \pi = \pi_0 = 0.5$$
 
   *Antwort:*
   
-  Uns interessiert, ob die Impfung wirkt, dass ist die Forschungshypothese.
+  Uns interessiert, ob die Impfung wirkt, das ist die Forschungshypothese.
   Der Anteil muss also geringer sein als 0.5.
   Da wir diese nicht beweisen können, versuchen wir die Gegenhypothese (Impfung wirkt nicht) zu widerlegen.
   

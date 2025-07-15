@@ -66,8 +66,6 @@ immo <- immo |> mutate(
 head(immo)
 ```
 
-------------------------------------------------------------------------
-
 ## Preismodellierung durch Quadratmeter
 
 ### Lineares Modell
@@ -133,6 +131,125 @@ $$R^2 = `r r2`$$
 
 - Interpretieren Sie $R^2 = `r r2`$.
 
+
+## Preismodellierung ohne erklärende Variable
+
+Schauen wir uns einmal die Verteilung der Mietpreise an:
+
+```{r}
+# Visualisierung über Histogramm
+gf_histogram( ~ totalrent, data = immo, binwidth = 200, center = 100)
+
+favstats(~ totalrent, data = immo)
+
+# Arithmetischer Mittelwert
+mean(totalrent ~ 1, data = immo)
+
+# Lineare Modellierung
+erg0 <- lm(totalrent ~ 1, data = immo)
+# Koeffizienten
+coef(erg0)
+```
+
+Also
+
+$$\hat{y}_i = \bar{y} = \hat\beta_0 = `r round(mean(totalrent~ 1, data = immo),2)`$$
+
+#### Frage
+
+- Wie groß ist hier $R^2$?
+
+## Preismodellierung mit kategorialer erklärender Variable
+
+Die Variable `balcony` ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
+
+```{r}
+# Visualisierung über "verwackeltes" Streudiagram
+gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
+
+# Arithmetische Mittelwerte
+mean(totalrent ~ balcony, data = immo)
+
+# Lineare Modellierung
+erg1 <- lm(totalrent ~ balcony, data = immo)
+# Koeffizienten
+coef(erg1)
+```
+
+#### Fragen
+
+- Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
+
+- Wie groß ist der durchschnittliche Preisunterschied zwischen Wohnungen mit Balkon und ohne Balkon?
+
+
+## Preismodellierung mit mehr als einer erklärenden Variable
+
+```{r}
+# Lineare Modellierung
+erg2 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
+# Visualisierung des Ergebnisses
+plotModel(erg2) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+# Zusammenfassung
+summary(erg2)
+```
+
+#### Fragen
+
+- Wie lautet die Regressionsgleichung?
+
+- Interpretieren Sie die Regressionskoeffizienten.
+
+- Interpretieren Sie das $R^2$.
+
+
+## Preismodellierung mit Wechselwirkung (Interaktion)
+
+Über `x1:x2` kann eine Interaktion zwischen zwei Variablen in ein Modell integriert werden. Eine Interaktion liegt dann vor, wenn sich der Effekt einer unabhängigen Variable in Abhängigkeit von den Ausprägungen einer anderen unabhängigen Variable ändert.
+
+Betrachtet wird zunächst ein Modell ohne Interaktionen:
+
+```{r}
+# Lineare Modellierung
+erg3 <- lm(totalrent ~ livingspace + balcony, data = immo)
+# Visualisierung Ergebnis
+plotModel(erg3) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+```
+
+#### Fragen
+
+- Welches *Problem* dieses Modells sehen Sie?
+
+- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace` und `balcony` ins Modell integrieren.
+
+```{r}
+# Lineare Modellierung
+erg4 <- lm(totalrent ~ livingspace + balcony, data = immo)
+# Visualisierung Ergebnis
+plotModel(erg4) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+# Koeffizienten
+coef(erg4)
+```
+
+- Bei welcher Ausprägung ist die Steigung größer?
+
+### Ergebniszusammenfassung
+
+```{r}
+summary(erg4)
+```
+
+#### Frage
+
+- Interpretieren Sie das Ergebnis.
+
+## Inferenz in der Regression
 
 ### Schätzunsicherheit
 
@@ -306,86 +423,11 @@ pwert
 - Der p-Wert ist kleiner als $1/1000$. 
 Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist?
 
-------------------------------------------------------------------------
-
 ### Ergebniszusammenfassung
 
 ```{r}
 summary(erg)
 ```
-
-## Preismodellierung ohne erklärende Variable
-
-Schauen wir uns einmal die Verteilung der Mietpreise an:
-
-```{r}
-# Visualisierung über Histogramm
-gf_histogram( ~ totalrent, data = immo, binwidth = 200, center = 100)
-
-favstats(~ totalrent, data = immo)
-
-# Arithmetischer Mittelwert
-mean(totalrent ~ 1, data = immo)
-
-# Lineare Modellierung
-erg0 <- lm(totalrent ~ 1, data = immo)
-# Koeffizienten
-coef(erg0)
-```
-
-Also
-
-$$\hat{y}_i = \bar{y} = \hat\beta_0 = `r round(mean(totalrent~ 1, data = immo),2)`$$
-
-#### Frage
-
-- Wie groß ist hier $R^2$?
-
-## Preismodellierung mit kategorialer erklärender Variable
-
-Die Variable `balcony` ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
-
-```{r}
-# Visualisierung über "verwackeltes" Streudiagram
-gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
-
-# Arithmetische Mittelwerte
-mean(totalrent ~ balcony, data = immo)
-
-# Lineare Modellierung
-erg1 <- lm(totalrent ~ balcony, data = immo)
-# Koeffizienten
-coef(erg1)
-```
-
-#### Fragen
-
-- Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
-
-- Wie groß ist der durchschnittliche Preisunterschied zwischen Wohnungen mit Balkon und ohne Balkon?
-
-
-## Preismodellierung mit mehr als einer erklärenden Variable
-
-```{r}
-# Lineare Modellierung
-erg2 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
-# Visualisierung des Ergebnisses
-plotModel(erg2) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
-# Zusammenfassung
-summary(erg2)
-```
-
-#### Fragen
-
-- Wie lautet die Regressionsgleichung?
-
-- Interpretieren Sie die Regressionskoeffizienten.
-
-- Interpretieren Sie das $R^2$.
-
 
 ### F-Statistik -- modellierte vs. nicht-modellierte Variation
 
@@ -455,47 +497,6 @@ Führen Sie eine lineare Regression des Mietpreises auf alle in der Datentabelle
 
 ```
 
+## Modellvergleich
 
-## Preismodellierung mit Wechselwirkung (Interaktion)
-
-Über `x1:x2` kann eine Interaktion zwischen zwei Variablen in ein Modell integriert werden. Eine Interaktion liegt dann vor, wenn sich der Effekt einer unabhängigen Variable in Abhängigkeit von den Ausprägungen einer anderen unabhängigen Variable ändert.
-
-Betrachtet wird zunächst ein Modell ohne Interaktionen:
-
-```{r}
-# Lineare Modellierung
-erg3 <- lm(totalrent ~ livingspace + balcony, data = immo)
-# Visualisierung Ergebnis
-plotModel(erg3) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
-```
-
-#### Fragen
-
-- Welches *Problem* dieses Modells sehen Sie?
-
-- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace` und `balcony` ins Modell integrieren.
-
-```{r}
-# Lineare Modellierung
-erg4 <- lm(totalrent ~ livingspace + balcony, data = immo)
-# Visualisierung Ergebnis
-plotModel(erg4) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
-# Koeffizienten
-coef(erg4)
-```
-
-- Bei welcher Ausprägung ist die Steigung größer?
-
-### Ergebniszusammenfassung
-
-```{r}
-summary(erg4)
-```
-
-#### Frage
-
-- Interpretieren Sie das Ergebnis.
+Vergleichen Sie das Modell mit allen Variablen mit dem Modell `erg4` (Modell mit Interaktion). Welches bevorzugen Sie?

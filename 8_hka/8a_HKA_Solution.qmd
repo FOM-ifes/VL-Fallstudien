@@ -89,14 +89,27 @@ Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von studentisie
 #| label: z-trans
 
 # Studentisierung
-irll_norm <- irll |> scale() |> as.data.frame()
+ irll |> scale() |> as.data.frame() -> irll_std
 ```
 
 #### Frage
 
 - Warum löst die Studentisierung das Problem der Varianz-Sensitivität der HKA?
 
-  *Antwort:* Die studentisierten Variablen haben alle eine Varianz von eins.
+  *Antwort:* Die studentisierten Variablen haben alle eine Varianz von eins, die Kovarianzmatrix entspricht der Korrelationsmatrix.
+  
+```{r}
+# irll
+cov(irll)[1:4, 1:4]
+cor(irll)[1:4, 1:4]
+# irll
+cov(irll_std)[1:4, 1:4]
+cor(irll_std)[1:4, 1:4]
+```
+  
+
+*Hinweis:* Bei der hier verwendeten Funktion `principal()` aus dem Paket `psych` ist die Studentisierung nicht notwendig, da sie mit der Korrelationsmatrix arbeitet.
+Wir arbeiten daher weiter mit der ursprünglichen Datentabelle `irll`. 
 
 ## Eignung der Daten
 
@@ -111,7 +124,7 @@ Einen guten Überblick über die Korrelation zwischen den Variablen verschafft e
 #| label: cor
 
 # Korrelationsmatrix
-cor_mtx <- cor(irll_norm)
+cor_mtx <- cor(irll)
 
 # Korrelationsplot
 corrplot(cor_mtx)
@@ -119,12 +132,8 @@ corrplot(cor_mtx)
 
 #### Fragen
 
-- Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Begründen Sie Ihre Antwort.
-
-  *Antwort:* In diesem Fall schon, da die Daten studentisiert wurden und $cor(Z)==cov(Z)$. Allgemein gilt dies aber nicht.
-
 - Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? 
-Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
+Und wie kann der (blass) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
   - *Antwort (blau):* Der lineare Zusammenhang zwischen der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis wissenschaftlicher Texte in englischer Sprache und der Selbsteinschätzung der eigenen Fähigkeiten in Bezug auf das Verständnis von Fachvorträgen in englischer Sprache ist stark positiv.
   - *Interpretation:* Je besser Teilnehmende wissenschaftliche Texte in englischer Sprache verstehen, desto besser können sie Fachvorträgen in englischer Sprache folgen.
@@ -154,7 +163,7 @@ Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 
 #| label: kmo
 
 # Kaiser-Maier-Olkin-Kriterium
-KMOS(irll_norm)$KMO
+KMOS(irll)$KMO
 ```
 
 #### Frage
@@ -173,7 +182,7 @@ Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Null
 #| label: bartlett
 
 # Bartlett-Test
-bart_spher(irll_norm)
+bart_spher(irll)
 ```
 
 #### Frage
@@ -202,7 +211,7 @@ Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick au
 #| label: screeplot
 
 # Screeplot
-scree(irll_norm, factors = FALSE)
+scree(irll, factors = FALSE)
 ```
 
 #### Frage
@@ -214,7 +223,7 @@ scree(irll_norm, factors = FALSE)
 Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer eindeutig. 
 In solchen Fällen kann auf andere Methoden und Faustregeln zurückgegriffen werden.
 
-### Eigenwert über eins (Kaiser-Dickman-Kriterium)
+### Eigenwert über eins (Kaiser-Guttman-Kriterium)
 
 Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. 
 Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer als eins ist.
@@ -274,7 +283,7 @@ Im unteren Teil der Ausgabe werden die Eigenwerte (`SS (sum of squares) loadings
 #| label: hka
 
 # Hauptkomponentenanalyse ohne Rotation
-irll_hka <- principal(irll_norm, 6, rotate = "none")
+irll_hka <- principal(irll, 6, rotate = "none")
 # Löschen des nicht benötigten Outputs
 irll_hka$criteria <- NULL
 # Grenzwert, sortieren und runden
@@ -300,7 +309,7 @@ Eine oft verwendete orthogonale Rotationsmethode zur besseren Interpretation der
 #| label: hka rotiert
 
 # Varimax Rotation
-irll_hka_rotiert <- principal(irll_norm, 6, rotate = "varimax")
+irll_hka_rotiert <- principal(irll, 6, rotate = "varimax")
 # Löschen des nicht benötigten Outputs
 irll_hka_rotiert$criteria <- NULL
 # Grenzwert, sortieren und runden
@@ -324,22 +333,6 @@ Der `Fit based upon off diagonal values` ist zwischen der unrotierten und der ro
 Die `Mean item complexity` hat allerdings beim rotierten Modell abgenommen, im Schnitt laden also weniger Variablen auf die Hauptkomponenten und damit wird die Interpretation einfacher.[^ausgabe]
 
 [^ausgabe]: Die weiteren Elemente der Ausgabe werden z. B. in Gehrke (2022), S. 345 ff. erläutert.
-
-## HKA mit nicht standardisierten Daten
-
-Tatsächlich kann die Hauptkomponentenanalyse mit `principal()` (Paket `psych`) auch ohne vorherige Standardisierung durch geführt werden, da `principal()` die Korrelationsmatrix nutzt.
-
-```{r}
-#| label: hka nicht studentisiert
-
-# Varimax Rotation
-irll_nichtstd <- principal(irll, 6, rotate = "varimax")
-# Löschen des nicht benötigten Outputs
-irll_nichtstd$criteria <- NULL
-# Grenzwert, sortieren und runden
-print(irll_nichtstd, cut = 0.5, sort = TRUE, digits = 2)
-```
-
 
 # Your Turn
 
@@ -376,25 +369,22 @@ wine <- wine[, -1]
 names(wine) <- c("Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315", "Proline")
 
 
-### Musterlösung: ###
-
-# Daten studentisieren
-wine_norm <- wine |> scale() |> as.data.frame()
+### Beispiellösung: ###
 
 # Korrelationsplot
-cor_mtx <- cor(wine_norm)
+cor_mtx <- cor(wine)
 # cor_mtx
 corrplot(cor_mtx,tl.col="black", tl.cex=0.8)
 
 # Eignung der Daten
-KMOS(wine_norm)$KMO
-bart_spher(wine_norm)
+KMOS(wine)$KMO
+bart_spher(wine)
 
 # Screenplot
-scree(wine_norm, factors = FALSE)
+scree(wine, factors = FALSE)
 
 # HKA unter Nutzung der Varimax-Rotation
-hka_rotiert <- principal(wine_norm, 3, rotate = "varimax")
+hka_rotiert <- principal(wine, 3, rotate = "varimax")
 hka_rotiert$criteria <- NULL
 print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 ```
@@ -404,7 +394,7 @@ print(hka_rotiert, cut = 0.5, sort = TRUE, digits = 2)
 Die Daten sind gemäß KMO-Kriterium und Bartlett-Test für eine HKA geeignet.
 
 Der Screeplot hat den Knick bei vier Hauptkomponenten, daher sollten drei gewählt werden. 
-Dies stimmt auch mit dem Eigenwertkriterium überein.
+Dies stimmt mit dem Eigenwertkriterium überein.
 
 Die Hauptkomponenten erklären 67 % der Varianz.
 

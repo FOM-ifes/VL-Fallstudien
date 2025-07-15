@@ -109,19 +109,6 @@ head(KRED)
 
 Bonität wird (weiter unten für die Übersichtlichkeit) zusätzlich als numerische Variable angelegt.
 
-### Explorative Datenanalyse
-
-#### Your turn
-
-- Führen Sie eine explorative Datenanalyse durch.
-
-  *Antwort:* Hier exemplarisch nur `inspect()` als ersten Schritt.
-
-```{r}
-mosaic::inspect(KRED)
-```
-
-
 ### Chain
 
 Vermutlich wird sich das Alter (`alter`) positiv auf das Einkommen (`einkommen`) auswirken.
@@ -299,7 +286,7 @@ Daher sollte die Variable *nicht* mit in das Modell aufgenommen werden.
 
 Der Koeffizient von `nbonitaet` ändert sich nur in den hinteren Nachkommastellen, daher scheint der aufgestellte DAG diesbezüglich korrekt zu sein.
 
-### Bias
+## Bias
 
 Verzerrungen können auftreten, wenn ...
 

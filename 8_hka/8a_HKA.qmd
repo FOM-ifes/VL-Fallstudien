@@ -77,18 +77,21 @@ str(irll)
 
 Die Hauptkomponentenanalyse ist sensitiv bezüglich unterschiedlicher Varianzen. 
 Das bedeutet, dass Merkmale mit einer sehr hohen Varianz dominieren. 
-Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von studentisierten Variablen durchgeführt.
+Aus diesem Grund wird die Bildung der Hauptkomponenten auf Basis von studentisierten (z-transformierten oder standardisierten) Variablen durchgeführt.
 
 ```{r}
 #| label: z-trans
 
 # Studentisierung
-irll_norm <- irll |> scale() |> as.data.frame()
+irll |> scale() |> as.data.frame() -> irll_std
 ```
 
 #### Frage
 
 - Warum löst die Studentisierung das Problem der Varianz-Sensitivität der HKA?
+
+*Hinweis:* Bei der hier verwendeten Funktion `principal()` aus dem Paket `psych` ist die Studentisierung nicht notwendig, da sie mit der Korrelationsmatrix arbeitet.
+Wir arbeiten daher weiter mit der ursprünglichen Datentabelle `irll`. 
 
 ## Eignung der Daten
 
@@ -103,7 +106,7 @@ Einen guten Überblick über die Korrelation zwischen den Variablen verschafft e
 #| label: cor
 
 # Korrelationsmatrix
-cor_mtx <- cor(irll_norm)
+cor_mtx <- cor(irll)
 
 # Korrelationsplot
 corrplot(cor_mtx)
@@ -111,10 +114,8 @@ corrplot(cor_mtx)
 
 #### Fragen
 
-- Ist es egal, ob wir uns die Korrelations- oder Kovarianz-Matrix anschauen? Begründen Sie Ihre Antwort.
-
 - Wie kann der blaue Punkt zwischen A020_A022 und A020_A021 interpretiert werden? 
-Und wie kann der (blaß) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
+Und wie kann der (blass) rote Punkt zwischen A040_A050 und A020_A030 interpretiert werden?
 
 - Warum sind manche Flächen im Korrelationsplot weiß und was bedeutet das?
 
@@ -133,7 +134,7 @@ Damit die Daten für eine HKA geeignet sind, sollte das Ergebnis einen Wert von 
 #| label: kmo
 
 # Kaiser-Maier-Olkin-Kriterium
-KMOS(irll_norm)$KMO
+KMOS(irll)$KMO
 ```
 
 #### Frage
@@ -150,7 +151,7 @@ Wenn sich die Daten für eine HKA eignen, dann sollte der Bartlett-Test die Null
 #| label: bartlett
 
 # Bartlett-Test
-bart_spher(irll_norm)
+bart_spher(irll)
 ```
 
 #### Frage
@@ -177,7 +178,7 @@ Bei mehreren Knickstellen ist der stärkere bzw. weiter rechts stehende Knick au
 #| label: screeplot
 
 # Screeplot
-scree(irll_norm, factors = FALSE)
+scree(irll, factors = FALSE)
 ```
 
 #### Frage
@@ -187,7 +188,7 @@ scree(irll_norm, factors = FALSE)
 Der Screeplot ist zwar eine sehr beliebte Methode zur Bestimmung der Hauptkomponenten, allerdings ist er wie im vorliegenden Beispiel nicht immer eindeutig. 
 In solchen Fällen kann auf andere Methoden und Faustregeln zurückgegriffen werden.
 
-### Eigenwert über eins (Kaiser-Dickman-Kriterium)
+### Eigenwert über eins (Kaiser-Guttman-Kriterium)
 
 Ein weiteres Kriterium zur Bestimmung der optimalen Anzahl von Hauptkomponenten ist die Betrachtung der Eigenwerte. 
 Berücksichtigt werden dabei nur die Hauptkomponenten, deren Eigenwert größer als eins ist.
@@ -239,7 +240,7 @@ Im unteren Teil der Ausgabe werden die Eigenwerte (`SS (sum of squares) loadings
 #| label: hka
 
 # Hauptkomponentenanalyse ohne Rotation
-irll_hka <- principal(irll_norm, 6, rotate = "none")
+irll_hka <- principal(irll, 6, rotate = "none")
 # Löschen des nicht benötigten Outputs
 irll_hka$criteria <- NULL
 # Grenzwert, sortieren und runden
@@ -265,7 +266,7 @@ Eine oft verwendete orthogonale Rotationsmethode zur besseren Interpretation der
 #| label: hka rotiert
 
 # Varimax Rotation
-irll_hka_rotiert <- principal(irll_norm, 6, rotate = "varimax")
+irll_hka_rotiert <- principal(irll, 6, rotate = "varimax")
 # Löschen des nicht benötigten Outputs
 irll_hka_rotiert$criteria <- NULL
 # Grenzwert, sortieren und runden

@@ -149,8 +149,9 @@ do(3)* mean( ~ Entfernung, data = resample(Umfrage))
 Simulieren wir den Vorgang des zufälligen Re-Sampling 10000-mal - und speichern das Ergebnis als Datentabelle `Bootvtlg`.
 
 ```{r}
-Bootvtlg <- do(10000) * mean( ~ Entfernung, 
-                              data = resample(Umfrage))
+set.seed(123)
+Bootvtlg <- do(10000) * 
+  mean( ~ Entfernung, data = resample(Umfrage))
 # Obere Beobachtungen
 head(Bootvtlg)
 ```

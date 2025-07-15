@@ -107,7 +107,7 @@ Es gibt in der Zielpopulation der FOM-Studierenden dieses Studienganges einen un
 - Was schätzen Sie? Wie groß ist dieser Anteil?
 - Und wie sicher sind Sie sich, dass Ihre Antwort richtig ist? 
 
-Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> ***(Anteil und Sicherheit einstellen)*** und notieren Sie die bei der ***Betabinomialfunktion*** ausgegebenen Werte für $\alpha$ und $\beta$. 
+Nutzen Sie zur Beantwortung dieser Frage die App <https://fomshinyapps.shinyapps.io/BaBeBi/> ***(Anteil und Sicherheit einstellen)*** und notieren Sie die bei der ***Prior-Verteilung*** *(Beta-Verteilung)* ausgegebenen Werte für $\alpha$ und $\beta$. 
 Wenn für Sie z.$\,$B. alle Werte für $\pi$ gleich plausibel sind, dann gilt $\alpha=\beta=1$:
 
 *Hinweis*: Erklärung und Auflösung folgen in der Fallstudie zur Bayesschen Statistik.

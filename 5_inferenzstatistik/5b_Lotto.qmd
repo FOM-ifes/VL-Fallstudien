@@ -105,7 +105,7 @@ Eine einfache Möglichkeit, eine Erfolgswahrscheinlichkeit von $\pi=0.5$ zu simu
 
 #### Fragen
 
-- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf?
+- Was ist bei acht Würfen wahrscheinlicher: $4\times$ Kopf oder $8\times$ Kopf, oder ist beides gleich wahrscheinlich?
 
 - Was müssen wir beachten, wenn wir die Gewinnwahrscheinlichkeit beim Lotto simulieren wollen?
 
@@ -126,6 +126,7 @@ do(3) * rflip(n = n, prob = pi_gewinn)
 Führen wir 10000 solche Simulationen durch und speichern das Ergebnis als `Nullvtlg`:
 
 ```{r}
+set.seed(123)
 Nullvtlg <- do(10000)* rflip(n = n, prob = pi_gewinn)
 # Obere Beobachtungen
 head(Nullvtlg)
@@ -177,11 +178,13 @@ pwert
 
 - Ein Ergebnis wird *statistisch signifikant zum Niveau $\alpha=5\%$* genannt, wenn der p-Wert kleiner als $\alpha$ ist. Ist Ihr Ergebnis statistisch signifikant?
 
-- Ist die Wahrscheinlichkeit, dass mindestens eine:r im Kurs ein signifikantes Ergebnis hat kleiner als 5%?
+- Ist die Wahrscheinlichkeit, dass mindestens eine:r im Kurs ein signifikantes Ergebnis hat, kleiner als 5%?
 
-- Wie müsste die Nullyhpothese lauten, wenn Sie zeigen wollten, dass Sie statistisch signifikant Pech haben?
+- Wie müssten Null- und Alternativhypothese lauten, wenn Sie zeigen wollten, dass Sie Pech haben?
 
-- Angenommen Sie würden auf die vorherige Frage einen sehr kleinen p-Wert erhalten, z.B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
+- Wie müssten Null- und Alternativhypothese lauten, wenn Sie zeigen wollten, dass Sie ein Glückspilz sind?
+
+- Angenommen Sie würden auf die Frage, ob Ihre Gewinnwahrscheinlichkeit ungewöhnlich ist, einen sehr kleinen p-Wert erhalten, z. B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
 
 
 ## Hinweise

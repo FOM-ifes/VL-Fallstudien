@@ -56,7 +56,8 @@ head(lego)
 
 - Welche metrischen Variablen liegen in der Datentabelle vor?
 
-  *Antwort:* Item Number, Pieces und Amazon Price
+  *Antwort:* `Pieces` und `Amazon_Price`. 
+  `Item_Number` ist zwar auch als `int` (*Integer*, ganzzahlig) codiert, aber ist inhaltlich keine Zahl.
 
 ***
 
@@ -136,7 +137,7 @@ Für das Modell der Stichprobe $$\hat{y}_i = b_0 + b_1 \cdot x_i$$ ergibt sich: 
 
 - Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
 
-  *Antwort:* Der Schätzer von y steigt um 0.13 Einheiten.
+  *Antwort:* Im Mittel steigt $y$ um 0.13 Einheiten.
 
 ### Bestimmtheitsmaß
 
@@ -171,7 +172,7 @@ Betrachten wir jetzt wieder die gesamte Stichprobe (`lego`):
 ```{r}
 # Visualisierung über Histogramm
 gf_histogram( ~ Amazon_Price, data = lego, 
-              binwidth = 10, center = 5)
+             binwidth = 10, center = 5)
 
 # Arithmetischer Mittelwert
 mean(Amazon_Price ~ 1, data = lego)
@@ -190,15 +191,16 @@ $$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(Amazon_Price ~ 1, data = l
 
 - Wie groß ist hier $R^2$?
 
-  *Antwort:* 0
+  *Antwort:* 0, da alle $\hat y$-Werte gleich dem Mittelwert sind und somit keine Streuung erklärt wird.
 
 ## Preismodellierung mit kategorialer erklärender Variable
 
 Die Variable `Theme` ist kategorial-nominal skaliert, kann aber zur Modellierung herangezogen werden:
 
 ```{r}
-# Visualisierung über verwackeltes Streudiagram
-gf_jitter(Amazon_Price ~ Theme, data = lego, width = 0.1)
+# Visualisierung über Histogramm
+gf_histogram( ~ Amazon_Price, data = lego, 
+             binwidth = 10, center = 5)
 
 # Arithmetische Mittelwerte
 mean(Amazon_Price ~ Theme, data = lego)
@@ -217,17 +219,15 @@ coef(erg1)
 
 - Wie groß ist der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
 
-  *Antwort:* Der durschnittliche Preisunterschied liegt bei ca. 6.62 (Einheit).
+  *Antwort:* Der durchschnittliche Preisunterschied liegt bei ca. 6.62 (Einheit).
 
 ## Preismodellierung mit mehr als einer erklärenden Variable (multiple Regression)
 
 ```{r}
-# Farbpalette laden
-library(ggsci)
 # Lineare Modellierung
 erg2 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg2) + scale_color_npg()
+plotModel(erg2)
 # Koeffizienten
 coef(erg2)
 ```
@@ -246,13 +246,13 @@ coef(erg2)
 
 #### Fragen
 
-- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren.
+- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces` und `Theme` ins Modell integrieren.
 
 ```{r}
 # Lineare Modellierung
 erg3 <- lm(Amazon_Price ~ Pieces + Theme + Pieces:Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg3) + scale_color_npg()
+plotModel(erg3)
 # Koeffizienten
 coef(erg3)
 ```
@@ -304,6 +304,16 @@ do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
 
   *Antwort:* Nein, die Schätzer weichen mal mehr mal weniger stark voneinander ab.
 
+**Zur Erinnerung: Messung**
+
+Statistik = Parameter + Bias + Rauschen
+
+#### Frage
+
+- Welcher Teil der Gleichung wird durch das Bootstrapping simuliert?
+
+  *Antwort:* Rauschen.
+
 ***
 
 ```{r}
@@ -348,15 +358,15 @@ se
 
 #### Fragen
 
-- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigung?
+- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigungen?
 
-  *Antwort:* Die Standardabweichung der geschätzten Steigung.
+  *Antwort:* Die Standardabweichung der geschätzten Steigungen.
 
 - Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
 
   *Antwort:* Nein, da das Bootstrapping nur vorhandene Beobachtungen re-sampled.
 
-- Wann würde der Standardfehler kleiner werden, d.h., die Präzision der Schätzung steigen?
+- Wann würde der Standardfehler kleiner werden, d. h., die Genauigkeit der Schätzung steigen?
 
   *Antwort:* Der Standardfehler würde kleiner werden, wenn neue Beobachtungen zum Datensatz dazukämen.
 
@@ -452,7 +462,7 @@ gf_histogram( ~ Pieces, data = Nullvtlg,
 
 - Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
 
-  *Antwort:* Nein, da Wert weit außerhalb liegt.
+  *Antwort:* Nein, da der Wert weit außerhalb liegt.
 
 ***
 

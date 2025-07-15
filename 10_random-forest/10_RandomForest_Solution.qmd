@@ -1,0 +1,576 @@
+---
+title: "Lösungsskizze: Random Forest"
+subtitle: "Vorhersage Körperfettanteil"
+lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: last-modified
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+bibliography: rf-references.bib
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(mosaic)
+library(here)
+library(randomForest)
+library(ggplot2)
+library(caret)
+library(tidyverse)
+```
+
+# Einleitung
+
+
+In dieser Fallstudie werden wir den Random-Forest-Algorithmus nutzen, um den Körperfettanteil vorherzusagen.
+Wir verwenden dazu den Body-Fat-Datensatz, der verschiedene Messungen wie Gewicht, Größe und Umfänge unterschiedlicher Körperregionen enthält.
+
+Die genaue Bestimmung des Körperfettanteils ist sehr aufwendig und teuer und im Alltag nicht zu vollziehen.
+Die Bestimmung des Körperfettanteils eines menschlichen Körpers erfolgte in den vorliegenden Daten mittels der Goldstandardmethode der sog. Unterwasserwägung nach dem archimedischen Prinzip.
+Je schwerer jemand unter Wasser ist, desto höher ist die Dichte des Körpers.
+Muskeln haben eine höhere Volumendichte als Fettgewebe.
+Je höher das Gewicht unter Wasser ist, desto mehr fettfreie Masse hat dieser Körper.
+
+Da eine Unterwasserwägung sehr aufwendig ist und eine große Apparatur benötigt braucht es für den Alltag Parameter, die leicht zu erheben sind.
+Mit dieser Fallstudie analysieren wir, welche weiteren, einfacheren anthropometrischen Parameter den Körperfettanteil gut vorhersagen.
+
+Der Datensatz wird aufbereitet, um anthropometrische Parameter aus den Daten zu generieren, die derzeit als aussagekräftig diskutiert werden.
+
+# Daten laden und vorbereiten
+
+Als Datengrundlage verwenden wir die Body-Fat-Datentabelle von Kaggle: [Link Body-Fat-Daten](https://www.kaggle.com/datasets/fedesoriano/body-fat-prediction-dataset)
+
+```{r}
+#| label: data
+
+# Daten einlesen
+here("data", "Bodyfat.csv") |> read.csv() -> bodyfat
+
+# Überblick über die Daten
+head(bodyfat)
+
+# Struktur der Daten (bodyfat)
+str(bodyfat)
+
+```
+
+::: {.callout-tip title="Aufgabe -- Fragen zum Datensatz"}
+1. Verschaffen Sie sich einen Überblick über die Daten.
+
+2. Was ist eine Beobachtungseinheit in diesem Datensatz?
+
+   *Antwort:* Eine Beobachtungseinheit ist ein Mann.
+
+3. Eruieren Sie in welchen Einheiten die Variablen Height, Weight und Abdomen vorliegen.
+
+   *Antwort:* Height -- inches, Weight -- lbs, Abdomen -- cm.
+:::
+
+## Einheiten anpassen, Variable umbenennen
+
+::: {.callout-tip title="Aufgabe -- Datensatz anpassen"}
+1. Rechnen Sie `Height` und `Weight` in cm (1 inch = 2.54 cm) und kg (1 lbs = 0.453592 kg) um und runden dabei auf eine Nachkommastelle
+
+```{r}
+#| label: Umrechnung
+
+bodyfat <- bodyfat |> mutate(
+  Height = round(Height * 2.54, 1),
+  Weight = round(Weight * 0.453592, 1)
+)
+```
+
+
+2. Benennen Sie `Abdomen` in `Waist` um.
+
+   *Hinweis:* Waist = Taille = Abdomen
+
+```{r}
+#| label: Umbennung
+
+bodyfat <- bodyfat |> rename(
+  Waist = Abdomen
+)
+```
+
+:::
+
+# Berechnung des Körperfettanteils
+
+Der vorliegende Wert des Körperfettanteils im Datensatz wurde aus der ermittelten Dichte mit der Formel nach @siri_gross_1956 berechnet.
+Eine Erklärung können Sie bei @rashmi_evaluation_2019 nachlesen.
+
+$$ 
+  \text{bodyfat}_{\text{Siri}}[\%] = \left(\frac{4.950}{density} - 4.500\right) \cdot 100
+$$
+
+Eine neuere Formel nach @brozek_densitometric_1963 zeigt eine etwas genauere Schätzung des Körperfettanteils (@guerra_accuracy_2010).
+
+$$ 
+  \text{bodyfat}_{\text{Brožek}}[\%] = \left(\frac{4.575}{density} - 4.142\right) \cdot 100
+$$
+
+Fügen wir die neue Variable mit der Berechnung nach @brozek_densitometric_1963 in die Datentabelle ein:
+
+```{r}
+#| label: brozek
+
+# Existierende BodyFat-Variable umbenennen
+bodyfat <- bodyfat |> rename(
+  BodyFatSiri = BodyFat)
+
+# Bodyfat nach Brozek berechnen
+bodyfat <- bodyfat |> mutate(
+  BodyFatBrozek = (4.575/Density - 4.142) * 100)
+```
+
+Da die Dichtebestimmung sehr aufwendig und teuer ist, werden heute Surrogatparameter zur Bestimmung des Körperfettanteils genutzt, sicherlich kennen Sie einige:
+
+- BMI
+- Waist-to-Hip Ratio (WHR)
+- Waist-to-Height Ratio (WHtR)
+- Oberarmumfang
+
+## Surrogatparameter berechnen
+
+### Waist-to-hip-ratio (`WHR`)
+
+Ein Surrogatparameter ist die Waist-to-Hip Ratio.
+Um diesen Parameter zu berechnen, wird `Waist` durch `Hip` geteilt:
+
+```{r}
+#| label: WHR
+
+bodyfat <- bodyfat |> mutate(
+  WHR = Waist/Hip)
+```
+
+### Waist to height ratio (WHtR)
+
+Ein weiterer Surrogatparameter ist die Waist-to-Height Ratio (Taillenumfang in cm / Körpergröße in cm).
+
+::: {.callout-tip title="Aufgabe -- Variable WHtR erstellen"}
+Erstellen Sie eine neue Variable mit dem Namen `WHtR` im gleichen Datensatz.
+
+```{r}
+#| label: WHtR
+
+bodyfat <- bodyfat |> mutate(
+  WHtR = Waist/Height)
+```
+:::
+
+### BMI
+
+Der BMI ist heute das bekannteste Maß, um Übergewicht und Adipositas und damit einen erhöhten Körperfettanteil zu diagnostizieren, auch wenn dieser Wert Limitationen aufweist und als Parameter diskutiert wird.
+
+::: {.callout-tip title="Aufgabe -- BMI"}
+1. Wie wird der BMI berechnet?
+
+   *Antwort:* Gewicht in kg / Körpergröße in m zum Quadrat
+   
+2. Ergänzen Sie die Variable `BMI` im Datensatz.
+
+```{r}
+#| label: BMI
+
+# BMI berechnen
+bodyfat <- bodyfat |> mutate(
+  BMI = Weight/(Height/100)^2)
+
+```
+:::
+
+### Überblick über die Daten
+
+::: {.callout-tip title="Aufgabe -- Überblick"}
+Hat alles funktioniert? 
+Verschaffen Sie sich einen Überblick über den aktualisierten Datensatz.
+
+```{r}
+# Struktur
+str(bodyfat)
+# erste Beobachtungen
+head(bodyfat)
+```
+
+:::
+
+## Data-Subset generieren
+
+Es soll der Körperfettanteil nach Siri modelliert werden.
+Daher werden Variablen, aus denen das Körperfett berechnet wurde, nicht mit in den Analysedatensatz genommen!
+
+```{r}
+#| label: remove_density
+
+# Variablen löschen
+bodyfat_siri <- bodyfat |> select(-Density, -BodyFatBrozek)
+str(bodyfat_siri)
+```
+
+# Modellierung
+
+::: {.callout-tip title="Aufgabe -- MSE, RMSE, MAE"}
+- Wird in unserer Fragestellung der Random Forest zur Klassifikation oder zur Regression genutzt?
+
+  *Antwort:* Zur Regression, da die Zielvariable (`bodyfat_siri`) metrisch ist.
+:::
+
+## Trainingsdaten erstellen
+
+Die Daten werden zuerst in Trainings- und Testdaten aufgeteilt.
+Diese Einteilung der Daten erlaubt es, die Leistung des Random-Forest-Algorithmus zu bewerten, indem der Algorithmus nach dem Training auf unbekannte Daten zur Evaluation der Generalisierbarkeit des Modells angewendet wird.
+Dafür werden unter Nutzung der Funktion `createDataPartition()` aus dem `caret`-Paket zufällig 70% der Beobachtungen des Datensatzes in den Trainingsdatensatz gezogen und die restlichen 30% bilden den Testdatensatz.
+
+```{r}
+#| label: trainings-test-data
+
+# Reproduzierbarkeit
+set.seed(42)
+# Datenaufteilung in Trainings- und Testdaten
+trainIndex <- createDataPartition(bodyfat_siri$BodyFatSiri, p = 0.7, list = FALSE)
+trainData <- bodyfat_siri[trainIndex, ]
+testData <- bodyfat_siri[-trainIndex, ]
+
+# Überblick über die aufgeteilten Daten
+dim(trainData)
+dim(testData)
+```
+
+## Trainineren des Modells
+
+Vor dem Trainieren des Models muss beachtet werden, dass es sog. Hyperparameter gibt, die beim RF-Algorithmus eingestellt werden können.
+Zu diesen Hyperparametern zählen unter anderem:
+
+- `ntree:` gibt die Anzahl der Entscheidungsbäume im RF an.
+Die Voreinstellung ist 500.
+- `mtry:` gibt die Anzahl der zufällig ausgewählten Prädiktorvariablen an jedem Split an.
+Standardmäßig ist `mtry` auf $\sqrt{p}$ bei der Klassifikation und auf $\frac{p}{3}$ bei der Regression gesetzt ($p$ ist die Anzahl der Prädiktorvariablen).
+
+Sollen die Voreinstellungen nicht geändert werden, muss `ntree` bzw. `mtry` nicht angegeben werden.
+
+```{r}
+#| label: Training
+
+# Reproduzierbarkeit
+set.seed(42)
+# Training des Random Forest Modells
+rf_model1 <- randomForest(BodyFatSiri ~ ., data = trainData, importance = TRUE)
+
+# Überblick über das Modell
+rf_model1
+```
+
+# Modellgüte
+
+Im letzten Schritt hatte das Modell die Möglichkeit anhand des Trainingsdatensatzes, Muster und Zusammenhänge in den Daten zu lernen.
+Wie gut das dem Modell gelungen ist, kann überprüft werden, indem das Modell auf unbekannte Daten (Testdaten) zur Vorhersage angewendet wird:
+
+```{r}
+#| label: Testdaten
+
+# beobachtete Werte in den Testdaten
+test.obs <- testData$BodyFatSiri
+
+# Vorhersage auf den Testdaten
+test.pred <- predict(rf_model1, testData)
+```
+
+Wie gut sind die Vorhersagen des RF-Modells?
+
+Dies kann mit Modellgütekriterien überprüft werden.
+Beispiele für Modellgütekriterien bei der Klassifikation sind: Accuracy, Precision, Recall, F1-Score, ROC, AUC etc.
+
+Da wir in dieser Fallstudie eine stetige Zielvariable untersuchen, benötigen wir Modellgütekriterien für die Regression.
+Diese sind unter anderem: MSE, RMSE, MAE, $R^2$.
+
+## MSE
+
+Der MSE (Mean Squared Error) ist die mittlere quadratische Abweichung, auch mittlerer quadratischer Fehler genannt, zwischen dem vorhergesagten und dem wahren Wert.
+Berechnet wird der MSE, indem die Differenz von vorhergesagten und wahren Wert quadriert, aufsummiert und dann durch die Anzahl der vorhergesagten Werte geteilt wird:
+
+$$ 
+  MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2
+$$
+
+Je größer das Ergebnis des MSE, desto größer sind die Vorhersagefehler, die vom Modell gemacht wurden.
+Dementsprechend gilt, je kleiner das Ergebnis, desto besser das Modell.
+
+## RMSE
+
+Der RMSE (Root Mean Squared Error) ist die Wurzel des MSE.
+Der RMSE hat gegenüber dem MSE den Vorteil, dass dieser besser zu interpretieren ist, da durch das Ziehen der Wurzel die Größe der Fehler wieder der Einheit der tatsächlichen Werte entspricht.
+
+$$ 
+  RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y_i})^2} 
+$$
+
+## MAE
+
+Der MAE (Mean Absolute Error) ist definiert als der Durchschnitt der absoluten Differenz zwischen vorhergesagten Wert und tatsächlichem Wert.
+Wie beim MSE und RMSE gilt, je niedriger der Wert des MAEs ist, desto kleiner sind die Fehler und desto besser ist das Modell.
+
+$$ 
+  MAE = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y_i}| 
+$$
+
+::: {.callout-tip title="Aufgabe -- MSE, RMSE, MAE"}
+- Worin unterscheiden sich MSE, RMSE und MAE?
+
+  *Antwort:*\
+  Der MAE ist im Vergleich zum MSE und RMSE robuster gegenüber Ausreißern und hat, ähnlich wie der RMSE, die gleiche Einheit wie die ursprünglichen Werte der Datentabelle, wodurch er besser zu interpretieren ist als der MSE.
+  Allerdings bestraft der MAE große Fehler nicht so stark wie kleine Fehler und ist anders als der MSE und RMSE nicht differenzierbar, was eine Verwendung des MAEs für weitere mathematische Operationen nicht einfach macht.
+
+:::
+
+## $R^2$
+
+Das $R^2$ gibt den Anteil der Varianz in der Zielvariable an, der durch das Modell erklärt wird.
+Der Ergebnisraum reicht dabei von 0 bis 1, wobei höhere Werte eine bessere Leistung des Modells widerspiegeln.
+
+$$ 
+  R^2 = 1 - \frac{RSS}{TSS} 
+$$
+
+Wobei:
+
+- RSS (Residual Sum of Squares): $\sum_{i=1}^n(y_i - \hat y_i)^2$
+- TSS (Total Sum of Squares): $\sum_{i=1}^n(y_i - \bar y)^2$
+
+*Hinweis:*
+RSS wird auch als SSE (Error Sum of Squares) bezeichnet und TSS als SST. 
+SSR ist dann die Regression Sum of Squares: $\sum_{i=1}^n(\hat y_i - \bar y)^2$ (in der obigen Notation ist das dann Explained sum of squared, ESS).
+
+::: {.callout-tip title="Frage -- Modellgüte"}
+1. Berechnen Sie den MSE. Wie ist er sinnvoll zu interpretieren?
+
+```{r}
+#MSE 
+mse <- mean((test.pred - test.obs)^2) 
+mse
+```
+
+*Antwort:*\
+MSE zeigt den quadrierten Fehler, die Einheit ist ebenfalls quadriert.
+Die mittlere quadratische Abweichung zwischen dem vorhergesagten und dem tatsächlichen Körperfettanteil beträgt somit `r round(mse, 2)` $\%\text{-Punkte}^2$.
+
+2. Berechnen Sie den RMSE. Was ist der Vorteil?
+
+```{r}
+# RMSE
+rmse <- sqrt(mse)
+rmse
+```
+
+*Antwort:*\
+Im Mittel beträgt die Abweichung vom vorhergesagten und dem tatsächlichen Wert des Körperfettanteils `r round(sqrt(mse), 2)` %-Punkte.
+RMSE hat die gleiche Einheit wie die betrachtete Variable.
+
+3. Berechnen Sie den MAE. Welche Bedeutung hat er?
+
+```{r}
+#MAE 
+mae <- mean(abs(test.pred - test.obs))
+mae
+```
+
+*Antwort:*\
+Der MAE zeigt die tatsächliche durchschnittliche Abweichung, während der RMSE die weiter vom Mittelwert entfernten Werte stärker gewichtet.
+
+4. Berechnen Sie das $R^2$ und interpretieren Sie es.
+
+```{r}
+# R2 
+rss <- sum((test.pred - test.obs) ^2) ## residual sum of squares 
+tss <- sum((test.obs - mean(test.obs))^2)  ## total sum of squares 
+rsq <- 1 - rss/tss
+rsq
+```
+
+*Antwort:*\
+Es werden `r round(rsq*100, 0)` % der Varianz der Zielvariable durch das Modell erklärt.
+
+5. Die wesentlichen Gütemaße können mit der Funktion `postResample(model)` aus dem Paket `caret` ausgegeben werden. 
+Nutzen Sie diese.
+
+```{r}
+# postResample
+postResample(pred = test.pred, obs = test.obs)
+```
+
+*Hinweis:* Das Bestimmtheitsmaß in `postResample()` wird als Quadrat des Korrelationskoeffizienten zwischen den beobachteten und vorhergesagten Werten berechnet und weicht damit etwas von unserem Ergebnis ab.
+
+```{r}
+cor(test.obs, test.pred)^2
+```
+
+:::
+
+# Modelloptimierung
+
+Dem vorherigen Kapitel können wir entnehmen, wie gut das Model performt, bspw.
+wie viel der Varianz der Zielvariable erklärt wird.
+Allerdings sind das die Ergebnisse eines Modells, bei welchem wir einfach die Standardeinstellungen der Hyperparameter übernommen haben.
+Es gibt eine Möglichkeit diese Hyperparameter so einzustellen, dass unser Model noch bessere Vorhersagen macht: das Hyperparameter-Tuning.
+
+Für das Tunen der Hyperparameter brauchen wir das `caret`-Paket.
+
+## Grid-Search
+
+Bei der Rastersuche oder Grid-Search werden alle möglichen Kombinationen der angegebenen Hyperparameterwerte ausprobiert, um das beste Modell zu finden.
+Das beste Modell findet der RF-Algorithmus mit Hilfe der Kreuzvalidierung.
+
+Mit dem Befehlt `method = "cv"` wird eine Kreuzvalidierung zur Optimierung des Modells durchgeführt.
+
+**Vorgehen:**
+
+* Der Trainingsdatensatz wird in $k$ gleich große Teilmengen geteilt.  
+* Es erfolgt ein iteratives Training und Testen.  
+* In jedem Durchlauf wir ein Testset verwendet und $k-1$ dienen als Trainingsdatensätze.  
+* Ablauf wird $k$-fach ($k$-fold) wiederholt, so dass jeder Fold einmal als Testset fungiert.  
+
+Um die Rechenzeit nicht zu groß werden zu lassen, tunen wir nur den mtry-Hyperparameter.
+Legen wir los:
+
+```{r}
+#| label: tuning
+
+# Hyperparameter-Tuning mit dem caret Paket
+control <- trainControl(method = "cv", number = 5)
+tuneGrid <- expand.grid(.mtry = 2:10)
+
+# Reproduzierbarkeit
+set.seed(42)
+# Trainieren des Modells mit Hyperparameter-Tuning
+rf_tuned <- train(BodyFatSiri ~ ., data = trainData, method = "rf", 
+                  trControl = control, tuneGrid = tuneGrid)
+rf_tuned
+
+# Vorhersage auf den Testdaten mit dem getunten Modell
+test.tuned <- predict(rf_tuned, testData)
+
+# Berechnung der Vorhersagegenauigkeit des getunten Modells
+postResample(pred = test.tuned, obs = test.obs)
+```
+
+Zum Abschluss können die Modellgütemaße des ersten Random Forest und dem getunten Modell verglichen werden:
+
+```{r}
+#| label: Modellvergleich
+
+# Ursprungsmodell
+postResample(pred = test.pred, obs = test.obs)
+# optimiertes Modell
+postResample(pred = test.tuned, obs = test.obs)
+```
+
+Durch das Tunen der Hyperparameter wird der Vorhersagefehler auf die Testdaten sogar etwas größer.
+
+# Wichtigkeit der Variablen
+
+Zusätzlich können Sie sich ausgeben lassen, welche Variable bei der Vorhersage besonders relevant war und welche Variablen nicht so relevant gewesen sind.
+Dabei bezieht sich die Relevanz einer Variable darauf, wie sehr ein bestimmtes Modell diese Variable *nutzt*, um möglichst genaue Vorhersagen zu treffen.
+Je mehr ein Modell diese Variable *nutzt*, um Vorhersagen zu treffen, desto wichtiger ist sie für das Modell.
+
+Lassen Sie uns die wichtigsten Variablen identifizieren, die das erste (nicht getunte) Modell verwendet hat, um die Vorhersagen zu treffen.
+
+```{r}
+#| label: importance
+
+# Wichtige Variablen
+importance(rf_model1)
+# Sortierte Ausgabe %IncMSE
+importance(rf_model1)[, 1] |> sort(decreasing = TRUE)
+# Sortierte Ausgabe IncNodePurity
+importance(rf_model1)[, 2] |> sort(decreasing = TRUE)
+```
+
+`%IncMSE` (Percent Increase in MSE) bezieht sich auf die prozentuale Zunahme des MSE.
+Ein hoher `%IncMSE` deutet auf eine wichtige Variable für die Vorhersagegenauigkeit des Modells hin.
+`%IncMSE` erlaubt die Erstellung einer Rangordnung der Variablen im RF und der Identifizierung der einflussreichsten Prädiktoren im Modell.
+
+Mit der Funktion `varImpPlot()` können Sie die beiden Maße auch als Grafik ausgeben:
+
+```{r}
+varImpPlot(rf_model1)
+```
+
+# Modellierung Bodyfat nach Brozek
+
+::: {.callout-tip title="Your Turn"}
+Erstellen Sie ein Random Forest Modell mit der Berechnung nach Brozek (`BodyFatBrozek`)
+
+1. Erstellen Sie einen Datensatz mit der Zielvariable `BodyFatBrozek`.
+
+```{r}
+bodyfat_Brozek <- bodyfat |> select(c(-Density, -BodyFatSiri))
+str(bodyfat_Brozek)
+```
+
+2. Erstellen Sie einen Test- und Trainingsdatensatz.
+
+```{r}
+# Reproduzierbarkeit
+set.seed(42)
+# Aufteilung in Trainings- und Testdatensatz
+trainIndex <- createDataPartition(bodyfat_Brozek$BodyFatBrozek, p = 0.7, 
+                                  list = FALSE)
+trainData2 <- bodyfat_Brozek[trainIndex, ]
+testData2 <- bodyfat_Brozek[-trainIndex, ]
+```
+
+3. Erstellen Sie ein RF-Modell mit den Standardeinstellungen für die Hyperparameter.
+
+```{r}
+# Reproduzierbarkeit
+set.seed(42)
+# Training des Random Forest Modells
+rf_model2 <- randomForest(BodyFatBrozek ~ ., 
+                          data = trainData2, importance = TRUE)
+
+
+# Überblick über das Modell
+rf_model2
+```
+
+4. Eruieren Sie die wichtigsten Variablen und vergleichen diese mit denen aus Modell 1.
+
+```{r}
+# Wichtige Variablen
+importance(rf_model2)
+# Sortierte Ausgabe %IncMSE
+importance(rf_model2)[, 1] |> sort(decreasing = TRUE)
+# Sortierte Ausgabe IncNodePurity
+importance(rf_model2)[, 2] |> sort(decreasing = TRUE)
+# Grafik
+varImpPlot(rf_model2)
+```
+
+*Antwort:*\
+Die Rangfolge der wichtigsten Variablen ist bei `%IncMSE` ist bis zum Platz drei gleich, bei `IncNodePurity` sogar bis Platz sechst.
+
+5. Zeigt sich ein Unterschied in den Modellen in den Gütemaßen?
+
+```{r}
+# Modell 1
+postResample(pred = test.pred, obs = test.obs)
+
+# Modell 2 
+test2.obs <- testData2$BodyFatBrozek
+test2.pred <- predict(rf_model2, testData2)
+postResample(pred = test2.pred, obs = test2.obs)
+```
+:::
+
+Modell 2 zeigt einen höheren RMSE, MAE und einen niedrigeres $R^2$, die Vorhersagegüte ist also schlechter.
+

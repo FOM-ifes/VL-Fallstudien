@@ -155,7 +155,7 @@ Betrachten wir jetzt wieder die gesamte Stichprobe (`lego`):
 ```{r}
 # Visualisierung über Histogramm
 gf_histogram( ~ Amazon_Price, data = lego, 
-              binwidth = 10, center = 5)
+             binwidth = 10, center = 5)
 
 # Arithmetischer Mittelwert
 mean(Amazon_Price ~ 1, data = lego)
@@ -181,7 +181,7 @@ $$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(Amazon_Price ~ 1, data = l
 Die Variable `Theme` ist kategorial-nominal skaliert, kann aber zur Modellierung herangezogen werden:
 
 ```{r}
-# Visualisierung über verwackeltes Streudiagram
+# Visualisierung über verwackeltes Streudiagramm
 gf_jitter(Amazon_Price ~ Theme, data = lego, width = 0.1)
 
 # Arithmetische Mittelwerte
@@ -204,12 +204,10 @@ coef(erg1)
 ## Preismodellierung mit mehr als einer erklärenden Variable (multiple Regression)
 
 ```{r}
-# Farbpalette laden
-library(ggsci)
 # Lineare Modellierung
 erg2 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg2) + scale_color_npg()
+plotModel(erg2)
 # Koeffizienten
 coef(erg2)
 ```
@@ -227,13 +225,13 @@ coef(erg2)
 
 #### Fragen
 
-- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces`und `Theme` ins Modell integrieren. 
+- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces` und `Theme` ins Modell integrieren. 
 
 ```{r}
 # Lineare Modellierung
 erg3 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
 # Visualisierung Ergebnis
-plotModel(erg3) + scale_color_npg()
+plotModel(erg3)
 # Koeffizienten
 coef(erg3)
 ```
@@ -328,11 +326,11 @@ se
 
 #### Fragen
 
-- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigung?
+- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigungen?
 
 - Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
 
-- Wann würde der Standardfehler kleiner werden, d.h., die Präszision der Schätzung steigen?
+- Wann würde der Standardfehler kleiner werden, d.h., die Genauigkeit der Schätzung steigen?
 
 ***
 

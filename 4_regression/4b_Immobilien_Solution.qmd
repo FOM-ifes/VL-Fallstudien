@@ -67,8 +67,6 @@ immo <- immo |> mutate(
 head(immo)
 ```
 
-------------------------------------------------------------------------
-
 ## Preismodellierung durch Quadratmeter
 
 ### Lineares Modell
@@ -159,6 +157,170 @@ $$
 
   *Antwort:* 77% der Gesamtvarianz der abhängigen Variablen werden durch das Modell erklärt.
 
+## Preismodellierung ohne erklärende Variable
+
+Schauen wir uns einmal die Verteilung der Mietpreise an:
+
+```{r}
+# Visualisierung über Histogramm
+gf_histogram( ~ totalrent, data = immo, binwidth = 200, center = 100)
+
+favstats(~ totalrent, data = immo)
+
+# Arithmetischer Mittelwert
+mean(totalrent ~ 1, data = immo)
+
+# Lineare Modellierung
+erg0 <- lm(totalrent ~ 1, data = immo)
+# Koeffizienten
+coef(erg0)
+```
+
+Also
+
+$$
+  \hat{y}_i = \bar{y} = \hat\beta_0 = `r round(mean(totalrent~ 1, data = immo),2)`
+$$
+
+#### Frage
+
+- Wie groß ist hier $R^2$?
+
+  *Antwort:* Null, da die Varianz der abhängigen Variablen in diesem Modell nicht erklärt wird.
+
+## Preismodellierung mit kategorialer erklärender Variable
+
+Die Variable `balcony` ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
+
+```{r}
+# Visualisierung über "verwackeltes" Streudiagram
+gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
+
+# Arithmetische Mittelwerte
+mean(totalrent ~ balcony, data = immo)
+
+# Lineare Modellierung
+erg1 <- lm(totalrent ~ balcony, data = immo)
+# Koeffizienten
+coef(erg1)
+```
+
+#### Fragen
+
+- Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
+
+  *Antwort:* Bei Wohnungen mit Balkon (`balcony== "ja"`).
+
+- Wie groß ist der durchschnittliche Preisunterschied zwischen Wohnungen mit Balkon und ohne Balkon?
+
+  *Antwort:* ca. 345 Euro.
+
+
+## Preismodellierung mit mehr als einer erklärenden Variable
+
+```{r}
+# Lineare Modellierung
+erg2 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
+# Visualisierung des Ergebnisses
+plotModel(erg2) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+# Zusammenfassung
+summary(erg2)
+```
+
+#### Fragen
+
+- Wie lautet die Regressionsgleichung?
+
+  *Antwort:*\
+  $$
+  \widehat{\texttt{totalrent}} =  `r round(coef(erg2)[1],2)` + `r round(coef(erg2)[2],2)` \cdot \texttt{livingspace} + \begin{cases}
+  `r round(coef(erg2)[3],2)` \cdot 1 & \, : \texttt{haskitchenja} \\
+  0 & \, : \textrm{sonst}
+  \end{cases}
+  $$
+
+- Interpretieren Sie die Regressionskoeffizienten.
+
+  *Antwort:*\
+  Im Modell der Stichprobe steigt c.p. im Mittel der Mietpreis um `r round(coef(erg2)[2],2)` Euro je Quadratmeter. 
+  Mit einem p-Wert von $`r summary(erg2)$coefficients["livingspace", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[2],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{livingspace} = 0$) sehr klein. 
+  Die Nullhypothese wird verworfen. 
+  Das Ergebnis ist statistisch unterscheidbar von null.\
+  Im Modell der Stichprobe steigt c.p. im Mittel der Mietpreis um `r round(coef(erg2)[3],2)` Euro, wenn eine Einbauküche vorhanden ist. 
+  Mit einem p-Wert von $`r summary(erg2)$coefficients["haskitchenja", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[3],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{haskitchen} = 0$) sehr klein. 
+  Die Nullhypothese wird verworfen.
+  Das Ergebnis ist statistisch unterscheidbar von null.
+
+- Interpretieren Sie das $R^2$.
+
+  *Antwort:* 79% der Gesamtvarianz der abhängigen Variablen werden durch dieses Modell erklärt.
+
+## Preismodellierung mit Wechselwirkung (Interaktion)
+
+Über `x1:x2` kann eine Interaktion zwischen zwei Variablen in ein Modell integriert werden. 
+Eine Interaktion liegt dann vor, wenn sich der Effekt einer unabhängigen Variable in Abhängigkeit von den Ausprägungen einer anderen unabhängigen Variable ändert.
+
+Betrachtet wird zunächst ein Modell ohne Interaktionen:
+
+```{r}
+# Lineare Modellierung
+erg3 <- lm(totalrent ~ livingspace + balcony, data = immo)
+# Visualisierung Ergebnis
+plotModel(erg3) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+```
+
+#### Fragen
+
+- Welches *Problem* dieses Modells sehen Sie?
+
+  *Antwort:* Beide Geraden fallen quasi aufeinander. 
+  Die Punktewolken unterscheiden sich in Ihrer Form allerdings.
+  
+- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace` und `balcony` ins Modell integrieren.
+
+```{r}
+# Lineare Modellierung
+erg4 <- lm(totalrent ~ livingspace + balcony + livingspace:balcony, data = immo)
+# Alternativ: 
+# erg4 <- lm(totalrent ~ livingspace * balcony, data = immo)
+# Visualisierung Ergebnis
+plotModel(erg4) |> 
+  # Farben ändern
+  gf_refine(scale_color_manual(values = c("blue", "red")))
+# Koeffizienten
+coef(erg4)
+```
+
+- Bei welcher Ausprägung ist die Steigung größer?
+
+  *Antwort:* Bei `balcony == "ja"` ist die Steigung etwas größer.
+
+### Ergebniszusammenfassung
+
+```{r}
+summary(erg4)
+```
+
+#### Frage
+
+- Interpretieren Sie das Ergebnis.
+
+  *Antwort:*
+
+  - Modelle der Stichprobe: 
+  
+    - ohne Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace$
+    - mit Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace -162.98 + 2.66 \cdot livingspace$  
+      $= (120.71 - 162.98) + (12.50 + 2.66) \cdot livingspace$
+    
+  - Population: Alle p-Werte sind sehr klein, so dass die Koeffizienten statistisch erkennbar von null verschieden sind.
+  - $R^2 = 0.7744$: 77.44 % der Variation des Preises wird durch das Modell erklärt.
+
+## Inferenz in der Regression
 
 ### Schätzunsicherheit
 
@@ -368,113 +530,11 @@ Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner 
   Der p-Wert sagt nur, wie wahrscheinlich das Ergebnis der Stichprobe ($\|`r b[2]`\|$) wäre, wenn die Nullhypothese ($H_0 : \beta_1 = 0$) gelten würde. 
   Er sagt nicht wie wahrscheinlich die Nullhypothese ist.
 
-------------------------------------------------------------------------
-
 ### Ergebniszusammenfassung
 
 ```{r}
 summary(erg)
 ```
-
-## Preismodellierung ohne erklärende Variable
-
-Schauen wir uns einmal die Verteilung der Mietpreise an:
-
-```{r}
-# Visualisierung über Histogramm
-gf_histogram( ~ totalrent, data = immo, binwidth = 200, center = 100)
-
-favstats(~ totalrent, data = immo)
-
-# Arithmetischer Mittelwert
-mean(totalrent ~ 1, data = immo)
-
-# Lineare Modellierung
-erg0 <- lm(totalrent ~ 1, data = immo)
-# Koeffizienten
-coef(erg0)
-```
-
-Also
-
-$$
-  \hat{y}_i = \bar{y} = \hat\beta_0 = `r round(mean(totalrent~ 1, data = immo),2)`
-$$
-
-#### Frage
-
-- Wie groß ist hier $R^2$?
-
-  *Antwort:* Null, da die Varianz der abhängigen Variablen in diesem Modell nicht erklärt wird.
-
-## Preismodellierung mit kategorialer erklärender Variable
-
-Die Variable `balcony` ist kategorial-nominal skaliert und kann ebenso wie metrisch skalierte Variablen zur Modellierung herangezogen werden:
-
-```{r}
-# Visualisierung über "verwackeltes" Streudiagram
-gf_jitter(totalrent ~ balcony, data = immo, width = 0.1)
-
-# Arithmetische Mittelwerte
-mean(totalrent ~ balcony, data = immo)
-
-# Lineare Modellierung
-erg1 <- lm(totalrent ~ balcony, data = immo)
-# Koeffizienten
-coef(erg1)
-```
-
-#### Fragen
-
-- Bei welcher Ausprägung (Balkon/kein Balkon) ist der Mittelwert des Mietpreises größer?
-
-  *Antwort:* Bei Wohnungen mit Balkon (`balcony== "ja"`).
-
-- Wie groß ist der durchschnittliche Preisunterschied zwischen Wohnungen mit Balkon und ohne Balkon?
-
-  *Antwort:* ca. 345 Euro.
-
-
-## Preismodellierung mit mehr als einer erklärenden Variable
-
-```{r}
-# Lineare Modellierung
-erg2 <- lm(totalrent ~ livingspace + haskitchen, data = immo)
-# Visualisierung des Ergebnisses
-plotModel(erg2) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
-# Zusammenfassung
-summary(erg2)
-```
-
-#### Fragen
-
-- Wie lautet die Regressionsgleichung?
-
-  *Antwort:*\
-  $$
-  \widehat{\texttt{totalrent}} =  `r round(coef(erg2)[1],2)` + `r round(coef(erg2)[2],2)` \cdot \texttt{livingspace} + \begin{cases}
-  `r round(coef(erg2)[3],2)` \cdot 1 & \, : \texttt{haskitchenja} \\
-  0 & \, : \textrm{sonst}
-  \end{cases}
-  $$
-
-- Interpretieren Sie die Regressionskoeffizienten.
-
-  *Antwort:*\
-  Im Modell der Stichprobe steigt c.p. im Mittel der Mietpreis um `r round(coef(erg2)[2],2)` Euro je Quadratmeter. 
-  Mit einem p-Wert von $`r summary(erg2)$coefficients["livingspace", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[2],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{livingspace} = 0$) sehr klein. 
-  Die Nullhypothese wird verworfen. 
-  Das Ergebnis ist statistisch unterscheidbar von null.\
-  Im Modell der Stichprobe steigt c.p. im Mittel der Mietpreis um `r round(coef(erg2)[3],2)` Euro, wenn eine Einbauküche vorhanden ist. 
-  Mit einem p-Wert von $`r summary(erg2)$coefficients["haskitchenja", "Pr(>|t|)"]`$ ist die Wahrscheinlichtkeit `r round(coef(erg2)[3],2)` Euro (oder mehr) zu beobachten, wenn in der Population kein Zusammenhang vorliegen würde ($H_0 : \beta_{haskitchen} = 0$) sehr klein. 
-  Die Nullhypothese wird verworfen.
-  Das Ergebnis ist statistisch unterscheidbar von null.
-
-- Interpretieren Sie das $R^2$.
-
-  *Antwort:* 79% der Gesamtvarianz der abhängigen Variablen werden durch dieses Modell erklärt.
 
 ### F-Statistik -- modellierte vs. nicht-modellierte Variation
 
@@ -536,7 +596,7 @@ confint(Bootvtlg)
   
 #### Frage
 
-- Ist eine Steigung von null für `hastkitchenja` kompatibel zum Ergebnis der Stichprobe?
+- Ist eine Steigung von null für `haskitchenja` kompatibel zum Ergebnis der Stichprobe?
 
   *Antwort:* Nein. Null liegt nicht im  95%-Bootstrap-Konfidenzintervall [`r confint(Bootvtlg)[3, "lower"]`, `r confint(Bootvtlg)[3, "upper"]`]. 
   Eine Steigung von Null scheint mit den beobachteten Daten nicht kompatibel zu sein. 
@@ -544,13 +604,13 @@ confint(Bootvtlg)
 
 #### Your turn
 
-Führen Sie eine lineare Regression des Mietpreises auf alle in der Datentabelle vorhandenen Variablen durch und interpretieren Sie das Ergebnis.
+Führen Sie eine lineare Regression des Mietpreises auf alle in der Datentabelle vorhandenen Variablen durch und interpretieren Sie das Ergebnis (`ergall`).
 
 ```{r}
 # Lineare Modellierung:
-ergUeb <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + floor + interiorqual, data = immo)
+ergall <- lm(totalrent ~ livingspace + haskitchen + balcony + yearconstructed + floor + interiorqual, data = immo)
 # Zusammenfassung
-summary(ergUeb)
+summary(ergall)
 ```
 
 *Antwort:*
@@ -571,66 +631,17 @@ Im Modell der Stichprobe wird im Mittel c. p. beobachtet:
 
 Alle p-Werte bis auf die der Variablen `floor` und `interiorqual1` sind sehr klein, so dass die Koeffizienten statistisch erkennbar von null verschieden sind.
 
+## Modellvergleich
 
-## Preismodellierung mit Wechselwirkung (Interaktion)
-
-Über `x1:x2` kann eine Interaktion zwischen zwei Variablen in ein Modell integriert werden. 
-Eine Interaktion liegt dann vor, wenn sich der Effekt einer unabhängigen Variable in Abhängigkeit von den Ausprägungen einer anderen unabhängigen Variable ändert.
-
-Betrachtet wird zunächst ein Modell ohne Interaktionen:
+Vergleichen Sie das Modell mit allen Variablen mit dem Modell `erg4` (Modell mit Interaktion). Welches bevorzugen Sie?
 
 ```{r}
-# Lineare Modellierung
-erg3 <- lm(totalrent ~ livingspace + balcony, data = immo)
-# Visualisierung Ergebnis
-plotModel(erg3) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
+mosaic::rsquared(erg4)
+AIC(erg4)
+mosaic::rsquared(ergall)
+AIC(ergall)
 ```
 
-#### Fragen
+Das Modell mit allen Variablen erklärt mehr Streuung und auch das AIC ist niedriger. Daher ist es zu bevorzugen.
 
-- Welches *Problem* dieses Modells sehen Sie?
-
-  *Antwort:* Beide Geraden fallen quasi aufeinander. 
-  Die Punktewolken unterscheiden sich in Ihrer Form allerdings.
-  
-- Erweitern Sie den Code so, dass Sie die Interaktion zwischen `livingspace` und `balcony` ins Modell integrieren.
-
-```{r}
-# Lineare Modellierung
-erg4 <- lm(totalrent ~ livingspace + balcony + livingspace:balcony, data = immo)
-# Alternativ: 
-# erg4 <- lm(totalrent ~ livingspace * balcony, data = immo)
-# Visualisierung Ergebnis
-plotModel(erg4) |> 
-  # Farben ändern
-  gf_refine(scale_color_manual(values = c("blue", "red")))
-# Koeffizienten
-coef(erg4)
-```
-
-- Bei welcher Ausprägung ist die Steigung größer?
-
-  *Antwort:* Bei `balcony == "ja"` ist die Steigung etwas größer.
-
-### Ergebniszusammenfassung
-
-```{r}
-summary(erg4)
-```
-
-#### Frage
-
-- Interpretieren Sie das Ergebnis.
-
-  *Antwort:*
-
-  - Modelle der Stichprobe: 
-  
-    - ohne Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace$
-    - mit Balkon: $\widehat{totalrent} = 120.71 + 12.50 \cdot livingspace -162.98 + 2.66 \cdot livingspace$  
-      $= (120.71 - 162.98) + (12.50 + 2.66) \cdot livingspace$
-    
-  - Population: Alle p-Werte sind sehr klein, so dass die Koeffizienten statistisch erkennbar von null verschieden sind.
-  - $R^2 = 0.7744$: 77.44 % der Variation des Preises wird durch das Modell erklärt.
+*Hinweis:* Hier wurde aber jetzt noch keine Modelloptimierung vorgenommen, möglicherweise findet sich ein noch besseres Modell (z. B. mit Hilfe der `step()`-Funktion ausgehend vom Modell mit allen Variablen).

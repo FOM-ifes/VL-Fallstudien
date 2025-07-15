@@ -26,13 +26,9 @@ Welche Faktoren erhöhen das Risiko für einen Schlaganfall?
 Dazu liegt eine Tabelle mit Gesundheitsdaten von 4440 Personen vor. Für diese Fallstudie wurde die orginale Datentabelle [Stroke Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset/data "Stroke Prediction Dataset") bereinigt, von 12 auf 5 Spalten reduziert und ins Deutsche übersetzt. Die Spalten der Datentabelle sind:
 
 - Geschlecht (Mann/Frau)
-
 - Alter (in Jahren)
-
 - Bluthochdruck (Ja/Nein)
-
 - Herzkrankheit (Ja/Nein)
-
 - Schlaganfall (Ja/Nein)
 
 <!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "stroke_prediction.csv" befindet sich im Projektordner "data". -->
@@ -84,13 +80,15 @@ tally( ~ Schlaganfall, data = stroke_data, format = "proportion")
 Explorative Datenanalyse:
 
 ```{r}
-# Säulendiagramm
+# Säulendiagramme
+gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data) |>  
+  gf_labs(title = "Abbildung A")
 gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
-        title = "Abbildung A")
+        position = position_dodge()) |> 
+  gf_labs(title = "Abbildung B")
 gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
-        position = position_dodge(), title = "Abbildung B")
-gf_bar( ~ Schlaganfall, fill = ~ Bluthochdruck, data = stroke_data, 
-        position = "fill" ,title = "Abbildung C")
+        position = "fill") |> 
+  gf_labs(title = "Abbildung C")
 ```
 
 ------------------------------------------------------------------------
@@ -142,7 +140,7 @@ prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 #### Frage
 
--   Wie lautet die *Frage*, auf die das Ergebnis `r prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")[2]` lautet?
+- Wie lautet die *Frage*, auf die das Ergebnis `r prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")[2]` lautet?
 
 
 ## Bedingte und totale Wahrscheinlichkeit
@@ -175,14 +173,14 @@ prop( ~ Herzkrankheit, data = stroke_data, success = "Ja")
 
 #### Fragen
 
--   Wie viel Prozent der männlichen Teilnehmenden haben einen Schlaganfall erlitten?
+- Wie viel Prozent der männlichen Teilnehmenden haben einen Schlaganfall erlitten?
 
 ```{r}
 
 ```
 
 
--   Wie alt sind die Personen mit Schlaganfall im Durchschnitt?
+- Wie alt sind die Personen mit Schlaganfall im Durchschnitt?
 
 ```{r}
 
