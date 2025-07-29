@@ -1,6 +1,7 @@
 ---
 title: "Lösungsskizze: Wie groß sind wir?"
 lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: last-modified
 format: 
   html:
