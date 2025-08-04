@@ -298,8 +298,6 @@ Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces,
 # Obere Beobachtungen
 head(Bootvtlg)
 # Visualisierung Verteilung 
-# Farbpaket laden
-library(ggsci)
 gf_histogram( ~ Pieces, data = Bootvtlg,
               # Anpassung Histogramm 
               bins = 20, center = betadach[2]) |> 
