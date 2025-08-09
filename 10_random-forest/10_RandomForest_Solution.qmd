@@ -13,7 +13,6 @@ format:
     number-sections: false
     colorlinks: true 
     papersize: a4
-bibliography: rf-references.bib
 ---
 
 ```{r}

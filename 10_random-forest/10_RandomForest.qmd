@@ -1,8 +1,8 @@
 ---
-title: "Lösungsskizze: Random Forest"
+title: "Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
-author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+author: "Ihr Name"
 date: last-modified
 format: 
   html:
@@ -13,7 +13,6 @@ format:
     number-sections: false
     colorlinks: true 
     papersize: a4
-bibliography: rf-references.bib
 ---
 
 ```{r}
