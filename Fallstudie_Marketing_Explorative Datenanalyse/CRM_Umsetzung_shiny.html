@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ihr Name">
+
+<title>CRM-Daten</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="CRM_Umsetzung_shiny_files/libs/clipboard/clipboard.min.js"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/popper.min.js"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="CRM_Umsetzung_shiny_files/libs/quarto-html/anchor.min.js"></script>
+<link href="CRM_Umsetzung_shiny_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="CRM_Umsetzung_shiny_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="CRM_Umsetzung_shiny_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="CRM_Umsetzung_shiny_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="CRM_Umsetzung_shiny_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#explorative-datenanalyse-mit-crm-daten" id="toc-explorative-datenanalyse-mit-crm-daten" class="nav-link active" data-scroll-target="#explorative-datenanalyse-mit-crm-daten">Explorative Datenanalyse mit CRM-Daten</a>
+  <ul class="collapse">
+  <li><a href="#umsatzziele" id="toc-umsatzziele" class="nav-link" data-scroll-target="#umsatzziele">Umsatzziele</a></li>
+  <li><a href="#wer-sind-ihre-kunden" id="toc-wer-sind-ihre-kunden" class="nav-link" data-scroll-target="#wer-sind-ihre-kunden">Wer sind Ihre Kunden?</a></li>
+  <li><a href="#altersgruppen" id="toc-altersgruppen" class="nav-link" data-scroll-target="#altersgruppen">Altersgruppen</a></li>
+  <li><a href="#ist-ihr-marketing-erfolgreich" id="toc-ist-ihr-marketing-erfolgreich" class="nav-link" data-scroll-target="#ist-ihr-marketing-erfolgreich">Ist Ihr Marketing erfolgreich?</a></li>
+  <li><a href="#histogramm-kaufbetragsverteilung" id="toc-histogramm-kaufbetragsverteilung" class="nav-link" data-scroll-target="#histogramm-kaufbetragsverteilung">Histogramm / Kaufbetragsverteilung</a></li>
+  <li><a href="#kaufen-kunden-die-länger-im-onlineshop-sind-auch-mehr-ein" id="toc-kaufen-kunden-die-länger-im-onlineshop-sind-auch-mehr-ein" class="nav-link" data-scroll-target="#kaufen-kunden-die-länger-im-onlineshop-sind-auch-mehr-ein">Kaufen Kunden, die länger im Onlineshop sind auch mehr ein?</a></li>
+  </ul></li>
+  <li><a href="#kaufbetrag-nach-marketingkanal-boxplot-analyse" id="toc-kaufbetrag-nach-marketingkanal-boxplot-analyse" class="nav-link" data-scroll-target="#kaufbetrag-nach-marketingkanal-boxplot-analyse">Kaufbetrag nach Marketingkanal: Boxplot-Analyse</a></li>
+  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn">Your turn</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Andere Formate</h2><ul><li><a href="CRM_Umsetzung_shiny.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">CRM-Daten</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor:in</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ihr Name </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">25. September 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="explorative-datenanalyse-mit-crm-daten" class="level2">
+<h2 class="anchored" data-anchor-id="explorative-datenanalyse-mit-crm-daten">Explorative Datenanalyse mit CRM-Daten</h2>
+<p>In diesem Beispiel werden wir uns einen fiktiven <strong>CRM-Datensatz</strong> (Customer Relationship Management) anschauen, der so auch in jedem Unternehmen mit Onlineshop und Onlinewerbeaktivitäten anfallen könnte.</p>
+<p>Es handelt sich, um CRM-Daten des fiktiven Textilunternehmens “FOMYGA”, welches hauptsächlich Yoga-Kleidung und -Zubehör vertreibt. Als Teil der Marketingabteilung wollen Sie sich anschauen, welcher der genutzten Marketingkanäle am stärksten auf Ihre Sales einzahlen und welche Kundensegmente von welchen Kanälen am besten erreicht werden.</p>
+<p>Dafür stehen Ihnen die gesammelten Informationen von insgesamt 427 KundInnen (n=427) zur Verfügung, die in der letzten Woche im Onlineshop von FOMYGA eingekauft haben. Diese umfassen:</p>
+<p>- Kunden ID zum identifizieren einzelner Kunden (<em>KundenID</em>)</p>
+<p>- Alter in Jahren (<em>Alter</em>)</p>
+<p>- Geschlecht (<em>Geschlecht</em>)</p>
+<p>- Marketingkanal über den auf den Shop zugegriffen wurde (<em>Marketingkanal</em>)</p>
+<p>- Verweildauer im Shop in Sekunden (<em>Verweildauer_Sek</em>)</p>
+<p>- Kaufbetrag in Euro (<em>Kaufbetrag_Euro</em>)</p>
+<p>Um in die Analyse zu starten lesen wir uns aus einer CSV-Datei den Datensatz ein und lassen uns mit <code>str()</code> die grobe Struktur des Datensatzes anzeigen.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Daten direkt über Pfad einlesen</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>CRM <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(<span class="fu">here</span>(<span class="st">"CRM_Datensatz.csv"</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Struktur des Datensatzes anzeigen</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   427 obs. of  6 variables:
+ $ KundenID        : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ Alter           : int  56 54 33 51 50 47 61 57 55 47 ...
+ $ Geschlecht      : chr  "weiblich" "weiblich" "weiblich" "weiblich" ...
+ $ Marketingkanal  : chr  "Social Media" "Social Media" "Suchmaschine" "Social Media" ...
+ $ Verweildauer_Sek: int  401 358 272 373 489 229 274 271 389 415 ...
+ $ Kaufbetrag_Euro : num  83.8 84.2 119.4 83.9 67.7 ...</code></pre>
+</div>
+</div>
+<section id="fragen" class="level4">
+<h4 class="anchored" data-anchor-id="fragen">Fragen</h4>
+<ul>
+<li><p>Handelt es sich um eine <strong>Beobachtungsstudie</strong> oder um ein <strong>randomisiertes Experiment</strong>?</p></li>
+<li><p>Was ist hier eine <strong>Beobachtungseinheit</strong>?</p></li>
+<li><p>Wie viele Beobachtungen liegen vor?</p></li>
+<li><p>Wie viele Variablen liegen vor?</p></li>
+<li><p>Welches <strong>Skalenniveau</strong> besitzen die einzelnen Variablen?</p></li>
+</ul>
+</section>
+<section id="umsatzziele" class="level3">
+<h3 class="anchored" data-anchor-id="umsatzziele">Umsatzziele</h3>
+<p>Durch neue Marketingmaßnahmen haben Sie versucht den durchschnittlichen Kaufbetrag ihrer Kunden im Onlineshop auf über 65 Euro zu erhöhen.</p>
+<p><code>favstats()</code> liefert einen Überblick über die gängigen Kennzahlen einer <strong>metrischen</strong> Variable:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deskriptive Kennwerte</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span>Kaufbetrag_Euro, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   min     Q1 median    Q3   max     mean       sd   n missing
+ 21.77 58.315   71.5 83.62 126.2 69.59396 18.44081 427       0</code></pre>
+</div>
+</div>
+<section id="fragen-1" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-1">Fragen</h4>
+<ul>
+<li><p>Wie hoch ist der <strong>durchschnittliche</strong> Kaufbetrag (<strong>Arithmetisches Mittel</strong>)? Konnten Sie ihr Ziel erreichen?</p></li>
+<li><p>Wie viel Euro hat der teuerste Einkauf im Onlineshop gekostet (<strong>Maximum</strong>)?</p></li>
+<li><p>Sie möchten dem zahlungskräftigsten <strong>Quartil</strong> Ihrer Kunden einen Rabatt anbieten. Was sind entsprechend die Grenzen des vierten <strong>Quartils</strong>?</p></li>
+</ul>
+</section>
+</section>
+<section id="wer-sind-ihre-kunden" class="level3">
+<h3 class="anchored" data-anchor-id="wer-sind-ihre-kunden">Wer sind Ihre Kunden?</h3>
+<p>Um rauszufinden welche Gruppen besonders häufig im Onlineshop einkaufen schauen Sie sich die Geschlechtsverteilung ihrer Kunden sowie die durchschnittlichen Kaufbeträge im Verhältnis zum Geschlecht an. <code>tally()</code> zeigt die <strong>Häufigkeiten</strong> der Ausprägungen einer Variable an.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Häufigkeiten</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(<span class="sc">~</span>Geschlecht, <span class="at">data=</span>CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Geschlecht
+männlich weiblich 
+     127      300 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deskriptive Kennwerte</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(Kaufbetrag_Euro <span class="sc">~</span> Geschlecht, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Geschlecht   min    Q1 median      Q3    max     mean       sd   n missing
+1   männlich 23.60 50.20  61.26 68.9950 107.49 58.27638 14.97994 127       0
+2   weiblich 21.77 65.73  76.34 83.8925 126.20 74.38507 17.67784 300       0</code></pre>
+</div>
+</div>
+<section id="fragen-2" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-2">Fragen:</h4>
+<ul>
+<li><p>Wie hoch ist die <strong>Standardabweichung</strong> bei den Frauen? Wie hoch ist sie bei den Männern?</p></li>
+<li><p>Wie groß ist die <strong>Spannweite</strong> (<strong>Range</strong>) bei Männern? Wie groß ist sie bei Frauen?</p></li>
+<li><p>Passen Sie den Code so an, dass Sie sich die Verweildauer im Verhältnis zum Geschlecht anschauen können. Welches Geschlecht ist im Schnitt länger in Ihrem Onlineshop?</p></li>
+</ul>
+</section>
+</section>
+<section id="altersgruppen" class="level3">
+<h3 class="anchored" data-anchor-id="altersgruppen">Altersgruppen</h3>
+<p>Als nächstes möchten Sie wissen bei welchen Altersgruppen Sie besonders erfolgreich sind. Hierfür transformieren Sie die Variable <em>Alter</em> abhängig vom <em>Geschlecht</em> in verschiedene Altersgruppen von 18-39 Jahren, 40-59 Jahren und 60+ Jahren.</p>
+<p>Um die Kundensegmente nach Alter und Geschlecht zu bilden, gehen wir in mehreren Schritten vor. Zunächst teilen wir mit der Funktion <strong><code>cut()</code></strong> das Alter in drei Gruppen ein: von 18 bis 39, von 40 bis 59 und ab 60 Jahren. <strong><code>cut()</code></strong> hilft uns also dabei, eine durchgehende metrische Variable wie „Alter“ in sinnvolle Kategorien zu unterteilen, indem wir die Grenzen der Altersgruppen festlegen und jedem Alter eine Altersgruppe zuweisen.</p>
+<p>Im nächsten Schritt wollen wir das Geschlecht nicht als langen Text (“männlich”), sondern als Kürzel (“M”) angezeigt bekommen, damit es sich gut mit der Altersgruppe kombinieren lässt. Dafür verwenden wir <strong><code>ifelse()</code></strong>. Diese Funktion prüft zeilenweise (also für jede/n KundIn), ob die Angabe „männlich“ vorliegt, und wandelt sie in „M“ um, andernfalls in „W“. So haben wir eine kurze und einheitliche Repräsentation für das Geschlecht.</p>
+<p>Abschließend fügen wir mit <strong><code>paste0()</code></strong> beide Informationen – also die Geschlechtskürzel (“M” oder “W”) und die Altersgruppe – zu einem neuen Merkmal zusammen, zum Beispiel „W18-39“ für eine Frau aus der jüngsten Altersgruppe. <strong><code>paste0()</code></strong> verbindet dabei die beiden Zeichenketten ohne Leerzeichen, sodass wir eine kompakte und aussagekräftige Gruppierung erhalten, die wir für weitere Analysen verwenden können.</p>
+<p>So entsteht aus dem ursprünglichen Alter und Geschlecht eine neue Variable „Altersgruppe“, die die Kundensegmente klar kennzeichnet und die weitere Auswertungen auf Kollektivebene ermöglicht.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Schritt 1: Altersklassen erstellen</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>CRM<span class="sc">$</span>Altersgruppe <span class="ot">&lt;-</span> <span class="fu">with</span>(CRM, {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  altersklasse <span class="ot">&lt;-</span> <span class="fu">cut</span>(Alter,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">39</span>, <span class="dv">59</span>, <span class="cn">Inf</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-39"</span>, <span class="st">"40-59"</span>, <span class="st">"60+"</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">right =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Schritt 2: Geschlecht in Kürzel umwandeln</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  geschlecht_kurz <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(Geschlecht <span class="sc">==</span> <span class="st">"männlich"</span>, <span class="st">"M"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">ifelse</span>(Geschlecht <span class="sc">==</span> <span class="st">"weiblich"</span>, <span class="st">"W"</span>, <span class="cn">NA</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Schritt 3: Kombination zu Altersgruppe</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(geschlecht_kurz, altersklasse)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Nun vergleichen Sie die Kennwerte.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Häufigkeiten</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(<span class="sc">~</span>Altersgruppe, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Altersgruppe
+M18-39 M40-59   M60+ W18-39 W40-59   W60+ 
+     8     98     21     28    236     36 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deskriptive Kennwerte</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(Kaufbetrag_Euro <span class="sc">~</span> Altersgruppe, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Altersgruppe   min      Q1  median       Q3    max      mean       sd   n
+1       M18-39 59.00 76.3450  81.835  87.7525 107.49  81.88625 14.41443   8
+2       M40-59 23.60 48.3725  60.010  68.8650  72.08  56.68459 13.84690  98
+3         M60+ 25.42 51.8000  58.100  68.4200  69.24  56.71048 13.15703  21
+4       W18-39 55.62 92.8375 112.030 119.3225 126.20 103.22571 20.78046  28
+5       W40-59 21.77 65.4100  75.565  83.7300  84.53  71.47801 14.32351 236
+6         W60+ 31.02 64.2600  75.645  83.6850  84.55  71.01083 14.99749  36
+  missing
+1       0
+2       0
+3       0
+4       0
+5       0
+6       0</code></pre>
+</div>
+</div>
+<section id="fragen-3" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-3">Fragen</h4>
+<ul>
+<li><p>Welches Kundensegment gibt in Ihrem Shop im Schnitt am meisten Geld aus (Arithmetisches Mittel)?</p></li>
+<li><p>In welchem Kundensegment wurde der günstigste Einkauf getätigt (Minimum)?</p></li>
+<li><p>Welches Kundensegment hat die größte Streuung um seinen Mittelwert (Standardabweichung)?</p></li>
+<li><p>Betrachten Sie nun die Verweildauer im Verhältnis zu den Altersgruppen. Passen Sie die Altersgruppen dabei auf Abstände von 18-35, 36-45, 46-55 und 56+ Jahren an. Nimmt der Durchschnittswert der jüngsten Gruppe Frauen und Männer jeweils eher ab oder zu?</p></li>
+</ul>
+</section>
+</section>
+<section id="ist-ihr-marketing-erfolgreich" class="level3">
+<h3 class="anchored" data-anchor-id="ist-ihr-marketing-erfolgreich">Ist Ihr Marketing erfolgreich?</h3>
+<p>In den letzten Wochen haben Sie ihre Werbeaktivitäten stärker auf Social Media Anzeigen konzentriert. Sie wollen herausfinden, ob dies sich ausgezahlt hat und vergleichen die Daten zu den Kaufbeträgen über die einzelnen Marketingkanäle.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Häufigkeiten</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(<span class="sc">~</span>Marketingkanal, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marketingkanal
+      Direkt   Newsletter Social Media Suchmaschine 
+          55           86          193           93 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deskriptive Kennwerte</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(Kaufbetrag_Euro <span class="sc">~</span> Marketingkanal, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Marketingkanal   min      Q1 median      Q3    max     mean       sd   n
+1         Direkt 21.77 34.5800  56.78 68.0900 106.32 53.24164 18.71566  55
+2     Newsletter 23.60 56.3275  63.32 75.2175 113.09 64.81360 17.17576  86
+3   Social Media 29.68 68.6800  83.60 84.0800 126.20 76.81233 15.05270 193
+4   Suchmaschine 25.42 58.3900  71.81 79.5100 119.47 68.70516 18.22880  93
+  missing
+1       0
+2       0
+3       0
+4       0</code></pre>
+</div>
+</div>
+<section id="fragen-4" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-4">Fragen</h4>
+<ul>
+<li><p>Welcher Marketingkanal hat im Schnitt den höchsten Umsatz erzielt? (Arithmetisches Mittel)</p></li>
+<li><p>Über welchen Marketingkanal kam der teuerste Einkauf zustande? (Maximum)</p></li>
+</ul>
+</section>
+</section>
+<section id="histogramm-kaufbetragsverteilung" class="level3">
+<h3 class="anchored" data-anchor-id="histogramm-kaufbetragsverteilung">Histogramm / Kaufbetragsverteilung</h3>
+<p>Um die Verteilung der Kaufbeträge unserer KundInnen besser zu verstehen, betrachten wir als nächstes ein <strong>Histogramm</strong> der Kaufbetrag-Variable. Ein <strong>Histogramm</strong> zeigt, wie häufig verschiedene Kaufbeträge im Datensatz vorkommen. Dabei werden Kaufwerte in Klassen zusammengefasst und die Anzahl der Kunden in jeder Klasse visualisiert. So können wir auf einen Blick erkennen, ob es bestimmte Kaufbetrag-Kategorien gibt, die besonders häufig sind, oder wie breit das Spektrum der Kaufbeträge in unserem Kundenstamm ist. Der <strong>Modus</strong> bezeichnet dabei die <strong>häufigste</strong> Ausprägung einer Variable.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Erstellung des Histogramms</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>( <span class="sc">~</span> Kaufbetrag_Euro, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CRM_Umsetzung_shiny_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="fragen-5" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-5">Fragen</h4>
+<ul>
+<li><p>Wo liegt der Bereich mit den meisten Einkäufen (Modus)?</p></li>
+<li><p>Ist die Verteilung symmetrisch? Linkssteil? Oder rechtsschief?</p></li>
+<li><p>Gibt es Ausreißer, d.&nbsp;h. ungewöhnlich niedrige oder hohe Kaufbeträge?</p></li>
+<li><p>Liegen der Mittelwert und der Median vermutlich dicht beieinander? Begründe deine Einschätzung anhand des Histogramms.</p></li>
+</ul>
+</section>
+</section>
+<section id="kaufen-kunden-die-länger-im-onlineshop-sind-auch-mehr-ein" class="level3">
+<h3 class="anchored" data-anchor-id="kaufen-kunden-die-länger-im-onlineshop-sind-auch-mehr-ein">Kaufen Kunden, die länger im Onlineshop sind auch mehr ein?</h3>
+<p>Sie interessiert, ob eine längere Verweildauer im Onlineshop auch mit größeren Einkäufen und damit einem höheren Kaufbetrag einhergeht. Dafür stellen Sie die beiden Werte in einem <strong>Streudiagramm</strong> gegenüber. Ein <strong>Streudiagramm</strong> (auch <strong>Scatterplot genannt</strong>) ist eine grafische Darstellung, die zeigt, wie zwei <strong>metrische</strong> Variablen miteinander zusammenhängen. Jeder Punkt im Diagramm steht für eine Beobachtung und zeigt die Werte beider Variablen – zum Beispiel die Verweildauer und den Kaufbetrag eines Kunden. So lassen sich Muster, Trends oder Zusammenhänge <strong>visuell</strong> erkennen.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Erstellung des Streudiagramms</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Kaufbetrag_Euro <span class="sc">~</span> Verweildauer_Sek, <span class="at">data =</span> CRM)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CRM_Umsetzung_shiny_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="fragen-6" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-6">Fragen</h4>
+<ul>
+<li><p>Wofür steht ein Punkt in der Abbildung?</p></li>
+<li><p>Ist der Zusammenhang zwischen <code>Kaufbetrag</code> und <code>Verweildauer</code> linear?</p></li>
+<li><p>Wie lässt sich dieser Zusammenhang interpretieren?</p></li>
+</ul>
+<p>Als Interpretationsstütze hilft eine <strong>Glättungslinie</strong>, um den Zusammenhang klarer zu visualisieren. Dem <strong>Streudiagramm</strong> können wir mit <code>gf_smooth()</code>eine <strong>Glättungslinie</strong> hinzufügen, die hilft den Zusammenhang besser zu verstehen. Außerdem fügen Sie Achsenbeschriftungen und Titel mit <code>gf_labs()</code> hinzu.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Erstellung des Streudiagramms</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Kaufbetrag_Euro <span class="sc">~</span> Verweildauer_Sek, <span class="at">data =</span> CRM) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_smooth</span>() <span class="sc">|&gt;</span> <span class="co">#Mit Glättugnslinie</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Verweildauer in Sekunden"</span>, <span class="co">#Mit Achsenbeschriftungen</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">"Kaufbetrag in Euro"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Zusammenhang Verweildauer und Kaufbetrag"</span>) <span class="co">#Mit Überschrift</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CRM_Umsetzung_shiny_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fragen-7" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-7">Fragen</h4>
+<ul>
+<li><p>Welche Aussage lässt sich aufgrund der Glättungslinie über den Zusammenhang zwischen Verweildauer und Kaufbetrag treffen?</p></li>
+<li><p>Ist der Zusammenhang linear, monoton steigend/fallend oder gibt es Anzeichen für eine Sättigung?</p></li>
+<li><p>Gibt es Punkte weit weg vom allgemeinen Trend, die die Interpretation beeinflussen könnten?</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="kaufbetrag-nach-marketingkanal-boxplot-analyse" class="level2">
+<h2 class="anchored" data-anchor-id="kaufbetrag-nach-marketingkanal-boxplot-analyse">Kaufbetrag nach Marketingkanal: Boxplot-Analyse</h2>
+<p>Um zu untersuchen, wie erfolgreich die verschiedenen Marketingkanäle sind und ob es Unterschiede in den Kaufbeträgen gibt, betrachten wir die Verteilung der Kaufbeträge je Marketingkanal mit einem <strong>Boxplot</strong>. <strong>Boxplots</strong> sind ein zentrales Werkzeug der <strong>explorativen Datenanalyse</strong>, da sie kompakt zeigen, wie groß die <strong>Streuung</strong> der Werte ist, wo der <strong>Median</strong> liegt und ob es <strong>Ausreißer</strong> gibt.</p>
+<p>Jeder Kasten (Box) im Boxplot stellt die mittleren 50% der Daten (zwischen erstem und drittem <strong>Quartil</strong>) eines Kanals dar. Die Linie in der Mitte zeigt den <strong>Median</strong>. Die Enden (“<strong>Whisker</strong>”) geben <strong>Minimal</strong>- und <strong>Maximalwerte</strong> (ohne Ausreißer) an. Werte, die sehr weit vom Rest der Daten entfernt liegen, werden als <strong>Ausreißer</strong> markiert.</p>
+<p>Mit folgendem Befehl können Verteilungen der Kaufbeträge für die einzelnen Marketingkanäle als <strong>Boxplots</strong> grafisch verglichen werden:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot: Kaufbetrag nach Marketingkanal</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_boxplot</span>(Kaufbetrag_Euro <span class="sc">~</span> Marketingkanal, <span class="at">data =</span> CRM) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Marketingkanal"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Kaufbetrag in Euro"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Verteilung der Kaufbeträge nach Marketingkanal"</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CRM_Umsetzung_shiny_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Da wir, wie oben erwähnt, eine Rabattaktion für unser zahlungskräftigstes Kundenquartil (das vierte <strong>Quartil</strong>) planen, ist es sinnvoll, diesen Schwellenwert in der Visualisierung darzustellen. Die rote Linie im Boxplot kennzeichnet daher den Kaufbetrag, ab dem ein Kunde zum <strong>Q4</strong> gehört und somit für die Rabattaktion in Frage kommt.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quartilsgrenze Q3 als Schwellenwert für Rabattaktion berechnen</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>q4_schwelle <span class="ot">&lt;-</span> <span class="fu">favstats</span>(<span class="sc">~</span>Kaufbetrag_Euro, <span class="at">data =</span> CRM)<span class="sc">$</span>Q3</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot Kaufbetrag je Marketingkanal mit roter Linie für Rabatt-Q4</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_boxplot</span>(Kaufbetrag_Euro <span class="sc">~</span> Marketingkanal, <span class="at">data =</span> CRM) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> q4_schwelle, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Marketingkanal"</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Kaufbetrag in Euro"</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Verteilung der Kaufbeträge nach Marketingkanal</span><span class="sc">\n</span><span class="st">(Rote Linie: Beginn des zahlungskräftigsten Quartils für Rabatt)"</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CRM_Umsetzung_shiny_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="fragen-8" class="level4">
+<h4 class="anchored" data-anchor-id="fragen-8">Fragen</h4>
+<ul>
+<li>In welchem Marketingkanal liegen die höchsten Kaufbeträge regelmäßig über der Rabattgrenze (rote Linie)?</li>
+<li>Welcher Kanal hat die größte <strong>Streuung</strong> der Kaufbeträge?</li>
+<li>Welcher Kanal hat den geringsten <strong>Interquartilsabstand</strong>?</li>
+<li>Welcher Kanal hat die größte <strong>Spannweite</strong>?</li>
+<li>Wie unterscheiden sich die <strong>Medianwerte</strong> der Kaufbeträge zwischen den Kanälen?</li>
+<li>Ranken Sie die Kaufbeträge absteigend für <strong>Maximum</strong>, <strong>Minimum</strong> und <strong>Median</strong>.</li>
+</ul>
+</section>
+</section>
+<section id="your-turn" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn">Your turn</h2>
+<p>Schreiben Sie den benötigten Code, um sich die Verteilung der Kaufbeträge spezifisch für die von Ihnen erstellten Kundensegmente aus der Variable <em>Altersgruppe</em> (mit den Ausprägungen M18-35 usw. und W18-35 usw.) als <strong>Boxplots</strong> anzuschauen. Benennen Sie Ihr Diagramm und generieren Sie eine rote Linie die den <strong>Median</strong> aller Kaufbeträge (<em>Kaufbetrag_Euro</em>) markiert.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Schreiben Sie hier Ihren Code hinein</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
