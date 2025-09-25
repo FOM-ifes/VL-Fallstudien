@@ -1,0 +1,428 @@
+"KundenID";"Alter";"Geschlecht";"Marketingkanal";"Verweildauer_Sek";"Kaufbetrag_Euro"
+1;56;"weiblich";"Social Media";401;83,79
+2;54;"weiblich";"Social Media";358;84,16
+3;33;"weiblich";"Suchmaschine";272;119,39
+4;51;"weiblich";"Social Media";373;83,88
+5;50;"weiblich";"Social Media";489;67,67
+6;47;"weiblich";"Direkt";229;38,13
+7;61;"männlich";"Direkt";274;53,03
+8;57;"weiblich";"Social Media";271;84,32
+9;55;"weiblich";"Social Media";389;84,21
+10;47;"weiblich";"Social Media";415;84,01
+11;50;"männlich";"Social Media";432;68,57
+12;56;"weiblich";"Newsletter";203;27,46
+13;46;"männlich";"Newsletter";309;61,35
+14;63;"weiblich";"Social Media";440;84,19
+15;44;"männlich";"Suchmaschine";243;71,5
+16;56;"weiblich";"Social Media";349;83,64
+17;60;"weiblich";"Social Media";358;84,51
+18;54;"weiblich";"Social Media";378;84,47
+19;59;"männlich";"Newsletter";320;62,03
+20;57;"weiblich";"Social Media";426;84,21
+21;57;"weiblich";"Suchmaschine";256;78,3
+22;62;"weiblich";"Newsletter";299;33,66
+23;42;"weiblich";"Direkt";357;71,27
+24;50;"männlich";"Suchmaschine";277;71,98
+25;60;"männlich";"Social Media";369;67,15
+26;37;"weiblich";"Suchmaschine";206;119,3
+27;47;"männlich";"Social Media";360;69,18
+28;54;"männlich";"Direkt";262;48,23
+29;41;"weiblich";"Social Media";359;84,18
+30;42;"weiblich";"Social Media";331;83,9
+31;42;"weiblich";"Suchmaschine";233;50,46
+32;44;"weiblich";"Newsletter";258;38,31
+33;46;"weiblich";"Social Media";349;61,08
+34;52;"weiblich";"Suchmaschine";315;55,52
+35;54;"weiblich";"Social Media";412;84,12
+36;55;"weiblich";"Suchmaschine";246;80,12
+37;57;"weiblich";"Newsletter";214;34,86
+38;53;"männlich";"Newsletter";252;61,46
+39;61;"weiblich";"Direkt";254;31,02
+40;37;"weiblich";"Social Media";365;125,96
+41;60;"männlich";"Suchmaschine";233;59,83
+42;55;"weiblich";"Social Media";460;84,27
+43;56;"weiblich";"Direkt";260;42,43
+44;43;"weiblich";"Direkt";228;70,41
+45;52;"weiblich";"Social Media";353;78,64
+46;49;"männlich";"Social Media";310;29,68
+47;52;"männlich";"Suchmaschine";266;71,66
+48;52;"weiblich";"Suchmaschine";269;61,93
+49;54;"männlich";"Social Media";378;67,84
+50;33;"weiblich";"Social Media";279;103,74
+51;45;"weiblich";"Social Media";371;83,66
+52;50;"weiblich";"Newsletter";304;75,21
+53;49;"weiblich";"Suchmaschine";203;79,31
+54;48;"weiblich";"Newsletter";333;52,76
+55;56;"weiblich";"Newsletter";325;70,09
+56;55;"weiblich";"Social Media";475;84,22
+57;59;"weiblich";"Newsletter";297;74,88
+58;60;"männlich";"Suchmaschine";262;66,86
+59;49;"weiblich";"Social Media";365;52,79
+60;47;"weiblich";"Suchmaschine";263;67,05
+61;51;"weiblich";"Suchmaschine";186;79,98
+62;41;"weiblich";"Social Media";276;64,19
+63;56;"weiblich";"Social Media";356;72,36
+64;64;"männlich";"Newsletter";264;61,26
+65;40;"weiblich";"Social Media";363;81,37
+66;57;"weiblich";"Newsletter";195;75,45
+67;57;"männlich";"Direkt";218;57,99
+68;40;"weiblich";"Suchmaschine";216;79,38
+69;54;"weiblich";"Social Media";409;83,73
+70;60;"weiblich";"Newsletter";241;71,52
+71;50;"weiblich";"Suchmaschine";228;45,69
+72;53;"weiblich";"Social Media";364;84,1
+73;52;"weiblich";"Suchmaschine";247;68,52
+74;48;"weiblich";"Suchmaschine";266;80,07
+75;55;"weiblich";"Social Media";475;83,79
+76;45;"weiblich";"Direkt";231;71,16
+77;54;"weiblich";"Suchmaschine";248;72,75
+78;48;"weiblich";"Suchmaschine";239;37,63
+79;47;"weiblich";"Social Media";436;83,74
+80;54;"weiblich";"Social Media";322;64,93
+81;38;"weiblich";"Suchmaschine";257;119,47
+82;40;"weiblich";"Direkt";298;56,78
+83;46;"männlich";"Suchmaschine";218;72
+84;49;"männlich";"Newsletter";364;57,15
+85;57;"weiblich";"Social Media";394;84,25
+86;57;"weiblich";"Suchmaschine";217;80,12
+87;54;"weiblich";"Social Media";383;83,8
+88;59;"weiblich";"Suchmaschine";251;79,63
+89;57;"weiblich";"Social Media";376;83,64
+90;49;"weiblich";"Social Media";356;65,73
+91;54;"männlich";"Direkt";307;34,12
+92;55;"männlich";"Newsletter";229;56,68
+93;59;"männlich";"Social Media";334;65,75
+94;52;"männlich";"Social Media";348;66,76
+95;58;"männlich";"Social Media";310;58,53
+96;62;"weiblich";"Suchmaschine";218;56,62
+97;55;"weiblich";"Social Media";359;75,81
+98;56;"weiblich";"Suchmaschine";255;68,5
+99;45;"männlich";"Social Media";233;51,35
+100;62;"weiblich";"Direkt";306;70,95
+101;52;"weiblich";"Social Media";372;84,47
+102;46;"männlich";"Direkt";355;32,68
+103;49;"männlich";"Newsletter";321;61,54
+104;51;"weiblich";"Newsletter";270;75,58
+105;57;"weiblich";"Suchmaschine";372;76,22
+106;58;"weiblich";"Social Media";502;83,68
+107;59;"weiblich";"Social Media";299;84,02
+108;50;"männlich";"Social Media";383;55
+109;59;"weiblich";"Suchmaschine";252;75,55
+110;56;"weiblich";"Social Media";369;84,22
+111;54;"männlich";"Social Media";371;68,82
+112;57;"weiblich";"Direkt";226;54,3
+113;49;"männlich";"Suchmaschine";271;71,46
+114;51;"männlich";"Direkt";331;40,96
+115;59;"männlich";"Newsletter";283;47,05
+116;52;"männlich";"Social Media";352;48,8
+117;47;"weiblich";"Direkt";319;70,41
+118;51;"weiblich";"Social Media";405;50,18
+119;55;"weiblich";"Social Media";278;83,91
+120;63;"weiblich";"Newsletter";300;75,76
+121;38;"weiblich";"Newsletter";364;112,88
+122;61;"weiblich";"Newsletter";354;75,65
+123;43;"weiblich";"Social Media";381;82,4
+124;61;"weiblich";"Social Media";396;65,73
+125;44;"weiblich";"Newsletter";236;75,55
+126;54;"weiblich";"Social Media";375;83,28
+127;62;"männlich";"Social Media";312;69,09
+128;62;"weiblich";"Suchmaschine";242;80,12
+129;62;"weiblich";"Social Media";407;84,34
+130;56;"weiblich";"Social Media";303;84,27
+131;61;"männlich";"Newsletter";302;58,1
+132;44;"weiblich";"Social Media";381;71,74
+133;61;"männlich";"Suchmaschine";262;51,8
+134;43;"weiblich";"Social Media";451;83,97
+135;43;"weiblich";"Social Media";309;74,97
+136;48;"weiblich";"Suchmaschine";284;80,15
+137;59;"männlich";"Suchmaschine";256;59,98
+138;53;"männlich";"Direkt";261;58,24
+139;54;"männlich";"Newsletter";311;61,52
+140;46;"weiblich";"Suchmaschine";219;79,73
+141;55;"weiblich";"Social Media";294;53,19
+142;40;"weiblich";"Social Media";335;71,6
+143;55;"männlich";"Newsletter";369;51,81
+144;39;"männlich";"Direkt";272;83,45
+145;59;"weiblich";"Social Media";377;46,88
+146;61;"männlich";"Social Media";351;69,24
+147;55;"männlich";"Direkt";286;32,92
+148;49;"weiblich";"Suchmaschine";222;65,47
+149;45;"weiblich";"Social Media";418;83,86
+150;56;"männlich";"Newsletter";316;41,38
+151;46;"männlich";"Suchmaschine";228;71,81
+152;48;"männlich";"Suchmaschine";262;71,87
+153;54;"weiblich";"Social Media";396;78,36
+154;51;"männlich";"Social Media";388;69,3
+155;52;"weiblich";"Social Media";434;68,09
+156;58;"weiblich";"Social Media";329;83,84
+157;60;"weiblich";"Suchmaschine";305;39,66
+158;51;"weiblich";"Social Media";412;83,67
+159;48;"weiblich";"Newsletter";283;75,46
+160;47;"männlich";"Direkt";236;32,82
+161;56;"weiblich";"Social Media";306;76,49
+162;60;"weiblich";"Social Media";383;83,79
+163;37;"weiblich";"Social Media";356;95,74
+164;55;"weiblich";"Newsletter";370;75,09
+165;58;"männlich";"Social Media";387;58,43
+166;54;"weiblich";"Direkt";257;49,67
+167;53;"weiblich";"Social Media";309;84,53
+168;39;"weiblich";"Social Media";331;92,96
+169;51;"männlich";"Suchmaschine";274;50,79
+170;43;"weiblich";"Social Media";337;83,98
+171;56;"weiblich";"Social Media";386;65,23
+172;49;"weiblich";"Newsletter";275;48,74
+173;54;"weiblich";"Social Media";355;84,12
+174;51;"männlich";"Suchmaschine";231;71,62
+175;59;"männlich";"Social Media";455;41,88
+176;61;"weiblich";"Suchmaschine";273;73,47
+177;45;"männlich";"Suchmaschine";269;72,06
+178;60;"männlich";"Social Media";275;68,93
+179;57;"weiblich";"Social Media";393;61,64
+180;36;"weiblich";"Newsletter";244;113,09
+181;54;"weiblich";"Social Media";315;83,73
+182;46;"weiblich";"Social Media";406;84,43
+183;55;"männlich";"Social Media";337;55,84
+184;56;"weiblich";"Social Media";273;84,16
+185;58;"weiblich";"Suchmaschine";331;79,93
+186;57;"männlich";"Suchmaschine";165;58,39
+187;31;"weiblich";"Social Media";389;122,3
+188;52;"weiblich";"Suchmaschine";301;76,32
+189;50;"weiblich";"Social Media";328;72,51
+190;49;"weiblich";"Social Media";382;84,02
+191;37;"weiblich";"Suchmaschine";278;118,97
+192;56;"weiblich";"Social Media";412;79,2
+193;59;"männlich";"Newsletter";312;61,29
+194;57;"weiblich";"Social Media";348;83,66
+195;60;"männlich";"Newsletter";331;53,02
+196;61;"männlich";"Direkt";298;26,53
+197;56;"weiblich";"Social Media";313;73,45
+198;45;"weiblich";"Social Media";290;83,79
+199;39;"weiblich";"Social Media";368;126,2
+200;44;"männlich";"Social Media";346;69,19
+201;55;"weiblich";"Newsletter";246;64,22
+202;51;"weiblich";"Newsletter";294;75,76
+203;57;"weiblich";"Social Media";294;83,74
+204;57;"weiblich";"Social Media";368;73,4
+205;42;"weiblich";"Social Media";329;78,73
+206;59;"weiblich";"Suchmaschine";298;80,05
+207;52;"weiblich";"Suchmaschine";357;62,2
+208;49;"weiblich";"Newsletter";249;67,26
+209;58;"männlich";"Newsletter";338;38,86
+210;56;"weiblich";"Social Media";401;83,7
+211;61;"weiblich";"Social Media";356;84,31
+212;53;"männlich";"Newsletter";270;61,75
+213;47;"weiblich";"Social Media";439;84,48
+214;48;"weiblich";"Suchmaschine";180;79,19
+215;58;"weiblich";"Social Media";328;71,5
+216;58;"männlich";"Direkt";220;52,57
+217;56;"weiblich";"Social Media";430;84,07
+218;33;"weiblich";"Social Media";350;117,14
+219;60;"männlich";"Social Media";334;51,6
+220;53;"weiblich";"Suchmaschine";387;65,73
+221;28;"weiblich";"Social Media";357;63,85
+222;53;"weiblich";"Suchmaschine";242;79,84
+223;57;"weiblich";"Social Media";375;84,08
+224;46;"weiblich";"Newsletter";219;75,37
+225;55;"männlich";"Newsletter";312;61,81
+226;56;"männlich";"Newsletter";286;34,51
+227;55;"männlich";"Direkt";286;31,83
+228;51;"weiblich";"Social Media";311;70,11
+229;32;"weiblich";"Direkt";234;86,06
+230;52;"männlich";"Social Media";325;49,61
+231;39;"männlich";"Suchmaschine";229;107,49
+232;45;"weiblich";"Newsletter";348;67,68
+233;53;"weiblich";"Social Media";439;75,73
+234;62;"weiblich";"Social Media";352;83,61
+235;56;"weiblich";"Social Media";342;83,9
+236;56;"männlich";"Suchmaschine";247;71,98
+237;51;"weiblich";"Social Media";363;72,02
+238;36;"weiblich";"Social Media";365;113,49
+239;53;"männlich";"Direkt";280;58,4
+240;63;"weiblich";"Social Media";323;76,97
+241;55;"männlich";"Social Media";318;68,92
+242;51;"weiblich";"Newsletter";344;75,14
+243;42;"männlich";"Suchmaschine";238;71,75
+244;41;"männlich";"Direkt";281;34,22
+245;61;"weiblich";"Suchmaschine";258;48,54
+246;42;"männlich";"Direkt";236;25,21
+247;55;"weiblich";"Newsletter";317;49,04
+248;50;"männlich";"Newsletter";298;60,04
+249;51;"weiblich";"Newsletter";353;74,94
+250;47;"weiblich";"Suchmaschine";265;33,32
+251;51;"männlich";"Social Media";343;68,55
+252;43;"weiblich";"Social Media";374;68,23
+253;48;"weiblich";"Social Media";301;79,77
+254;54;"männlich";"Suchmaschine";227;46,42
+255;50;"weiblich";"Suchmaschine";280;45,19
+256;50;"weiblich";"Social Media";343;83,8
+257;49;"weiblich";"Suchmaschine";257;49,75
+258;54;"männlich";"Direkt";266;32
+259;50;"weiblich";"Direkt";247;65,9
+260;39;"männlich";"Newsletter";199;69,01
+261;38;"weiblich";"Direkt";282;106,32
+262;56;"männlich";"Direkt";297;31,77
+263;51;"weiblich";"Suchmaschine";208;62,27
+264;29;"weiblich";"Social Media";434;125,4
+265;61;"weiblich";"Social Media";379;84,37
+266;51;"männlich";"Suchmaschine";314;71,62
+267;37;"männlich";"Direkt";236;59
+268;57;"weiblich";"Social Media";368;83,6
+269;58;"weiblich";"Social Media";355;83,94
+270;59;"weiblich";"Social Media";398;83,92
+271;59;"männlich";"Newsletter";264;23,6
+272;55;"weiblich";"Social Media";359;84,43
+273;48;"weiblich";"Suchmaschine";189;79,86
+274;49;"weiblich";"Social Media";321;56,81
+275;27;"weiblich";"Newsletter";296;87,37
+276;43;"weiblich";"Suchmaschine";232;79,58
+277;62;"weiblich";"Social Media";358;84,54
+278;57;"weiblich";"Social Media";337;84,37
+279;55;"weiblich";"Newsletter";317;70,56
+280;44;"männlich";"Direkt";311;34,94
+281;53;"männlich";"Newsletter";253;61,35
+282;61;"weiblich";"Direkt";259;67,73
+283;41;"weiblich";"Social Media";432;84,14
+284;49;"weiblich";"Social Media";250;46,77
+285;37;"weiblich";"Social Media";344;111,34
+286;61;"weiblich";"Newsletter";383;62,42
+287;44;"männlich";"Newsletter";389;61,53
+288;56;"weiblich";"Social Media";368;79,88
+289;44;"weiblich";"Suchmaschine";225;75,95
+290;52;"weiblich";"Social Media";368;52,38
+291;45;"weiblich";"Newsletter";261;75,2
+292;36;"männlich";"Newsletter";355;90,19
+293;52;"männlich";"Direkt";242;25,8
+294;60;"weiblich";"Newsletter";307;73,48
+295;57;"weiblich";"Social Media";391;83,84
+296;33;"weiblich";"Social Media";322;94,57
+297;48;"weiblich";"Newsletter";328;75,22
+298;63;"männlich";"Social Media";323;69,09
+299;61;"weiblich";"Social Media";392;84,55
+300;53;"weiblich";"Social Media";415;56,7
+301;42;"männlich";"Suchmaschine";220;47,56
+302;53;"weiblich";"Newsletter";340;73,18
+303;45;"weiblich";"Newsletter";268;50,18
+304;51;"weiblich";"Suchmaschine";272;50,04
+305;52;"weiblich";"Direkt";277;71,2
+306;63;"weiblich";"Social Media";339;61,79
+307;51;"männlich";"Suchmaschine";271;69,88
+308;56;"weiblich";"Social Media";298;84,15
+309;59;"weiblich";"Suchmaschine";255;79,98
+310;53;"männlich";"Social Media";401;68,98
+311;40;"weiblich";"Suchmaschine";173;54,3
+312;55;"männlich";"Social Media";286;68,87
+313;50;"weiblich";"Newsletter";238;40,14
+314;59;"männlich";"Newsletter";218;56,21
+315;48;"weiblich";"Social Media";381;83,07
+316;47;"weiblich";"Suchmaschine";220;79,94
+317;52;"männlich";"Suchmaschine";173;63,48
+318;64;"weiblich";"Social Media";328;63,84
+319;53;"männlich";"Social Media";340;51,4
+320;45;"weiblich";"Suchmaschine";294;72,09
+321;49;"weiblich";"Suchmaschine";216;32,37
+322;40;"weiblich";"Social Media";418;58,92
+323;42;"weiblich";"Newsletter";308;75,45
+324;53;"männlich";"Social Media";378;69,01
+325;48;"weiblich";"Newsletter";252;75,68
+326;59;"männlich";"Suchmaschine";338;72,06
+327;56;"weiblich";"Social Media";352;83,9
+328;62;"weiblich";"Social Media";269;83,65
+329;56;"männlich";"Social Media";350;68,85
+330;42;"weiblich";"Social Media";263;69,35
+331;46;"weiblich";"Direkt";259;46,01
+332;56;"weiblich";"Newsletter";271;57,45
+333;59;"männlich";"Newsletter";321;61,79
+334;50;"weiblich";"Direkt";305;70,86
+335;52;"weiblich";"Social Media";324;76,36
+336;63;"männlich";"Social Media";400;68,85
+337;51;"weiblich";"Social Media";431;67,95
+338;50;"weiblich";"Newsletter";255;38,32
+339;50;"männlich";"Suchmaschine";234;46,6
+340;59;"männlich";"Suchmaschine";286;72,06
+341;47;"männlich";"Direkt";276;57,99
+342;47;"weiblich";"Social Media";387;63,76
+343;60;"weiblich";"Newsletter";353;64,4
+344;55;"weiblich";"Social Media";379;84,08
+345;48;"weiblich";"Social Media";413;84,34
+346;57;"männlich";"Social Media";391;55,8
+347;64;"männlich";"Newsletter";310;58,03
+348;42;"weiblich";"Social Media";379;83,61
+349;58;"weiblich";"Direkt";315;61,77
+350;56;"weiblich";"Suchmaschine";220;79,78
+351;58;"männlich";"Direkt";231;35,55
+352;42;"weiblich";"Social Media";390;71,27
+353;61;"weiblich";"Suchmaschine";255;79,51
+354;55;"weiblich";"Direkt";273;70,81
+355;52;"männlich";"Social Media";397;68,7
+356;60;"weiblich";"Social Media";398;70,54
+357;57;"männlich";"Social Media";347;68,68
+358;52;"weiblich";"Newsletter";276;72,48
+359;44;"männlich";"Suchmaschine";263;40,72
+360;62;"weiblich";"Social Media";413;83,62
+361;55;"weiblich";"Social Media";381;84,36
+362;43;"weiblich";"Suchmaschine";317;79,65
+363;56;"männlich";"Direkt";270;58,2
+364;49;"weiblich";"Direkt";309;27,31
+365;46;"männlich";"Suchmaschine";295;71,31
+366;49;"weiblich";"Direkt";291;70,08
+367;45;"männlich";"Social Media";381;68,43
+368;53;"weiblich";"Suchmaschine";249;37,85
+369;55;"weiblich";"Newsletter";285;72,04
+370;52;"weiblich";"Direkt";278;51,6
+371;47;"weiblich";"Social Media";362;84,16
+372;46;"weiblich";"Suchmaschine";298;79,31
+373;56;"weiblich";"Social Media";355;83,61
+374;49;"weiblich";"Social Media";356;84,03
+375;50;"weiblich";"Direkt";253;68,45
+376;36;"weiblich";"Newsletter";284;92,47
+377;57;"weiblich";"Social Media";357;84,11
+378;55;"weiblich";"Social Media";244;38,56
+379;51;"männlich";"Newsletter";229;62,13
+380;32;"männlich";"Newsletter";287;78,79
+381;61;"männlich";"Social Media";347;68,42
+382;53;"weiblich";"Suchmaschine";212;64,93
+383;48;"weiblich";"Social Media";260;83,7
+384;49;"weiblich";"Suchmaschine";246;79,46
+385;59;"weiblich";"Direkt";293;65,2
+386;51;"weiblich";"Newsletter";370;74,95
+387;60;"männlich";"Direkt";269;45,83
+388;44;"männlich";"Suchmaschine";320;71,34
+389;39;"weiblich";"Newsletter";294;96,72
+390;64;"männlich";"Suchmaschine";265;25,42
+391;37;"weiblich";"Social Media";376;55,62
+392;60;"weiblich";"Social Media";316;78,98
+393;47;"weiblich";"Social Media";357;83,65
+394;53;"weiblich";"Newsletter";331;51,79
+395;57;"weiblich";"Social Media";323;83,86
+396;50;"weiblich";"Social Media";344;74,83
+397;47;"weiblich";"Social Media";303;83,89
+398;42;"weiblich";"Suchmaschine";274;37,52
+399;63;"weiblich";"Newsletter";309;48,84
+400;62;"männlich";"Suchmaschine";286;41,46
+401;39;"weiblich";"Social Media";299;124,14
+402;47;"weiblich";"Direkt";274;64,33
+403;44;"weiblich";"Social Media";313;83,85
+404;41;"weiblich";"Newsletter";290;75,54
+405;64;"männlich";"Social Media";427;57,38
+406;39;"weiblich";"Social Media";335;76,26
+407;56;"weiblich";"Social Media";396;83,84
+408;49;"weiblich";"Newsletter";256;69,98
+409;54;"weiblich";"Suchmaschine";241;79,31
+410;42;"weiblich";"Social Media";382;84,25
+411;55;"weiblich";"Social Media";326;48,75
+412;46;"weiblich";"Newsletter";213;49,03
+413;55;"weiblich";"Direkt";314;57,29
+414;60;"weiblich";"Newsletter";306;75,64
+415;37;"weiblich";"Newsletter";264;56,85
+416;43;"weiblich";"Social Media";260;83,62
+417;30;"männlich";"Direkt";337;86,94
+418;51;"männlich";"Suchmaschine";396;72,08
+419;38;"weiblich";"Newsletter";299;112,72
+420;54;"männlich";"Direkt";300;57,85
+421;61;"weiblich";"Social Media";421;84,07
+422;54;"weiblich";"Direkt";245;21,77
+423;54;"weiblich";"Newsletter";274;69,74
+424;50;"weiblich";"Suchmaschine";191;79,9
+425;31;"männlich";"Newsletter";257;80,22
+426;54;"weiblich";"Social Media";391;78,13
+427;48;"männlich";"Newsletter";277;49,26
