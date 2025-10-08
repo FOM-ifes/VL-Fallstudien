@@ -169,7 +169,7 @@ prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 Die relative Häufigkeit von *hat Herzkrankheit*, gegeben *hat Schlaganfall*, also `r prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")[1]`, kann auch als bedingte Wahrscheinlichkeit $Pr(Herzkrankheit = Ja | Schlaganfall = Ja)$ aufgefasst werden.
 
-Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
+Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweiligen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
 
 $$
 Pr(Herzkrankheit = Ja) = Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) \\
@@ -177,18 +177,27 @@ Pr(Herzkrankheit = Ja) = Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(
 $$
 
 ```{r}
-prop( ~ Herzkrankheit  | Schlaganfall, data = stroke_data, success = "Ja")[1] * 
-  prop( ~ Schlaganfall, data = stroke_data, success = "Ja") +
-  prop( ~ Herzkrankheit  | Schlaganfall, data = stroke_data, success = "Ja")[2] * 
-  prop( ~ Schlaganfall, data = stroke_data, success = "Nein")
+# Wahrscheinlichkeiten für Schlaganfall
+prS <- tally( ~ Schlaganfall, data = stroke_data, format = "prop")
+prS["Ja"] # Schlaganfall ja
+prS["Nein"] # Schlaganfall nein
+# Wahrscheinlichkeiten für Herzkrankheit bedingt Schlaganfall
+prHinS <- tally( ~ Herzkrankheit | Schlaganfall, data = stroke_data, format = "prop")
+prHinS["Ja", "Ja"]  # Herzkrankheit ja bedingt Schlaganfall ja
+prHinS["Ja", "Nein"]  # Herzkrankheit ja bedingt Schlaganfall nein
+# Totale Wahrscheinlichkeit für Herzkrankheit
+prHinS["Ja", "Ja"] * prS["Ja"] + prHinS["Ja", "Nein"] * prS["Nein"] 
 ```
 
-*Erklärung*: Das `[1]` bedeutet, dass das erste Element des Ergebnisvektors von `prop( ~ Herzkrankheit| Schlaganfall, data = stroke_data, success = "Ja")`, also der Anteil der Personen mit Herzkrankheit unter den Personen mit Schlaganfall, benutzt werden soll. Entsprechend bedeutet `[2]`, dass das zweite Element des Vektors, also der Anteil der Personen mit Herzkrankheit unter den Personen ohne Schlaganfall benutzt wird.
+*Hinweis:* Statt die Zeilen- und Spaltenindices mit Bezeichnungen anzugeben, kann auch die Position mit `[1]` etc. bei Vektoren (`prS`) oder `[1, 1]` etc. bei Matrizen (`prHinS`) angegeben werden.
 
-Das ergibt $Pr(Herzkrankheit= Ja)$:
+Kontrolle: $Pr(Herzkrankheit= Ja)$
 
 ```{r}
+# mit prop
 prop( ~ Herzkrankheit, data = stroke_data, success = "Ja")
+# oder mit tally
+tally( ~ Herzkrankheit, data = stroke_data, format = "prop")["Ja"]
 ```
 
 ## Your-Turn
@@ -198,12 +207,20 @@ prop( ~ Herzkrankheit, data = stroke_data, success = "Ja")
 - Wie viel Prozent der männlichen Teilnehmenden haben einen Schlaganfall erlitten?
 
 ```{r}
+# mit prop
 prop(Schlaganfall ~ Geschlecht, data = stroke_data, success = "Ja")[2]
+# mit tally
+tally(Schlaganfall ~ Geschlecht, data = stroke_data, format = "prop")["Ja", "Mann"]
+# oder mit Schreibweise bedingt durch
+tally( ~ Schlaganfall | Geschlecht, data = stroke_data, format = "prop")["Ja", "Mann"]
 ```
 
 
 - Wie alt sind die Personen mit Schlaganfall im Durchschnitt?
 
 ```{r}
+# mit Positionsangabe
 mean(Alter ~ Schlaganfall, data = stroke_data)[1]
+# mit Bezeichnung
+mean(Alter ~ Schlaganfall, data = stroke_data)["Ja"]
 ```

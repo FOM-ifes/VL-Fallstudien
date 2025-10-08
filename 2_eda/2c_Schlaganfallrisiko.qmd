@@ -147,7 +147,7 @@ prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")
 
 Die relative Häufigkeit von *hat Herzkrankheit*, gegeben *hat Schlaganfall*, also `r prop(Herzkrankheit ~ Schlaganfall, data = stroke_data, success = "Ja")[1]`, kann auch als bedingte Wahrscheinlichkeit $Pr(Herzkrankheit = Ja | Schlaganfall = Ja)$ aufgefasst werden.
 
-Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweilgen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
+Um die (totale) Wahrscheinlichkeit für *hat Herzkrankheit* auszurechnen können wir die bedingten Wahrscheinlichkeiten, multipliziert mit den jeweiligen Wahrscheinlichkeiten für *Schlaganfall*, addieren:
 
 $$
 Pr(Herzkrankheit = Ja) = Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(Schlaganfall = Ja) \\
@@ -155,15 +155,11 @@ Pr(Herzkrankheit = Ja) = Pr(Herzkrankheit = Ja \mid Schlaganfall = Ja) \cdot Pr(
 $$
 
 ```{r}
-prop( ~ Herzkrankheit  | Schlaganfall, data = stroke_data, success = "Ja")[1] * 
-  prop( ~ Schlaganfall, data = stroke_data, success = "Ja") +
-  prop( ~ Herzkrankheit  | Schlaganfall, data = stroke_data, success = "Ja")[2] * 
-  prop( ~ Schlaganfall, data = stroke_data, success = "Nein")
+
 ```
 
-*Erklärung*: Das `[1]` bedeutet, dass das erste Element des Ergebnisvektors von `prop( ~ Herzkrankheit | Schlaganfall, data = stroke_data, success = "Ja")`, also der Anteil der Personen mit Herzkrankheit unter den Personen mit Schlaganfall, benutzt werden soll. Entsprechend bedeutet `[2]`, dass das zweite Element des Vektors, also der Anteil der Personen mit Herzkrankheit unter den Personen ohne Schlaganfall benutzt wird.
 
-Das ergibt $Pr(Herzkrankheit= Ja)$:
+Kontrolle: $Pr(Herzkrankheit= Ja)$
 
 ```{r}
 prop( ~ Herzkrankheit, data = stroke_data, success = "Ja")
