@@ -1,0 +1,116 @@
+---
+title: "Mietpreise"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+# Mietpreise in Düsseldorf
+
+Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? 
+Dieser Fragestellung sind die Autoren *Dominic Hernes, Frank Lehrbass und Kevin Maucy (2021)* in ihrer Studie *Big Data basierte Analyse des Einflusses traditioneller und neuartiger Faktoren auf Mietpreise in Düsseldorf (*<https://forschung.fom.de/fileadmin/fom/forschung/ifes/pdf/FOM-ifes_Bd25_Mietpreise.pdf>*)* nachgegangen. 
+Aus dieser Studie liegt uns ein zufälliger Teil-Datensatz mit 500 Beobachtungen vor. 
+Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
+
+- `totalrent`: Mietpreis der Wohnung in Euro
+- `livingspace`: Größe der Wohnung in Quadratmeter
+- `balcony`: Wohnung hat einen Balkon (ja/nein)
+- `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
+- `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
+- `floor`: Stockwerk der Wohnung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von null bis vier (nicht verfügbar -- einfach -- normal -- gehoben -- Luxus)
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Daten einlesen
+here("data", "Immo-Datensatz.csv") |>  read.csv2() -> immo
+# Datenstruktur
+str(immo)
+# Obere 6 Beobachtungen
+head(immo)
+```
+
+#### Fragen
+
+- Was ist eine Beobachtungseinheit der Datentabelle?
+- Wie viele Beobachtungen, wie viele Variablen liegen vor?
+- Welches Skalenniveau haben die Variablen?
+
+
+## Vorbereitung
+
+Hinweise
+
+- Code-Chunk einfügen mit Strg-Alt-I (Ctrl-Opt-I) oder über Button oben links.
+- R-Inline-Code mit `'r ...'` (statt Apostroph Accent grave)
+- Accent grave (nach links gekippter Akzent) siehe Tastatur, auf iPad-Bildschirmtastatur auf `.?123`-Button drücken, Taste mit Hochkomma (Apostroph) gedrückt halten und den nach links gekippten Akzent auswählen: für R-Inline-Code und Konsolenschrift
+- Pipe `|>` mit Strg-Umsch-M (Ctrl-Shift-M): übergibt das Ergebnis der Funktion links als erstes Argument an die Funktion rechts von der Pipe.
+- Formelsyntax: `AV ~ UV | CoV` -- abhängige Variable Tilde unabhängige Variable gruppiert nach (bedingt durch) Kovariable.
+- Tilde `~` mit AltGr-+ (Opt-N): trennt abhängige und unabhängige Variable.
+- Strich `|` mit AltGr-< (Opt-7): gruppiert nach oder bedingt durch.
+
+
+# Kategoriale Variablen
+
+## Univariate Analyse
+
+#### Aufgaben
+
+- Analysieren Sie Häufigkeiten und Anteile der kategorialen Variablen.
+- Erstellen Sie geeignete Diagramme.
+
+## Multivariate Analyse
+
+#### Aufgaben
+
+Betrachten Sie nur die Datensätze, für die eine Bewertung für die Innenausstattung vorliegt.
+
+- Wie hoch sind die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal (`interiorqual`)?
+- Zeigen Sie auch die absoluten Häufigkeiten.
+- Stellen Sie die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal in einer geeigneten Grafik dar.
+
+
+# Metrische Variablen
+
+## Univariate Analyse
+
+#### Aufgaben
+
+- Stellen Sie wichtige Kennzahlen für `totalrent` dar.
+- Analysieren Sie den Boxplot von `totalrent`.
+- Analysieren Sie das Histogramm von `totalrent`.
+
+## Multivariate Analyse
+
+#### Aufgaben
+
+- Gruppieren Sie die Kennzahlen von `totalrent` nach `balcony` und nach `interiorqual` (letzteres wieder gefiltert auf Datensätzen mit vorliegender Bewertung).
+- Berechnen Sie den Variationskoeffizienten gruppiert nach Ausstattung.
+
+## Verteilungs- und Quantilsfunktion
+
+#### Aufgaben
+
+- Wie viel Prozent der Mieten liegt über 1400 Euro?
+- Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
+- Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
+- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen acht und zwölf Euro?[^grenzen]
+
+[^grenzen]: Formal: größer acht und kleiner gleich zwölf

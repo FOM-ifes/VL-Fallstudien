@@ -1,0 +1,264 @@
+---
+title: "Mietpreise"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+# Mietpreise in Düsseldorf
+
+Was beeinflusst die Höhe des Mietpreises von Wohnungen in Düsseldorf? 
+Dieser Fragestellung sind die Autoren *Dominic Hernes, Frank Lehrbass und Kevin Maucy (2021)* in ihrer Studie *Big Data basierte Analyse des Einflusses traditioneller und neuartiger Faktoren auf Mietpreise in Düsseldorf (*<https://forschung.fom.de/fileadmin/fom/forschung/ifes/pdf/FOM-ifes_Bd25_Mietpreise.pdf>*)* nachgegangen. 
+Aus dieser Studie liegt uns ein zufälliger Teil-Datensatz mit 500 Beobachtungen vor. 
+Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
+
+- `totalrent`: Mietpreis der Wohnung in Euro
+- `livingspace`: Größe der Wohnung in Quadratmeter
+- `balcony`: Wohnung hat einen Balkon (ja/nein)
+- `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
+- `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
+- `floor`: Stockwerk der Wohnung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von null bis vier (nicht verfügbar -- einfach -- normal -- gehoben -- Luxus)
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Daten einlesen
+here("data", "Immo-Datensatz.csv") |>  read.csv2() -> immo
+# Datenstruktur
+str(immo)
+# Obere 6 Beobachtungen
+head(immo)
+```
+
+#### Fragen
+
+- Was ist eine Beobachtungseinheit der Datentabelle?
+
+  eine Wohnung in Düsseldorf
+  
+- Wie viele Beobachtungen, wie viele Variablen liegen vor?
+
+  500 Beobachtungen, 7 Variablen \
+  *mit R-Inline-Code:* `r nrow(immo)` Beobachtungen, `r ncol(immo)` Variablen
+  
+- Welches Skalenniveau haben die Variablen?
+
+  - `totalrent`: metrisch verhältnisskaliert
+  - `livingspace`: metrisch verhältnisskaliert
+  - `balcony`: kategorial nominal
+  - `yearconstructed`: metrisch intervallskaliert
+  - `haskitchen`: kategorial nominal
+  - `floor`: kategorial ordinal
+  - `interiorqual`: ohne null (nicht verfügbar) kategorial ordinal, sonst kategorial nominal
+
+
+## Vorbereitung
+
+*Hinweise*
+
+- Code-Chunk einfügen mit Strg-Alt-I (Ctrl-Opt-I) oder über Button oben links
+- R-Inline-Code mit `'r ...'` (statt Apostroph Accent grave)
+- Accent grave (nach links gekippter Akzent) siehe Tastatur, auf iPad-Bildschirmtastatur auf `.?123`-Button drücken, Taste mit Hochkomma (Apostroph) gedrückt halten und den nach links gekippten Akzent auswählen: für R-Inline-Code und Konsolenschrift
+- Pipe `|>` mit Strg-Umsch-M (Ctrl-Shift-M): übergibt das Ergebnis der Funktion links als erstes Argument an die Funktion rechts von der Pipe
+- Formelsyntax: `AV ~ UV | CoV` -- abhängige Variable Tilde unabhängige Variable gruppiert nach (bedingt durch) Kovariable
+- Tilde `~` mit AltGr-+ (Opt-N): trennt abhängige und unabhängige Variable
+- Strich `|` mit AltGr-< (Opt-7): gruppiert nach oder bedingt durch
+
+Da die kategorialen Variablen als ganzzahlige Werte codiert sind, werden sie zu einer Faktor-Variable (*factor*) umgewandelt.
+
+```{r}
+# Kategoriale Variablen umwandeln
+immo <- immo |> mutate(
+  balcony = factor(balcony, levels = c(0, 1), labels = c("nein", "ja")),
+  haskitchen = factor(haskitchen, levels = c(0, 1), labels = c("nein", "ja"))
+)
+# Datenstruktur
+str(immo)
+# Obere 6 Beobachtungen 
+head(immo)
+```
+
+# Kategoriale Variablen
+
+## Univariate Analyse
+
+#### Aufgabe
+
+- Analysieren Sie Häufigkeiten und Anteile der kategorialen Variablen.
+
+```{r}
+# Häufigkeiten
+tally( ~ balcony, data = immo)
+tally( ~ haskitchen, data = immo)
+tally( ~ interiorqual, data = immo)
+
+# Anteile
+tally( ~ balcony, data = immo, format = "prop")
+tally( ~ haskitchen, data = immo, format = "prop")
+tally( ~ interiorqual, data = immo, format = "prop")
+```
+
+#### Aufgabe
+
+- Erstellen Sie geeignete Diagramme.
+
+```{r}
+# Säulendiagramme
+gf_bar( ~ balcony, data = immo)
+gf_bar( ~ haskitchen, data = immo)
+gf_bar( ~ interiorqual, data = immo)
+# Balkendiagramme
+gf_bar(balcony ~ ., data = immo)
+gf_bar(haskitchen ~ ., data = immo)
+gf_bar(interiorqual ~ ., data = immo)
+```
+
+## Multivariate Analyse
+
+#### Aufgaben
+
+Betrachten Sie nur die Datensätze, für die eine Bewertung für die Innenausstattung vorliegt.
+
+Dazu wird die Datentabelle gefiltert auf Werte für `interiorqual` ungleich (`!=`) null.
+
+- Wie hoch sind die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal (`interiorqual`)?
+- Zeigen Sie auch die absoluten Häufigkeiten.
+
+```{r}
+# Anteile
+tally( ~ haskitchen | interiorqual, data = immo |> filter(interiorqual != 0), format = "prop")
+# Häufigkeiten
+tally( ~ haskitchen | interiorqual, data = immo |> filter(interiorqual != 0))
+```
+
+- Stellen Sie die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal in einer geeigneten Grafik dar.
+
+```{r}
+# Grafik
+gf_bar( ~ interiorqual, fill = ~haskitchen, data = immo |> filter(interiorqual != 0))
+gf_bar( ~ interiorqual, fill = ~haskitchen, position = "fill", 
+        data = immo |> filter(interiorqual != 0)) |> 
+  gf_labs(y = "proportion")
+# Mosaikplot
+# Hinweis: x und y sind vertauscht
+mosaicplot(interiorqual ~ haskitchen, data = immo |> filter(interiorqual != 0))
+```
+
+Eigenschaften Mosaikplot
+
+- x-Achse: Breite der Kacheln entspricht Anteil der jeweiligen x-Kategorie
+- y-Achse: Höhe der Kacheln entspricht Anteil der y-Kategorie innerhalb der jeweiligen x-Kategorie
+- Fläche der Kacheln: entspricht Anteil der Merkmalskombination in der Datentabelle
+
+# Metrische Variablen
+
+## Univariate Analyse
+
+#### Aufgaben
+
+- Stellen Sie wichtige Kennzahlen für `totalrent` dar.
+
+```{r}
+# Kennzahlen
+favstats( ~ totalrent, data = immo)
+```
+
+- Analysieren Sie den Boxplot von `totalrent`.
+
+```{r}
+# Boxplot
+gf_boxplot( ~ totalrent, data = immo)
+```
+
+Potentielle Ausreißer oberhalb von ca. 2300 (genau: Q3 + 1.5 IQR), nach visueller Inspektion hier der Wert bei knapp 4000
+
+- Analysieren Sie das Histogramm von `totalrent`.
+
+```{r}
+# Histogramm
+gf_histogram( ~ totalrent, data = immo, bins = 15)
+```
+
+Die Verteilung ist unimodal, rechtsschief.
+Der Schwerpunkt der Werte liegt bei ca. 800 bis 1000, die Spannweite geht von ca. 200 bis 4000.
+
+## Multivariate Analyse
+
+#### Aufgaben
+
+- Gruppieren Sie die Kennzahlen von `totalrent` nach `balcony` und nach `interiorqual` (letzteres wieder gefiltert auf Datensätzen mit vorliegender Bewertung).
+
+```{r}
+# Kennzahlen
+favstats( ~ totalrent | balcony, data = immo)
+favstats( ~ totalrent | interiorqual, data = immo |> filter(interiorqual != 0))
+```
+
+Es zeigt sich, dass ein Balkon mit einer höheren Medianmiete (und höheren Durchschnittsmiete) assoziiert ist.
+Auch die höhere Innenausstattung ist mit einer höheren Median- und Durchschnittsmiete assoziiert.
+
+- Berechnen Sie den Variationskoeffizienten gruppiert nach Ausstattung.
+
+```{r}
+# Standardabweichung / Mittelwert
+sd( ~ totalrent | interiorqual, data = immo |> filter(interiorqual != 0)) / 
+  mean( ~ totalrent | interiorqual, data = immo |> filter(interiorqual != 0))
+```
+
+Die Streuung in den Stufen eins bis drei liegt recht nah beieinander, in der Stufe vier ist sie merklich höher.
+
+## Verteilungs- und Quantilsfunktion
+
+#### Aufgaben
+
+- Wie viel Prozent der Mieten liegt über 1400 Euro?
+
+```{r}
+# Anteil berechnen
+tr1400 <- 1 - pdata( ~ totalrent, q = 1400, data = immo)
+# Wert ausgeben
+tr1400
+```
+
+`r tr1400 * 100` %
+
+- Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
+
+```{r}
+qdata( ~ totalrent, p = 0.1, data = immo)
+```
+
+- Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
+- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen acht und zwölf Euro?[^grenzen]
+
+[^grenzen]: Formal: größer acht und kleiner gleich zwölf
+
+```{r}
+# Variable ergänzen
+immo |> mutate(
+  rentsqm = totalrent/livingspace
+) -> immo
+# Anteil berechnen
+sqm812 <- pdata( ~ rentsqm, q = 12, data = immo) - pdata( ~ rentsqm, q = 8, data = immo)
+# Wert ausgeben
+sqm812
+```
+
+`r sqm812 * 100` %
