@@ -1,7 +1,7 @@
 ---
-title: "Mietpreise"
+title: "Beispiellösung Fallstudie Mietpreise"
 lang: de
-author: "Ihr Name"
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: today
 format: 
   html:
@@ -124,10 +124,12 @@ tally( ~ interiorqual, data = immo, format = "prop")
 gf_bar( ~ balcony, data = immo)
 gf_bar( ~ haskitchen, data = immo)
 gf_bar( ~ interiorqual, data = immo)
-# Balkendiagramme
+# exemplarisch ein Balkendiagramme
 gf_bar(balcony ~ ., data = immo)
-gf_bar(haskitchen ~ ., data = immo)
-gf_bar(interiorqual ~ ., data = immo)
+# zwei Säulendiagramme nebeneinander
+p1 <- gf_bar( ~ balcony, data = immo)
+p2 <- gf_bar( ~ haskitchen, data = immo)
+gridExtra::grid.arrange(p1, p2, nrow = 1)
 ```
 
 ## Multivariate Analyse
@@ -143,22 +145,26 @@ Dazu wird die Datentabelle gefiltert auf Werte für `interiorqual` ungleich (`!=
 
 ```{r}
 # Anteile
-tally( ~ haskitchen | interiorqual, data = immo |> filter(interiorqual != 0), format = "prop")
+tally( ~ haskitchen | interiorqual, 
+       data = immo |> filter(interiorqual != 0), format = "prop")
 # Häufigkeiten
-tally( ~ haskitchen | interiorqual, data = immo |> filter(interiorqual != 0))
+tally( ~ haskitchen | interiorqual, 
+       data = immo |> filter(interiorqual != 0))
 ```
 
 - Stellen Sie die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal in einer geeigneten Grafik dar.
 
 ```{r}
 # Grafik
-gf_bar( ~ interiorqual, fill = ~haskitchen, data = immo |> filter(interiorqual != 0))
+gf_bar( ~ interiorqual, fill = ~haskitchen, 
+        data = immo |> filter(interiorqual != 0))
 gf_bar( ~ interiorqual, fill = ~haskitchen, position = "fill", 
         data = immo |> filter(interiorqual != 0)) |> 
   gf_labs(y = "proportion")
 # Mosaikplot
 # Hinweis: x und y sind vertauscht
-mosaicplot(interiorqual ~ haskitchen, data = immo |> filter(interiorqual != 0))
+mosaicplot(interiorqual ~ haskitchen, 
+           data = immo |> filter(interiorqual != 0))
 ```
 
 Eigenschaften Mosaikplot
@@ -208,7 +214,8 @@ Der Schwerpunkt der Werte liegt bei ca. 800 bis 1000, die Spannweite geht von ca
 ```{r}
 # Kennzahlen
 favstats( ~ totalrent | balcony, data = immo)
-favstats( ~ totalrent | interiorqual, data = immo |> filter(interiorqual != 0))
+favstats( ~ totalrent | interiorqual, 
+          data = immo |> filter(interiorqual != 0))
 ```
 
 Es zeigt sich, dass ein Balkon mit einer höheren Medianmiete (und höheren Durchschnittsmiete) assoziiert ist.
@@ -237,7 +244,7 @@ tr1400 <- 1 - pdata( ~ totalrent, q = 1400, data = immo)
 tr1400
 ```
 
-`r tr1400 * 100` %
+`r tr1400 * 100` % der Mieten
 
 - Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
 
@@ -261,4 +268,4 @@ sqm812 <- pdata( ~ rentsqm, q = 12, data = immo) - pdata( ~ rentsqm, q = 8, data
 sqm812
 ```
 
-`r sqm812 * 100` %
+`r sqm812 * 100` % der Wohnungen
