@@ -1,0 +1,131 @@
+---
+title: "Quantitative Datenanalyse | Fallstudie LEGO"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format:
+  html:
+    self-contained: true
+editor: visual
+---
+
+# Fallstudie LEGO
+
+::: callout-note
+## Datensatzbeschreibung
+
+Für diese Fallstudie arbeiten Sie mit einem bereits bereinigten LEGO-Datensatz von Peterson und Ziegler (2021). Die Daten wurden aus mehreren Quellen zu LEGO-Sets zusammengetragen und als Lehrdatensatz für statistische Analysen aufbereitet.\
+Der Datensatz umfasst insgesamt 1003 Beobachtungen bei 6 Variablen.\
+Die Beobachtungseinheit des Datensatzes ist jeweils ein LEGO-Set.\
+In der vorliegenden Fallstudie beschränken wir uns auf die Variablen `Item_Number`, `Set_Name`, `Price`, `Pieces`, `Theme` und `Size`.
+
+\
+`Item_Number` beschreibt die jeweilige Identifikationsnummer des Sets,
+
+`Set_Name` den Namen des Sets,
+
+`Price` den empfohlenen Verkaufspreis des Sets,
+
+`Pieces` die Anzahl der enthaltenen Teile,
+
+`Theme` die Themenwelt des Sets und
+
+`Size` die Größenkategorie der LEGO-Sets.
+
+\
+Auf dieser Grundlage bearbeiten Sie im Folgenden Aufgaben zur explorativen Datenanalyse, zur Normalverteilung sowie zur einfachen und multiplen linearen Regression einschließlich eines kurzen inferenzstatistischen Teils.
+:::
+
+## 1. Datenverständnis
+
+### 1.1 Datensatz und Pakete laden
+
+Laden Sie den bereitgestellten bereinigten Datensatz und die benötigten Pakete. Nutzen Sie hierfür den unten bereitgestellten Code. Falls notwendig, installieren Sie die untenstehenden Pakete vorab.
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Datensatz einlesen
+lego <- read.csv(
+  here::here("lego_population_qmd.csv"),
+  stringsAsFactors = TRUE
+)
+```
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `Price`, `Pieces`, `Theme` und `Size` jeweils das Skalenniveau und begründen Sie jede Zuordnung in einem kurzen Satz.
+
+## 2. Explorative Datenanalyse von `Theme`
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `Theme`. Erstellen Sie eine Häufigkeitstabelle, die für jede Kategorie die absolute und relative Häufigkeit enthält.
+
+### 2.2 Balkendiagramm erstellen
+
+Erstellen Sie ein Balkendiagramm der absoluten Häufigkeiten von `Theme`.
+
+### 2.3 Verteilung beschreiben
+
+Beschreiben Sie die Verteilung von `Theme` auf Basis der Tabelle und des Balkendiagramms. Gehen Sie dabei ausdrücklich auf die Anzahl der Kategorien, die häufigste Kategorie und die Frage ein, ob sich die Stichprobe eher auf wenige Themen konzentriert oder breit über viele Themen verteilt.
+
+## 3. Explorative Datenanalyse von `Price`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie ausschließlich die Variable `Price`.
+
+Berechnen Sie für `Price` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25%-Quantil, 75%-Quantil und Interquartilsabstand.
+
+### 3.2 Histogramm erstellen
+
+Erstellen Sie ein Histogramm von `Price`.
+
+### 3.3 Boxplot erstellen
+
+Erstellen Sie einen Boxplot von `Price`.
+
+### 3.4 Verteilung beschreiben
+
+Beschreiben Sie die Verteilung von `Price`. Gehen Sie dabei auf die Lage anhand von Mittelwert und Median, die Streuung anhand von Standardabweichung und Interquartilsabstand, mögliche Schiefe anhand des Histogramms sowie mögliche Ausreißer anhand des Boxplots ein.
+
+## 4. Normalverteilung und einfache lineare Regression
+
+### 4.1 Normalverteilung
+
+Verwenden Sie weiterhin `Price` und nutzen Sie den in Aufgabe 3 berechneten Mittelwert sowie die Standardabweichung als Parameter einer theoretischen Normalverteilung.
+
+Berechnen Sie den z-Wert für `Price = 100`, interpretieren Sie ihn in einem Satz und bestimmen Sie anschließend das 95%-Quantil sowie eine grobe Einordnung von 100 USD mit der 68-95-99,7-Regel.
+
+### 4.2 Zusammenhang zwischen `Pieces` und `Price`
+
+Untersuchen Sie danach den Zusammenhang zwischen `Pieces` und `Price`: Erstellen Sie ein Streudiagramm mit `Pieces` auf der x-Achse und `Price` auf der y-Achse, berechnen Sie die Pearson-Korrelation und beschreiben Sie Richtung und Stärke des Zusammenhangs.
+
+### 4.3 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `Price ~ Pieces`, geben Sie die geschätzte Regressionsgleichung an, interpretieren Sie Konstante und Steigung jeweils in einem eigenen Satz, berichten Sie (R\^2) und berechnen Sie die Punktprognose für ein Set mit `Pieces = 500`.
+
+## 5. Multiple Regression und Inferenz
+
+### 5.1 Regression mit kategorialer unabhängiger Variable
+
+Schätzen Sie zunächst das Modell `Price ~ Size`. Legen Sie dafür vorab die Ausprägung "Small" der Variable "Size" mit dem untenstehenden Code als Referenzkategorie fest.
+
+Interpretieren Sie den Koeffizienten der Nicht-Referenzkategorie als mittleren Preisunterschied zur Referenzkategorie.
+
+```{r}
+# Die Kategorie "Small" für die Variable "Size" als Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+```
+
+### 5.2 Multiple lineare Regression
+
+Schätzen Sie anschließend das multiple lineare Regressionsmodell `Price ~ Pieces + Size` und interpretieren Sie die Koeffizienten von `Pieces` und `Size` inhaltlich.
+
+### 5.3 Inferenz
+
+Formulieren Sie für den Koeffizienten von `SizeLarge` die Nullhypothese und die Alternativhypothese. Geben Sie den p-Wert an und entscheiden Sie auf dem 5%-Niveau, ob sich `Large`- und `Small`-Sets bei gleicher Teilezahl statistisch bedeutsam im Preis unterscheiden. Bestimmen Sie außerdem mithilfe eines Bootstrap-Verfahrens ein 95%-Konfidenzintervall für den Koeffizienten von `SizeLarge` und interpretieren Sie dieses Intervall als plausiblen Bereich für den Preisunterschied zwischen beiden Größenkategorien.
