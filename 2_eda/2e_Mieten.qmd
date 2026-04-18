@@ -111,6 +111,6 @@ Betrachten Sie nur die Datensätze, für die eine Bewertung für die Innenaussta
 - Wie viel Prozent der Mieten liegt über 1400 Euro?
 - Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
 - Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
-- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen acht und zwölf Euro?[^grenzen]
+- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen zehn und zwölf Euro?[^grenzen]
 
-[^grenzen]: Formal: größer acht und kleiner gleich zwölf
+[^grenzen]: Formal: größer zehn und kleiner gleich zwölf
