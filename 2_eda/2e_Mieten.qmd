@@ -56,7 +56,7 @@ head(immo)
 
 ## Vorbereitung
 
-Hinweise
+*Hinweise*
 
 - Code-Chunk einfügen mit Strg-Alt-I (Ctrl-Opt-I) oder über Button oben links.
 - R-Inline-Code mit `'r ...'` (statt Apostroph Accent grave)

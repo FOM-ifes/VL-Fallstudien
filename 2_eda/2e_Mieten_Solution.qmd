@@ -36,7 +36,7 @@ Die Anzahl der Variablen wurden auf die folgenden sieben Variablen beschränkt:
 - `floor`: Stockwerk der Wohnung
 - `interiorqual`: Qualität der Innenausstattung auf einer Skala von null bis vier (nicht verfügbar -- einfach -- normal -- gehoben -- Luxus)
 
-<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "Immo-Datensatz.csv" befindet sich im Projektordner "data". -->
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "mieten-Datensatz.csv" befindet sich im Projektordner "data". -->
 
 ```{r}
 # Daten einlesen
@@ -83,16 +83,18 @@ head(immo)
 
 Da die kategorialen Variablen als ganzzahlige Werte codiert sind, werden sie zu einer Faktor-Variable (*factor*) umgewandelt.
 
+Die neue Datentabelle heißt `mieten`, da es sich um Miet- und nicht um Immobilienpreise handelt.
+
 ```{r}
 # Kategoriale Variablen umwandeln
-immo <- immo |> mutate(
+mieten <- immo |> mutate(
   balcony = factor(balcony, levels = c(0, 1), labels = c("nein", "ja")),
   haskitchen = factor(haskitchen, levels = c(0, 1), labels = c("nein", "ja"))
 )
 # Datenstruktur
-str(immo)
+str(mieten)
 # Obere 6 Beobachtungen 
-head(immo)
+head(mieten)
 ```
 
 # Kategoriale Variablen
@@ -105,14 +107,14 @@ head(immo)
 
 ```{r}
 # Häufigkeiten
-tally( ~ balcony, data = immo)
-tally( ~ haskitchen, data = immo)
-tally( ~ interiorqual, data = immo)
+tally( ~ balcony, data = mieten)
+tally( ~ haskitchen, data = mieten)
+tally( ~ interiorqual, data = mieten)
 
 # Anteile
-tally( ~ balcony, data = immo, format = "prop")
-tally( ~ haskitchen, data = immo, format = "prop")
-tally( ~ interiorqual, data = immo, format = "prop")
+tally( ~ balcony, data = mieten, format = "prop")
+tally( ~ haskitchen, data = mieten, format = "prop")
+tally( ~ interiorqual, data = mieten, format = "prop")
 ```
 
 #### Aufgabe
@@ -121,14 +123,14 @@ tally( ~ interiorqual, data = immo, format = "prop")
 
 ```{r}
 # Säulendiagramme
-gf_bar( ~ balcony, data = immo)
-gf_bar( ~ haskitchen, data = immo)
-gf_bar( ~ interiorqual, data = immo)
+gf_bar( ~ balcony, data = mieten)
+gf_bar( ~ haskitchen, data = mieten)
+gf_bar( ~ interiorqual, data = mieten)
 # exemplarisch ein Balkendiagramme
-gf_bar(balcony ~ ., data = immo)
+gf_bar(balcony ~ ., data = mieten)
 # zwei Säulendiagramme nebeneinander
-p1 <- gf_bar( ~ balcony, data = immo)
-p2 <- gf_bar( ~ haskitchen, data = immo)
+p1 <- gf_bar( ~ balcony, data = mieten)
+p2 <- gf_bar( ~ haskitchen, data = mieten)
 gridExtra::grid.arrange(p1, p2, nrow = 1)
 ```
 
@@ -141,7 +143,7 @@ Betrachten Sie nur die Datensätze, für die eine Bewertung für die Innenaussta
 Dazu wird die Datentabelle gefiltert auf Werte für `interiorqual` ungleich (`!=`) null.
 
 ```{r}
-immo |> filter(interiorqual != 0) -> immoiq
+mieten |> filter(interiorqual != 0) -> mieteniq
 ```
 
 
@@ -151,10 +153,10 @@ immo |> filter(interiorqual != 0) -> immoiq
 ```{r}
 # Anteile
 tally( ~ haskitchen | interiorqual, 
-       data = immoiq, format = "prop")
+       data = mieteniq, format = "prop")
 # Häufigkeiten
 tally( ~ haskitchen | interiorqual, 
-       data = immoiq)
+       data = mieteniq)
 ```
 
 - Stellen Sie die Anteile von `haskitchen` innerhalb von Ausstattungsmerkmal in einer geeigneten Grafik dar.
@@ -162,14 +164,14 @@ tally( ~ haskitchen | interiorqual,
 ```{r}
 # Grafik
 gf_bar( ~ interiorqual, fill = ~haskitchen, 
-        data = immoiq)
+        data = mieteniq)
 gf_bar( ~ interiorqual, fill = ~haskitchen, position = "fill", 
-        data = immoiq) |> 
+        data = mieteniq) |> 
   gf_labs(y = "proportion")
 # Mosaikplot
 # Hinweis: x und y sind vertauscht
 mosaicplot(interiorqual ~ haskitchen, 
-           data = immoiq)
+           data = mieteniq)
 ```
 
 Eigenschaften Mosaikplot
@@ -188,14 +190,14 @@ Eigenschaften Mosaikplot
 
 ```{r}
 # Kennzahlen
-favstats( ~ totalrent, data = immo)
+favstats( ~ totalrent, data = mieten)
 ```
 
 - Analysieren Sie den Boxplot von `totalrent`.
 
 ```{r}
 # Boxplot
-gf_boxplot( ~ totalrent, data = immo)
+gf_boxplot( ~ totalrent, data = mieten)
 ```
 
 Potentielle Ausreißer oberhalb von ca. 2300 (genau: Q3 + 1.5 IQR), nach visueller Inspektion hier der Wert bei knapp 4000
@@ -204,7 +206,7 @@ Potentielle Ausreißer oberhalb von ca. 2300 (genau: Q3 + 1.5 IQR), nach visuell
 
 ```{r}
 # Histogramm
-gf_histogram( ~ totalrent, data = immo, bins = 15)
+gf_histogram( ~ totalrent, data = mieten, bins = 15)
 ```
 
 Die Verteilung ist unimodal, rechtsschief.
@@ -218,9 +220,9 @@ Der Schwerpunkt der Werte liegt bei ca. 800 bis 1000, die Spannweite geht von ca
 
 ```{r}
 # Kennzahlen
-favstats( ~ totalrent | balcony, data = immo)
+favstats( ~ totalrent | balcony, data = mieten)
 favstats( ~ totalrent | interiorqual, 
-          data = immoiq)
+          data = mieteniq)
 ```
 
 Es zeigt sich, dass ein Balkon mit einer höheren Medianmiete (und höheren Durchschnittsmiete) assoziiert ist.
@@ -230,8 +232,8 @@ Auch die höhere Innenausstattung ist mit einer höheren Median- und Durchschnit
 
 ```{r}
 # Standardabweichung / Mittelwert
-sd( ~ totalrent | interiorqual, data = immoiq) / 
-  mean( ~ totalrent | interiorqual, data = immoiq)
+sd( ~ totalrent | interiorqual, data = mieteniq) / 
+  mean( ~ totalrent | interiorqual, data = mieteniq)
 ```
 
 Die Streuung in den Stufen eins bis drei liegt recht nah beieinander, in der Stufe vier ist sie merklich höher.
@@ -244,7 +246,7 @@ Die Streuung in den Stufen eins bis drei liegt recht nah beieinander, in der Stu
 
 ```{r}
 # Anteil berechnen
-tr1400 <- 1 - pdata( ~ totalrent, q = 1400, data = immo)
+tr1400 <- 1 - pdata( ~ totalrent, q = 1400, data = mieten)
 # Wert ausgeben
 tr1400
 ```
@@ -254,7 +256,7 @@ tr1400
 - Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
 
 ```{r}
-qdata( ~ totalrent, p = 0.1, data = immo)
+qdata( ~ totalrent, p = 0.1, data = mieten)
 ```
 
 - Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
@@ -264,11 +266,11 @@ qdata( ~ totalrent, p = 0.1, data = immo)
 
 ```{r}
 # Variable ergänzen
-immo |> mutate(
+mieten |> mutate(
   rentsqm = totalrent/livingspace
-) -> immo
+) -> mieten
 # Anteil berechnen
-sqm1012 <- pdata( ~ rentsqm, q = 12, data = immo) - pdata( ~ rentsqm, q = 10, data = immo)
+sqm1012 <- pdata( ~ rentsqm, q = 12, data = mieten) - pdata( ~ rentsqm, q = 10, data = mieten)
 # Wert ausgeben
 sqm1012
 ```
