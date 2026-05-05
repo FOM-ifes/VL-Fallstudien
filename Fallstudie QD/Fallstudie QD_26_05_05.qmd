@@ -1,0 +1,143 @@
+---
+title: "Quantitative Datenanalyse | Fallstudie LEGO"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format:
+  html:
+    self-contained: true
+editor: source
+---
+
+# Fallstudie LEGO
+
+## 1. Datenverständnis
+
+### 1.1 Datensatz erschließen
+
+Für diese Fallstudie arbeiten Sie mit einem bereinigten Datensatz aus dem Themenfeld LEGO. Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, einen Datensatz nicht nur zu laden, sondern auch seine Struktur und seine Beobachtungseinheiten zu verstehen.
+
+Untersuchen Sie den Datensatz daher zunächst systematisch. Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen der Datensatz umfasst. Bestimmen Sie außerdem, welche Variablen im Datensatz enthalten sind, und erläutern Sie, was in diesem Fall als Beobachtungseinheit verstanden werden kann.
+
+Bearbeiten Sie dazu die folgenden Aufgaben:
+
+- Laden Sie den bereitgestellten Datensatz und die benötigten Pakete.
+- Ermitteln Sie, wie viele Beobachtungen der Datensatz enthält.
+- Ermitteln Sie, wie viele Variablen im Datensatz enthalten sind.
+- Nennen Sie die im Datensatz enthaltenen Variablen.
+- Beschreiben Sie in einem kurzen Satz, was die Beobachtungseinheit des Datensatzes ist.
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Datensatz einlesen
+lego <- read.csv(
+  here("data/lego_population_qmd.csv"),
+)
+```
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `Price`, `Pieces`, `Theme` und `Size` jeweils das Skalenniveau und begründen Sie jede Zuordnung in einem kurzen Satz.
+
+## 2. Explorative Datenanalyse von `Theme`
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `Theme`. Erstellen Sie eine relative und eine absolute Häufigkeitstabelle, die die jeweiligen Werte von jeder Kategorie der Variable enthält.
+
+### 2.2 Säulendiagramm erstellen
+
+Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `Theme`.
+
+### 2.3 Verteilung beschreiben
+
+Beschreiben Sie die Verteilung von `Theme` auf Basis der Tabelle und des Säulendiagramms. Gehen Sie dabei ausdrücklich auf die Anzahl der Kategorien, die häufigste Kategorie und die Frage ein, ob sich die Stichprobe eher auf wenige Themen konzentriert oder breit über viele Themen verteilt.
+
+### 2.4 Gemeinsame Auswertung von 2 kategorialen Variablen
+
+Untersuchen Sie ergänzend den Zusammenhang zwischen `Theme` und `Size` mithilfe einer Kreuztabelle und eines Mosaic Plots. Benennen Sie die auffälligste Besonderheit der Verteilung und beurteilen Sie anschließend, ob der Mosaic Plot für dieses Anwendungsbeispiel gut geeignet ist.
+
+## 3. Explorative Datenanalyse von `Price`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie ausschließlich die Variable `Price`.
+
+Berechnen Sie für `Price` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25%-Quantil, 75%-Quantil und Interquartilsabstand. Interpretieren Sie die Werte anschließend.
+
+### 3.2 Histogramm erstellen und interpretieren
+
+Erstellen Sie ein Histogramm von `Price` und beschreiben Sie anschließend, welche Form die Verteilung aufweist. Gehen Sie dabei insbesondere auf mögliche Schiefe sowie auf die Frage ein, in welchen Preisbereichen sich viele beziehungsweise wenige Werte befinden.
+
+### 3.3 Boxplot erstellen
+
+Erstellen Sie einen Boxplot von `Price` und interpretieren Sie diesen.
+
+
+### 3.4 Verteilungsanteile und Quantile bestimmen
+
+Bestimmen Sie für die Variable `Price` die folgenden Größen:
+
+- Wie viel Prozent der LEGO-Sets kosten mehr als 60 USD?
+- Welchen Preis haben die günstigsten 10 % der LEGO-Sets höchstens?
+
+Nutzen Sie für die Berechnungen `pdata()` und `qdata()`.
+
+## 4. Einfache lineare Regression
+
+### 4.1 Zusammenhang zwischen `Pieces` und `Price`
+
+Untersuchen Sie danach den Zusammenhang zwischen `Pieces` und `Price`: Erstellen Sie ein Streudiagramm mit `Pieces` auf der x-Achse und `Price` auf der y-Achse, berechnen Sie die Pearson-Korrelation und beschreiben Sie Richtung und Stärke des Zusammenhangs.
+
+### 4.2 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `Price ~ Pieces`, geben Sie die geschätzte Regressionsgleichung an, interpretieren Sie Konstante und Steigung jeweils in einem eigenen Satz, berichten Sie \(R^2\) und berechnen Sie die Punktprognose für ein Set mit `Pieces = 500`.
+
+Nutzen Sie für die Punktprognose sowohl eine manuelle Berechnung über die Koeffizienten als auch alternativ die Funktion `predict()`. Vergleichen Sie beide Vorgehensweisen kurz.
+
+## 5. Multiple Regression und Inferenz
+
+### 5.1 Regression mit kategorialer unabhängiger Variable
+
+Schätzen Sie zunächst das Modell `Price ~ Size`. Legen Sie dafür vorab die Ausprägung "Small" der Variable "Size" mit dem untenstehenden Code als Referenzkategorie fest.
+
+Interpretieren Sie den Koeffizienten der Nicht-Referenzkategorie als mittleren Preisunterschied zur Referenzkategorie.
+
+```{r}
+# Die Kategorie "Small" für die Variable "Size" als Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+```
+
+### 5.2 Multiple lineare Regression
+
+Schätzen Sie anschließend das multiple lineare Regressionsmodell `Price ~ Pieces + Size` und interpretieren Sie die Koeffizienten von `Pieces` und `Size` inhaltlich.
+
+### 5.3 Interaktionseffekt zwischen Pieces und Size
+
+Untersuchen Sie nun, ob sich der Zusammenhang zwischen Pieces und Price je nach Größenkategorie Size unterscheidet. Schätzen Sie dazu ein lineares Regressionsmodell mit Wechselwirkung zwischen Pieces und Size.
+
+### 5.4 Regressionsmodelle grafisch vergleichen
+
+Vergleichen Sie das univariate lineare Regressionsmodell, das multiple lineare Regressionsmodell und das Interaktionsmodell mithilfe eines gemeinsamen Koeffizientenplots. Verwenden Sie dafür den untenstehenden Code mit `plot_models()` aus dem Paket `sjPlot`.
+
+Interpretieren Sie die grafische Darstellung inhaltlich. Gehen Sie dabei insbesondere darauf ein, wie sich der Koeffizient von `Pieces` zwischen den Modellen verändert, warum der Effekt von `SizeLarge` im multiplen Modell und im Interaktionsmodell unterschiedlich ausfällt und was der Interaktionsterm `Pieces:SizeLarge` bedeutet.
+
+### 5.5 Punktprognosen im Interaktionsmodell
+
+Verwenden Sie das Interaktionsmodell `Price ~ Pieces * Size`, um Punktprognosen für LEGO-Sets zu berechnen. Nutzen Sie dafür `predict()` mit einem `newdata`-Datensatz, der zwei Werte für `Pieces` enthält: einen Wert vor dem Schnittpunkt der beiden Regressionsgeraden und einen Wert dahinter.
+
+Vergleichen Sie die vorhergesagten Preise für `Small`- und `Large`-Sets und erläutern Sie die Unterschiede inhaltlich.
+
+## 6 Inferenz
+
+### 6.1 Bootstrapping des Koeffizienten von Pieces
+
+Bestimmen Sie für den Koeffizienten von `Pieces` im multiplen linearen Regressionsmodell `Price ~ Pieces + Size` mithilfe eines Bootstrap-Verfahrens den Standardfehler sowie ein 95%-Konfidenzintervall. Interpretieren Sie das Ergebnis inhaltlich und stellen Sie die Verteilung als Histogramm dar.
+
+### 6.2 Permutationsverteilung des Koeffizienten von Pieces
+
+Formulieren Sie für den Koeffizienten von `Pieces` im linearen Regressionsmodell `Price ~ Pieces` die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und entscheiden Sie auf dem 5%-Niveau.
