@@ -5,3 +5,8 @@
 *.html
 *_files*
 *.pdf
+*.aux
+*.log
+*.tex
+*.toc
+.positai
