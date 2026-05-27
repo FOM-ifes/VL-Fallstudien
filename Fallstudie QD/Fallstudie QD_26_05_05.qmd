@@ -122,9 +122,7 @@ Untersuchen Sie nun, ob sich der Zusammenhang zwischen Pieces und Price je nach 
 
 ### 5.4 Regressionsmodelle grafisch vergleichen
 
-Vergleichen Sie das univariate lineare Regressionsmodell, das multiple lineare Regressionsmodell und das Interaktionsmodell mithilfe eines gemeinsamen Koeffizientenplots. Verwenden Sie dafür den untenstehenden Code mit `plot_models()` aus dem Paket `sjPlot`.
-
-Interpretieren Sie die grafische Darstellung inhaltlich. Gehen Sie dabei insbesondere darauf ein, wie sich der Koeffizient von `Pieces` zwischen den Modellen verändert, warum der Effekt von `SizeLarge` im multiplen Modell und im Interaktionsmodell unterschiedlich ausfällt und was der Interaktionsterm `Pieces:SizeLarge` bedeutet.
+Vergleichen Sie das multiple lineare Regressionsmodell und das Interaktionsmodell grafisch mithilfe eines gemeinsamen Koeffizientenplots. Interpretieren Sie die grafische Darstellung inhaltlich. Gehen Sie dabei insbesondere darauf ein, wie sich der Koeffizient von `Pieces` zwischen den Modellen verändert, warum der Effekt von `SizeLarge` im multiplen Modell und im Interaktionsmodell unterschiedlich ausfällt und was der Interaktionsterm `Pieces:SizeLarge` bedeutet.
 
 ### 5.5 Punktprognosen im Interaktionsmodell
 
