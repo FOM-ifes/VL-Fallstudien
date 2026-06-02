@@ -33,10 +33,10 @@ library(mosaic)
 library(tidyr)
 library(here)
 
-# Datensatz einlesen
+# Daten einlesen
 lego <- read.csv(
-  here("data/lego_population_qmd.csv"),
-)
+  here("data", "lego_population_qmd.csv"),
+  )
 ```
 
 ### 1.2 Skalenniveau bestimmen
