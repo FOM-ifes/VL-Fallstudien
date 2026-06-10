@@ -39,9 +39,7 @@ library(tidyr)
 library(here)
 
 # Daten einlesen
-lego <- read.csv(
-  here("data", "lego_population_qmd.csv"),
-  )
+lego <- here("data", "legopopulationqmd.csv") |> read.csv()
 ```
 
 #### Lösung 1.1
@@ -53,9 +51,7 @@ library(tidyr)
 library(here)
 
 # Daten einlesen
-lego <- read.csv(
-here("data", "lego_population_qmd.csv"),
-)
+lego <- here("data", "legopopulationqmd.csv") |> read.csv()
 
 # Struktur der Datentabelle anzeigen
 str(lego)
@@ -357,11 +353,11 @@ Das Bestimmtheitsmaß des multiplen Modells beträgt 0.7981. Somit erklären `Pi
 
 Der Koeffizient von `SizeLarge` verändert sich gegenüber dem bivariaten Modell aus 5.1 deutlich. Dort war `Large` mit einem niedrigeren durchschnittlichen Preis verbunden, während im multiplen Modell bei Kontrolle der Teilezahl ein positiver Effekt von 16.618 USD sichtbar wird. Das zeigt, dass der einfache Mittelwertvergleich zwischen `Small` und `Large` durch Unterschiede in der Teilezahl verzerrt war und dass Large-Sets bei gleicher Teilezahl im Mittel teurer sind.
 
-## 5.3 Interaktionseffekt zwischen Pieces und Size
+### 5.3 Interaktionseffekt zwischen Pieces und Size
 
 Untersuchen Sie nun, ob sich der Zusammenhang zwischen Pieces und Price je nach Größenkategorie Size unterscheidet. Schätzen Sie dazu ein lineares Regressionsmodell mit Wechselwirkung zwischen Pieces und Size.
 
-## Lösung 5.3
+#### Lösung 5.3
 
 ```{r}
 # Referenzkategorie festlegen
@@ -403,16 +399,8 @@ Vergleichen Sie das multiple lineare Regressionsmodell und das Interaktionsmodel
 #### Lösung 5.4
 
 ```{r}
-# Paket laden
-library(sjPlot)
-
 # Regressionsmodelle grafisch vergleichen
-plot_models(
-  mod_multi, modinter,
-  m.labels = c("Multipel", "Interaktion"),
-  show.values = TRUE,
-  show.p = FALSE
-)
+plotModel(mod_multi, modinter, labels = c("Multipel", "Interaktion"))
 ```
 
 Der Koeffizientenplot zeigt, dass der Effekt von Pieces in beiden Modellen positiv ist und mit rund 0.08 USD pro zusätzlichem Teil nahezu unverändert bleibt. Das spricht dafür, dass die Teilezahl ein stabiler und zentraler Prädiktor des Preises ist.
@@ -441,7 +429,7 @@ predict(modinter, newdata = new_cases)
 Die Punktprognosen zeigen, dass der vorhergesagte Preis bei 5 Teilen für Small-Sets 10.84 USD und für Large-Sets 9.06 USD beträgt. Bei 50 Teilen liegt die Vorhersage für Small-Sets bei 14.56 USD und für Large-Sets bei 34.37 USD. Damit ist der vorhergesagte Preis für Large-Sets bei sehr kleiner Teilezahl zunächst noch geringer, bei höherer Teilezahl aber deutlich größer als für Small-Sets. Dies verdeutlicht den Interaktionseffekt: Mit zunehmender Teilezahl steigt der erwartete Preis bei Large-Sets deutlich stärker an als bei Small-Sets.
 
 
-## 6 Inferenz
+## 6. Inferenz
 
 ### 6.1 Bootstrapping des Koeffizienten von Pieces
 
@@ -478,8 +466,7 @@ ki_pieces
 # Bootstrap-Verteilung des Koeffizienten von Pieces als Histogramm darstellen
 gf_histogram(~ Pieces, data = boot_multi, bins = 20) |>
   gf_vline(xintercept = b_pieces, color = "red", linewidth = 1) |>
-  gf_vline(xintercept = ki_pieces[1], linetype = "dashed", color = "blue") |>
-  gf_vline(xintercept = ki_pieces[2], linetype = "dashed", color = "blue")
+  gf_vline(xintercept = ki_pieces, linetype = "dashed", color = "blue")
 ```
 
 Der beobachtete Koeffizient von `Pieces` beträgt `r round(b_pieces, 6)`.
@@ -498,6 +485,12 @@ Da der Wert 0 nicht im Intervall enthalten ist, spricht das Ergebnis dafür, das
 Formulieren Sie für den Koeffizienten von `Pieces` im linearen Regressionsmodell `Price ~ Pieces` die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und entscheiden Sie auf dem 5%-Niveau.
 
 #### Lösung 6.2
+
+Die Hypothesen lauten:
+
+$H_0: \beta_{\text{Pieces}} = 0$
+
+$H_A: \beta_{\text{Pieces}} \neq 0$
 
 ```{r}
 # Beobachteter Koeffizient von Pieces aus dem einfachen Modell
@@ -525,10 +518,7 @@ gf_histogram(~ Pieces_perm, data = perm1, bins = 30)
 p_pieces <- prop(~ (abs(Pieces_perm) >= abs(b_pieces)), data = perm1)
 p_pieces
 ```
-Die Nullhypothese lautet \(H_0: \beta_{\text{Pieces}} = 0\).
-
-Die Alternativhypothese lautet \(H_A: \beta_{\text{Pieces}} \neq 0\).
-
-In 1000 Permutationen trat kein mindestens so extremer Wert auf; daher gilt: p < 0.001.
-
-Dann spricht das Ergebnis dafür, dass zwischen `Pieces` und `Price` ein statistisch evidenter linearer Zusammenhang besteht.
+Anschließend wird für den Koeffizienten von `Pieces` eine Permutationsverteilung unter der Nullhypothese erzeugt.
+Der beobachtete Koeffizient wird mit den Koeffizienten aus den 1000 Permutationen verglichen, um den p-Wert zu bestimmen.
+In 1000 Permutationen trat kein mindestens so extremer Wert auf; daher gilt $p < 0.001$.
+Damit wird die Nullhypothese auf dem 5%-Niveau verworfen.
