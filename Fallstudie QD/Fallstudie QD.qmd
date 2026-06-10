@@ -34,9 +34,7 @@ library(tidyr)
 library(here)
 
 # Daten einlesen
-lego <- read.csv(
-  here("data", "lego_population_qmd.csv"),
-  )
+lego <- here("data", "lego_population_qmd.csv") |> read.csv()
 ```
 
 ### 1.2 Skalenniveau bestimmen
