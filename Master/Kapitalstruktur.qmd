@@ -103,11 +103,11 @@ head(KSQ)
 
 *Aufgabe:* Modellieren Sie zusätzlich die Fremdkapitalquote in Abhängigkeit von
 
-- Sachanlagevermögen und Umsatzwachstum (`lm2`)
-- Sachanlagevermögen und EBIT (`lm3`)
-- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`)
-- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`)
-- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`)
+- Sachanlagevermögen und Umsatzwachstum (`lm2`),
+- Sachanlagevermögen und EBIT (`lm3`),
+- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`).
 
 *Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert für `lngroesse` mit Hilfe einer Permutationsverteilung.
 

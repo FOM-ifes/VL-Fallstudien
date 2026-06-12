@@ -144,11 +144,11 @@ summary(lm1)
 
 *Aufgabe:* Modellieren Sie zusätzlich die Fremdkapitalquote in Abhängigkeit von
 
-- Sachanlagevermögen und Umsatzwachstum (`lm2`)
-- Sachanlagevermögen und EBIT (`lm3`)
-- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`)
-- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`)
-- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`)
+- Sachanlagevermögen und Umsatzwachstum (`lm2`),
+- Sachanlagevermögen und EBIT (`lm3`),
+- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`).
 
 ```{r}
 lm2 <- lm(fkq ~ sach + uw, data = KSQ)
