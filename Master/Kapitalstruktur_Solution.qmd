@@ -1,0 +1,353 @@
+---
+title: "Lösungsskizze: Kapitalstruktur"
+lang: de
+execute:
+  warning: false
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: last-modified
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(here)
+library(dplyr)
+library(tidyr)
+library(mosaic)
+library(ggfortify)
+library(gridExtra)
+library(randomForest)
+library(party)
+library(psych)
+library(REdaS)
+```
+
+# Daten
+
+Wir nutzen die Datentabelle `Kapitalstruktur.csv`, die Daten von möglichen Determinanten zur Kapitalstruktur von 125 deutschen börsennotierten Unternehmen aus den Jahren 2005 bis 2015 enthält.[^KS]
+
+[^KS]: Die Daten stammen aus Ochs, T. (2017) *Makroökonomische und unternehmensspezifische Determinanten der Kapitalstruktur
+– Eine empirische Untersuchung deutscher börsennotierter Unternehmen in der Niedrigzinsphase,* Masterthesis, FOM Hochschule, Studienzentrum Frankfurt.
+
+Variable | Bedeutung 
+--- | ------------ 
+`Name` | Name des Unternehmens 
+`Sektor` | Industriesektor
+`Jahr` | Jahr der Beobachtung
+`Index` | Indexzugehörigkeit (DAX, MDAX, SDAX, TecDAX) 
+`fkq` | Fremdkapitalquote
+`lfk` | langfristiges Fremdkapital (Anteil an der Bilanzsumme) 
+`kfk` | kurzfristiges Fremdkapital (Anteil an der Bilanzsumme) 
+`uw` | Umsatzwachstum
+`lngroesse` | Umsatz (natürlicher Logarithmus)
+`sach` | Sachanlagevermögen (Anteil an der Bilanzsumme)
+`ebit` | Ebit als Maß für die Profitabilität (Anteil an der Bilanzsumme)
+`ndts` | Non Debt Tax Shield (Abschreibungen durch Bilanzsumme)
+`steuer` | Steuern (Anteil am Ebit)
+`beta` | Beta-Faktor (Unternehmensrisiko)
+`BIP` | jährliche Wachstumsrate des Bruttoinlandsprodukts
+`ZS` | Zinsspread zwischen Dreimonatsgeldmarktzins und 10-jährigen Bundesanleihen 
+`INFL` | Inflation (jährliche Änderungsrate des Verbraucherpreisindex)
+`MP` | Marktperformance (jährliche Rendite des DAX)
+
+Einlesen der Datentabelle:
+
+```{r}
+KS <- here("data", "Kapitalstruktur.csv") |> read.csv2(row.names = 1)
+str(KS)
+head(KS)
+```
+
+
+# Regression
+
+Bei den Daten handelt es sich um sogenannte Paneldaten, da es zu jedem Unternehmen Daten zu mehreren Zeitpunkten gibt.
+Für die Regression nutzen wir nur das Jahr 2015 (Querschnittsregression).
+
+```{r}
+KSQ <- KS |> filter(Jahr == 2015)
+dim(KSQ)
+head(KSQ)
+```
+
+## Univariate Regression
+
+### Modellierung
+
+*Aufgabe:* Modellieren Sie die Fremdkapitalquote in Abhängigkeit vom Sachanlagevermögen (Modell `lm1`).
+
+```{r}
+lm1 <- lm(fkq ~ sach, data = KSQ)
+b1 <- coef(lm1)
+b1
+```
+
+### Standardfehler und Konfidenzintervall
+
+*Aufgabe:* Bestimmen Sie den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben.
+
+```{r}
+set.seed(123)
+boot <- do(1000) * lm(fkq ~ sach, data = KSQ |> resample())
+head(boot)
+gf_histogram( ~ sach, data = boot, bins = 20, center = b1[2]) |> 
+  gf_vline(xintercept = b1[2], color = "blue")
+se <- sd( ~ sach, data = boot)
+se
+ki95 <- qdata( ~ sach, p = c(0.025, 0.975), data = boot)
+ki95
+gf_histogram( ~ sach, data = boot, bins = 20, center = b1[2]) |> 
+  gf_vline(xintercept = b1[2], color = "blue") |> 
+  gf_vline(xintercept = ki95, color = "darkgreen")
+```
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung (`summary()` und `confint()`).
+
+```{r}
+summary(lm1)
+confint(lm1)
+```
+
+### Hypothesentest
+
+*Aufgabe:* Wie lauten die Hypothesen im Regressionsmodell.
+
+*Aufgabe:* Bestimmen Sie den p-Wert mit Hilfe einer Permutationsverteilung.
+
+```{r}
+set.seed(123)
+null1 <- do(1000) * lm(fkq ~ shuffle(sach), data = KSQ)
+head(null1)
+gf_histogram( ~ sach, data = null1, bins = 20, center = 0) |> 
+  gf_vline(xintercept = b1[2], color = "blue")
+pval <- prop( ~ abs(sach) >= abs(b1[2]), data = null1)
+pval
+```
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
+
+```{r}
+summary(lm1)
+```
+
+
+## Verschiedene Modelle
+
+*Aufgabe:* Modellieren Sie zusätzlich die Fremdkapitalquote in Abhängigkeit von
+
+- Sachanlagevermögen und Umsatzwachstum (`lm2`)
+- Sachanlagevermögen und EBIT (`lm3`)
+- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`)
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`)
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`)
+
+```{r}
+lm2 <- lm(fkq ~ sach + uw, data = KSQ)
+lm3 <- lm(fkq ~ sach + ebit, data = KSQ)
+lm4 <- lm(fkq ~ sach + uw + ebit, data = KSQ)
+lm5 <- lm(fkq ~ sach + uw + ebit + lngroesse, data = KSQ)
+lm6 <- lm(fkq ~ sach + uw + ebit + Index, data = KSQ)
+```
+
+*Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert für `lngroesse` mit Hilfe einer Permutationsverteilung.
+
+```{r}
+set.seed(123)
+null5 <- do(1000) * lm(fkq ~ sach + uw + ebit + shuffle(lngroesse), data = KSQ)
+head(null5)
+b5 <- coef(lm5)
+gf_histogram( ~ lngroesse, data = null5, bins = 20, center = 0) |> 
+  gf_vline(xintercept = b5["lngroesse"], color = "blue")
+pval <- prop( ~ abs(lngroesse) >= abs(b5["lngroesse"]), data = null5)
+pval
+```
+
+*Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert der F-Statistik mit Hilfe einer Permutationsverteilung.
+
+```{r}
+set.seed(123)
+nullF <- do(1000) * lm(shuffle(fkq) ~ sach + uw + ebit + lngroesse, data = KSQ)
+head(nullF)
+gf_histogram( ~ F, data = nullF, bins = 20, center = 0)
+FStat <- summary(lm5)$fstatistic[1]
+pvalF <- prop( ~ F >= FStat, data = nullF)
+pvalF
+```
+
+*Aufgabe:* Interpretieren Sie die Modellzusammenfassung des Modells `fkq ~ sach + uw + ebit + lngroesse`. 
+Vergleichen Sie die p-Werte mit den zuvor ermittelten.
+
+```{r}
+summary(lm5)
+```
+
+*Aufgabe:* Vergleichen Sie alle sechs Modelle mit Hilfe von R^2^, AIC und BIC.
+Welches Modell wählen Sie?
+
+```{r}
+rsquared(lm1); AIC(lm1); BIC(lm1)
+rsquared(lm2); AIC(lm2); BIC(lm2)
+rsquared(lm3); AIC(lm3); BIC(lm3)
+rsquared(lm4); AIC(lm4); BIC(lm4)
+rsquared(lm5); AIC(lm5); BIC(lm5)
+rsquared(lm6); AIC(lm6); BIC(lm6)
+```
+
+`lm4`, da es das niedrigste AIC, BIC hat.
+
+# Random Forest
+
+Es wird weiterhin die Datentabelle `KSQ` genutzt.
+Vorab werden fehlende Werte entfernt (notwendig für `randomForest()`) und die kategoriale Variable in einen Faktor umgewandelt (notwendig für `cforest()`).
+
+```{r}
+KSQ2 <- KSQ |> select(c(fkq, uw, sach, ebit, Index)) |> na.omit() 
+dim(KSQ2)
+KSQ2 <- KSQ2 |> mutate(
+  Index = as.factor(Index)
+)
+```
+
+## Modellierung
+
+*Aufgabe:* Modellieren Sie für das Modell `fkq ~ sach + uw + ebit + Index` Random-Forest-Modelle mit `randomForest()` und `cforest()`.
+
+```{r}
+KSQ2 <- KSQ |> select(c(fkq, uw, sach, ebit, Index)) |> na.omit() 
+dim(KSQ2)
+KSQ2 <- KSQ2 |> mutate(
+  Index = as.factor(Index)
+)
+set.seed(123)
+rf6 <- randomForest(fkq ~ ., data = KSQ2)
+rf6
+set.seed(123)
+cf6 <- cforest(fkq ~ ., data = KSQ2)
+cf6
+```
+
+*Aufgabe:* Bestimmen Sie den mittleren quadratischen Fehler im Regressionsmodell und den beiden Random-Forest-Modellen.
+
+```{r}
+mean((predict(lm6) - KSQ2$fkq)^2)
+mean((predict(rf6) - KSQ2$fkq)^2)
+mean((predict(cf6) - KSQ2$fkq)^2)
+```
+
+## Variablenwichtigkeit
+
+*Aufgabe:* Bestimmen Sie die Wichtigkeit der Variablen bei allen drei Modellen.
+
+```{r}
+lm(scale(fkq) ~ scale(sach) + scale(uw) + scale(ebit) + Index, data = KSQ2) |> coef()
+set.seed(123)
+randomForest(fkq ~ ., importance = TRUE, data = KSQ2) |> importance() -> rf6.imp
+rf6.imp
+sort(rf6.imp[, 1], decreasing = TRUE)
+set.seed(123)
+varimp(cf6) -> cf6.imp
+sort(cf6.imp, decreasing = TRUE)
+```
+
+*Hinweis:* In `randomForest()` wird ohne die Angabe von `importance = TRUE` nur `IncNodePurity` ausgegeben, was der Abnahme des Gini-Koeffizienten entspricht.
+Die Ausgabe `%IncMSE` und die Ausgabe bei `cforest()` entspricht der Abnahme der Genauigkeit.
+
+# Hauptkomponentenanalyse
+
+Für die Hauptkomponentenanalyse wird die Datentabelle mit den Paneldaten verwendet.
+Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk`, sowie die fehlenden Werte entfernt.
+
+In einem zweiten Schritt wird zusätzlich die Zielvariable entfernt, da diese im Anschluss durch die Hauptkomponenten modelliert werden soll.
+
+```{r}
+KSnum <- KS |>
+# numerische Variablen auswählen 
+select_if(is.numeric) |>
+# Variable Jahr, lfk, kfk entfernen 
+select(-Jahr, -lfk, -kfk) |>
+# fehlende Werte entfernen
+na.omit() 
+
+# fkq entfernen
+KSnum2 <- KSnum |> select(-fkq)
+```
+
+## Vorbereitung
+
+*Aufgabe:* Überprüfen Sie die Eignung der Daten für eine Hauptkomponentenanalyse.
+
+```{r}
+# Korrelationsplot
+KSnum2 |> cor() |> corrplot::corrplot()
+# Kaiser-Maier-Olkin-Kriterium 
+KMOS(KSnum2) |> print(stats = "KMO")
+# Bartlett-Test 
+bart_spher(KSnum2)
+# MSA-Kriterium
+KMOS(KSnum2) |> print(stats = "MSA")
+```
+
+*Aufgabe:* Bestimmen Sie die Anzahl der Hauptkomponenten.
+
+```{r}
+# Scree-Plot
+VSS.scree(KSnum2)
+# Eigenwerte
+eigen(cor(KSnum2))$values
+# erklärte Varianz
+eigen(cor(KSnum2))$values/sum(eigen(cor(KSnum2))$values)
+cumsum(eigen(cor(KSnum2))$values)/sum(eigen(cor(KSnum2))$values)
+```
+
+## Durchführung der Hauptkomponentenanalyse
+
+*Aufgabe:* Führen Sie eine Hauptkomponentenanalyse mit vier Komponenten unter Nutzung der Varimax-Rotation durch.
+
+```{r}
+# Hauptkomponentenanalyse
+pca <- principal(KSnum2, 4) 
+# Löschen nicht genutzter Ausgabeelemente 
+pca$criteria <- NULL
+# Ausgabe
+print(pca, cut = 0.5, sort = TRUE, digits = 2)
+```
+
+## Grafische Ausgabe in einem Biplot
+
+*Aufgabe:* Geben Sie das Ergebnis in einem Biplot aus.
+
+```{r}
+biPlot(pca, choose = 1:2)
+```
+
+## Nutzung der Scores in einer linearen Regression
+
+*Aufgabe:* Führen Sie eine Regression der Fremdkapitalquote auf die vier Hauptkomponenten durch.
+
+```{r}
+# Fremdkapitalquote aus KSnum übernehmen 
+KSpca <- KSnum |> select(fkq) |>
+  mutate(
+    # Scores der 4 Hauptkomponenten abspeichern
+    extern = pca$scores[, "RC1"], 
+    risiko = pca$scores[, "RC2"], 
+    profit = pca$scores[, "RC3"], 
+    sachav = pca$scores[, "RC4"])
+
+# die ersten Werte ausgeben 
+KSpca |> head()
+
+# Regression
+KSpca.lm <- lm(fkq ~ . -1, data = KSpca) 
+summary(KSpca.lm)
+```
+
