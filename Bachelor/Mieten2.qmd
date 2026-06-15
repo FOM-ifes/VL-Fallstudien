@@ -106,6 +106,8 @@ Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
 
 *Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
 
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
 ## Multivariate Regression
 
 ### Verschiedene Modelle

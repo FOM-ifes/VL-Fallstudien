@@ -231,6 +231,10 @@ p-Werte:
 - `lngroesse:` Der p-Wert (`r pval5["lngroesse"]`) ist sehr groß, die H~0~ kann nicht verworfen werden. Damit ist der Koeffizient nicht statistisch erkennbar von null verschieden. Das Ergebnis aus der Permutationsverteilung wird damit bestätigt.
 - `F-statistic:` Der p-Wert ist sehr klein, die H~0~ kann verworfen werden. Auch hier wird das Ergebnis aus der Permutationsverteilung bestätigt.
 
+Bestimmtheitsmaß: 
+
+Durch das Modell werden `r round(rsquared(lm5), 4) * 100` % der Variation der Fremdkapitalquote erklärt.
+
 *Aufgabe:* Vergleichen Sie alle sechs Modelle mit Hilfe von R^2^, AIC und BIC.
 Welches Modell wählen Sie?
 
