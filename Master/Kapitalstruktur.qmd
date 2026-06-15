@@ -99,6 +99,8 @@ head(KSQ)
 
 *Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
 
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
 ## Verschiedene Modelle
 
 *Aufgabe:* Modellieren Sie zusätzlich die Fremdkapitalquote in Abhängigkeit von
@@ -137,6 +139,9 @@ KSQ2 <- KSQ2 |> mutate(
 
 *Aufgabe:* Modellieren Sie für das Modell `fkq ~ sach + uw + ebit + Index` Random-Forest-Modelle mit `randomForest()` und `cforest()`.
 
+*Hinweis:* `cforest()` aus dem Paket `party` erzeugt ein sogenannten *conditional random forest*.
+Dieser hat im Vergleich zum klassischen Algorithmus den Vorteil, dass die Selektion unverzerrt gegenüber dem Skalenniveau der Variablen ist.
+
 *Aufgabe:* Bestimmen Sie den mittleren quadratischen Fehler im Regressionsmodell und den beiden Random-Forest-Modellen.
 
 ## Variablenwichtigkeit
@@ -149,7 +154,7 @@ Die Ausgabe `%IncMSE` und die Ausgabe bei `cforest()` entspricht der Abnahme der
 # Hauptkomponentenanalyse
 
 Für die Hauptkomponentenanalyse wird die Datentabelle mit den Paneldaten verwendet.
-Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk`, sowie die fehlenden Werte entfernt.
+Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk` (da Bestandteil der Fremdkapitalquote), sowie die fehlenden Werte entfernt.
 
 In einem zweiten Schritt wird zusätzlich die Zielvariable entfernt, da diese im Anschluss durch die Hauptkomponenten modelliert werden soll.
 

@@ -91,6 +91,8 @@ b1 <- coef(lm1)
 b1
 ```
 
+Im Modell der Stichprobe wird mit steigendem Sachanlagevermögen im Mittel eine höhere Fremdkapitalquote beobachtet.
+
 ### Standardfehler und Konfidenzintervall
 
 *Aufgabe:* Bestimmen Sie den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben.
@@ -117,9 +119,13 @@ summary(lm1)
 confint(lm1)
 ```
 
+Der Standardfehler in der Bootstrap-Simulation (`r round(se, 4)`) ist etwas höher als nach theoretischer Verteilungsannahme (`r lmtest::coeftest(lm1)[2, 2] |> round(4)`) und damit ist auch das Konfidenzintervall breiter.
+
 ### Hypothesentest
 
 *Aufgabe:* Wie lauten die Hypothesen im Regressionsmodell.
+
+$H_0: \beta_k = 0$ vs. $H_A: \beta_k \neq 0$.
 
 *Aufgabe:* Bestimmen Sie den p-Wert mit Hilfe einer Permutationsverteilung.
 
@@ -133,12 +139,20 @@ pval <- prop( ~ abs(sach) >= abs(b1[2]), data = null1)
 pval
 ```
 
+Der p-Wert ist kleiner als 1/1000, da in keiner der 1000 Simulation ein so extremer Wert wie der Punktschätzer aufgetreten ist. 
+Damit kann die Nullhypothese verworfen werden, der Punktschätzer ist statistisch verschieden von null.
+
 *Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
 
 ```{r}
 summary(lm1)
 ```
 
+Auch hier ist der p-Wert sehr klein (siehe Spalte `Pr(>|t<)`).
+
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
+Ja, da der Wert der Nullhypothese, null, nicht im Konfidenzintervall liegt und somit kein plausibler Wert ist.
 
 ## Verschiedene Modelle
 
@@ -171,6 +185,9 @@ pval <- prop( ~ abs(lngroesse) >= abs(b5["lngroesse"]), data = null5)
 pval
 ```
 
+Der p-Wert beträgt `r pval` und ist damit sehr groß.
+Damit spricht das Ergebnis nicht gegen die Nullhypothese, es gibt keine statistische Evidenz für einen Zusammenhang zu `lngroesse`.
+
 *Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert der F-Statistik mit Hilfe einer Permutationsverteilung.
 
 ```{r}
@@ -183,12 +200,36 @@ pvalF <- prop( ~ F >= FStat, data = nullF)
 pvalF
 ```
 
+Der p-Wert ist kleiner als 1/1000, damit kann die Nullhypothese, $R^2=0$, das Modell erklärt gar nichts, verworfen werden.
+
 *Aufgabe:* Interpretieren Sie die Modellzusammenfassung des Modells `fkq ~ sach + uw + ebit + lngroesse`. 
 Vergleichen Sie die p-Werte mit den zuvor ermittelten.
 
 ```{r}
 summary(lm5)
 ```
+
+```{r}
+#| echo: false
+b5 <- coef(lm5) |> round(4)
+pval5 <- lmtest::coeftest(lm5)[, 4] |> round(4)
+```
+
+
+Im Modell der Stichprobe wird im Mittel c.p. Folgendes beobachtet:
+
+- `sach:` Eine Erhöhung um eine Einheit ist mit einer Erhöhung der Fremdkapitalquote um `r b5["sach"]` assoziiert.
+- `uw:` Eine Erhöhung um eine Einheit ist mit einer Erhöhung der Fremdkapitalquote um `r b5["uw"]` assoziiert.
+- `ebit:` Eine Erhöhung um eine Einheit ist mit einer Verringer der Fremdkapitalquote um `r -b5["ebit"]` assoziiert.
+- `lngroesse:` Eine Erhöhung um eine Einheit ist mit einer Erhöhung der Fremdkapitalquote um `r b5["lngroesse"]` assoziiert.
+
+p-Werte:
+
+- `sach:` Der p-Wert ist sehr klein, die H~0~ kann verworfen werden. Damit ist der Koeffizient statistisch erkennbar von null verschieden.
+- `uw:` Der p-Wert (`r pval5["uw"]`) ist sehr klein, die H~0~ kann verworfen werden. Damit ist der Koeffizient statistisch erkennbar von null verschieden.
+- `ebit:` Der p-Wert (`r pval5["ebit"]`) ist sehr klein, die H~0~ kann verworfen werden. Damit ist der Koeffizient statistisch erkennbar von null verschieden.
+- `lngroesse:` Der p-Wert (`r pval5["lngroesse"]`) ist sehr groß, die H~0~ kann nicht verworfen werden. Damit ist der Koeffizient nicht statistisch erkennbar von null verschieden. Das Ergebnis aus der Permutationsverteilung wird damit bestätigt.
+- `F-statistic:` Der p-Wert ist sehr klein, die H~0~ kann verworfen werden. Auch hier wird das Ergebnis aus der Permutationsverteilung bestätigt.
 
 *Aufgabe:* Vergleichen Sie alle sechs Modelle mit Hilfe von R^2^, AIC und BIC.
 Welches Modell wählen Sie?
@@ -202,7 +243,10 @@ rsquared(lm5); AIC(lm5); BIC(lm5)
 rsquared(lm6); AIC(lm6); BIC(lm6)
 ```
 
-`lm4`, da es das niedrigste AIC, BIC hat.
+`lm4`, da es das niedrigste AIC sowie BIC hat.
+
+In `lm6` ist durch die zusätzlich Variable `Index` das Bestimmtheitsmaß merklich höher als im Modell `lm4` (`r round(rsquared(lm4), 4)` vs. `r round(rsquared(lm6), 4)`).
+Die zusätzliche Variable (bzw. mehrere Indikatorvariablen) erhöhen die Komplexität und kosten Freiheitsgrade, die der zusätzlich Erklärungsbeitrag nicht ausgleichen kann, was z. B. im AIC gut zu sehen ist (`r round(AIC(lm4), 2)` vs. `r round(AIC(lm6), 2)`).
 
 # Random Forest
 
@@ -220,6 +264,9 @@ KSQ2 <- KSQ2 |> mutate(
 ## Modellierung
 
 *Aufgabe:* Modellieren Sie für das Modell `fkq ~ sach + uw + ebit + Index` Random-Forest-Modelle mit `randomForest()` und `cforest()`.
+
+*Hinweis:* `cforest()` aus dem Paket `party` erzeugt ein sogenannten *conditional random forest*.
+Dieser hat im Vergleich zum klassischen Algorithmus den Vorteil, dass die Selektion unverzerrt gegenüber dem Skalenniveau der Variablen ist.
 
 ```{r}
 KSQ2 <- KSQ |> select(c(fkq, uw, sach, ebit, Index)) |> na.omit() 
@@ -243,9 +290,14 @@ mean((predict(rf6) - KSQ2$fkq)^2)
 mean((predict(cf6) - KSQ2$fkq)^2)
 ```
 
+Der mittlere quadratische Fehler ist im `cforest`-Modell am niedrigsten (daher zu bevorzugen), gefolgt von `randomForest` und mit Abstand linearer Regression.
+
 ## Variablenwichtigkeit
 
 *Aufgabe:* Bestimmen Sie die Wichtigkeit der Variablen bei allen drei Modellen.
+
+*Hinweis:* In `randomForest()` wird ohne die Angabe von `importance = TRUE` nur `IncNodePurity` ausgegeben, was der Abnahme des Gini-Koeffizienten entspricht.
+Die Ausgabe `%IncMSE` und die Ausgabe bei `cforest()` entspricht der Abnahme der Genauigkeit.
 
 ```{r}
 lm(scale(fkq) ~ scale(sach) + scale(uw) + scale(ebit) + Index, data = KSQ2) |> coef()
@@ -258,13 +310,16 @@ varimp(cf6) -> cf6.imp
 sort(cf6.imp, decreasing = TRUE)
 ```
 
-*Hinweis:* In `randomForest()` wird ohne die Angabe von `importance = TRUE` nur `IncNodePurity` ausgegeben, was der Abnahme des Gini-Koeffizienten entspricht.
-Die Ausgabe `%IncMSE` und die Ausgabe bei `cforest()` entspricht der Abnahme der Genauigkeit.
+Im skalierten Regressionsmodell ist `sach` die wichtigste Variable, gefolgt von `uw` und `ebit`.
+Im `randomForest`-Modell ist die Reihenfolge ` `r rf6.imp[, 1] |> sort(decreasing = TRUE) |> names() |> paste0()` `.
+Im `cforest`-Modell ist die Reihenfolge ` `r cf6.imp |> sort(decreasing = TRUE) |> names() |> paste0()` `.
+
+Die zuvor genannten Gründe (Modell mit metrischen und kategorialen Variablen) sprechen für das Ergebnis des `cforest`-Modells.
 
 # Hauptkomponentenanalyse
 
 Für die Hauptkomponentenanalyse wird die Datentabelle mit den Paneldaten verwendet.
-Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk`, sowie die fehlenden Werte entfernt.
+Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk` (da Bestandteil der Fremdkapitalquote), sowie die fehlenden Werte entfernt.
 
 In einem zweiten Schritt wird zusätzlich die Zielvariable entfernt, da diese im Anschluss durch die Hauptkomponenten modelliert werden soll.
 
@@ -296,6 +351,17 @@ bart_spher(KSnum2)
 KMOS(KSnum2) |> print(stats = "MSA")
 ```
 
+```{r}
+#| echo: false
+
+KMOS(KSnum2)$MSA -> MSA
+```
+
+Die Daten sind geeignet, da das KMO-Kriterium über 0.5 liegt und der Bartlett-Test die Nullhypothese (kein Unterschied zwischen Korrelationsmatrix und Einheitsmatrix) verwirft.
+Auch zeigt der Korrelationsplot Korrelationen zwischen einigen Variablen.
+
+Das MSA-Kriterium zeigt die Eignung einzelner Variablen, auch hier ist die Untergrenze 0.5 für alle Variablen außer der Variablen ` `r which(MSA < 0.5) |> names() |> paste0()` ` erfüllt.
+
 *Aufgabe:* Bestimmen Sie die Anzahl der Hauptkomponenten.
 
 ```{r}
@@ -307,6 +373,10 @@ eigen(cor(KSnum2))$values
 eigen(cor(KSnum2))$values/sum(eigen(cor(KSnum2))$values)
 cumsum(eigen(cor(KSnum2))$values)/sum(eigen(cor(KSnum2))$values)
 ```
+
+Nach Ellenbogenkriterium wären drei Hauptkomponenten zu wählen (links vor dem am weitesten rechts liegenden Knick), nach Eigenwertkriterium vier Hauptkomponenten.
+
+Da erst vier Hauptkomponenten mehr als 50 % der Varianz erklären, sollten vier Komponenten gewählt werden.
 
 ## Durchführung der Hauptkomponentenanalyse
 
@@ -321,6 +391,11 @@ pca$criteria <- NULL
 print(pca, cut = 0.5, sort = TRUE, digits = 2)
 ```
 
+`INFL, ZS, MP, BIP` laden auf die erste Hauptkomponente, dies sind die unternehmensexternen Faktoren.
+`lngroesse, beta` laden auf die zweite Komponenten, diese könnte unter dem Begriff Risiko zusammengefasst werden.
+`steuer, ebit` laden auf die dritte Komponente und hängen mit der Profitabilität zusammen.
+`sach, ntds` laden auf die vierte Komponente und hängen mit Sachanlagevermögen und Abschreibungen zusammen.
+
 ## Grafische Ausgabe in einem Biplot
 
 *Aufgabe:* Geben Sie das Ergebnis in einem Biplot aus.
@@ -328,6 +403,13 @@ print(pca, cut = 0.5, sort = TRUE, digits = 2)
 ```{r}
 biPlot(pca, choose = 1:2)
 ```
+
+Hier sind die deutlichen Zuordnungen auf die ersten beiden Komponenten (Achsen des Koordinatensystems) zu erkennen.
+
+Die untere und die linke Achse zeigen die Werte innerhalb der beiden Komponenten an.
+Die obere und die rechte Achse zeigen die Korrelationen (bzw. Ladungen) zu den beiden Hauptkomponenten.
+
+Weiterhin ist zu erkennen, dass die erste Hauptkomponenten die Daten in Cluster gruppiert.
 
 ## Nutzung der Scores in einer linearen Regression
 
@@ -351,3 +433,7 @@ KSpca.lm <- lm(fkq ~ . -1, data = KSpca)
 summary(KSpca.lm)
 ```
 
+Hier ist zu empfehlen die Scores zu verwenden, da es negative Ladungen gibt.
+
+Das Ergebnis der Regression zeigt, dass nur der Zusammenhang zur Profitabilität und dem Sachanlagevermögen signifikant ist.
+Eine höherer Wert auf der Komponente Profitabilität spricht für eine niedrigere Fremdkapitalquote, während ein höherer Wert auf der Komponenten Sachanlagevermögen für eine höhere Fremdkapitalquote spricht.
