@@ -4,6 +4,12 @@ lang: de
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: today
 format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
   html:
     toc: true
     html-math-method: katex
