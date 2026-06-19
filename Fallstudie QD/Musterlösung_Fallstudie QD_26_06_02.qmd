@@ -4,8 +4,9 @@ author: "Dozent:in, FOM Hochschule"
 date: "today"
 lang: de
 format:
-  html:
-    self-contained: true
+  html: 
+    toc: true
+    html-math-method: katex
 execute:
   warning: false
   message: false
@@ -122,7 +123,7 @@ Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `Theme`.
 
 ```{r}
 # Säulendiagramm der absoluten Häufigkeiten von Theme erstellen
-gf_bar(~ Theme, data = lego) |>
+gf_bar(~ Theme, data = lego)|>
   gf_theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
@@ -156,7 +157,7 @@ Untersuchen Sie ergänzend den Zusammenhang zwischen `Theme` und `Size` mithilfe
 
 ```{r}
 # Kreuztabelle von Theme und Size ausgeben
-tally(~ Theme | Size, data = lego)
+tally(Theme ~ Size, data = lego)
 
 # Mosaic Plot für Theme und Size erstellen
 mosaicplot(~ Theme + Size, data = lego,
