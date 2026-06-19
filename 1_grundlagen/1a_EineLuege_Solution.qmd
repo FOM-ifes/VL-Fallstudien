@@ -1,7 +1,7 @@
 ---
 title: "1a_Musterlösung"
 lang: de
-date: "`r Sys.Date()`"
+date: today
 format: 
   html:
     toc: true
