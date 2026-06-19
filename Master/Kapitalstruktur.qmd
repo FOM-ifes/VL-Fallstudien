@@ -1,0 +1,190 @@
+---
+title: "Fallstudie: Kapitalstruktur"
+lang: de
+execute:
+  warning: false
+author: "Ihr Name"
+date: last-modified
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(here)
+library(dplyr)
+library(tidyr)
+library(mosaic)
+library(ggfortify)
+library(gridExtra)
+library(randomForest)
+library(party)
+library(psych)
+library(REdaS)
+```
+
+# Daten
+
+Wir nutzen die Datentabelle `Kapitalstruktur.csv`, die Daten von möglichen Determinanten zur Kapitalstruktur von 125 deutschen börsennotierten Unternehmen aus den Jahren 2005 bis 2015 enthält.[^KS]
+
+[^KS]: Die Daten stammen aus Ochs, T. (2017) *Makroökonomische und unternehmensspezifische Determinanten der Kapitalstruktur
+– Eine empirische Untersuchung deutscher börsennotierter Unternehmen in der Niedrigzinsphase,* Masterthesis, FOM Hochschule, Studienzentrum Frankfurt.
+
+Variable | Bedeutung 
+--- | ------------ 
+`Name` | Name des Unternehmens 
+`Sektor` | Industriesektor
+`Jahr` | Jahr der Beobachtung
+`Index` | Indexzugehörigkeit (DAX, MDAX, SDAX, TecDAX) 
+`fkq` | Fremdkapitalquote
+`lfk` | langfristiges Fremdkapital (Anteil an der Bilanzsumme) 
+`kfk` | kurzfristiges Fremdkapital (Anteil an der Bilanzsumme) 
+`uw` | Umsatzwachstum
+`lngroesse` | Umsatz (natürlicher Logarithmus)
+`sach` | Sachanlagevermögen (Anteil an der Bilanzsumme)
+`ebit` | Ebit als Maß für die Profitabilität (Anteil an der Bilanzsumme)
+`ndts` | Non Debt Tax Shield (Abschreibungen durch Bilanzsumme)
+`steuer` | Steuern (Anteil am Ebit)
+`beta` | Beta-Faktor (Unternehmensrisiko)
+`BIP` | jährliche Wachstumsrate des Bruttoinlandsprodukts
+`ZS` | Zinsspread zwischen Dreimonatsgeldmarktzins und 10-jährigen Bundesanleihen 
+`INFL` | Inflation (jährliche Änderungsrate des Verbraucherpreisindex)
+`MP` | Marktperformance (jährliche Rendite des DAX)
+
+Einlesen der Datentabelle:
+
+```{r}
+KS <- here("data", "Kapitalstruktur.csv") |> read.csv2(row.names = 1)
+str(KS)
+head(KS)
+```
+
+
+# Regression
+
+Bei den Daten handelt es sich um sogenannte Paneldaten, da es zu jedem Unternehmen Daten zu mehreren Zeitpunkten gibt.
+Für die Regression nutzen wir nur das Jahr 2015 (Querschnittsregression).
+
+```{r}
+KSQ <- KS |> filter(Jahr == 2015)
+dim(KSQ)
+head(KSQ)
+```
+
+## Univariate Regression
+
+### Modellierung
+
+*Aufgabe:* Modellieren Sie die Fremdkapitalquote in Abhängigkeit vom Sachanlagevermögen (Modell `lm1`).
+
+### Standardfehler und Konfidenzintervall
+
+*Aufgabe:* Bestimmen Sie den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben.
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung (`summary()` und `confint()`).
+
+### Hypothesentest
+
+*Aufgabe:* Wie lauten die Hypothesen im Regressionsmodell.
+
+*Aufgabe:* Bestimmen Sie den p-Wert mit Hilfe einer Permutationsverteilung.
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
+
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
+## Verschiedene Modelle
+
+*Aufgabe:* Modellieren Sie zusätzlich die Fremdkapitalquote in Abhängigkeit von
+
+- Sachanlagevermögen und Umsatzwachstum (`lm2`),
+- Sachanlagevermögen und EBIT (`lm3`),
+- Sachanlagevermögen, Umsatzwachstum und EBIT (`lm4`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Größe (`lm5`),
+- Sachanlagevermögen, Umsatzwachstum, EBIT und Index (`lm6`).
+
+*Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert für `lngroesse` mit Hilfe einer Permutationsverteilung.
+
+*Aufgabe:* Bestimmen Sie im Modell `fkq ~ sach + uw + ebit + lngroesse` den p-Wert der F-Statistik mit Hilfe einer Permutationsverteilung.
+
+*Aufgabe:* Interpretieren Sie die Modellzusammenfassung des Modells `fkq ~ sach + uw + ebit + lngroesse`. 
+Vergleichen Sie die p-Werte mit den zuvor ermittelten.
+
+*Aufgabe:* Vergleichen Sie alle sechs Modelle mit Hilfe von R^2^, AIC und BIC.
+Welches Modell wählen Sie?
+
+
+# Random Forest
+
+Es wird weiterhin die Datentabelle `KSQ` genutzt.
+Vorab werden fehlende Werte entfernt (notwendig für `randomForest()`) und die kategoriale Variable in einen Faktor umgewandelt (notwendig für `cforest()`).
+
+```{r}
+KSQ2 <- KSQ |> select(c(fkq, uw, sach, ebit, Index)) |> na.omit() 
+dim(KSQ2)
+KSQ2 <- KSQ2 |> mutate(
+  Index = as.factor(Index)
+)
+```
+
+## Modellierung
+
+*Aufgabe:* Modellieren Sie für das Modell `fkq ~ sach + uw + ebit + Index` Random-Forest-Modelle mit `randomForest()` und `cforest()`.
+
+*Hinweis:* `cforest()` aus dem Paket `party` erzeugt ein sogenannten *conditional random forest*.
+Dieser hat im Vergleich zum klassischen Algorithmus den Vorteil, dass die Selektion unverzerrt gegenüber dem Skalenniveau der Variablen ist.
+
+*Aufgabe:* Bestimmen Sie den mittleren quadratischen Fehler im Regressionsmodell und den beiden Random-Forest-Modellen.
+
+## Variablenwichtigkeit
+
+*Aufgabe:* Bestimmen Sie die Wichtigkeit der Variablen bei allen drei Modellen.
+
+*Hinweis:* In `randomForest()` wird ohne die Angabe von `importance = TRUE` nur `IncNodePurity` ausgegeben, was der Abnahme des Gini-Koeffizienten entspricht.
+Die Ausgabe `%IncMSE` und die Ausgabe bei `cforest()` entspricht der Abnahme der Genauigkeit.
+
+# Hauptkomponentenanalyse
+
+Für die Hauptkomponentenanalyse wird die Datentabelle mit den Paneldaten verwendet.
+Es werden die numerischen Variablen ausgewählt, `Jahr`, `lfk` und `kfk` (da Bestandteil der Fremdkapitalquote), sowie die fehlenden Werte entfernt.
+
+In einem zweiten Schritt wird zusätzlich die Zielvariable entfernt, da diese im Anschluss durch die Hauptkomponenten modelliert werden soll.
+
+```{r}
+KSnum <- KS |>
+# numerische Variablen auswählen 
+select_if(is.numeric) |>
+# Variable Jahr, lfk, kfk entfernen 
+select(-Jahr, -lfk, -kfk) |>
+# fehlende Werte entfernen
+na.omit() 
+
+# fkq entfernen
+KSnum2 <- KSnum |> select(-fkq)
+```
+
+## Vorbereitung
+
+*Aufgabe:* Überprüfen Sie die Eignung der Daten für eine Hauptkomponentenanalyse.
+
+*Aufgabe:* Bestimmen Sie die Anzahl der Hauptkomponenten.
+
+## Durchführung der Hauptkomponentenanalyse
+
+*Aufgabe:* Führen Sie eine Hauptkomponentenanalyse mit vier Komponenten unter Nutzung der Varimax-Rotation durch.
+
+## Grafische Ausgabe in einem Biplot
+
+*Aufgabe:* Geben Sie das Ergebnis in einem Biplot aus.
+
+## Nutzung der Scores in einer linearen Regression
+
+*Aufgabe:* Führen Sie eine Regression der Fremdkapitalquote auf die vier Hauptkomponenten durch.

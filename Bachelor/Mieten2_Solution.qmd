@@ -1,0 +1,302 @@
+---
+title: "Beispiellösung Fallstudie Mietpreise"
+lang: de
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: today
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+# Mietpreise in einer fiktiven Stadt
+
+## Population und Stichprobe
+
+Zu einer fiktiven Stadt mit 100000 Mietwohnungen liegen folgende Daten vor:
+
+- `totalrent`: Mietpreis der Wohnung in Euro
+- `livingspace`: Größe der Wohnung in Quadratmeter
+- `balcony`: Wohnung hat einen Balkon (ja/nein)
+- `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
+- `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
+- `floor`: Stockwerk der Wohnung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von eins bis vier (einfach -- normal -- gehoben -- Luxus)
+
+
+```{r}
+# Daten einlesen
+here("data", "Mietenpopulation.csv") |>  read.csv2() -> mietenpop
+str(mietenpop)
+head(mietenpop)
+```
+
+Wir arbeiten mit einer Stichprobe von 500 Wohnungen
+
+```{r}
+set.seed(123)
+# Stichprobe ziehen
+mieten <- mietenpop |> sample(500)
+# Spalte Original-ID löschen
+mieten$orig.id <- NULL
+# Struktur
+str(mieten)
+```
+
+## Zusammenhang zwischen Mietpreis und Wohnfläche
+
+*Aufgabe:* Stellen Sie den Zusammenhang grafisch und mit einer Kennzahl dar.
+
+```{r}
+gf_point(totalrent ~ livingspace, data = mieten)
+cor(totalrent ~ livingspace, data = mieten)
+```
+
+Es zeigt sich ein ausgeprägter linearer Zusammenhang.
+
+## Univariate Regression
+
+### Modellierung
+
+*Aufgabe:* Modellieren Sie Mietpreis in Abhängigkeit von der Wohnfläche (Modell `lm1`).
+
+```{r}
+lm1 <- lm(totalrent ~ livingspace, data = mieten)
+b1 <- coef(lm1)
+b1
+```
+
+Im Modell der Stichprobe ist eine Zunahme der Wohnfläche um einen Quadratmeter im Mittel mit einer Erhöhung des Mietpreises um `r round(b1[2], 2)` Euro assoziiert.
+
+### Standardfehler und Konfidenzintervall
+
+*Aufgabe:* Bestimmen Sie den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben.
+Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
+
+```{r}
+# Bootstrap-Verteilung
+set.seed(123)
+boot <- do(1000) * lm(totalrent ~ livingspace, data = resample(mieten))
+head(boot)
+gf_histogram( ~ livingspace, data = boot, bins = 20, center = b1[2]) |> 
+  gf_vline(xintercept = b1[2], color = "blue")
+# Standardfehler
+sd( ~ livingspace, data = boot)
+# Konfidenzintervall
+ki95 <- qdata( ~ livingspace, p = c(0.025, 0.975), data = boot)
+ki95
+gf_histogram( ~ livingspace, data = boot, bins = 20, center = b1[2]) |> 
+  gf_vline(xintercept = b1[2], color = "blue") |> 
+  gf_vline(xintercept = ki95, color = "darkgreen")
+```
+
+Die Bootstrap-Verteilung ist recht symmetisch (näherungsweise normalverteilt). 
+Der Schwerpunkt liegt bei dem Punktschätzer der Stichprobe.
+Ein plausibler Wertebereich für den unbekannten Wert des Parameters in der Population liegt zwischen `r round(ki95[1], 2)` und `r round(ki95[2], 2)`.
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung (`summary()` und `confint()`).
+
+```{r}
+summary(lm1)
+confint(lm1)
+```
+
+Der Standardfehler nach theoretischer Verteilungsannahme (Spalte `Std. Error`) ist deutlich niedriger als in der Bootstrap-Verteilung (`r coef(summary(lm1))["livingspace", "Std. Error"] |> round(4)` vs. `r sd( ~ livingspace, data = boot) |> round(4)`).
+Damit ist auch das Konfidenzintervall im Vergleich zur Bootstrap-Verteilung schmäler.
+
+### 1000 Stichproben aus der Population
+
+Hier liegt uns die Population vor.
+Wie sieht die Verteilung der Stichprobenstatistik aus, wenn wir 1000 Stichproben aus der Population ziehen?
+
+*Aufgabe:* Erzeugen Sie die Stichprobenverteilung aus 1000 Zufallsstichproben (jeweils n = 500) und stellen diese grafisch dar.
+
+```{r}
+set.seed(123)
+stiprovtl <- do(1000) * lm(totalrent ~ livingspace, data = sample(mietenpop, size = 500))
+gf_histogram( ~ livingspace, data = stiprovtl, bins = 20, center = b1[2])
+```
+
+Die Verteilungsform ist vergleichbar mit der aus der Bootstrap-Verteilung.
+
+*Aufgabe:* Vergleichen Sie die Standardfehler aus der Modellzusammenfassung, der Bootstrap-Verteilung und der Stichprobenverteilung.
+
+```{r}
+# Modellzusammenfassung
+coef(summary(lm1))["livingspace", "Std. Error"]
+# Bootstrap-Verteilung
+sd( ~ livingspace, data = boot)
+# Stichprobenverteilung
+sd( ~ livingspace, data = stiprovtl)
+```
+
+Der Standardfehler aus der Stichprobenverteilung ist deutlich höher.[^HC]
+
+[^HC]: Hintergrund: Das liegt (u. a.) an der sogenannten Heteroskedastizität, einer nicht konstanten Streuung der Residuen. Der Standardfehler muss daher korrigiert werden.
+
+### Stichprobenumfang verdoppeln
+
+Ziehen Sie eine Stichprobe im Umfang von 1000 Beobachtungen.
+
+```{r}
+set.seed(123)
+# Stichprobe ziehen
+mieten1000 <- mietenpop |> sample(1000)
+# Spalte Original-ID löschen
+mieten1000$orig.id <- NULL
+# Struktur
+str(mieten1000)
+```
+
+*Aufgabe:* Bestimmen Sie mit der neuen Stichprobe den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben (`boot1000`).
+Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
+
+```{r}
+# Koeffizienten aus der neuen Stichprobe abspeichern
+b1000 <- lm(totalrent ~ livingspace, data = mieten1000) |> coef()
+# Bootstrap-Verteilung
+set.seed(123)
+boot1000 <- do(1000) * lm(totalrent ~ livingspace, data = resample(mieten1000))
+head(boot1000)
+gf_histogram( ~ livingspace, data = boot1000, bins = 20, center = b1000[2]) |> 
+  gf_vline(xintercept = b1000[2], color = "blue")
+# Standardfehler
+sd( ~ livingspace, data = boot1000)
+# Konfidenzintervall
+ki951000 <- qdata( ~ livingspace, p = c(0.025, 0.975), data = boot1000)
+ki951000
+gf_histogram( ~ livingspace, data = boot1000, bins = 20, center = b1000[2]) |> 
+  gf_vline(xintercept = b1000[2], color = "blue") |> 
+  gf_vline(xintercept = ki951000, color = "darkgreen")
+```
+
+Der Standardfehler ist durch die Erhöhung des Stichprobenumfangs kleiner geworden, damit ist auch das Konfidenzintervall schmäler geworden.
+Die Unsicherheit der Schätzung nimmt daher mit zunehmenden Stichprobenumfang ab.
+
+### Hypothesentest
+
+*Aufgabe:* Wie lauten die Hypothesen im Regressionsmodell.
+
+$H_0: \beta_k = 0$ vs. $H_A: \beta_k \neq 0$.
+
+*Aufgabe:* Bestimmen Sie den p-Wert mit Hilfe einer Permutationsverteilung (wieder aus der ersten Stichprobe, n = 500).
+
+```{r}
+# Nullverteilung
+set.seed(123)
+null <- do(1000) * lm(totalrent ~ shuffle(livingspace), data = mieten)
+head(null)
+gf_histogram( ~ livingspace, data = null, bins = 20, center = 0) |> 
+  gf_vline(xintercept = b1[2], color = "blue")
+# p-Wert
+pval <- prop( ~ abs(livingspace) >= abs(b1[2]), data = null)
+pval
+```
+
+Der p-Wert ist kleiner als 1/1000, da in keiner der 1000 Simulation ein so extremer Wert wie der Punktschätzer aufgetreten ist. 
+Damit kann die Nullhypothese verworfen werden, der Punktschätzer ist statistisch verschieden von null.
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
+
+```{r}
+summary(lm1)
+```
+
+Auch hier ist der p-Wert sehr klein (siehe Spalte `Pr(>|t<)`).
+
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
+Ja, da der Wert der Nullhypothese, null, nicht im Konfidenzintervall liegt und somit kein plausibler Wert ist.
+
+## Multivariate Regression
+
+### Verschiedene Modelle
+
+*Aufgabe:* Modellieren Sie zusätzlich den Mietpreis in Abhängigkeit von
+
+- Wohnfläche und Balkon (`lm2`),
+- Wohnfläche und Balkon sowie die Interaktion zwischen den beiden (`lm3`),
+- Wohnfläche, Balkon und Qualität der Innenausstattung (`lm4`).
+
+```{r}
+lm2 <- lm(totalrent ~ livingspace + balcony, data = mieten)
+lm3 <- lm(totalrent ~ livingspace + balcony + livingspace:balcony, data = mieten)
+lm4 <- lm(totalrent ~ livingspace + balcony + interiorqual, data = mieten)
+```
+
+### Modellzusammenfassung
+
+*Aufgabe:* Interpretieren Sie die Modellzusammenfassung des Modells `lm2`.
+
+```{r}
+summary(lm2)
+```
+
+```{r}
+#| echo: false
+b2 <- coef(lm2) |> round(4)
+pval2 <- lmtest::coeftest(lm2)[, 4] |> round(4)
+```
+
+Im Modell der Stichprobe wird im Mittel c.p. Folgendes beobachtet:
+
+- `livingspace:` Eine Erhöhung der Wohnfläche um einen Quadratmeter mit einer Erhöhung des Mietpreises um `r b2["livingspace"]` Euro assoziiert.
+- `balconynein:` Eine Wohnung ohne Balkon hat im Vergleich zu einer Wohnung mit Balkon (Referenzkategorie) einen `r -b2["balconynein"]` niedrigeren Mietpreis.
+
+p-Werte:
+
+- `livingspace:` Der p-Wert ist sehr klein, die H~0~ kann verworfen werden. Damit ist der Koeffizient statistisch erkennbar von null verschieden.
+- `balconynein:` Der p-Wert (`r pval2["balconynein"]`) ist groß, die H~0~ kann nicht verworfen werden. Damit ist der Koeffizient nicht statistisch erkennbar von null verschieden. Das Ergebnis spricht nicht für einen Zusammenhang in der Population.
+
+Bestimmtheitsmaß: 
+
+Durch das Modell werden `r round(rsquared(lm2), 4) * 100` % der Variation des Mietpreises erklärt.
+
+
+### Grafische Darstellung
+
+*Aufgabe:* Stellen Sie die Modelle `lm2` und `lm3` grafisch dar.
+
+```{r}
+plotModel(lm2)
+plotModel(lm3)
+```
+
+Durch die berücksichtigte Wechselwirkung in Modell `lm3` zeigen sich unterschiedliche Steigungen.
+
+### Modellselektion
+
+*Aufgabe:* Welches der vier Modelle wählen Sie?
+Nutzen Sie zur Entscheidungsfindung das *Akaike Information Criterion*, `AIC()` -- je niedriger, desto besser.
+Zeigen Sie zusätzlich das Bestimmtheitsmaß (`rsquared()`).
+
+```{r}
+rsquared(lm1); AIC(lm1)
+rsquared(lm2); AIC(lm2)
+rsquared(lm3); AIC(lm3)
+rsquared(lm4); AIC(lm4)
+```
+
+Modell `lm4` zeigt das niedrigste AIC, ist daher unter den vier Modellen das bevorzugte Modell.
+
+*Ergänzung:* Modell `lm2` zeigt im Vergleich zum `lm1` ein etwas höheres Bestimmtheitsmaß und ein etwas niedriges AIC.
+Da die Differenz im AIC aber kleiner zwei ist, unterscheiden die Modelle sich nicht (Faustregel). 
+Daher sollte das *sparsamere* Modell, also das mit weniger Variablen bevorzugt werden (wenn nur `lm1` und `lm2` zur Auswahl stehen).

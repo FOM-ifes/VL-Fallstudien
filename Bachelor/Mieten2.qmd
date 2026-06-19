@@ -1,0 +1,140 @@
+---
+title: "Fallstudie Mietpreise"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+  html:
+    toc: true
+    html-math-method: katex
+  pdf:
+    toc: true
+    number-sections: false
+    colorlinks: true 
+    papersize: a4
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+# Mietpreise in einer fiktiven Stadt
+
+## Population und Stichprobe
+
+Zu einer fiktiven Stadt mit 100000 Mietwohnungen liegen folgende Daten vor:
+
+- `totalrent`: Mietpreis der Wohnung in Euro
+- `livingspace`: Größe der Wohnung in Quadratmeter
+- `balcony`: Wohnung hat einen Balkon (ja/nein)
+- `yearconstructed`: Baujahr der Wohnung (Jahreszahl)
+- `haskitchen`: Wohnung hat eine Einbauküche (ja/nein)
+- `floor`: Stockwerk der Wohnung
+- `interiorqual`: Qualität der Innenausstattung auf einer Skala von eins bis vier (einfach -- normal -- gehoben -- Luxus)
+
+
+```{r}
+# Daten einlesen
+here("data", "Mietenpopulation.csv") |>  read.csv2() -> mietenpop
+str(mietenpop)
+head(mietenpop)
+```
+
+Wir arbeiten mit einer Stichprobe von 500 Wohnungen
+
+```{r}
+set.seed(123)
+# Stichprobe ziehen
+mieten <- mietenpop |> sample(500)
+# Spalte Original-ID löschen
+mieten$orig.id <- NULL
+# Struktur
+str(mieten)
+```
+
+## Zusammenhang zwischen Mietpreis und Wohnfläche
+
+*Aufgabe:* Stellen Sie den Zusammenhang grafisch und mit einer Kennzahl dar.
+
+## Univariate Regression
+
+### Modellierung
+
+*Aufgabe:* Modellieren Sie Mietpreis in Abhängigkeit von der Wohnfläche (Modell `lm1`).
+
+### Standardfehler und Konfidenzintervall
+
+*Aufgabe:* Bestimmen Sie den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben.
+Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung (`summary()` und `confint()`).
+
+### 1000 Stichproben aus der Population
+
+Hier liegt uns die Population vor.
+Wie sieht die Verteilung der Stichprobenstatistik aus, wenn wir 1000 Stichproben aus der Population ziehen?
+
+*Aufgabe:* Erzeugen Sie die Stichprobenverteilung aus 1000 Zufallsstichproben (jeweils n = 500) und stellen diese grafisch dar.
+
+*Aufgabe:* Vergleichen Sie die Standardfehler aus der Modellzusammenfassung, der Bootstrap-Verteilung und der Stichprobenverteilung.
+
+### Stichprobenumfang verdoppeln
+
+Ziehen Sie eine Stichprobe im Umfang von 1000 Beobachtungen.
+
+```{r}
+set.seed(123)
+# Stichprobe ziehen
+mieten1000 <- mietenpop |> sample(1000)
+# Spalte Original-ID löschen
+mieten1000$orig.id <- NULL
+# Struktur
+str(mieten1000)
+```
+
+*Aufgabe:* Bestimmen Sie mit der neuen Stichprobe den Standardfehler und ein 95%-Konfidenzintervall aus 1000 Bootstrap-Stichproben (`boot1000`).
+Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
+
+### Hypothesentest
+
+*Aufgabe:* Wie lauten die Hypothesen im Regressionsmodell.
+
+*Aufgabe:* Bestimmen Sie den p-Wert mit Hilfe einer Permutationsverteilung (wieder aus der ersten Stichprobe, n = 500).
+
+*Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
+
+*Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
+## Multivariate Regression
+
+### Verschiedene Modelle
+
+*Aufgabe:* Modellieren Sie zusätzlich den Mietpreis in Abhängigkeit von
+
+- Wohnfläche und Balkon (`lm2`),
+- Wohnfläche und Balkon sowie die Interaktion zwischen den beiden (`lm3`),
+- Wohnfläche, Balkon und Qualität der Innenausstattung (`lm4`).
+
+### Modellzusammenfassung
+
+*Aufgabe:* Interpretieren Sie die Modellzusammenfassung des Modells `lm2`.
+
+### Grafische Darstellung
+
+*Aufgabe:* Stellen Sie die Modelle `lm2` und `lm3` grafisch dar.
+
+### Modellselektion
+
+*Aufgabe:* Welches der vier Modelle wählen Sie?
+Nutzen Sie zur Entscheidungsfindung das *Akaike Information Criterion*, `AIC()` -- je niedriger, desto besser.
+Zeigen Sie zusätzlich das Bestimmtheitsmaß (`rsquared()`).
+

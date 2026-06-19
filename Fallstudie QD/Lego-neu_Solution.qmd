@@ -1,0 +1,1073 @@
+---
+title: "Quantitative Datenanalyse | Fallstudie LEGO"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format:
+  html: 
+    toc: true
+    html-math-method: katex
+execute:
+  warning: false
+  message: false
+editor: source
+---
+
+# Musterlösung
+
+# Fallstudie LEGO
+
+## 1. Datenverständnis
+
+### 1.1 Datentabelle erschließen
+
+Für diese Fallstudie arbeiten Sie mit einer bereinigten Datentabelle aus dem Themenfeld LEGO. Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, eine Datentabelle nicht nur zu laden, sondern auch ihre Struktur und Beobachtungseinheiten zu verstehen.
+
+Untersuchen Sie die Daten daher zunächst systematisch. Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen die Datentabelle umfasst. Bestimmen Sie außerdem, welche Variablen in der Datentabelle enthalten sind, und erläutern Sie, was in diesem Fall als Beobachtungseinheit verstanden werden kann.
+
+Bearbeiten Sie dazu die folgenden Aufgaben:
+
+- Laden Sie die bereitgestellten Daten und die benötigten Pakete.
+- Ermitteln Sie, wie viele Beobachtungen die Datentabelle enthält.
+- Ermitteln Sie, wie viele Variablen in der Datentabelle enthalten sind.
+- Nennen Sie die in der Datentabelle enthaltenen Variablen.
+- Beschreiben Sie in einem kurzen Satz, was die Beobachtungseinheit der Datentabelle ist.
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Daten einlesen
+lego <- read.csv(
+  here("data", "lego_population_qmd.csv"),
+  )
+```
+
+#### Lösung 1.1
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Daten einlesen
+lego <- read.csv(
+here("data", "lego_population_qmd.csv"),
+)
+
+# Struktur der Datentabelle anzeigen
+str(lego)
+
+# Erste Fälle der Datentabelle anzeigen
+head(lego)
+```
+
+Die Daten wurden eingelesen und stehen nun im Objekt `lego` zur Verfügung. Die Datentabelle umfasst 1003 Beobachtungen bei 6 Variablen. Die in der Datentabelle enthaltenen Variablen sind `Item_Number`, `Set_Name`, `Price`, `Pieces`, `Theme` und `Size`.
+
+Die Beobachtungseinheit der Datentabelle ist jeweils ein einzelnes LEGO-Set, da jede Zeile genau ein Set mit den dazugehörigen Merkmalsausprägungen beschreibt. Die Strukturübersicht und die Ausgabe der ersten Fälle ermöglichen damit einen ersten systematischen Überblick über Aufbau und Inhalt der Datentabelle.
+
+
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `Price`, `Pieces`, `Theme` und `Size` jeweils das Skalenniveau und begründen Sie jede Zuordnung in einem kurzen Satz.
+
+#### Lösung 1.2
+
+- `Price`: metrisch, verhältnisskaliert
+
+- `Pieces`: metrisch, verhältnisskaliert
+
+- `Theme`: kategorial, nominalskaliert
+
+- `Size`: kategorial, nominalskaliert
+
+Mögliche Antwortsätze: 
+- `Price` ist metrisch und verhältnisskaliert, weil Preise numerisch gemessen werden und ein sinnvoll interpretierbarer Nullpunkt vorliegt.\
+- `Pieces` ist ebenfalls metrisch und verhältnisskaliert, weil die Anzahl der Teile gezählt wird und Verhältnisse wie „doppelt so viele Teile“ sinnvoll sind.\
+- `Theme` ist kategorial und nominalskaliert, weil die Themenwelten verschiedene Kategorien ohne natürliche Rangordnung darstellen.\
+- `Size` ist ebenfalls kategorial und nominalskaliert, weil auch die Größenkategorien lediglich Gruppen bezeichnen und keine Rangfolge ausdrücken.
+
+## 2. Explorative Datenanalyse von `Theme`
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `Theme`. Erstellen Sie eine relative und eine absolute Häufigkeitstabelle, die die jeweiligen Werte von jeder Kategorie der Variable enthält.
+
+#### Lösung 2.1
+
+```{r}
+# Absolute Häufigkeiten von Theme berechnen
+theme_abs <- tally(~ Theme, data = lego)
+
+# Relative Häufigkeiten von Theme berechnen
+theme_rel <- tally(~ Theme, data = lego, format = "proportion")
+
+# Ausgabe
+theme_abs
+theme_rel
+```
+
+Die generierten Tabellen zeigen für jede Themenkategorie, wie oft sie in der Stichprobe vorkommt und welchen Anteil sie an allen LEGO-Sets hat.\
+Die absoluten Häufigkeiten machen sichtbar, welche Themen oft oder selten vertreten sind.\
+Die relativen Häufigkeiten erleichtern zusätzlich die Einschätzung der Verteilung unabhängig von der Stichprobengröße.
+
+### 2.2 Säulendiagramm erstellen
+
+Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `Theme`.
+
+#### Lösung 2.2
+
+```{r}
+# Säulendiagramm der absoluten Häufigkeiten von Theme erstellen
+gf_bar(~ Theme, data = lego)|>
+  gf_theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+Das Säulendiagramm visualisiert die absoluten Häufigkeiten der einzelnen Themenkategorien.\
+Je höher ein Balken ist, desto häufiger ist die entsprechende Kategorie in der Stichprobe vertreten.\
+Die grafische Darstellung ergänzt die Häufigkeitstabelle und erleichtert den schnellen Vergleich zwischen den Kategorien.
+
+### 2.3 Verteilung beschreiben
+
+Beschreiben Sie die Verteilung von `Theme` auf Basis der Tabelle und des Säulendiagramms. Gehen Sie dabei ausdrücklich auf die Anzahl der Kategorien, die häufigste Kategorie und die Frage ein, ob sich die Stichprobe eher auf wenige Themen konzentriert oder breit über viele Themen verteilt.
+
+#### Lösung 2.3
+
+```{r}
+# Beide bereits berechneten Tabellen absteigend sortieren
+theme_abs <- sort(theme_abs, decreasing = TRUE)
+theme_rel <- sort(theme_rel, decreasing = TRUE)
+
+# Ausgabe
+theme_abs
+theme_rel
+
+```
+
+Die generierten Tabellen zeigen für jede Themenkategorie die absolute und die relative Häufigkeit. Durch die absteigende Sortierung der Tabellen ist direkt erkennbar, welche Themen besonders häufig und welche eher selten in der Stichprobe vertreten sind. Die Variable `Theme` umfasst 40 Kategorien. Die häufigste Kategorie ist `Star Wars` mit einer absoluten Häufigkeit von 115 Sets beziehungsweise einem relativen Anteil von 11.5 Prozent. Die Verteilung ist nicht vollständig gleichmäßig, weil einige Themen deutlich häufiger vertreten sind als andere. Insgesamt konzentriert sich die Stichprobe damit eher auf einige stärker vertretene Themen, während andere Themen nur mit wenigen Sets vorkommen. Die relativen Häufigkeiten erleichtern zusätzlich die Einschätzung der Verteilung unabhängig von der Stichprobengröße.
+
+### 2.4 Gemeinsame Auswertung von 2 kategorialen Variablen
+
+Untersuchen Sie ergänzend den Zusammenhang zwischen `Theme` und `Size` mithilfe einer Kreuztabelle und eines Mosaic Plots. Benennen Sie die auffälligste Besonderheit der Verteilung und beurteilen Sie anschließend, ob der Mosaic Plot für dieses Anwendungsbeispiel gut geeignet ist.
+
+```{r}
+# Kreuztabelle von Theme und Size ausgeben
+tally(Theme ~ Size, data = lego)
+
+# Mosaic Plot für Theme und Size erstellen
+mosaicplot(~ Theme + Size, data = lego,
+           main = "Mosaic Plot von Theme und Size",
+           xlab = "Theme",
+           ylab = "Size",
+           color = TRUE)
+```
+
+Die Kreuztabelle zeigt die gemeinsamen absoluten Häufigkeiten von `Theme` und `Size`. Die auffälligste Besonderheit besteht darin, dass `DUPLO` als einzige Themenkategorie ausschließlich der Größenkategorie `Large` zugeordnet ist, während alle übrigen Themen ausschließlich in der Kategorie `Small` vorkommen. Dies weist auf eine sehr ungleichmäßige und stark konzentrierte Verteilung der Kombinationen von `Theme` und `Size` hin.
+
+Der Mosaic Plot ist grundsätzlich eine sinnvolle Ergänzung für die grafische Auswertung kategorialer Variablen, weil er gemeinsame Häufigkeiten und mögliche Zusammenhänge visuell darstellt. In diesem Beispiel liefert er jedoch nur einen begrenzten Mehrwert, da die große Zahl an Themenkategorien die Darstellung unübersichtlich macht. Für die Identifikation der zentralen Auffälligkeit ist die Kreuztabelle daher besser geeignet als der Mosaic Plot.
+
+## 3. Explorative Datenanalyse von `Price`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie ausschließlich die Variable `Price`.
+
+Berechnen Sie für `Price` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25%-Quantil, 75%-Quantil und Interquartilsabstand. Interpretieren Sie die Werte anschließend.
+
+#### Lösung 3.1
+
+```{r}
+# Zentrale Kennwerte für Price berechnen
+price_stats <- favstats(~ Price, data = lego)
+price_stats
+
+# Interquartilsabstand 
+price_stats$Q3 - price_stats$Q1
+
+```
+
+Die berechneten Kennwerte deuten auf eine deutlich rechtsschiefe Preisverteilung hin, da der Mittelwert von 47.82 USD über dem Median von 29.99 USD liegt. Zugleich zeigt die Standardabweichung von 60.16 USD eine erhebliche Streuung der Preise. Der Interquartilsabstand von 45.00 USD verdeutlicht, dass die mittleren 50% der Werte relativ breit zwischen 14.99 USD und 59.99 USD verteilt sind. Die große Spannweite von 3.49 USD bis 699.99 USD spricht zudem dafür, dass wenige sehr hohe Preise die Verteilung nach oben ausdehnen.
+
+### 3.2 Histogramm erstellen und interpretieren
+
+Erstellen Sie ein Histogramm von `Price` und beschreiben Sie anschließend, welche Form die Verteilung aufweist. Gehen Sie dabei insbesondere auf mögliche Schiefe sowie auf die Frage ein, in welchen Preisbereichen sich viele beziehungsweise wenige Werte befinden.
+
+#### Lösung 3.2
+
+```{r}
+# Histogramm zur Verteilung von Price erstellen
+gf_histogram(~ Price, data = lego, bins = 12) 
+```
+
+Das Histogramm zeigt, dass sich ein großer Teil der LEGO-Sets im unteren Preisbereich konzentriert, während mit zunehmendem Preis immer weniger Beobachtungen auftreten. Die Verteilung ist damit deutlich rechtsschief und unimodal, da sich ein langer Verteilungsschwanz zu hohen Preisen hin erkennen lässt. Hohe Preise kommen also nur bei wenigen Sets vor, während die meisten Sets vergleichsweise günstig sind.
+
+
+### 3.3 Boxplot erstellen
+
+Erstellen Sie einen Boxplot von `Price` und interpretieren Sie diesen.
+
+#### Lösung 3.3
+
+```{r}
+# Boxplot für Price erstellen
+gf_boxplot(~ Price, data = lego)
+```
+
+Der Boxplot ist konsistent mit den in Aufgabe 3.1 berechneten Kennwerten; der Median liegt bei ca. 30 USD, die mittleren 50% etwa zwischen 15 und 60 USD. Der obere Whisker ist deutlich länger als der untere, was auf eine nach rechts ausgedehnte Verteilung hindeutet. Oberhalb des oberen Whiskers liegen mehrere hohe Werte, was auf eine deutlich rechtsschiefe Verteilung hinweist; ein besonders extremer Wert liegt über 600 USD. 
+
+
+### 3.4 Verteilungsanteile und Quantile bestimmen
+
+Bestimmen Sie für die Variable `Price` die folgenden Größen:
+
+- Wie viel Prozent der LEGO-Sets kosten mehr als 60 USD?
+- Welchen Preis haben die günstigsten 10 % der LEGO-Sets höchstens?
+
+Nutzen Sie für die Berechnungen `pdata()` und `qdata()`.
+
+#### Lösung 3.4
+```{r}
+# Anteil der Sets mit einem Preis über 60 USD berechnen
+p_over_60 <- 1 - pdata(~ Price, q = 60, data = lego)
+p_over_60
+
+# 10%-Quantil von Price berechnen
+q_10_price <- qdata(~ Price, p = 0.10, data = lego)
+q_10_price
+```
+
+## 4. Einfache lineare Regression
+
+### 4.1 Zusammenhang zwischen `Pieces` und `Price`
+
+Untersuchen Sie danach den Zusammenhang zwischen `Pieces` und `Price`: Erstellen Sie ein Streudiagramm mit `Pieces` auf der x-Achse und `Price` auf der y-Achse, berechnen Sie die Pearson-Korrelation und beschreiben Sie Richtung und Stärke des Zusammenhangs.
+
+#### Lösung 4.1
+
+```{r}
+# Streudiagramm zwischen Pieces und Price erstellen
+gf_point(Price ~ Pieces, data = lego)
+
+# Pearson-Korrelation zwischen Pieces und Price berechnen
+r_pieces_price <- cor(Price ~ Pieces, data = lego)
+r_pieces_price
+```
+
+Die Pearson-Korrelation zwischen `Pieces` und `Price` beträgt 0.891. Da der Korrelationskoeffizient positiv und betragsmäßig hoch ist, besteht ein starker positiver linearer Zusammenhang zwischen Teilezahl und Preis. Inhaltlich bedeutet dies, dass LEGO-Sets mit mehr Teilen tendenziell teurer sind.
+
+Das Streudiagramm bestätigt diesen Befund, da die Punktwolke insgesamt eine deutlich ansteigende Tendenz zeigt. Je enger die Punkte um eine gedachte Gerade liegen, desto stärker ist der lineare Zusammenhang; hier ist ein klarer positiver Zusammenhang erkennbar, auch wenn die Punkte insbesondere bei höheren Teilezahlen nicht perfekt auf einer Linie liegen. Zudem nimmt die Streuung im oberen Bereich der Teilezahl sichtbar zu, und einzelne sehr große Sets liegen deutlich oberhalb des Hauptclusters.
+
+### 4.2 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `Price ~ Pieces`, geben Sie die geschätzte Regressionsgleichung an, interpretieren Sie Konstante und Steigung jeweils in einem eigenen Satz, berichten Sie \(R^2\) und berechnen Sie die Punktprognose für ein Set mit `Pieces = 500`.
+
+Nutzen Sie für die Punktprognose sowohl eine manuelle Berechnung über die Koeffizienten als auch alternativ die Funktion `predict()`. Vergleichen Sie beide Vorgehensweisen kurz.
+
+#### Lösung 4.2
+
+```{r}
+# Einfaches lineares Regressionsmodell schätzen
+mod1 <- lm(Price ~ Pieces, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod1)
+
+# Punktprognose für ein Set mit 500 Teilen mithilfe der Koeffizienten berechnen
+coef(mod1)[1] + coef(mod1)[2] * 500
+
+
+# Alternativ: Punktprognose mit predict() berechnen
+predict(mod1, newdata = data.frame(Pieces = 500))
+
+```
+
+Die Konstante von 11.602 gibt den geschätzten Preis für ein hypothetisches LEGO-Set mit 0 Teilen an. Inhaltlich ist dieser Wert vor allem als rechnerischer Ausgangspunkt der Regressionsgeraden zu verstehen, da ein Set mit 0 Teilen praktisch keine sinnvolle inhaltliche Interpretation hat.
+
+Die Steigung von 0.082 bedeutet, dass sich der erwartete Preis im Mittel um 0.082 USD erhöht, wenn die Teilezahl um ein weiteres Teil zunimmt. Mit anderen Worten: LEGO-Sets mit mehr Teilen sind im Mittel teurer, und pro zusätzlichem Teil steigt der geschätzte Preis um rund 8.2 Cent.[^1]
+
+Das Bestimmtheitsmaß beträgt 0.794. Das korrigierte Bestimmtheitsmaß beträgt 0.793.[^2]
+Damit werden 79.4% der Varianz von `Price` durch die Variable `Pieces` erklärt.
+
+Für ein LEGO-Set mit 500 Teilen ergibt sich die Punktprognose:
+
+Price = 11.602 + 0.082 ⋅ 500 = 52.59
+
+Der vorhergesagte Preis für ein Set mit 500 Teilen beträgt somit rund 52.59 USD.
+
+Sowohl die manuelle Berechnung mit `coef()` als auch die Funktion `predict()` liefern für ein LEGO-Set mit 500 Teilen dieselbe Punktprognose von rund 52.59 USD. Die Funktion `predict()` greift dabei auf dieselbe geschätzte Regressionsgleichung zurück wie die Berechnung über Konstante und Steigung.
+
+[^1]Die Modellzusammenfassung zeigt zudem einen kleinen Standardfehler für den Koeffizienten von Pieces, einen großen positiven t-Wert und einen sehr kleinen p-Wert, sodass der lineare Zusammenhang statistisch deutlich von 0 verschieden ist.
+[^2]: Das korrigierte Bestimmtheitsmaß (adjustiertes \(R^2\)) berücksichtigt die Anzahl der Prädiktoren im Modell und ist daher meist etwas kleiner als \(R^2\). Es eignet sich besonders zum Vergleich von Modellen mit unterschiedlich vielen erklärenden Variablen.
+
+
+## 5. Multiple Regression
+
+### 5.1 Regression mit kategorialer unabhängiger Variable
+
+Schätzen Sie zunächst das Modell `Price ~ Size`. Legen Sie dafür vorab die Ausprägung "Small" der Variable "Size" mit dem untenstehenden Code als Referenzkategorie fest.
+
+Interpretieren Sie den Koeffizienten der Nicht-Referenzkategorie als mittleren Preisunterschied zur Referenzkategorie.
+
+```{r}
+# Die Kategorie "Small" für die Variable "Size" als Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+```
+
+#### Lösung 5.1
+
+```{r}
+# Die Kategorie "Small" für die Variable Size als Referenzkategorie festlegen
+lego <- lego |>
+  mutate(Size = factor(Size, levels = c("Small", "Large")))
+
+# Regressionsmodell mit der kategorialen Variable Size schätzen
+mod_size <- lm(Price ~ Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod_size)
+```
+
+Die Referenzkategorie ist `Small`, sodass die Konstante von 48.762 den geschätzten mittleren Preis von LEGO-Sets der Kategorie `Small` angibt. Der Koeffizient von `SizeLarge` beträgt -18.175 und bedeutet, dass `Large`-Sets in diesem bivariaten Modell, ohne Kontrolle weiterer Faktoren, im Mittel 18.175 USD günstiger sind als `Small`-Sets. Da der p-Wert 0.03381 beträgt, ist dieser Unterschied auf dem 5%-Niveau statistisch signifikant. Das Bestimmtheitsmaß von 0.004492 zeigt jedoch, dass `Size` allein nur einen sehr kleinen Teil der Preisunterschiede erklärt.
+
+### 5.2 Multiple lineare Regression
+
+Schätzen Sie anschließend das multiple lineare Regressionsmodell `Price ~ Pieces + Size` und interpretieren Sie die Koeffizienten von `Pieces` und `Size` inhaltlich.
+
+#### Lösung 5.2
+
+```{r}
+# Multiples lineares Regressionsmodell schätzen
+mod_multi <- lm(Price ~ Pieces + Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod_multi)
+```
+
+Die geschätzte Regressionsgleichung lautet: Price = 10.386 + 0.082787 ⋅ Pieces + 16.618 ⋅ SizeLarge. Die Konstante von 10.386 gibt den geschätzten Preis für ein `Small`-Set mit 0 Teilen an und ist vor allem als rechnerischer Ausgangspunkt des Modells zu verstehen.
+
+Der Koeffizient von `Pieces` beträgt 0.082787. Das bedeutet: Wenn die Teilezahl um ein Teil steigt und die Größe des Sets gleich bleibt, erhöht sich der erwartete Preis im Mittel um 0.082787 USD. Anders ausgedrückt steigt der geschätzte Preis bei 100 zusätzlichen Teilen im Mittel um 8.279 USD, wenn `Size` konstant gehalten wird.
+
+Der Koeffizient von `SizeLarge` beträgt 16.618. Das bedeutet, dass `Large`-Sets bei gleicher Teilezahl im Mittel um 16.618 USD teurer sind als `Small`-Sets. Dieser Unterschied ist statistisch signifikant, da der p-Wert 0.0000216 beträgt.
+
+Das Bestimmtheitsmaß des multiplen Modells beträgt 0.7981. Somit erklären `Pieces` und `Size` gemeinsam 79.81 Prozent der Varianz des Preises. Im Vergleich zum einfachen Modell mit nur `Size` zeigt sich damit, dass vor allem die Teilezahl ein zentraler Prädiktor des Preises ist, während `Size` darüber hinaus einen zusätzlichen eigenständigen Beitrag leistet.
+
+Der Koeffizient von `SizeLarge` verändert sich gegenüber dem bivariaten Modell aus 5.1 deutlich. Dort war `Large` mit einem niedrigeren durchschnittlichen Preis verbunden, während im multiplen Modell bei Kontrolle der Teilezahl ein positiver Effekt von 16.618 USD sichtbar wird. Das zeigt, dass der einfache Mittelwertvergleich zwischen `Small` und `Large` durch Unterschiede in der Teilezahl verzerrt war und dass Large-Sets bei gleicher Teilezahl im Mittel teurer sind.
+
+## 5.3 Interaktionseffekt zwischen Pieces und Size
+
+Untersuchen Sie nun, ob sich der Zusammenhang zwischen Pieces und Price je nach Größenkategorie Size unterscheidet. Schätzen Sie dazu ein lineares Regressionsmodell mit Wechselwirkung zwischen Pieces und Size.
+
+## Lösung 5.3
+
+```{r}
+# Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+
+# Regressionsmodell mit Interaktion schätzen
+modinter <- lm(Price ~ Pieces * Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(modinter)
+
+# Koeffizienten ausgeben
+coef(modinter)
+
+```
+
+Die geschätzte Regressionsgleichung lautet: Price = 10.429 + 0.0827 ⋅ Pieces - 4.177 ⋅ SizeLarge + 0.4797 ⋅ (Pieces ⋅ SizeLarge).
+
+Dabei steht `Pieces` für die Teilezahl des jeweils betrachteten LEGO-Sets. Die Variable `SizeLarge` ist eine Indikatorvariable und nimmt den Wert 1 an, wenn es sich um ein Large-Set handelt, und sonst den Wert 0.
+
+Da `Small` die Referenzkategorie ist, beschreibt der Koeffizient von `Pieces` den Zusammenhang zwischen Teilezahl und Preis für Small-Sets. Das bedeutet: Bei Small-Sets steigt der erwartete Preis im Mittel um 0.0827 USD, wenn die Teilezahl um ein zusätzliches Teil zunimmt.
+
+Der Koeffizient von `SizeLarge` gibt den Unterschied zwischen Large- und Small-Sets an, wenn die Teilezahl 0 beträgt. Dieser Wert liegt bei -4.177 USD und ist inhaltlich vor allem als rechnerischer Bestandteil des Modells zu verstehen, da ein LEGO-Set mit 0 Teilen keine sinnvolle praktische Interpretation besitzt.
+
+Der Koeffizient des Interaktionsterms `Pieces:SizeLarge` beträgt 0.4797. Das bedeutet, dass sich der erwartete Preis bei Large-Sets pro zusätzlichem Teil um 0.4797 USD stärker erhöht als bei Small-Sets.
+
+Für Small-Sets ergibt sich damit die Regressionsgleichung: Price = 10.429 + 0.0827 ⋅ Pieces.
+
+Für Large-Sets ergibt sich dagegen: Price = (10.429 - 4.177) + (0.0827 + 0.4797) ⋅ Pieces = 6.252 + 0.5624 ⋅ Pieces.
+
+Somit steigt der erwartete Preis bei Large-Sets deutlich stärker mit der Teilezahl als bei Small-Sets. Inhaltlich zeigt der Interaktionseffekt also, dass sich der Zusammenhang zwischen Teilezahl und Preis je nach Größenkategorie unterscheidet.
+
+Das Bestimmtheitsmaß des Modells beträgt rund 0.803. Damit werden etwa 80.3 Prozent der Varianz des Preises durch `Pieces`, `Size` und deren Interaktion erklärt.
+
+### 5.4 Regressionsmodelle grafisch vergleichen
+
+Vergleichen Sie das multiple lineare Regressionsmodell und das Interaktionsmodell grafisch mithilfe eines gemeinsamen Koeffizientenplots. Interpretieren Sie die grafische Darstellung inhaltlich. Gehen Sie dabei insbesondere darauf ein, wie sich der Koeffizient von `Pieces` zwischen den Modellen verändert, warum der Effekt von `SizeLarge` im multiplen Modell und im Interaktionsmodell unterschiedlich ausfällt und was der Interaktionsterm `Pieces:SizeLarge` bedeutet.
+
+#### Lösung 5.4
+
+```{r}
+# Paket laden
+library(sjPlot)
+
+# Regressionsmodelle grafisch vergleichen
+plot_models(
+  mod_multi, modinter,
+  m.labels = c("Multipel", "Interaktion"),
+  show.values = TRUE,
+  show.p = FALSE
+)
+```
+
+Der Koeffizientenplot zeigt, dass der Effekt von Pieces in beiden Modellen positiv ist und mit rund 0.08 USD pro zusätzlichem Teil nahezu unverändert bleibt. Das spricht dafür, dass die Teilezahl ein stabiler und zentraler Prädiktor des Preises ist.
+
+Deutlicher unterscheiden sich die Schätzungen für SizeLarge. Im multiplen Modell ist der Koeffizient mit rund 16.62 positiv, im Interaktionsmodell mit rund -4.18 dagegen negativ. Dieser negative Wert bedeutet jedoch nicht, dass Large-Sets insgesamt günstiger sind, sondern bezieht sich nur auf den theoretischen Fall eines Sets mit 0 Teilen und ist daher inhaltlich kaum sinnvoll interpretierbar.
+
+Der positive Interaktionsterm Pieces:SizeLarge von rund 0.48 zeigt, dass der Zusammenhang zwischen Teilezahl und Preis für Large-Sets stärker ist als für Small-Sets. Die Abweichungen zwischen multiplem Modell und Interaktionsmodell entstehen also dadurch, dass im Interaktionsmodell für Small- und Large-Sets unterschiedliche Steigungen geschätzt werden.
+
+### 5.5 Punktprognosen im Interaktionsmodell
+
+Verwenden Sie das Interaktionsmodell `Price ~ Pieces * Size`, um Punktprognosen für LEGO-Sets zu berechnen. Nutzen Sie dafür `predict()` mit einer `newdata`-Datentabelle, der zwei Werte für `Pieces` enthält: einen Wert vor dem Schnittpunkt der beiden Regressionsgeraden und einen Wert dahinter.
+
+Vergleichen Sie die vorhergesagten Preise für `Small`- und `Large`-Sets und erläutern Sie die Unterschiede inhaltlich.
+
+#### Lösung 5.5
+
+```{r}
+# Punktprognosen für verschiedene Kombinationen aus Pieces und Size berechnen
+new_cases <- data.frame(
+  Pieces = c(5, 5, 50, 50),
+  Size = c("Small", "Large", "Small", "Large")
+)
+
+predict(modinter, newdata = new_cases)
+```
+Die Punktprognosen zeigen, dass der vorhergesagte Preis bei 5 Teilen für Small-Sets 10.84 USD und für Large-Sets 9.06 USD beträgt. Bei 50 Teilen liegt die Vorhersage für Small-Sets bei 14.56 USD und für Large-Sets bei 34.37 USD. Damit ist der vorhergesagte Preis für Large-Sets bei sehr kleiner Teilezahl zunächst noch geringer, bei höherer Teilezahl aber deutlich größer als für Small-Sets. Dies verdeutlicht den Interaktionseffekt: Mit zunehmender Teilezahl steigt der erwartete Preis bei Large-Sets deutlich stärker an als bei Small-Sets.
+
+
+## 6 Inferenz
+
+### 6.1 Bootstrapping des Koeffizienten von Pieces
+
+Bestimmen Sie für den Koeffizienten von `Pieces` im multiplen linearen Regressionsmodell `Price ~ Pieces + Size` mithilfe eines Bootstrap-Verfahrens den Standardfehler sowie ein 95%-Konfidenzintervall. Interpretieren Sie das Ergebnis inhaltlich und stellen Sie die Verteilung als Histogramm dar.
+
+#### Lösung 6.1
+
+```{r}
+# Beobachteter Koeffizient von Pieces aus dem multiplen Modell
+b_pieces <- coef(mod_multi)["Pieces"]
+b_pieces
+
+# Zufallsstartwert setzen, damit die Bootstrap-Ergebnisse reproduzierbar sind
+set.seed(12345)
+
+# 1000 Bootstrap-Stichproben ziehen und jeweils den Koeffizienten von Pieces schätzen
+boot_multi <- do(1000) * coef(lm(Price ~ Pieces + Size, data = resample(lego)))
+
+# Erste Fälle anzeigen
+head(boot_multi)
+```
+
+```{r}
+# Standardfehler des Koeffizienten von Pieces bestimmen
+se_pieces <- sd(~ Pieces, data = boot_multi)
+se_pieces
+
+# 95%-Konfidenzintervall für den Koeffizienten von Pieces bestimmen
+ki_pieces <- qdata(~ Pieces, p = c(0.025, 0.975), data = boot_multi)
+ki_pieces
+```
+
+```{r}
+# Bootstrap-Verteilung des Koeffizienten von Pieces als Histogramm darstellen
+gf_histogram(~ Pieces, data = boot_multi, bins = 20) |>
+  gf_vline(xintercept = b_pieces, color = "red", linewidth = 1) |>
+  gf_vline(xintercept = ki_pieces[1], linetype = "dashed", color = "blue") |>
+  gf_vline(xintercept = ki_pieces[2], linetype = "dashed", color = "blue")
+```
+
+Der beobachtete Koeffizient von `Pieces` beträgt `r round(b_pieces, 6)`.
+
+Der geschätzte Standardfehler des Koeffizienten beträgt `r round(se_pieces, 6)`.
+
+Das 95%-Konfidenzintervall für den Koeffizienten von `Pieces` reicht von `r round(ki_pieces[1], 6)` bis `r round(ki_pieces[2], 6)`.
+
+Dieses Intervall kann als plausibler Bereich für den wahren Koeffizienten von `Pieces` in der Population interpretiert werden.
+Inhaltlich bedeutet das: Wenn `Size` konstant gehalten wird, liegt der erwartete Anstieg des Preises pro zusätzlichem Teil in der Population innerhalb dieses Intervalls.
+
+Da der Wert 0 nicht im Intervall enthalten ist, spricht das Ergebnis dafür, dass der Koeffizient von `Pieces` in der Population statistisch von 0 verschieden und positiv ist, wenn `Size` konstant gehalten wird.
+
+### 6.2 Permutationsverteilung des Koeffizienten von Pieces
+
+Formulieren Sie für den Koeffizienten von `Pieces` im linearen Regressionsmodell `Price ~ Pieces` die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und entscheiden Sie auf dem 5%-Niveau.
+
+#### Lösung 6.2
+
+```{r}
+# Beobachteter Koeffizient von Pieces aus dem einfachen Modell
+b_pieces <- coef(mod1)["Pieces"]
+b_pieces
+
+# Zufallsstartwert setzen, damit die Ergebnisse reproduzierbar sind
+set.seed(12345)
+
+# 1000 Permutationen erzeugen
+perm1 <- do(1000) * lm(Price ~ shuffle(Pieces), data = lego)
+
+# Zweite Spalte robust benennen
+names(perm1)[2] <- "Pieces_perm"
+
+# Erste Fälle anzeigen
+head(perm1)
+
+# Histogramm für Darstellung der Permutationen
+gf_histogram(~ Pieces_perm, data = perm1, bins = 30) 
+```
+
+```{r}
+# p-Wert bestimmen
+p_pieces <- prop(~ (abs(Pieces_perm) >= abs(b_pieces)), data = perm1)
+p_pieces
+```
+Die Nullhypothese lautet \(H_0: \beta_{\text{Pieces}} = 0\).
+
+Die Alternativhypothese lautet \(H_A: \beta_{\text{Pieces}} \neq 0\).
+
+In 1000 Permutationen trat kein mindestens so extremer Wert auf; daher gilt: p < 0.001.
+
+Dann spricht das Ergebnis dafür, dass zwischen `Pieces` und `Price` ein statistisch evidenter linearer Zusammenhang besteht.
+=======
+---
+title: "Quantitative Datenanalyse | Fallstudie LEGO"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format:
+  pdf:
+    papersize: a4
+  html:
+    self-contained: true
+execute:
+  warning: false
+  message: false
+editor: source
+---
+
+# Musterlösung
+
+# Fallstudie LEGO
+
+## 1. Datenverständnis
+
+### 1.1 Datentabelle erschließen
+
+Für diese Fallstudie arbeiten Sie mit einer bereinigten Datentabelle aus dem Themenfeld LEGO. Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, eine Datentabelle nicht nur zu laden, sondern auch ihre Struktur und Beobachtungseinheiten zu verstehen.
+
+Untersuchen Sie die Daten daher zunächst systematisch. Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen die Datentabelle umfasst. Bestimmen Sie außerdem, welche Variablen in der Datentabelle enthalten sind, und erläutern Sie, was in diesem Fall als Beobachtungseinheit verstanden werden kann.
+
+Bearbeiten Sie dazu die folgenden Aufgaben:
+
+- Laden Sie die bereitgestellten Daten und die benötigten Pakete.
+- Ermitteln Sie, wie viele Beobachtungen die Datentabelle enthält.
+- Ermitteln Sie, wie viele Variablen in der Datentabelle enthalten sind.
+- Nennen Sie die in der Datentabelle enthaltenen Variablen.
+- Beschreiben Sie in einem kurzen Satz, was die Beobachtungseinheit der Datentabelle ist.
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Daten einlesen
+lego <- read.csv(
+  here("data", "lego_population_qmd.csv"),
+  )
+```
+
+#### Lösung 1.1
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(tidyr)
+library(here)
+
+# Daten einlesen
+lego <- read.csv(
+here("data", "lego_population_qmd.csv"),
+)
+
+# Struktur der Datentabelle anzeigen
+str(lego)
+
+# Erste Fälle der Datentabelle anzeigen
+head(lego)
+```
+
+Die Daten wurden eingelesen und stehen nun im Objekt `lego` zur Verfügung. Die Datentabelle umfasst 1003 Beobachtungen bei 6 Variablen. Die in der Datentabelle enthaltenen Variablen sind `Item_Number`, `Set_Name`, `Price`, `Pieces`, `Theme` und `Size`.
+
+Die Beobachtungseinheit der Datentabelle ist jeweils ein einzelnes LEGO-Set, da jede Zeile genau ein Set mit den dazugehörigen Merkmalsausprägungen beschreibt. Die Strukturübersicht und die Ausgabe der ersten Fälle ermöglichen damit einen ersten systematischen Überblick über Aufbau und Inhalt der Datentabelle.
+
+
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `Price`, `Pieces`, `Theme` und `Size` jeweils das Skalenniveau und begründen Sie jede Zuordnung in einem kurzen Satz.
+
+#### Lösung 1.2
+
+- `Price`: metrisch, verhältnisskaliert
+
+- `Pieces`: metrisch, verhältnisskaliert
+
+- `Theme`: kategorial, nominalskaliert
+
+- `Size`: kategorial, nominalskaliert
+
+Mögliche Antwortsätze: 
+- `Price` ist metrisch und verhältnisskaliert, weil Preise numerisch gemessen werden und ein sinnvoll interpretierbarer Nullpunkt vorliegt.\
+- `Pieces` ist ebenfalls metrisch und verhältnisskaliert, weil die Anzahl der Teile gezählt wird und Verhältnisse wie „doppelt so viele Teile“ sinnvoll sind.\
+- `Theme` ist kategorial und nominalskaliert, weil die Themenwelten verschiedene Kategorien ohne natürliche Rangordnung darstellen.\
+- `Size` ist ebenfalls kategorial und nominalskaliert, weil auch die Größenkategorien lediglich Gruppen bezeichnen und keine Rangfolge ausdrücken.
+
+## 2. Explorative Datenanalyse von `Theme`
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `Theme`. Erstellen Sie eine relative und eine absolute Häufigkeitstabelle, die die jeweiligen Werte von jeder Kategorie der Variable enthält.
+
+#### Lösung 2.1
+
+```{r}
+# Absolute Häufigkeiten von Theme berechnen
+theme_abs <- tally(~ Theme, data = lego)
+
+# Relative Häufigkeiten von Theme berechnen
+theme_rel <- tally(~ Theme, data = lego, format = "proportion")
+
+# Ausgabe
+theme_abs
+theme_rel
+```
+
+Die generierten Tabellen zeigen für jede Themenkategorie, wie oft sie in der Stichprobe vorkommt und welchen Anteil sie an allen LEGO-Sets hat.\
+Die absoluten Häufigkeiten machen sichtbar, welche Themen oft oder selten vertreten sind.\
+Die relativen Häufigkeiten erleichtern zusätzlich die Einschätzung der Verteilung unabhängig von der Stichprobengröße.
+
+### 2.2 Säulendiagramm erstellen
+
+Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `Theme`.
+
+#### Lösung 2.2
+
+```{r}
+# Säulendiagramm der absoluten Häufigkeiten von Theme erstellen
+gf_bar(~ Theme, data = lego) |>
+  gf_theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+Das Säulendiagramm visualisiert die absoluten Häufigkeiten der einzelnen Themenkategorien.\
+Je höher ein Balken ist, desto häufiger ist die entsprechende Kategorie in der Stichprobe vertreten.\
+Die grafische Darstellung ergänzt die Häufigkeitstabelle und erleichtert den schnellen Vergleich zwischen den Kategorien.
+
+### 2.3 Verteilung beschreiben
+
+Beschreiben Sie die Verteilung von `Theme` auf Basis der Tabelle und des Säulendiagramms. Gehen Sie dabei ausdrücklich auf die Anzahl der Kategorien, die häufigste Kategorie und die Frage ein, ob sich die Stichprobe eher auf wenige Themen konzentriert oder breit über viele Themen verteilt.
+
+#### Lösung 2.3
+
+```{r}
+# Beide bereits berechneten Tabellen absteigend sortieren
+theme_abs <- sort(theme_abs, decreasing = TRUE)
+theme_rel <- sort(theme_rel, decreasing = TRUE)
+
+# Ausgabe
+theme_abs
+theme_rel
+
+```
+
+Die generierten Tabellen zeigen für jede Themenkategorie die absolute und die relative Häufigkeit. Durch die absteigende Sortierung der Tabellen ist direkt erkennbar, welche Themen besonders häufig und welche eher selten in der Stichprobe vertreten sind. Die Variable `Theme` umfasst 40 Kategorien. Die häufigste Kategorie ist `Star Wars` mit einer absoluten Häufigkeit von 115 Sets beziehungsweise einem relativen Anteil von 11.5 Prozent. Die Verteilung ist nicht vollständig gleichmäßig, weil einige Themen deutlich häufiger vertreten sind als andere. Insgesamt konzentriert sich die Stichprobe damit eher auf einige stärker vertretene Themen, während andere Themen nur mit wenigen Sets vorkommen. Die relativen Häufigkeiten erleichtern zusätzlich die Einschätzung der Verteilung unabhängig von der Stichprobengröße.
+
+### 2.4 Gemeinsame Auswertung von 2 kategorialen Variablen
+
+Untersuchen Sie ergänzend den Zusammenhang zwischen `Theme` und `Size` mithilfe einer Kreuztabelle und eines Mosaic Plots. Benennen Sie die auffälligste Besonderheit der Verteilung und beurteilen Sie anschließend, ob der Mosaic Plot für dieses Anwendungsbeispiel gut geeignet ist.
+
+```{r}
+# Kreuztabelle von Theme und Size ausgeben
+tally(~ Theme | Size, data = lego)
+
+# Mosaic Plot für Theme und Size erstellen
+mosaicplot(~ Theme + Size, data = lego,
+           main = "Mosaic Plot von Theme und Size",
+           xlab = "Theme",
+           ylab = "Size",
+           color = TRUE)
+```
+
+Die Kreuztabelle zeigt die gemeinsamen absoluten Häufigkeiten von `Theme` und `Size`. Die auffälligste Besonderheit besteht darin, dass `DUPLO` als einzige Themenkategorie ausschließlich der Größenkategorie `Large` zugeordnet ist, während alle übrigen Themen ausschließlich in der Kategorie `Small` vorkommen. Dies weist auf eine sehr ungleichmäßige und stark konzentrierte Verteilung der Kombinationen von `Theme` und `Size` hin.
+
+Der Mosaic Plot ist grundsätzlich eine sinnvolle Ergänzung für die grafische Auswertung kategorialer Variablen, weil er gemeinsame Häufigkeiten und mögliche Zusammenhänge visuell darstellt. In diesem Beispiel liefert er jedoch nur einen begrenzten Mehrwert, da die große Zahl an Themenkategorien die Darstellung unübersichtlich macht. Für die Identifikation der zentralen Auffälligkeit ist die Kreuztabelle daher besser geeignet als der Mosaic Plot.
+
+## 3. Explorative Datenanalyse von `Price`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie ausschließlich die Variable `Price`.
+
+Berechnen Sie für `Price` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25%-Quantil, 75%-Quantil und Interquartilsabstand. Interpretieren Sie die Werte anschließend.
+
+#### Lösung 3.1
+
+```{r}
+# Zentrale Kennwerte für Price berechnen
+price_stats <- favstats(~ Price, data = lego)
+price_stats
+
+# Interquartilsabstand 
+price_stats$Q3 - price_stats$Q1
+
+```
+
+Die berechneten Kennwerte deuten auf eine deutlich rechtsschiefe Preisverteilung hin, da der Mittelwert von 47.82 USD über dem Median von 29.99 USD liegt. Zugleich zeigt die Standardabweichung von 60.16 USD eine erhebliche Streuung der Preise. Der Interquartilsabstand von 45.00 USD verdeutlicht, dass die mittleren 50% der Werte relativ breit zwischen 14.99 USD und 59.99 USD verteilt sind. Die große Spannweite von 3.49 USD bis 699.99 USD spricht zudem dafür, dass wenige sehr hohe Preise die Verteilung nach oben ausdehnen.
+
+### 3.2 Histogramm erstellen und interpretieren
+
+Erstellen Sie ein Histogramm von `Price` und beschreiben Sie anschließend, welche Form die Verteilung aufweist. Gehen Sie dabei insbesondere auf mögliche Schiefe sowie auf die Frage ein, in welchen Preisbereichen sich viele beziehungsweise wenige Werte befinden.
+
+#### Lösung 3.2
+
+```{r}
+# Histogramm zur Verteilung von Price erstellen
+gf_histogram(~ Price, data = lego, bins = 12) 
+```
+
+Das Histogramm zeigt, dass sich ein großer Teil der LEGO-Sets im unteren Preisbereich konzentriert, während mit zunehmendem Preis immer weniger Beobachtungen auftreten. Die Verteilung ist damit deutlich rechtsschief und unimodal, da sich ein langer Verteilungsschwanz zu hohen Preisen hin erkennen lässt. Hohe Preise kommen also nur bei wenigen Sets vor, während die meisten Sets vergleichsweise günstig sind.
+
+
+### 3.3 Boxplot erstellen
+
+Erstellen Sie einen Boxplot von `Price` und interpretieren Sie diesen.
+
+#### Lösung 3.3
+
+```{r}
+# Boxplot für Price erstellen
+gf_boxplot(~ Price, data = lego)
+```
+
+Der Boxplot ist konsistent mit den in Aufgabe 3.1 berechneten Kennwerten; der Median liegt bei ca. 30 USD, die mittleren 50% etwa zwischen 15 und 60 USD. Der obere Whisker ist deutlich länger als der untere, was auf eine nach rechts ausgedehnte Verteilung hindeutet. Oberhalb des oberen Whiskers liegen mehrere hohe Werte, was auf eine deutlich rechtsschiefe Verteilung hinweist; ein besonders extremer Wert liegt über 600 USD. 
+
+
+### 3.4 Verteilungsanteile und Quantile bestimmen
+
+Bestimmen Sie für die Variable `Price` die folgenden Größen:
+
+- Wie viel Prozent der LEGO-Sets kosten mehr als 60 USD?
+- Welchen Preis haben die günstigsten 10 % der LEGO-Sets höchstens?
+
+Nutzen Sie für die Berechnungen `pdata()` und `qdata()`.
+
+#### Lösung 3.4
+```{r}
+# Anteil der Sets mit einem Preis über 60 USD berechnen
+p_over_60 <- 1 - pdata(~ Price, q = 60, data = lego)
+p_over_60
+
+# 10%-Quantil von Price berechnen
+q_10_price <- qdata(~ Price, p = 0.10, data = lego)
+q_10_price
+```
+
+## 4. Einfache lineare Regression
+
+### 4.1 Zusammenhang zwischen `Pieces` und `Price`
+
+Untersuchen Sie danach den Zusammenhang zwischen `Pieces` und `Price`: Erstellen Sie ein Streudiagramm mit `Pieces` auf der x-Achse und `Price` auf der y-Achse, berechnen Sie die Pearson-Korrelation und beschreiben Sie Richtung und Stärke des Zusammenhangs.
+
+#### Lösung 4.1
+
+```{r}
+# Streudiagramm zwischen Pieces und Price erstellen
+gf_point(Price ~ Pieces, data = lego)
+
+# Pearson-Korrelation zwischen Pieces und Price berechnen
+r_pieces_price <- cor(Price ~ Pieces, data = lego)
+r_pieces_price
+```
+
+Die Pearson-Korrelation zwischen `Pieces` und `Price` beträgt 0.891. Da der Korrelationskoeffizient positiv und betragsmäßig hoch ist, besteht ein starker positiver linearer Zusammenhang zwischen Teilezahl und Preis. Inhaltlich bedeutet dies, dass LEGO-Sets mit mehr Teilen tendenziell teurer sind.
+
+Das Streudiagramm bestätigt diesen Befund, da die Punktwolke insgesamt eine deutlich ansteigende Tendenz zeigt. Je enger die Punkte um eine gedachte Gerade liegen, desto stärker ist der lineare Zusammenhang; hier ist ein klarer positiver Zusammenhang erkennbar, auch wenn die Punkte insbesondere bei höheren Teilezahlen nicht perfekt auf einer Linie liegen. Zudem nimmt die Streuung im oberen Bereich der Teilezahl sichtbar zu, und einzelne sehr große Sets liegen deutlich oberhalb des Hauptclusters.
+
+### 4.2 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `Price ~ Pieces`, geben Sie die geschätzte Regressionsgleichung an, interpretieren Sie Konstante und Steigung jeweils in einem eigenen Satz, berichten Sie \(R^2\) und berechnen Sie die Punktprognose für ein Set mit `Pieces = 500`.
+
+Nutzen Sie für die Punktprognose sowohl eine manuelle Berechnung über die Koeffizienten als auch alternativ die Funktion `predict()`. Vergleichen Sie beide Vorgehensweisen kurz.
+
+#### Lösung 4.2
+
+```{r}
+# Einfaches lineares Regressionsmodell schätzen
+mod1 <- lm(Price ~ Pieces, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod1)
+
+# Punktprognose für ein Set mit 500 Teilen mithilfe der Koeffizienten berechnen
+coef(mod1)[1] + coef(mod1)[2] * 500
+
+
+# Alternativ: Punktprognose mit predict() berechnen
+predict(mod1, newdata = data.frame(Pieces = 500))
+
+```
+
+Die Konstante von 11.602 gibt den geschätzten Preis für ein hypothetisches LEGO-Set mit 0 Teilen an. Inhaltlich ist dieser Wert vor allem als rechnerischer Ausgangspunkt der Regressionsgeraden zu verstehen, da ein Set mit 0 Teilen praktisch keine sinnvolle inhaltliche Interpretation hat.
+
+Die Steigung von 0.082 bedeutet, dass sich der erwartete Preis im Mittel um 0.082 USD erhöht, wenn die Teilezahl um ein weiteres Teil zunimmt. Mit anderen Worten: LEGO-Sets mit mehr Teilen sind im Mittel teurer, und pro zusätzlichem Teil steigt der geschätzte Preis um rund 8.2 Cent.[^1]
+
+Das Bestimmtheitsmaß beträgt 0.794. Das korrigierte Bestimmtheitsmaß beträgt 0.793.[^2]
+Damit werden 79.4% der Varianz von `Price` durch die Variable `Pieces` erklärt.
+
+Für ein LEGO-Set mit 500 Teilen ergibt sich die Punktprognose:
+
+Price = 11.602 + 0.082 ⋅ 500 = 52.59
+
+Der vorhergesagte Preis für ein Set mit 500 Teilen beträgt somit rund 52.59 USD.
+
+Sowohl die manuelle Berechnung mit `coef()` als auch die Funktion `predict()` liefern für ein LEGO-Set mit 500 Teilen dieselbe Punktprognose von rund 52.59 USD. Die Funktion `predict()` greift dabei auf dieselbe geschätzte Regressionsgleichung zurück wie die Berechnung über Konstante und Steigung.
+
+[^1]Die Modellzusammenfassung zeigt zudem einen kleinen Standardfehler für den Koeffizienten von Pieces, einen großen positiven t-Wert und einen sehr kleinen p-Wert, sodass der lineare Zusammenhang statistisch deutlich von 0 verschieden ist.
+[^2]: Das korrigierte Bestimmtheitsmaß (adjustiertes \(R^2\)) berücksichtigt die Anzahl der Prädiktoren im Modell und ist daher meist etwas kleiner als \(R^2\). Es eignet sich besonders zum Vergleich von Modellen mit unterschiedlich vielen erklärenden Variablen.
+
+
+## 5. Multiple Regression
+
+### 5.1 Regression mit kategorialer unabhängiger Variable
+
+Schätzen Sie zunächst das Modell `Price ~ Size`. Legen Sie dafür vorab die Ausprägung "Small" der Variable "Size" mit dem untenstehenden Code als Referenzkategorie fest.
+
+Interpretieren Sie den Koeffizienten der Nicht-Referenzkategorie als mittleren Preisunterschied zur Referenzkategorie.
+
+```{r}
+# Die Kategorie "Small" für die Variable "Size" als Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+```
+
+#### Lösung 5.1
+
+```{r}
+# Die Kategorie "Small" für die Variable Size als Referenzkategorie festlegen
+lego <- lego |>
+  mutate(Size = factor(Size, levels = c("Small", "Large")))
+
+# Regressionsmodell mit der kategorialen Variable Size schätzen
+mod_size <- lm(Price ~ Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod_size)
+```
+
+Die Referenzkategorie ist `Small`, sodass die Konstante von 48.762 den geschätzten mittleren Preis von LEGO-Sets der Kategorie `Small` angibt. Der Koeffizient von `SizeLarge` beträgt -18.175 und bedeutet, dass `Large`-Sets in diesem bivariaten Modell, ohne Kontrolle weiterer Faktoren, im Mittel 18.175 USD günstiger sind als `Small`-Sets. Da der p-Wert 0.03381 beträgt, ist dieser Unterschied auf dem 5%-Niveau statistisch signifikant. Das Bestimmtheitsmaß von 0.004492 zeigt jedoch, dass `Size` allein nur einen sehr kleinen Teil der Preisunterschiede erklärt.
+
+### 5.2 Multiple lineare Regression
+
+Schätzen Sie anschließend das multiple lineare Regressionsmodell `Price ~ Pieces + Size` und interpretieren Sie die Koeffizienten von `Pieces` und `Size` inhaltlich.
+
+#### Lösung 5.2
+
+```{r}
+# Multiples lineares Regressionsmodell schätzen
+mod_multi <- lm(Price ~ Pieces + Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(mod_multi)
+```
+
+Die geschätzte Regressionsgleichung lautet: Price = 10.386 + 0.082787 ⋅ Pieces + 16.618 ⋅ SizeLarge. Die Konstante von 10.386 gibt den geschätzten Preis für ein `Small`-Set mit 0 Teilen an und ist vor allem als rechnerischer Ausgangspunkt des Modells zu verstehen.
+
+Der Koeffizient von `Pieces` beträgt 0.082787. Das bedeutet: Wenn die Teilezahl um ein Teil steigt und die Größe des Sets gleich bleibt, erhöht sich der erwartete Preis im Mittel um 0.082787 USD. Anders ausgedrückt steigt der geschätzte Preis bei 100 zusätzlichen Teilen im Mittel um 8.279 USD, wenn `Size` konstant gehalten wird.
+
+Der Koeffizient von `SizeLarge` beträgt 16.618. Das bedeutet, dass `Large`-Sets bei gleicher Teilezahl im Mittel um 16.618 USD teurer sind als `Small`-Sets. Dieser Unterschied ist statistisch signifikant, da der p-Wert 0.0000216 beträgt.
+
+Das Bestimmtheitsmaß des multiplen Modells beträgt 0.7981. Somit erklären `Pieces` und `Size` gemeinsam 79.81 Prozent der Varianz des Preises. Im Vergleich zum einfachen Modell mit nur `Size` zeigt sich damit, dass vor allem die Teilezahl ein zentraler Prädiktor des Preises ist, während `Size` darüber hinaus einen zusätzlichen eigenständigen Beitrag leistet.
+
+Der Koeffizient von `SizeLarge` verändert sich gegenüber dem bivariaten Modell aus 5.1 deutlich. Dort war `Large` mit einem niedrigeren durchschnittlichen Preis verbunden, während im multiplen Modell bei Kontrolle der Teilezahl ein positiver Effekt von 16.618 USD sichtbar wird. Das zeigt, dass der einfache Mittelwertvergleich zwischen `Small` und `Large` durch Unterschiede in der Teilezahl verzerrt war und dass Large-Sets bei gleicher Teilezahl im Mittel teurer sind.
+
+## 5.3 Interaktionseffekt zwischen Pieces und Size
+
+Untersuchen Sie nun, ob sich der Zusammenhang zwischen Pieces und Price je nach Größenkategorie Size unterscheidet. Schätzen Sie dazu ein lineares Regressionsmodell mit Wechselwirkung zwischen Pieces und Size.
+
+## Lösung 5.3
+
+```{r}
+# Referenzkategorie festlegen
+lego$Size <- factor(lego$Size, levels = c("Small", "Large"))
+
+# Regressionsmodell mit Interaktion schätzen
+modinter <- lm(Price ~ Pieces * Size, data = lego)
+
+# Modellzusammenfassung ausgeben
+summary(modinter)
+
+# Koeffizienten ausgeben
+coef(modinter)
+
+```
+
+Die geschätzte Regressionsgleichung lautet: Price = 10.429 + 0.0827 ⋅ Pieces - 4.177 ⋅ SizeLarge + 0.4797 ⋅ (Pieces ⋅ SizeLarge).
+
+Dabei steht `Pieces` für die Teilezahl des jeweils betrachteten LEGO-Sets. Die Variable `SizeLarge` ist eine Indikatorvariable und nimmt den Wert 1 an, wenn es sich um ein Large-Set handelt, und sonst den Wert 0.
+
+Da `Small` die Referenzkategorie ist, beschreibt der Koeffizient von `Pieces` den Zusammenhang zwischen Teilezahl und Preis für Small-Sets. Das bedeutet: Bei Small-Sets steigt der erwartete Preis im Mittel um 0.0827 USD, wenn die Teilezahl um ein zusätzliches Teil zunimmt.
+
+Der Koeffizient von `SizeLarge` gibt den Unterschied zwischen Large- und Small-Sets an, wenn die Teilezahl 0 beträgt. Dieser Wert liegt bei -4.177 USD und ist inhaltlich vor allem als rechnerischer Bestandteil des Modells zu verstehen, da ein LEGO-Set mit 0 Teilen keine sinnvolle praktische Interpretation besitzt.
+
+Der Koeffizient des Interaktionsterms `Pieces:SizeLarge` beträgt 0.4797. Das bedeutet, dass sich der erwartete Preis bei Large-Sets pro zusätzlichem Teil um 0.4797 USD stärker erhöht als bei Small-Sets.
+
+Für Small-Sets ergibt sich damit die Regressionsgleichung: Price = 10.429 + 0.0827 ⋅ Pieces.
+
+Für Large-Sets ergibt sich dagegen: Price = (10.429 - 4.177) + (0.0827 + 0.4797) ⋅ Pieces = 6.252 + 0.5624 ⋅ Pieces.
+
+Somit steigt der erwartete Preis bei Large-Sets deutlich stärker mit der Teilezahl als bei Small-Sets. Inhaltlich zeigt der Interaktionseffekt also, dass sich der Zusammenhang zwischen Teilezahl und Preis je nach Größenkategorie unterscheidet.
+
+Das Bestimmtheitsmaß des Modells beträgt rund 0.803. Damit werden etwa 80.3 Prozent der Varianz des Preises durch `Pieces`, `Size` und deren Interaktion erklärt.
+
+### 5.4 Regressionsmodelle grafisch vergleichen
+
+Vergleichen Sie das multiple lineare Regressionsmodell und das Interaktionsmodell grafisch mithilfe eines gemeinsamen Koeffizientenplots. Interpretieren Sie die grafische Darstellung inhaltlich. Gehen Sie dabei insbesondere darauf ein, wie sich der Koeffizient von `Pieces` zwischen den Modellen verändert, warum der Effekt von `SizeLarge` im multiplen Modell und im Interaktionsmodell unterschiedlich ausfällt und was der Interaktionsterm `Pieces:SizeLarge` bedeutet.
+
+#### Lösung 5.4
+
+```{r}
+# Paket laden
+library(sjPlot)
+
+# Regressionsmodelle grafisch vergleichen
+plot_models(
+  mod_multi, modinter,
+  m.labels = c("Multipel", "Interaktion"),
+  show.values = TRUE,
+  show.p = FALSE
+)
+```
+
+Der Koeffizientenplot zeigt, dass der Effekt von Pieces in beiden Modellen positiv ist und mit rund 0.08 USD pro zusätzlichem Teil nahezu unverändert bleibt. Das spricht dafür, dass die Teilezahl ein stabiler und zentraler Prädiktor des Preises ist.
+
+Deutlicher unterscheiden sich die Schätzungen für SizeLarge. Im multiplen Modell ist der Koeffizient mit rund 16.62 positiv, im Interaktionsmodell mit rund -4.18 dagegen negativ. Dieser negative Wert bedeutet jedoch nicht, dass Large-Sets insgesamt günstiger sind, sondern bezieht sich nur auf den theoretischen Fall eines Sets mit 0 Teilen und ist daher inhaltlich kaum sinnvoll interpretierbar.
+
+Der positive Interaktionsterm Pieces:SizeLarge von rund 0.48 zeigt, dass der Zusammenhang zwischen Teilezahl und Preis für Large-Sets stärker ist als für Small-Sets. Die Abweichungen zwischen multiplem Modell und Interaktionsmodell entstehen also dadurch, dass im Interaktionsmodell für Small- und Large-Sets unterschiedliche Steigungen geschätzt werden.
+
+### 5.5 Punktprognosen im Interaktionsmodell
+
+Verwenden Sie das Interaktionsmodell `Price ~ Pieces * Size`, um Punktprognosen für LEGO-Sets zu berechnen. Nutzen Sie dafür `predict()` mit einer `newdata`-Datentabelle, der zwei Werte für `Pieces` enthält: einen Wert vor dem Schnittpunkt der beiden Regressionsgeraden und einen Wert dahinter.
+
+Vergleichen Sie die vorhergesagten Preise für `Small`- und `Large`-Sets und erläutern Sie die Unterschiede inhaltlich.
+
+#### Lösung 5.5
+
+```{r}
+# Punktprognosen für verschiedene Kombinationen aus Pieces und Size berechnen
+new_cases <- data.frame(
+  Pieces = c(5, 5, 50, 50),
+  Size = c("Small", "Large", "Small", "Large")
+)
+
+predict(modinter, newdata = new_cases)
+```
+Die Punktprognosen zeigen, dass der vorhergesagte Preis bei 5 Teilen für Small-Sets 10.84 USD und für Large-Sets 9.06 USD beträgt. Bei 50 Teilen liegt die Vorhersage für Small-Sets bei 14.56 USD und für Large-Sets bei 34.37 USD. Damit ist der vorhergesagte Preis für Large-Sets bei sehr kleiner Teilezahl zunächst noch geringer, bei höherer Teilezahl aber deutlich größer als für Small-Sets. Dies verdeutlicht den Interaktionseffekt: Mit zunehmender Teilezahl steigt der erwartete Preis bei Large-Sets deutlich stärker an als bei Small-Sets.
+
+
+## 6 Inferenz
+
+### 6.1 Bootstrapping des Koeffizienten von Pieces
+
+Bestimmen Sie für den Koeffizienten von `Pieces` im multiplen linearen Regressionsmodell `Price ~ Pieces + Size` mithilfe eines Bootstrap-Verfahrens den Standardfehler sowie ein 95%-Konfidenzintervall. Interpretieren Sie das Ergebnis inhaltlich und stellen Sie die Verteilung als Histogramm dar.
+
+#### Lösung 6.1
+
+```{r}
+# Beobachteter Koeffizient von Pieces aus dem multiplen Modell
+b_pieces <- coef(mod_multi)["Pieces"]
+b_pieces
+
+# Zufallsstartwert setzen, damit die Bootstrap-Ergebnisse reproduzierbar sind
+set.seed(12345)
+
+# 1000 Bootstrap-Stichproben ziehen und jeweils den Koeffizienten von Pieces schätzen
+boot_multi <- do(1000) * coef(lm(Price ~ Pieces + Size, data = resample(lego)))
+
+# Erste Fälle anzeigen
+head(boot_multi)
+```
+
+```{r}
+# Standardfehler des Koeffizienten von Pieces bestimmen
+se_pieces <- sd(~ Pieces, data = boot_multi)
+se_pieces
+
+# 95%-Konfidenzintervall für den Koeffizienten von Pieces bestimmen
+ki_pieces <- qdata(~ Pieces, p = c(0.025, 0.975), data = boot_multi)
+ki_pieces
+```
+
+```{r}
+# Bootstrap-Verteilung des Koeffizienten von Pieces als Histogramm darstellen
+gf_histogram(~ Pieces, data = boot_multi, bins = 20) |>
+  gf_vline(xintercept = b_pieces, color = "red", linewidth = 1) |>
+  gf_vline(xintercept = ki_pieces[1], linetype = "dashed", color = "blue") |>
+  gf_vline(xintercept = ki_pieces[2], linetype = "dashed", color = "blue")
+```
+
+Der beobachtete Koeffizient von `Pieces` beträgt `r round(b_pieces, 6)`.
+
+Der geschätzte Standardfehler des Koeffizienten beträgt `r round(se_pieces, 6)`.
+
+Das 95%-Konfidenzintervall für den Koeffizienten von `Pieces` reicht von `r round(ki_pieces[1], 6)` bis `r round(ki_pieces[2], 6)`.
+
+Dieses Intervall kann als plausibler Bereich für den wahren Koeffizienten von `Pieces` in der Population interpretiert werden.
+Inhaltlich bedeutet das: Wenn `Size` konstant gehalten wird, liegt der erwartete Anstieg des Preises pro zusätzlichem Teil in der Population innerhalb dieses Intervalls.
+
+Da der Wert 0 nicht im Intervall enthalten ist, spricht das Ergebnis dafür, dass der Koeffizient von `Pieces` in der Population statistisch von 0 verschieden und positiv ist, wenn `Size` konstant gehalten wird.
+
+### 6.2 Permutationsverteilung des Koeffizienten von Pieces
+
+Formulieren Sie für den Koeffizienten von `Pieces` im linearen Regressionsmodell `Price ~ Pieces` die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und entscheiden Sie auf dem 5%-Niveau.
+
+#### Lösung 6.2
+
+```{r}
+# Beobachteter Koeffizient von Pieces aus dem einfachen Modell
+b_pieces <- coef(mod1)["Pieces"]
+b_pieces
+
+# Zufallsstartwert setzen, damit die Ergebnisse reproduzierbar sind
+set.seed(12345)
+
+# 1000 Permutationen erzeugen
+perm1 <- do(1000) * lm(Price ~ shuffle(Pieces), data = lego)
+
+# Zweite Spalte robust benennen
+names(perm1)[2] <- "Pieces_perm"
+
+# Erste Fälle anzeigen
+head(perm1)
+
+# Histogramm für Darstellung der Permutationen
+gf_histogram(~ Pieces_perm, data = perm1, bins = 30) 
+```
+
+```{r}
+# p-Wert bestimmen
+p_pieces <- prop(~ (abs(Pieces_perm) >= abs(b_pieces)), data = perm1)
+p_pieces
+```
+Die Nullhypothese lautet $H_0: \beta_{\text{Pieces}} = 0$.
+
+Die Alternativhypothese lautet $H_A: \beta_{\text{Pieces}} \neq 0$.
+
+In 1000 Permutationen trat kein mindestens so extremer Wert auf; daher gilt: p < 0.001.
+
+Dann spricht das Ergebnis dafür, dass zwischen `Pieces` und `Price` ein statistisch evidenter linearer Zusammenhang besteht.
+
