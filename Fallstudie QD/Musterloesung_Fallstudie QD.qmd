@@ -3,14 +3,21 @@ title: "Quantitative Datenanalyse | Fallstudie LEGO"
 author: "Dozent:in, FOM Hochschule"
 date: "today"
 lang: de
-format:
-  html:
-    self-contained: true
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
 execute:
   warning: false
   message: false
 editor: source
 ---
+
+{{< pagebreak >}}
 
 # Musterlösung
 
