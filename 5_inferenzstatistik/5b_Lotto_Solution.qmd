@@ -209,6 +209,15 @@ pwert
   *Antwort:* \
   $H_0 : \pi \leq pi_0$ \
   $H_A : \pi > pi_0$
+  
+  
+- Ermitteln Sie den p-Wert für eine der einseitigen Hypothesen.
+
+```{r}
+# Hier für HA: pi > pi_0
+prop( ~ prop >= p_gewinn, data = Nullvtlg)
+```
+
 
 - Angenommen Sie würden auf die Frage, ob Ihre Gewinnwahrscheinlichkeit ungewöhnlich ist, einen sehr kleinen p-Wert erhalten, z. B. kleiner als 5%. Außerdem angenommen in Wirklichkeit gilt $\pi = `r pi_gewinn`$. Liegt dann ein Fehler vor? Und wenn ja, welcher Art?
 
