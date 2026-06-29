@@ -294,7 +294,7 @@ mean((predict(rf6) - KSQ2$fkq)^2)
 mean((predict(cf6) - KSQ2$fkq)^2)
 ```
 
-Der mittlere quadratische Fehler ist im `cforest`-Modell am niedrigsten (daher zu bevorzugen), gefolgt von `randomForest` und mit Abstand linearer Regression.
+Der mittlere quadratische Fehler ist im `cforest`-Modell am niedrigsten (daher zu bevorzugen), gefolgt von linearer Regression. Am schlechtesten ist der Wert bei  `randomForest`.
 
 ## Variablenwichtigkeit
 
