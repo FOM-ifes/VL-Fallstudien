@@ -10,14 +10,6 @@ format:
     margin:
       x: 2cm
       y: 2cm
-  html:
-    toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true 
-    papersize: a4
 ---
 
 ```{r}
@@ -132,7 +124,7 @@ Wie sieht die Verteilung der Stichprobenstatistik aus, wenn wir 1000 Stichproben
 ```{r}
 set.seed(123)
 stiprovtl <- do(1000) * lm(totalrent ~ livingspace, data = sample(mietenpop, size = 500))
-gf_histogram( ~ livingspace, data = stiprovtl, bins = 20, center = b1[2])
+gf_histogram( ~ livingspace, data = stiprovtl, bins = 20)
 ```
 
 Die Verteilungsform ist vergleichbar mit der aus der Bootstrap-Verteilung.
@@ -226,6 +218,25 @@ Auch hier ist der p-Wert sehr klein (siehe Spalte `Pr(>|t<)`).
 
 Ja, da der Wert der Nullhypothese, null, nicht im Konfidenzintervall liegt und somit kein plausibler Wert ist.
 
+*Aufgabe:* Wie hoch ist der Anteil der Stichproben in der Permutationsverteilung, die einen p-Wert unter dem Signifikanzniveau $\alpha = 0.05$ haben?
+
+```{r}
+# p-Wert für Steigungskoeffizienten
+lm(totalrent ~ livingspace, data = mieten) |> summary() |> coef() -> lm1.sum
+lm1.sum
+lm1.sum[2, 4]
+# direkt nur p-Wert
+coef(summary(lm(totalrent ~ livingspace, data = mieten)))[2, 4]
+# Permutationsverteilung mit summary und p-Wert
+set.seed(123)
+pvals <- do(1000) * coef(summary(lm(totalrent ~ shuffle(livingspace), data = mieten)))[2, 4]
+head(pvals)
+# Anteil unter 0.05
+prop( ~ result < 0.05, data = pvals)
+```
+
+Der Anteil der Stichproben, die ein signifikantes Ergebnis liefern, liegt bei etwa 5 %, obwohl es konstruktionsbedingt gar keinen Zusammenhang gibt: Fehler erster Art, begrenzt durch das Signifikanzniveau.
+
 ## Multivariate Regression
 
 ### Verschiedene Modelle
@@ -297,6 +308,6 @@ rsquared(lm4); AIC(lm4)
 
 Modell `lm4` zeigt das niedrigste AIC, ist daher unter den vier Modellen das bevorzugte Modell.
 
-*Ergänzung:* Modell `lm2` zeigt im Vergleich zum `lm1` ein etwas höheres Bestimmtheitsmaß und ein etwas niedriges AIC.
-Da die Differenz im AIC aber kleiner zwei ist, unterscheiden die Modelle sich nicht (Faustregel). 
+*Ergänzung:* Modell `lm2` zeigt im Vergleich zum `lm1` ein etwas höheres Bestimmtheitsmaß, aber auch ein etwas höheres AIC.
+Die zusätzliche Variable führt zwar zu einem höheren Anteil erklärter Variation, aber im Gegenzug wird die Modellkomplexität erhöht, was das schlechtere AIC zeigt.
 Daher sollte das *sparsamere* Modell, also das mit weniger Variablen bevorzugt werden (wenn nur `lm1` und `lm2` zur Auswahl stehen).

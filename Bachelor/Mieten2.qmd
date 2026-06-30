@@ -10,14 +10,6 @@ format:
     margin:
       x: 2cm
       y: 2cm
-  html:
-    toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true 
-    papersize: a4
 ---
 
 ```{r}
@@ -113,6 +105,8 @@ Stellen Sie die Bootstrap-Verteilung der Stichprobenstatistiken grafisch dar.
 *Aufgabe:* Vergleichen Sie die Ergebnisse mit der Modellzusammenfassung.
 
 *Aufgabe:* Konnten Sie das Ergebnis bereits anhand des Konfidenzintervalls abschätzen?
+
+*Aufgabe:* Wie hoch ist der Anteil der Stichproben in der Permutationsverteilung, die einen p-Wert unter dem Signifikanzniveau $\alpha = 0.05$ haben?
 
 ## Multivariate Regression
 
