@@ -1,0 +1,679 @@
+---
+title: "Statistische Modellierung | Fallstudie Student Performance – Musterlösung"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
+---
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(psych)
+library(tidyr)
+library(here)
+library(caret)
+library(randomForest)
+library(corrplot)
+
+# Datentabelle einlesen
+student <- read.csv(here("data", "student-por-clean.csv"))
+```
+
+# Fallstudie Student Performance – Portugiesisch-Kurs
+
+## 1. Erste Schritte
+
+### 1.1 Datentabelle erschließen
+
+Für diese Fallstudie arbeiten Sie mit Daten zum schulischen Leistungsverhalten von Schülerinnen und Schülern einer portugiesischen Sekundarschule.
+Bevor Sie mit den eigentlichen Analysen beginnen, soll zunächst die Datenbasis systematisch erschlossen werden.
+Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen die Datentabelle enthält.
+Nennen Sie außerdem die in der Datentabelle enthaltenen Variablen und beschreiben Sie die Beobachtungseinheit.
+
+```{r}
+# Struktur der Datentabelle anzeigen
+str(student)
+
+# Erste Fälle der Datentabelle anzeigen
+head(student)
+
+# Anzahl der Beobachtungen bestimmen
+nrow(student)
+
+# Anzahl der Variablen bestimmen
+ncol(student)
+
+# Variablennamen ausgeben
+names(student)
+```
+
+Die Datentabelle umfasst 649 Beobachtungen und 19 Variablen; enthalten sind `school`, `sex`, `Medu`, `Fedu`, `studytime`, `failures`, `paid`, `higher`, `internet`, `famrel`, `freetime`, `goout`, `Walc`, `health`, `absences`, `G1`, `G2`, `G3` und `course`. Die Beobachtungseinheit ist jeweils eine einzelne Schülerin bzw. ein einzelner Schüler, da jede Zeile genau eine Person mit ihren Merkmalsausprägungen beschreibt.
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `studytime`, `absences`, `internet`, `higher`, `sex`, `G3`, `famrel`, `goout` und `health` jeweils das Skalenniveau und beschreiben Sie die Information der Variable.
+
+- `studytime`: kategorial, ordinalskaliert; die Variable gibt die wöchentliche Lernzeit in geordneten Kategorien an: `1 = < 2 Stunden`, `2 = 2 bis 5 Stunden`, `3 = 5 bis 10 Stunden`, `4 = > 10 Stunden`.
+- `absences`: metrisch, verhältnisskaliert; die Variable beschreibt die Anzahl der Fehlzeiten.
+- `internet`: kategorial, nominalskaliert; die Variable gibt an, ob zu Hause Internetzugang vorhanden ist, mit den Ausprägungen `yes` und `no`.
+- `higher`: kategorial, nominalskaliert; die Variable beschreibt, ob eine Person eine höhere Bildung anstrebt, mit den Ausprägungen `yes` und `no`.
+- `sex`: kategorial, nominalskaliert; die Variable beschreibt das Geschlecht mit den Ausprägungen `F = weiblich` und `M = männlich`.
+- `G3`: metrisch, im Folgenden intervallskaliert behandelt; die Variable enthält die Abschlussnote im Portugiesisch-Kurs.
+- `famrel`: kategorial, ordinalskaliert; die Variable beschreibt die Qualität der Familienbeziehungen auf einer geordneten Skala von `1 = sehr schlecht` bis `5 = ausgezeichnet`.
+- `goout`: kategorial, ordinalskaliert; die Variable gibt an, wie häufig eine Person mit Freundinnen und Freunden ausgeht, auf einer Skala von `1 = sehr selten` bis `5 = sehr häufig`.
+- `health`: kategorial, ordinalskaliert; die Variable beschreibt den aktuellen Gesundheitszustand auf einer geordneten Skala von `1 = sehr schlecht` bis `5 = sehr gut`.
+
+### 1.3 Messung beurteilen
+
+Beurteilen Sie die Variablen `studytime`, `famrel`, `goout` und `health` im Hinblick auf mögliche Messprobleme.
+Gehen Sie dabei insbesondere auf Präzision, Validität und mögliche Verzerrungen ein.
+
+`studytime` erfasst Lernaufwand nur in wenigen geordneten Kategorien und ist deshalb relativ grob gemessen; Unterschiede innerhalb einer Kategorie bleiben unsichtbar.
+`famrel`, `goout` und `health` beruhen auf subjektiven Selbsteinschätzungen, sodass gleiche Antwortkategorien von verschiedenen Personen unterschiedlich interpretiert werden können.
+Damit sind sowohl begrenzte Präzision als auch Validitätsprobleme möglich; zusätzlich können soziale Erwünschtheit, Erinnerungslücken und individuelle Antworttendenzen die Messung verzerren.
+Für explorative Analysen sind die Variablen dennoch gut nutzbar, Ergebnisse sollten aber nicht als fehlerfreie Messungen verstanden werden.
+
+## 2. Explorative Datenanalyse einer kategorialen Variable
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `higher`; die Variable beschreibt, ob eine Person eine höhere Bildung anstrebt.
+Erstellen Sie eine relative und eine absolute Häufigkeitstabelle, die die jeweiligen Werte jeder Kategorie der Variable enthält.
+
+```{r}
+# Absolute Häufigkeiten von higher berechnen
+higherabs <- tally(~ higher, data = student)
+
+# Relative Häufigkeiten von higher berechnen
+higherrel <- tally(~ higher, data = student, format = "proportion")
+
+# Ausgabe
+higherabs
+higherrel
+```
+
+Die Variable `higher` ist in der Stichprobe sehr unausgewogen verteilt.
+Von 649 Schülerinnen und Schülern geben 580 Personen (89,37 Prozent) an, eine höhere Bildung anzustreben, während nur 69 Personen (10,63 Prozent) dies verneinen.
+Für spätere Analysen bedeutet das, dass die Kategorie `yes` die Daten klar dominiert.
+
+### 2.2 Säulendiagramm erstellen
+
+Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `higher`. Beschreiben Sie die Verteilung von `higher` auf Basis der Tabelle und des Säulendiagramms. Gehen Sie dabei insbesondere auf die häufigere Kategorie und die generelle Verteilung ein.
+
+```{r}
+# Säulendiagramm der absoluten Häufigkeiten von higher erstellen
+gf_bar(~ higher, data = student)
+```
+
+Das Säulendiagramm macht die starke Dominanz der Kategorie `yes` unmittelbar sichtbar.
+Der Balken für `yes` ist mit 580 Fällen mehr als achtmal so hoch wie der Balken für `no` mit 69 Fällen.
+Grafisch bestätigt sich damit, dass der Wunsch nach höherer Bildung in dieser Stichprobe der Regelfall ist. Mit einem Anteil von 89,37 Prozent ist die Verteilung deutlich auf eine Kategorie konzentriert. Inhaltlich spricht das dafür, dass Bildungsaspirationen in dieser Gruppe sehr verbreitet sind und nur eine kleine Minderheit keine höhere Bildung anstrebt.
+
+
+## 3. Explorative Datenanalyse von `G3`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie als nächstes die Variable `G3`, welche die Abschlussnote im Fach "Portugiesisch" beschreibt.
+Berechnen Sie für `G3` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25-Quantil, 75-Quantil und Interquartilsabstand.
+Interpretieren Sie die Werte anschließend.
+
+```{r}
+# Zentrale Kennwerte für G3 berechnen
+g3stats <- favstats(~ G3, data = student)
+g3stats
+
+# Interquartilsabstand berechnen
+g3stats$Q3 - g3stats$Q1
+```
+
+Die Abschlussnote `G3` hat einen Mittelwert von 11.91, einen Median von 12 und eine Standardabweichung von 3.23.
+Die Werte reichen von 0 bis 19 Punkten; das 25-Prozent-Quantil liegt bei 10 und das 75-Prozent-Quantil bei 14, sodass der Interquartilsabstand 4 Punkte beträgt.
+Damit liegen die mittleren 50 Prozent der Abschlussnoten zwischen 10 und 14 Punkten, also grob im mittleren bis leicht oberen Leistungsbereich.
+
+### 3.2 Histogramm erstellen und interpretieren
+
+Erstellen Sie ein Histogramm von `G3` und beschreiben Sie anschließend, welche Form die Verteilung aufweist.
+Gehen Sie dabei insbesondere auf Schiefe sowie auf die Frage ein, in welchen Wertebereichen sich viele beziehungsweise wenige Beobachtungen befinden. Benennen Sie den Modus.
+
+```{r}
+# Histogramm zur Verteilung von G3 erstellen
+gf_histogram(~ G3, data = student, bins = 20)
+# Schiefe ergänzend berechnen
+skew(student$G3)
+```
+
+Die Verteilung von `G3` ist nicht perfekt symmetrisch, sondern moderat linksschief mit einer Schiefe von -0.909.
+Der Modus liegt mit etwas über 100 Beobachtungen bei 11 und deutlich mehr als die Hälfte der Beobachtungen haben eine Note von 10 oder höher. Das theoretische Maximum von 20 Punkten wurde von keiner Schülerin und von keinem Schüler erreicht.
+
+### 3.3 Zusammenhang zwischen `freetime` und `G3`
+
+Untersuchen Sie den Zusammenhang zwischen `freetime` und `G3`.
+Erstellen Sie ein Streudiagramm und berechnen Sie zusätzlich die Pearson-Korrelation.
+
+```{r}
+# Streudiagramm erstellen
+gf_point(G3 ~ freetime, data = student)
+
+# Pearson-Korrelation berechnen
+cor(G3 ~ freetime, data = student)
+```
+
+Zwischen Abschlussnote und freier Zeit besteht ein negativer, aber nur schwacher linearer Zusammenhang.
+Die Pearson-Korrelation beträgt -0.123; weniger Freizeit geht also tendenziell mit besseren Abschlussnoten einher. Im Streudiagramm lässt sich dieser Trend nur schwer erkennen. Die Noten streuen innerhalb jeder Freizeitstufe deutlich.
+
+## 4. Inferenzstatistik
+
+### 4.1 Bootstrap für den Mittelwert von `G3`
+
+Bestimmen Sie für den Mittelwert von `G3` mithilfe eines Bootstrap-Verfahrens den Standardfehler und ein 95-Prozent-Konfidenzintervall.
+
+```{r}
+# Beobachteten Mittelwert berechnen
+meang3 <- mean(~ G3, data = student)
+
+# Bootstrap-Verteilung erzeugen
+set.seed(12345)
+bootg3 <- do(1000) * mean(~ G3, data = resample(student))
+
+# Erste Fälle anzeigen
+head(bootg3)
+
+# Standardfehler bestimmen
+sd(~ mean, data = bootg3)
+
+# 95-Prozent-Konfidenzintervall bestimmen
+qdata(~ mean, p = c(0.025, 0.975), data = bootg3)
+```
+
+Der gebootstrapte Standardfehler des Mittelwerts beträgt 0.124 Punkte.
+Das 95-Prozent-Konfidenzintervall für den mittleren `G3`-Wert reicht von 11.66 bis 12.14 Punkten.
+Der Stichprobenmittelwert von 11.91 ist damit relativ präzise geschätzt; bei wiederholten Stichproben wäre nur mit moderaten Schwankungen des Mittelwerts zu rechnen.
+
+### 4.2 Histogramm der Bootstrap-Verteilung
+
+Stellen Sie die Bootstrap-Verteilung der Mittelwerte grafisch dar und markieren Sie Mittelwert und Intervallgrenzen.
+
+```{r}
+# Konfidenzintervall speichern
+kig3 <- qdata(~ mean, p = c(0.025, 0.975), data = bootg3)
+
+# Histogramm der Bootstrap-Verteilung zeichnen
+gf_histogram(~ mean, data = bootg3, bins = 20) |>
+  gf_vline(xintercept = meang3, color = "red") |>
+  gf_vline(xintercept = kig3, linetype = "dashed", color = "blue")
+```
+
+Die Bootstrap-Verteilung der Mittelwerte ist annähernd glockenförmig um den beobachteten Mittelwert von 11,91 zentriert. Die rote Linie markiert diesen Mittelwert, die blauen gestrichelten Linien des 95-prozentigen Intervalls liegen bei 11.658 und 12.143. Da die Verteilung relativ kompakt ist, bestätigt die Grafik die vergleichsweise präzise Schätzung des durchschnittlichen Leistungsniveaus.
+
+### 4.3 Mittelwertvergleich für `internet`
+
+Untersuchen Sie mithilfe einer linearen Regression, ob sich die mittlere Abschlussnote `G3` zwischen `internet = yes` und `internet = no` unterscheidet.
+
+```{r}
+# Referenzkategorie festlegen
+student$internet <- factor(student$internet, levels = c("no", "yes"))
+
+# Lineares Modell schätzen
+modinternet <- lm(G3 ~ internet, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(modinternet)
+
+# Beobachteten Koeffizienten ausgeben
+coef(modinternet)
+```
+
+Schülerinnen und Schüler mit Internetzugang erreichen im Mittel 12.17 Punkte, ohne Internetzugang 11.03 Punkte.
+Der Intercept beschreibt den Mittelwert der Referenzgruppe `internet = no` und beträgt 11.03 Punkte.Der Koeffizient für `internetyes` beträgt 1.146 Punkte und beschreibt damit einen positiven Mittelwertunterschied zugunsten der Gruppe mit Internetzugang. Der Unterschied ist mit einem p-Wert von p \< 0.001 statistisch auffällig, sodass die Daten hier auf einen systematischen Mittelwertunterschied hindeuten.
+
+### 4.4 Permutationsverteilung für `internet`
+
+Formulieren Sie für den Koeffizienten von internet im linearen Regressionsmodell G3 ~ internet die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und treffen Sie eine Entscheidung auf dem 5%-Niveau. Gehen Sie davon aus, dass unter der Nullhypothese kein Zusammenhang besteht und die Gruppenzugehörigkeit zufällig ist. Mischen Sie daher die Variable internet mehrfach neu, während die Noten gleich bleiben, und berechnen Sie jeweils den Koeffizienten des linearen Modells. Visualisieren Sie die resultierende Permutationsverteilung in einem Histogramm und markieren Sie den beobachteten Koeffizienten, um seine Lage im Vergleich zur Nullverteilung zu beurteilen.
+
+```{r}
+set.seed(12345)
+perminternet <- do(1000) * lm(G3 ~ shuffle(internet), data = student)
+
+# Spaltennamen prüfen
+names(perminternet)
+
+# Zweite Spalte umbenennen
+names(perminternet)[2] <- "internetperm"
+
+# Beobachteten Koeffizienten speichern
+binternet <- coef(modinternet)[2]
+
+# Histogramm
+gf_histogram(~ internetperm, data = perminternet, bins = 30) |>
+  gf_vline(xintercept = binternet, color = "red")
+
+# p-Wert
+mean(abs(perminternet$internetperm) >= abs(binternet))
+```
+Die Nullhypothese lautet $H_0: \beta_{\text{internet}} = 0$; es besteht kein Unterschied in der mittleren Abschlussnote zwischen Schülerinnen und Schülern mit und ohne Internetzugang. Die Alternativhypothese lautet $H_1: \beta_{\text{internet}} \neq 0$; es besteht also ein Unterschied.
+
+Der beobachtete Koeffizient beträgt 1,146 Punkte und liegt weit außerhalb der unter der Nullhypothese erwarteten Permutationsverteilung. Der permutationsbasierte p-Wert beträgt p < 0.001.
+
+Da der p-Wert kleiner als 0.05 ist, wird die Nullhypothese auf dem 5%-Niveau verworfen. Es gibt somit statistische Hinweise auf einen Unterschied in den mittleren Abschlussnoten zwischen den beiden Gruppen.
+
+### 4.5 Bootstrap für die Korrelation zwischen `studytime` und `G3`
+
+Bestimmen Sie für die Korrelation zwischen `studytime` und `G3` einen Bootstrap-Standardfehler und ein 95-Prozent-Konfidenzintervall.
+
+```{r}
+# Beobachtete Korrelation berechnen
+rbeob <- cor(G3 ~ studytime, data = student)
+rbeob
+
+# Bootstrap-Verteilung erzeugen
+set.seed(12345)
+bootcor <- do(1000) * cor(G3 ~ studytime, data = resample(student))
+
+# Erste Fälle anzeigen
+head(bootcor)
+
+# Standardfehler bestimmen
+sd(~ cor, data = bootcor)
+
+# 95-Prozent-Konfidenzintervall bestimmen
+qdata(~ cor, p = c(0.025, 0.975), data = bootcor)
+```
+
+Für die Korrelation ergibt sich ein Bootstrap-Standardfehler von 0.034. Das 95-Prozent-Konfidenzintervall reicht von 0.182 bis 0.315. Da das gesamte Intervall oberhalb von 0 liegt, spricht das für einen robust positiven Zusammenhang zwischen Lernzeit und Abschlussnote, auch wenn dessen Stärke eher moderat bleibt.
+
+### 4.6 Histogramm der Bootstrap-Korrelationen
+
+Stellen Sie die Bootstrap-Verteilung der Korrelationen grafisch dar.
+
+```{r}
+# Konfidenzintervall speichern
+kir <- qdata(~ cor, p = c(0.025, 0.975), data = bootcor)
+
+# Histogramm der Bootstrap-Korrelationen zeichnen
+gf_histogram(~ cor, data = bootcor, bins = 20) |>
+  gf_vline(xintercept = rbeob, color = "red") |>
+  gf_vline(xintercept = kir, linetype = "dashed", color = "blue")
+```
+
+Die Bootstrap-Verteilung der Korrelationen ist um den beobachteten Wert von 0.250 zentriert.
+Die blauen Intervallgrenzen bei 0.182 und 0.315 liegen beide im positiven Bereich.
+Grafisch unterstreicht das, dass ein negativer Zusammenhang mit diesen Daten wenig plausibel ist.
+
+## 5. Bayes-Statistik
+
+### 5.1 Binäre Variable `Pass` erzeugen
+
+Erzeugen Sie aus `G3` die binäre Variable `Pass`, wobei `G3 >= 10` als bestanden gilt. Lassen Sie sich anschließend deren absoluten und relativen Häufigkeiten ausgeben und bestimmen Sie den Erfolgsanteil.
+
+```{r}
+# Binäre Variable Pass erzeugen
+student$Pass <- ifelse(student$G3 >= 10, "yes", "no")
+
+# Absolute Häufigkeiten ausgeben
+tally(~ Pass, data = student)
+
+# Relative Häufigkeiten ausgeben
+tally(~ Pass, data = student, format = "proportion")
+
+# Erfolgsanteil bestimmen
+n <- nrow(student)
+y <- sum(student$Pass == "yes")
+erfolgsanteil <- y / n
+erfolgsanteil
+```
+
+Nach der Dichotomisierung gelten 549 von 649 Schülerinnen und Schülern als bestanden; das entspricht 84,59 Prozent. Nicht bestanden haben 100 Personen beziehungsweise 15,41 Prozent. Der beobachtete Anteil der Bestandenen in der Stichprobe liegt bei 84,59% und somit über 50%. 
+
+### 5.2 Informative Prior darstellen
+
+Legen Sie für den Erfolgsanteil für Schülerinnen und Schüler, die bestanden haben, eine informative Beta-Prior fest und stellen Sie diese grafisch dar.
+
+```{r}
+# Werte für pi bereitstellen
+ppi <- seq(from = 0, to = 1, by = 1/1000)
+
+# alpha_prior und beta_prior spezifizieren
+a_prior <- 8
+b_prior <- 2
+
+# Dichtevektor der Prior
+dppi_prior <- dbeta(ppi, shape1 = a_prior, shape2 = b_prior)
+
+# zeichnen
+gf_line(dppi_prior ~ ppi) |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = paste0("Beta(", a_prior, ", ", b_prior, ")"))
+```
+
+Die Beta-Prior mit Parametern 8 und 2 legt vor der Datensicht bereits relativ hohe Erfolgswahrscheinlichkeiten nahe. Ihr Erwartungswert liegt bei 0.80 und passt damit gut zu einer Annahme, dass die Mehrheit der Lernenden besteht. Die Prior ist zugleich informativ genug, um kleine Stichproben sichtbar zu beeinflussen, wird hier aber auf eine recht große Stichprobe treffen.
+
+### 5.3 Likelihood-Funktion darstellen
+
+Stellen Sie die Likelihood-Funktion für den Erfolgsanteil $\pi$ auf Basis der beobachteten Daten dar und bestimmen Sie den Maximum-Likelihood-Schätzer. Stellen Sie die Likelihood-Funktion zusätzlich als Grafik dar.
+
+```{r}
+# n und y angeben
+n <- 649
+y <- 549
+
+# Likelihood berechnen
+lppi <- dbinom(y, size = n, prob = ppi)
+
+# Maximum-Likelihood-Schätzer
+mle <- y / n
+mle
+
+# zeichnen
+gf_line(lppi ~ ppi) |>
+  gf_labs(x = expression(pi), y = "Likelihood",
+          title = "Likelihood-Funktion") |>
+  gf_vline(xintercept = mle, color = "red")
+```
+
+Die Likelihood-Funktion gibt an, wie plausibel jeder mögliche Wert von $\pi$ ist, gegeben die beobachteten Daten.
+Sie basiert auf der Binomialverteilung $Y \sim \text{Binom}(n, \pi)$ und wird für alle $\pi \in [0, 1]$ ausgewertet.
+Der Maximum-Likelihood-Schätzer ergibt sich als $\hat{\pi} = \frac{y}{n} = \frac{549}{649} \approx 0{,}846$ und entspricht damit direkt dem beobachteten Erfolgsanteil in der Stichprobe.
+Die rote gestrichelte Linie im Plot markiert diesen Wert, an dem die Likelihood ihr Maximum erreicht.
+
+### 5.4 Posteriori-Verteilung bestimmen
+
+Bestimmen Sie auf Basis der Daten die Posteriori-Verteilung sowie den Posterior-Modus und ein 95-Prozent-Kredibilitätsintervall.
+
+```{r}
+# alpha_post und beta_post berechnen
+a_post <- a_prior + y
+b_post <- b_prior + (n - y)
+
+# Dichtevektor
+dppi <- dbeta(ppi, shape1 = a_post, shape2 = b_post)
+
+# zeichnen
+gf_line(dppi ~ ppi) |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = paste0("Beta(", a_post, ", ", b_post, ")"))
+
+# Modus (Punktschätzer)
+modus <- (a_post - 1) / (a_post + b_post - 2)
+modus
+
+# 95%-Kredibilitätsintervall
+kred95 <- qbeta(c(0.025, 0.975), a_post, b_post)
+kred95
+
+# zeichnen mit Modus und Intervall
+gf_line(dppi ~ ppi) |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = paste0("Beta(", a_post, ", ", b_post, ")")) |>
+  gf_vline(xintercept = modus, color = "blue") |>
+  gf_vline(xintercept = kred95, color = "green")
+```
+
+Unter Einbezug der Daten ergibt sich die Posteriori-Verteilung Beta(557, 102). Der Posterior-Modus beträgt 0.846 und das 95-Prozent-Kredibilitätsintervall reicht von 0.817 bis 0.872. Bayesianisch betrachtet liegt der Erfolgsanteil damit sehr wahrscheinlich im Bereich von rund 81,67 bis 87,18 Prozent und klar oberhalb einer bloßen Zufallserwartung von 50 Prozent.
+
+### 5.5 Priorvergleich durchführen
+
+Vergleichen Sie die Auswirkungen der informativen Prior mit einer nicht informativen Prior(1,1), indem Sie beide Posteriori-Verteilungen grafisch vergleichen.
+
+```{r}
+# nicht informative Prior spezifizieren
+a_prior2 <- 1
+b_prior2 <- 1
+
+# alpha_post und beta_post für die zweite Prior berechnen
+a_post2 <- a_prior2 + y
+b_post2 <- b_prior2 + (n - y)
+
+# Dichtevektor der zweiten Posteriorverteilung
+dppi2 <- dbeta(ppi, shape1 = a_post2, shape2 = b_post2)
+
+# beide Posteriorverteilungen zeichnen
+gf_line(dppi ~ ppi, color = "red") |>
+  gf_line(dppi2 ~ ppi, color = "blue") |>
+  gf_labs(x = expression(pi), y = expression(f(pi)),
+          title = "Posteriorvergleich")
+```
+
+Die Posteriorverteilung unter der informativen Prior(557,102) unterscheidet sich nur gering von der Posteriorverteilung unter der uniformen Prior Beta(550, 101), wie sich an dem sehr ähnlichen Kurvenverlauf ablesen lässt. Das zeigt, dass die Daten mit 649 Beobachtungen deutlich informativer sind als die Vorannahmen. Inhaltlich ist das Ergebnis also robust gegenüber einer plausiblen Variation der Priorwahl.
+
+## 6. Lineare Regression
+
+### 6.1 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `G3 ~ studytime`, geben Sie die wichtigsten Ergebnisse aus und interpretieren Sie diese. Nehmen Sie außerdem eine Punktprognose für einen Schüler vor der wöchentlich 5-10 Stunden lernt (also Ausprägung 3 hat).
+
+```{r}
+# Einfaches lineares Regressionsmodell schätzen
+mod1 <- lm(G3 ~ studytime, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(mod1)
+
+# Koeffizienten ausgeben
+coef(mod1)
+
+# Bestimmtheitsmaß ausgeben
+rsquared(mod1)
+
+# Punktprognose für studytime = 3 berechnen
+predict(mod1, newdata = data.frame(studytime = 3))
+```
+
+Im einfachen linearen Regressionsmodell beträgt die Konstante 10.028 und der Koeffizient von `studytime` 0.973. Eine zusätzliche Lernzeitstufe geht damit im Mittel mit rund 0.973 Punkten höherer Abschlussnote einher. Das Bestimmtheitsmaß liegt bei 0.061, sodass `studytime` allein mit 6,2 Prozent der Varianz nur einen kleinen Teil der Notenunterschiede erklärt.
+Für `studytime = 3` ergibt sich eine Punktprognose von 12,946 Punkten.
+
+### 6.2 Multiple lineare Regression
+
+Schätzen Sie das multiple Modell `G3 ~ studytime + absences + failures + internet`.
+
+```{r}
+# Multiples lineares Regressionsmodell schätzen
+mod2 <- lm(G3 ~ studytime + absences + failures + internet, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(mod2)
+
+# Koeffizienten ausgeben
+coef(mod2)
+
+# Bestimmtheitsmaß ausgeben
+rsquared(mod2)
+```
+
+Im multiplen Modell steigt das Bestimmtheitsmaß auf 0.205 und liegt damit deutlich über dem einfachen Modell mit über einem Fünftel erlärter Varianz. `studytime` wirkt weiterhin positiv (0.740), `absences` negativ (-0.023) und `failures` klar negativ (-1.909).
+Der Koeffizient für `internetyes` beträgt 0.854 und ist inhaltlich kleiner als im bivariaten Modell; der stärkste negative Prädiktor im Modell sind die bisherigen Misserfolge `failures`.
+
+### 6.3 Interaktionsmodell
+
+Schätzen Sie ein Modell mit Wechselwirkung zwischen `studytime` und `internet`.
+
+```{r}
+# Interaktionsmodell schätzen
+mod3 <- lm(G3 ~ studytime * internet + absences + failures, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(mod3)
+
+# Koeffizienten ausgeben
+coef(mod3)
+
+# Bestimmtheitsmaß ausgeben
+rsquared(mod3)
+```
+
+Das Interaktionsmodell erreicht ein Bestimmtheitsmaß von 0.205 und verbessert sich damit nicht merklich gegenüber dem Modell ohne Interaktion.
+Der Interaktionsterm `studytime:internetyes` beträgt 0.164.
+Inhaltlich bedeutet das: Der positive Zusammenhang zwischen Lernzeit und Abschlussnote unterscheidet sich zwischen Lernenden mit und ohne Internetzugang höchstens geringfügig.
+Die zentralen Leistungsunterschiede werden weiterhin vor allem durch Fehlzeiten und insbesondere durch frühere Misserfolge erklärt.
+
+## 7. Kausale Modellierung
+
+### 7.1 Naives Modell für `paid`
+
+Schätzen Sie ein bivariates Modell für den Zusammenhang zwischen `paid` also bezahlter Nachhilfe und der Abschlussnote `G3`. Erstellen Sie zuvor ein DAG, dass diesen Zusammenhang modelliert. Das zugehörige DAG kann auf der Website [DAGitty.net](https://www.dagitty.net/dags.html) grafisch erstellt und dargestellt werden.
+
+```{r}
+# Referenzkategorie festlegen
+student$paid <- factor(student$paid, levels = c("no", "yes"))
+
+# Naives Modell schätzen
+modpaid1 <- lm(G3 ~ paid, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(modpaid1)
+
+# Koeffizienten ausgeben
+coef(modpaid1)
+
+#Code zum Einfügen auf Daggity.net für naives DAG ("#" vorab entfernen):
+
+#dag {
+#bb="-5.124,-9.299,4.964,10.134"
+#G3 [outcome,pos="1.478,-0.493"]
+#paid [exposure,pos="-0.787,-0.455"]
+#paid -> G3
+#}
+
+```
+Im naiven bivariaten Modell beträgt der Koeffizient für `paidyes` -0.746.
+Schülerinnen und Schüler mit bezahltem Zusatzunterricht erzielen also deskriptiv im Mittel etwa 0.746 Punkte weniger als die Referenzgruppe ohne bezahlten Zusatzunterricht.
+Dieses Ergebnis ist jedoch noch nicht kausal interpretierbar, weil mögliche Drittvariablen vollständig ausgeblendet bleiben und darüber hinaus keine statistische Signifikanz vorliegt.
+
+### 7.2 Adjustiertes Modell für `paid`
+
+Schätzen Sie ein adjustiertes Modell mit den möglichen Confoundern `studytime`, `absences`, `failures` und `higher`. Erstellen Sie zuvor ein DAG mit den angenommenen theoretischen Zusammenhängen.
+
+```{r}
+# Referenzkategorie festlegen
+student$higher <- factor(student$higher, levels = c("no", "yes"))
+
+# Adjustiertes Modell schätzen
+modpaid2 <- lm(G3 ~ paid + studytime + absences + failures + higher, data = student)
+
+# Modellzusammenfassung ausgeben
+summary(modpaid2)
+
+# Koeffizienten ausgeben
+coef(modpaid2)
+
+#Code zum Einfügen auf Daggity.net für adjustiertes DAG ("#" vorab entfernen):
+
+#dag {
+#bb="-3.324,-3.601,3.254,3.573"
+#G3 [outcome,pos="0.322,-0.469"]
+#absences [adjusted,pos="-2.776,1.232"]
+#failures [adjusted,pos="2.706,-1.255"]
+#higher [adjusted,pos="0.385,-3.003"]
+#paid [exposure,pos="-0.879,-0.453"]
+#studytime [adjusted,pos="-2.572,-1.651"]
+#absences -> G3
+#absences -> paid
+#failures -> G3
+#failures -> paid
+#higher -> G3
+#higher -> paid
+#paid -> G3
+#studytime -> G3
+#studytime -> paid
+#}
+
+```
+Nach Adjustierung für die im DAG angenommenen Confounder `studytime`, `absences`, `failures` und `higher` beträgt der Koeffizient für `paidyes` -0.529. Durch die Aufnahme dieser Variablen in das Regressionsmodell werden die Backdoor-Pfade zwischen bezahltem Zusatzunterricht und der Abschlussnote blockiert. Der Vergleich mit dem naiven Koeffizienten von -0.746 zeigt, dass sich der scheinbar stark negative Zusammenhang durch die Kontrolle der Confounder leicht abschwächt. Ein positiver kausaler Effekt bezahlter Nachhilfe ist in diesen Daten damit weiterhin nicht erkennbar. Zudem ist der adjustierte Effekt mit einem p-Wert von 0.262 statistisch nicht signifikant.
+
+## 8. Random Forest
+
+### 8.1 Random Forest schätzen
+
+Schätzen Sie einen Random Forest zur Vorhersage von `Pass`. Schließen Sie `G1` und `G2` aus.  
+Trainieren Sie den Random Forest auf 80 Prozent der Daten und testen Sie auf 20 Prozent der Daten.  
+Durch den Ausschluss von `G1` und `G2` soll vermieden werden, dass frühere Noten die Vorhersage von `Pass` nahezu vollständig dominieren. Trotzdem stehen noch zahlreiche schulische und soziale Merkmale zur Verfügung, sodass das Modell potenziell komplexe nichtlineare Zusammenhänge nutzen kann.  
+Interpretieren Sie die Ausgabe des Random Forest. Beurteilen Sie die Vorhersagegüte anhand der OOB-Fehlerrate sowie der Konfusionsmatrix und erläutern Sie, ob das Modell beide Klassen (`yes` und `no`) gleichermaßen gut vorhersagt.
+
+```{r}
+# Zielvariable als Faktor codieren
+student$Pass <- as.factor(student$Pass)
+
+# Datensatz für Random Forest vorbereiten
+studentrf <- student
+
+# Direkte Zielvariable sowie konstante Variable entfernen
+# course wird ausgeschlossen, da sie im gesamten Datensatz konstant ist ("por")
+# und somit keinen Informationsgehalt für die Vorhersage besitzt
+studentrf$G3 <- NULL
+studentrf$course <- NULL
+
+# Datenaufteilung in Trainings- und Testdaten
+set.seed(42)
+trainIndex <- createDataPartition(studentrf$Pass, p = 0.8, list = FALSE)
+
+trainData <- studentrf[trainIndex, ]
+testData  <- studentrf[-trainIndex, ]
+
+# Reproduzierbarkeit
+set.seed(42)
+
+# Training des Random-Forest-Modells
+modelrf <- randomForest(Pass ~ . - G1 - G2, data = trainData, importance = TRUE)
+
+# Überblick über das Modell
+modelrf
+```
+
+Das Modell weist eine OOB-Fehlerrate von 15,38 Prozent auf.  
+Die Konfusionsmatrix aus der Modellausgabe zeigt, dass die Klasse `yes` deutlich besser vorhergesagt wird als die Klasse `no`.  
+Für `no` liegt die klassenbezogene Fehlerrate bei 0.80, für `yes` dagegen nur bei 0.036.  
+Das Modell unterscheidet die beiden Klassen damit nicht gleich gut, sondern erkennt bestandene Fälle wesentlich zuverlässiger als nicht bestandene Fälle.
+
+### 8.2 Modellgüte bewerten
+
+Bewerten Sie die Güte des Random-Forest-Modells auf den Testdaten.
+
+```{r}
+# Beobachtete Werte aus den Testdaten
+test.obs <- testData$Pass
+
+# Vorhersage auf den Testdaten
+test.pred <- predict(modelrf, testData)
+
+# Konfusionsmatrix ausgeben
+confusionMatrix(test.pred, test.obs)
+```
+
+Auf den Testdaten erreicht das Modell eine Accuracy von 86,82 Prozent.
+Dieser Wert liegt allerdings nur wenig über der No Information Rate von 84,50 Prozent, und der Unterschied ist mit einem p-Wert von 0,278 statistisch nicht signifikant.
+Da no als positive Klasse definiert ist, beträgt die Sensitivity für `Pass = no` 30,00 Prozent, während die Specificity gegenüber `Pass = yes` bei 97,25 Prozent liegt.
+Das Modell erkennt bestandene Fälle also weiterhin sehr zuverlässig, nicht bestandene Fälle hingegen deutlich schlechter: Von den 20 Personen, die tatsächlich nicht bestanden haben, werden nur 6 korrekt identifiziert, während 14 fälschlich der Klasse `yes` zugeordnet werden.
+Die Konfusionsmatrix zeigt damit eine klare Schieflage zugunsten der häufigeren Klasse `yes`, was sich auch an der moderaten Kappa-Statistik von 0.351 sowie der Balanced Accuracy von 63,62 Prozent ablesen lässt.
+
+### 8.3 Variablenwichtigkeit interpretieren
+
+Geben Sie die wichtigsten Prädiktoren des Random Forest aus.
+
+```{r}
+# Wichtige Variablen
+importance(modelrf)
+
+# Sortierte Ausgabe nach MeanDecreaseAccuracy
+sort(importance(modelrf)[, "MeanDecreaseAccuracy"], decreasing = TRUE)
+
+# Grafik
+varImpPlot(modelrf)
+```
+
+Die wichtigsten Prädiktoren im Random Forest sind nach dem Maß `MeanDecreaseAccuracy` vor allem `failures`, `higher`, `school`, `Medu`, `Fedu` und `famrel`.  
+Diese Variablen tragen am stärksten zur Vorhersagegenauigkeit des Modells bei.  
+Variablen wie `freetime`, `goout`, `absences` oder `health` zeigen dagegen keine positive Bedeutung für die Vorhersagegenauigkeit, da ihre Werte für `MeanDecreaseAccuracy` sehr klein oder sogar negativ ausfallen.  
+Inhaltlich deutet das darauf hin, dass vor allem bisherige schulische Problemlagen, Bildungsaspiration und familiale Merkmale für das Bestehen relevant sind.
+

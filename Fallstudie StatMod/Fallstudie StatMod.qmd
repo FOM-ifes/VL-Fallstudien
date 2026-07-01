@@ -1,0 +1,205 @@
+---
+title: "Statistische Modellierung | Fallstudie Student Performance"
+author: "Dozent:in, FOM Hochschule"
+date: "today"
+lang: de
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
+---
+
+```{r}
+# Benötigte Pakete laden
+library(mosaic)
+library(psych)
+library(tidyr)
+library(here)
+library(caret)
+library(randomForest)
+library(corrplot)
+
+# Datentabelle einlesen
+student <- read.csv(here("data", "student-por-clean.csv"))
+```
+
+# Fallstudie Student Performance – Portugiesisch-Kurs
+
+## 1. Erste Schritte
+
+### 1.1 Datentabelle erschließen
+
+Für diese Fallstudie arbeiten Sie mit Daten zum schulischen Leistungsverhalten von Schülerinnen und Schülern einer portugiesischen Sekundarschule.
+Bevor Sie mit den eigentlichen Analysen beginnen, soll zunächst die Datenbasis systematisch erschlossen werden.
+Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen die Datentabelle enthält.
+Nennen Sie außerdem die in der Datentabelle enthaltenen Variablen und beschreiben Sie die Beobachtungseinheit.
+
+
+
+### 1.2 Skalenniveau bestimmen
+
+Bestimmen Sie für die Variablen `studytime`, `absences`, `internet`, `higher`, `sex`, `G3`, `famrel`, `goout` und `health` jeweils das Skalenniveau und beschreiben Sie die Information der Variable.
+
+
+### 1.3 Messung beurteilen
+
+Beurteilen Sie die Variablen `studytime`, `famrel`, `goout` und `health` im Hinblick auf mögliche Messprobleme.
+Gehen Sie dabei insbesondere auf Präzision, Validität und mögliche Verzerrungen ein.
+
+
+## 2. Explorative Datenanalyse einer kategorialen Variable
+
+### 2.1 Häufigkeitstabelle erstellen
+
+Analysieren Sie ausschließlich die Variable `higher`; die Variable beschreibt, ob eine Person eine höhere Bildung anstrebt.
+Erstellen Sie eine relative und eine absolute Häufigkeitstabelle, die die jeweiligen Werte jeder Kategorie der Variable enthält.
+
+
+
+### 2.2 Säulendiagramm erstellen
+
+Erstellen Sie ein Säulendiagramm der absoluten Häufigkeiten von `higher`. Beschreiben Sie die Verteilung von `higher` auf Basis der Tabelle und des Säulendiagramms. Gehen Sie dabei insbesondere auf die häufigere Kategorie und die generelle Verteilung ein.
+
+
+
+
+## 3. Explorative Datenanalyse von `G3`
+
+### 3.1 Kennwerte berechnen
+
+Analysieren Sie als nächstes die Variable `G3`, welche die Abschlussnote im Fach "Portugiesisch" beschreibt.
+Berechnen Sie für `G3` die folgenden Kennwerte: Mittelwert, Median, Standardabweichung, Minimum, Maximum, 25-Quantil, 75-Quantil und Interquartilsabstand.
+Interpretieren Sie die Werte anschließend.
+
+
+### 3.2 Histogramm erstellen und interpretieren
+
+Erstellen Sie ein Histogramm von `G3` und beschreiben Sie anschließend, welche Form die Verteilung aufweist.
+Gehen Sie dabei insbesondere auf Schiefe sowie auf die Frage ein, in welchen Wertebereichen sich viele beziehungsweise wenige Beobachtungen befinden. Benennen Sie den Modus.
+
+
+### 3.3 Zusammenhang zwischen `freetime` und `G3`
+
+Untersuchen Sie den Zusammenhang zwischen `freetime` und `G3`.
+Erstellen Sie ein Streudiagramm und berechnen Sie zusätzlich die Pearson-Korrelation.
+
+
+## 4. Inferenzstatistik
+
+### 4.1 Bootstrap für den Mittelwert von `G3`
+
+Bestimmen Sie für den Mittelwert von `G3` mithilfe eines Bootstrap-Verfahrens den Standardfehler und ein 95-Prozent-Konfidenzintervall.
+
+
+
+### 4.2 Histogramm der Bootstrap-Verteilung
+
+Stellen Sie die Bootstrap-Verteilung der Mittelwerte grafisch dar und markieren Sie Mittelwert und Intervallgrenzen.
+
+
+
+### 4.3 Mittelwertvergleich für `internet`
+
+Untersuchen Sie mithilfe einer linearen Regression, ob sich die mittlere Abschlussnote `G3` zwischen `internet = yes` und `internet = no` unterscheidet.
+
+### 4.4 Permutationsverteilung für `internet`
+
+Formulieren Sie für den Koeffizienten von internet im linearen Regressionsmodell G3 ~ internet die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und treffen Sie eine Entscheidung auf dem 5%-Niveau. Gehen Sie davon aus, dass unter der Nullhypothese kein Zusammenhang besteht und die Gruppenzugehörigkeit zufällig ist. Mischen Sie daher die Variable internet mehrfach neu, während die Noten gleich bleiben, und berechnen Sie jeweils den Koeffizienten des linearen Modells. Visualisieren Sie die resultierende Permutationsverteilung in einem Histogramm und markieren Sie den beobachteten Koeffizienten, um seine Lage im Vergleich zur Nullverteilung zu beurteilen.
+
+
+### 4.5 Bootstrap für die Korrelation zwischen `studytime` und `G3`
+
+Bestimmen Sie für die Korrelation zwischen `studytime` und `G3` einen Bootstrap-Standardfehler und ein 95-Prozent-Konfidenzintervall.
+
+
+
+### 4.6 Histogramm der Bootstrap-Korrelationen
+
+Stellen Sie die Bootstrap-Verteilung der Korrelationen grafisch dar.
+
+
+
+## 5. Bayes-Statistik
+
+### 5.1 Binäre Variable `Pass` erzeugen
+
+Erzeugen Sie aus `G3` die binäre Variable `Pass`, wobei `G3 >= 10` als bestanden gilt. Lassen Sie sich anschließend deren absoluten und relativen Häufigkeiten ausgeben und bestimmen Sie den Erfolgsanteil.
+
+
+### 5.2 Informative Prior darstellen
+
+Legen Sie für den Erfolgsanteil für Schülerinnen und Schüler, die bestanden haben, eine informative Beta-Prior fest und stellen Sie diese grafisch dar.
+
+
+### 5.3 Likelihood-Funktion darstellen
+
+Stellen Sie die Likelihood-Funktion für den Erfolgsanteil $\pi$ auf Basis der beobachteten Daten dar und bestimmen Sie den Maximum-Likelihood-Schätzer. Stellen Sie die Likelihood-Funktion zusätzlich als Grafik dar.
+
+
+### 5.4 Posteriori-Verteilung bestimmen
+
+Bestimmen Sie auf Basis der Daten die Posteriori-Verteilung sowie den Posterior-Modus und ein 95-Prozent-Kredibilitätsintervall.
+
+
+### 5.5 Priorvergleich durchführen
+
+Vergleichen Sie die Auswirkungen der informativen Prior mit einer nicht informativen Prior(1,1), indem Sie beide Posteriori-Verteilungen grafisch vergleichen.
+
+## 6. Lineare Regression
+
+### 6.1 Einfache lineare Regression
+
+Schätzen Sie das lineare Regressionsmodell `G3 ~ studytime`, geben Sie die wichtigsten Ergebnisse aus und interpretieren Sie diese. Nehmen Sie außerdem eine Punktprognose für einen Schüler vor der wöchentlich 5-10 Stunden lernt (also Ausprägung 3 hat).
+
+### 6.2 Multiple lineare Regression
+
+Schätzen Sie das multiple Modell `G3 ~ studytime + absences + failures + internet`.
+
+
+### 6.3 Interaktionsmodell
+
+Schätzen Sie ein Modell mit Wechselwirkung zwischen `studytime` und `internet`.
+
+
+## 7. Kausale Modellierung
+
+### 7.1 Naives Modell für `paid`
+
+Schätzen Sie ein bivariates Modell für den Zusammenhang zwischen `paid` also bezahlter Nachhilfe und der Abschlussnote `G3`. Erstellen Sie zuvor ein DAG, dass diesen Zusammenhang modelliert. Das zugehörige DAG kann auf der Website [DAGitty.net](https://www.dagitty.net/dags.html) grafisch erstellt und dargestellt werden.
+
+
+### 7.2 Adjustiertes Modell für `paid`
+
+Schätzen Sie ein adjustiertes Modell mit den möglichen Confoundern `studytime`, `absences`, `failures` und `higher`. Erstellen Sie zuvor ein DAG mit den angenommenen theoretischen Zusammenhängen.
+
+
+## 8. Random Forest
+
+### 8.1 Random Forest schätzen
+
+Schätzen Sie einen Random Forest zur Vorhersage von `Pass`. Schließen Sie `G1` und `G2` aus.  
+Trainieren Sie den Random Forest auf 80 Prozent der Daten und testen Sie auf 20 Prozent der Daten.  
+Durch den Ausschluss von `G1` und `G2` soll vermieden werden, dass frühere Noten die Vorhersage von `Pass` nahezu vollständig dominieren. Trotzdem stehen noch zahlreiche schulische und soziale Merkmale zur Verfügung, sodass das Modell potenziell komplexe nichtlineare Zusammenhänge nutzen kann.  
+Interpretieren Sie die Ausgabe des Random Forest. Beurteilen Sie die Vorhersagegüte anhand der OOB-Fehlerrate sowie der Konfusionsmatrix und erläutern Sie, ob das Modell beide Klassen (`yes` und `no`) gleichermaßen gut vorhersagt.
+
+
+### 8.2 Modellgüte bewerten
+
+Bewerten Sie die Güte des Random-Forest-Modells auf den Testdaten.
+
+
+
+### 8.3 Variablenwichtigkeit interpretieren
+
+Geben Sie die wichtigsten Prädiktoren des Random Forest aus.
+
+
+
