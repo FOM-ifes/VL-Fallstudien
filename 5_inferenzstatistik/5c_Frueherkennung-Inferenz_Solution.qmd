@@ -1,20 +1,20 @@
 ---
 title: "Lösungsskizze: Früherkennung -- Inferenz"
-lang: de
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
-date: last-modified
+date: "today"
+lang: de
 format: 
-  html:
+  typst:
     toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true
     papersize: a4
-editor: 
-  markdown: 
-    wrap: 72
+    margin:
+      x: 2cm
+      y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
 ---
 
 ```{r}
