@@ -1,8 +1,8 @@
 ---
 title: "Fallstudie Mietpreise"
-lang: de
 author: "Ihr Name"
-date: today
+date: "today"
+lang: de
 format: 
   typst:
     toc: true
@@ -10,6 +10,11 @@ format:
     margin:
       x: 2cm
       y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
 ---
 
 ```{r}
