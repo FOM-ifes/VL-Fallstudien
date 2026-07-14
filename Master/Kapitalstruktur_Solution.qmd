@@ -1,18 +1,20 @@
 ---
 title: "Lösungsskizze: Kapitalstruktur"
+author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
+date: "today"
 lang: de
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
 execute:
   warning: false
-author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
-date: last-modified
-format: 
-  html:
-    toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true 
+  message: false
+editor: source
 ---
 
 ```{r}
