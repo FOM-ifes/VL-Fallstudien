@@ -1,16 +1,19 @@
 ---
 title: "1b_Musterlösung"
+date: "today"
 lang: de
-date: "`r Sys.Date()`"
 format: 
-  html:
+  typst:
     toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true 
     papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
 ---
 
 ```{r}
