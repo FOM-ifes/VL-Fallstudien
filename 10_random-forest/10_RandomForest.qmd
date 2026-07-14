@@ -2,17 +2,18 @@
 title: "Random Forest"
 subtitle: "Vorhersage Körperfettanteil"
 lang: de
-author: "Ihr Name"
-date: last-modified
 format: 
-  html:
+  typst:
     toc: true
-    html-math-method: katex
-  pdf:
-    toc: true
-    number-sections: false
-    colorlinks: true 
     papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+
+execute:
+  warning: false
+  message: false
+editor: source
 ---
 
 ```{r}
