@@ -74,7 +74,7 @@ head(immo)
 
 ## Vorbereitung
 
-*Hinweise*
+*Zur Erinnerung*
 
 - Code-Chunk einfügen mit Strg-Alt-I (Ctrl-Opt-I) oder über Button oben links
 - R-Inline-Code mit `'r ...'` (statt Apostroph Accent grave)
@@ -263,9 +263,9 @@ qdata( ~ totalrent, p = 0.1, data = mieten)
 ```
 
 - Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
-- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen zehn und zwölf Euro?[^grenzen]
+- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen neun und elf Euro?[^grenzen]
 
-[^grenzen]: Formal: größer zehn und kleiner gleich zwölf
+[^grenzen]: Formal: größer neun und kleiner gleich elf.
 
 ```{r}
 # Variable ergänzen
@@ -273,7 +273,9 @@ mieten |> mutate(
   rentsqm = totalrent/livingspace
 ) -> mieten
 # Anteil berechnen
-sqm1012 <- pdata( ~ rentsqm, q = 12, data = mieten) - pdata( ~ rentsqm, q = 10, data = mieten)
+sqm1012 <- 
+  pdata( ~ rentsqm, q = 12, data = mieten) - 
+  pdata( ~ rentsqm, q = 10, data = mieten)
 # Wert ausgeben
 sqm1012
 ```

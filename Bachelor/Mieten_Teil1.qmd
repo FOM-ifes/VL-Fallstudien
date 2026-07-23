@@ -59,7 +59,7 @@ head(immo)
 
 ## Vorbereitung
 
-*Hinweise*
+*Zur Erinnerung*
 
 - Code-Chunk einfügen mit Strg-Alt-I (Ctrl-Opt-I) oder über Button oben links.
 - R-Inline-Code mit `'r ...'` (statt Apostroph Accent grave)
@@ -68,6 +68,25 @@ head(immo)
 - Formelsyntax: `AV ~ UV | CoV` -- abhängige Variable Tilde unabhängige Variable gruppiert nach (bedingt durch) Kovariable.
 - Tilde `~` mit AltGr-+ (Opt-N): trennt abhängige und unabhängige Variable.
 - Strich `|` mit AltGr-< (Opt-7): gruppiert nach oder bedingt durch.
+
+Da die kategorialen Variablen als ganzzahlige Werte codiert sind, werden sie zu einer Faktor-Variable (*factor*) umgewandelt.
+
+Die neue Datentabelle heißt `mieten`, da es sich um Miet- und nicht um Immobilienpreise handelt.
+
+
+```{r}
+# Kategoriale Variablen umwandeln
+mieten <- immo |> mutate(
+  balcony = factor(balcony, levels = c(0, 1), labels = c("nein", "ja")),
+  haskitchen = factor(haskitchen, levels = c(0, 1), labels = c("nein", "ja"))
+)
+# Datenstruktur
+str(mieten)
+# Obere 6 Beobachtungen 
+head(mieten)
+
+```
+
 
 
 # Kategoriale Variablen
@@ -114,6 +133,6 @@ Betrachten Sie nur die Datensätze, für die eine Bewertung für die Innenaussta
 - Wie viel Prozent der Mieten liegt über 1400 Euro?
 - Welche Miete haben die preiswertesten 10$\,$% der Wohnungen höchstens?
 - Ergänzen Sie eine Variable `rentsqm` für die Miete pro Quadratmeter.
-- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen zehn und zwölf Euro?[^grenzen]
+- Wie viel Prozent der Wohnungen haben eine Miete pro Quadratmeter zwischen neun und elf Euro?[^grenzen]
 
-[^grenzen]: Formal: größer zehn und kleiner gleich zwölf
+[^grenzen]: Formal: größer neun und kleiner gleich elf.
