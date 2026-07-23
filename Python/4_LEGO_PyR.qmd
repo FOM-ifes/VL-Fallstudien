@@ -1,0 +1,1033 @@
+---
+title: "Preismodellierung Lego"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+    warning: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+library(here)
+```
+
+```{python include = FALSE}
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+import statsmodels.api as sm 
+import statsmodels.formula.api as smf
+
+from matplotlib import pyplot as plt
+from scipy.stats import norm
+```
+
+
+# LEGO Bausteine
+
+Wie kommt eigentlich der Preis für ein LEGO&copy;-Set zustande? Lesen Sie dazu das Statement unter [https://www.lego.com/de-de/service/help/Shopping/how-we-decide-the-prices-of-lego-sets-kA009000001dcamCAA](https://www.lego.com/de-de/service/help/Shopping/how-we-decide-the-prices-of-lego-sets-kA009000001dcamCAA).
+
+Über den Artikel Anna D. Peterson & Laura Ziegler (2021), Building a Multiple Linear Regression Model With LEGO Brick Data, *Journal of Statistics and Data Science Education*, [DOI: 10.1080/26939169.2021.1946450](https://doi.org/10.1080/26939169.2021.1946450) liegt uns hierfür eine Datentabelle von Amazon Preisen für eine zufällige Stichprobe von Produkten vor. Die Stichprobe wurde eingeschränkt auf folgende Serien:^[Siehe ergänzend [https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/](https://momsla.com/why-my-daughters-wont-be-playing-with-lego-friends/)]
+
+- Duplo: [https://www.lego.com/de-de/themes/duplo](https://www.lego.com/de-de/themes/duplo)
+- City: [https://www.lego.com/de-de/themes/city](https://www.lego.com/de-de/themes/city)
+- Friends: [https://www.lego.com/de-de/themes/friends](https://www.lego.com/de-de/themes/friends)
+
+
+#### R
+
+<!-- Technischer Hinweis: das Paket here (https://here.r-lib.org/) ermöglicht einen einfacheren Umgang mit Datei(pfaden) innerhalb von RStudio Projekten. Die csv Datei "lego.csv" befindet sich im Projektordner "data". -->
+
+```{r}
+# Daten einlesen
+here("data", "lego.csv") |> read.csv2() -> lego
+# Datenstruktur
+str(lego)
+# Obere 6 Beobachtungen
+head(lego)
+```
+
+#### Python
+
+```{python}
+# Daten einlesen
+# Hinweis: Unterschiedlicher Pfade notwendig für Rendern und Ausführen in der Console
+# lego = pd.read_csv("../data/lego.csv", decimal = ",", sep = ";")
+
+# Daten mit Hilfe der R-Funktion here einlesen
+# path = r.here("data", "lego.csv")
+# lego = pd.read_csv(path, decimal = ",", sep = ";")
+
+# Daten aus R übernehmen
+lego = r.lego
+
+# Datenstruktur
+lego.info()
+
+# Obere 6 Beobachtungen
+lego.head(6)
+
+```
+
+
+#### Fragen
+
+- Was ist eine Beobachtungseinheit der Datentabelle?
+
+- Welche metrischen Variablen liegen in der Datentabelle vor?
+
+***
+
+Zunächst betrachten wir nur die Serien `City` und `Friends` und wir behalten nur die Beobachtungen, für die das Theme ungleich DUPLO ist.
+
+#### R
+
+```{r}
+# Beobachtungen der Serie "DUPLO" eliminieren
+lego_sub <- lego |>
+  filter(Theme != "DUPLO")
+```
+
+#### Python
+
+```{python}
+# Beobachtungen der Serie "DUPLO" eliminieren
+lego_sub = lego[lego["Theme"] != "DUPLO"]
+```
+
+#### Frage
+
+- Welche Datentabelle hat mehr Beobachtungen: `lego`, `lego_sub`, oder beide gleich?
+
+***
+
+```{r}
+# R
+str(lego_sub)
+```
+
+```{python}
+# Python
+lego_sub.info()
+```
+
+# Einführung in Kovarianz und Korrelation
+
+#### R
+
+- Streudiagramm von `lego_sub`:
+
+```{r}
+gf_point(Amazon_Price ~ Pieces, data = lego_sub)
+```
+
+- Streudiagramm ergänzt um die Mittelwerte:
+
+```{r}
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) |> 
+  gf_vline(xintercept = mean(~ Pieces, data = lego_sub)) |> 
+  gf_hline(yintercept = mean(~ Amazon_Price, data = lego_sub))
+```
+
+#### Python
+
+- Streudiagramm von `lego_sub`:
+
+```{python}
+plt.plot(lego_sub["Pieces"], 
+         lego_sub["Amazon_Price"], 
+         'b.', 
+         linewidth=1.01)
+         
+plt.xlabel('Pieces')
+plt.ylabel('Amazon_Price')
+plt.title('Streudiagramm "Amazon_Price ~ Pieces"', loc='left')
+
+plt.show()
+plt.close()
+```
+
+- Streudiagramm ergänzt um die Mittelwerte:
+
+```{python}
+plt.plot(lego_sub["Pieces"], 
+         lego_sub["Amazon_Price"], 
+         'b.', 
+         linewidth=1.01)
+         
+plt.axhline(y = lego_sub["Amazon_Price"].mean(), 
+            linestyle="--",
+            color = "cyan",
+            label = "Mittelwert Amazon_Price",
+            )
+plt.axvline(x = lego_sub["Pieces"].mean(), 
+            linestyle="--",
+            color = "green",
+            label = "Mittelwert Pieces")
+         
+plt.xlabel('Pieces')
+plt.ylabel('Amazon_Price')
+plt.legend()
+plt.title('Streudiagramm "Amazon_Price ~ Pieces"', loc='left')
+
+plt.show()
+plt.close()
+```
+
+- Kovarianz und Korrelation
+
+```{r}
+# R
+cov(Amazon_Price ~ Pieces, data = lego_sub)
+cor(Amazon_Price ~ Pieces, data = lego_sub)
+```
+
+```{python}
+# Python
+a1 = np.array(lego_sub["Pieces"])
+a2 = np.array(lego_sub["Amazon_Price"])
+# es wird die Kovarianz- bzw. die Korrelationsmatrix ausgegeben
+# daher Auswahl 1. Zeile, zweite Spalte
+np.cov(a1, a2)[0][1]
+np.corrcoef(a1, a2)[0][1]
+```
+
+# Preismodellierung durch Bauteile
+
+## Lineares Modell
+
+Angenommen (**!**) es gibt einen *linearen* Zusammenhang zwischen der Komplexität, gemessen durch die Anzahl Bausteine (`Pieces`), und dem Preis (`Amazon_Price`). 
+Dann wird mathematisch folgendes Modell für die Stichprobe angenommen:
+
+$$y_i = b_0 + b_1 \cdot x_i + e_i$$
+
+#### Fragen
+
+- Wofür steht das $i$?
+
+- Was ist $b_0$?
+
+- Was ist $b_1$?
+
+- Was ist $e_i$
+
+- Welche Variable (`Pieces`, `Amazon_Price`) ist die abhängige Variable $y$?
+
+## Lineares Modell der Stichprobe
+
+### Modellierung
+
+Anhand des *Kleinste-Quadrate-Kriteriums* für diese Daten ergeben sich über die Funktion `lm()` folgende Werte:
+
+#### R
+
+```{r}
+erg <- lm(Amazon_Price ~ Pieces, data = lego_sub)
+# Geschätze Koeffizenten (coef()) auf 2 Nachkommastellen runden (round()).
+b <- coef(erg) |> round(2)
+b
+```
+
+#### Python
+
+```{python}
+erg = sm.OLS( lego_sub["Amazon_Price"],
+              sm.add_constant(lego_sub["Pieces"]),
+            ).fit()
+
+print(f"Steigung: {erg.params.values[1]:.4f} Achenabschnitt: {erg.params.values[0]:.4f}")
+
+```
+
+### Visualisierung
+
+#### R
+
+```{r}
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) |>
+  gf_lm()
+```
+
+#### Python
+
+```{python}
+intercept, slope = erg.params.values[0], erg.params.values[1]
+intercept_point = (0, intercept)
+
+plt.plot(lego_sub["Pieces"], 
+         lego_sub["Amazon_Price"], 
+         'b.', 
+         linewidth=1.2)
+         
+plt.axline( intercept_point, 
+            slope = slope,
+            linestyle="-",
+            color = "green",
+            label = "Regressiongerade")
+
+plt.xlabel('Pieces')
+plt.ylabel('Amazon_Price')
+plt.legend()
+plt.title('Streudiagramm "Amazon_Price ~ Pieces"', 
+          loc='left')
+
+plt.show()
+plt.close()
+```
+
+---
+
+Für das Modell der Stichprobe
+$$\hat{y}_i = b_0 + b_1 \cdot x_i$$
+ergibt sich:
+$$\hat{y}_i = `r b[1]` + `r b[2]` \cdot x_i$$ 
+
+#### Fragen
+
+- Welchen modellierten Wert hat ein Set mit $x_0=100$ Bauteilen? 
+
+- Gilt immer $\hat{y}_0 = y_0$?
+
+- Wie ändert sich in diesem Modell der Stichprobe der Mittelwert von $y$, wenn ein Bauteil mehr im Set ist?
+
+## Bestimmtheitsmaß
+
+Wie gut die gefundene Gerade die vorliegenden Daten beschreibt, kann mit Hilfe des Bestimmtheitsmaßes $R^2$ bestimmt werden:
+
+$$R^2 = \frac{\sum_{i=1}^n (\hat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_i-\bar{y})^2} = 1-\frac{\sum_{i=1}^n (y_i-\hat{y}_i)^2}{\sum_{i=1}^n (y_i-\bar{y})^2}$$
+
+```{r}
+# R
+r2 <- rsquared(erg) |> round(2)
+r2
+```
+
+```{python}
+r2 = erg.rsquared
+r2
+```
+
+
+$$R^2 = `r r2`$$
+
+#### Frage
+
+- Interpretieren Sie $R^2 = `r r2`$.
+
+
+***
+
+## Ergebniszusammenfassung (I/II)
+
+```{r}
+# R
+summary(erg)
+```
+
+```{python}
+# Python
+erg.summary()
+```
+
+
+# Preismodellierung ohne erklärende Variable
+
+Betrachten wir jetzt wieder die gesamte Stichprobe (`lego`):
+
+#### R
+
+```{r}
+# Arithmetischer Mittelwert
+mean(Amazon_Price ~ 1, data = lego)
+
+# Lineare Modellierung
+erg0 <- lm(Amazon_Price ~ 1, data = lego)
+# Koeffizienten
+coef(erg0)
+```
+
+#### Python
+
+```{python}
+# Arithmetischer Mittelwert
+lego["Amazon_Price"].mean()
+
+# Lineare Modellierung
+x, y = [1 for _ in range(len(lego["Amazon_Price"]))], lego["Amazon_Price"].values
+
+erg0 = sm.OLS( y, 
+               x, 
+             ).fit()
+intercept, slope = erg0.params[0], 0
+
+# Koeffizienten
+print(f"Intercept: {intercept} Steigung: {slope}")
+
+```
+
+Also
+
+$$\hat{y}_i = \bar{y} = \hat{\beta}_0 = `r round(mean(Amazon_Price ~ 1, data = lego),2)`$$
+
+#### Frage
+
+- Wie groß ist hier $R^2$?
+
+***
+
+# Preismodellierung mit kategorialer erklärender Variable
+
+Die Variable `Theme` ist kategorial-nominal skaliert, kann aber zur Modellierung herangezogen werden:
+
+#### R
+
+```{r}
+# Visualisierung über verwackeltes Streudiagramm
+gf_jitter(Amazon_Price ~ Theme, data = lego, width = 0.1)
+
+# Arithmetische Mittelwerte
+mean(Amazon_Price ~ Theme, data = lego)
+
+# Lineare Modellierung
+erg1 <- lm(Amazon_Price ~ Theme, data = lego)
+# Koeffizienten
+coef(erg1)
+```
+
+#### Python
+
+```{python}
+# Arithmetische Mittelwerte
+for x in frozenset(lego["Theme"]):
+  lst = lego[lego["Theme"] == x]
+  print(f"{x} \t: {lst['Amazon_Price'].mean():.3f}")
+
+# Lineare Modellierung
+erg1 = smf.ols(formula="Amazon_Price ~ C(Theme)", data=lego).fit()
+
+# Koeffizienten
+erg1.params
+```
+
+
+#### Fragen
+
+- Bei welcher Serie ist der Mittelwert des Preises am größten?
+
+- Wie groß ist der durchschnittliche Preisunterschied zwischen `Friends` und `City`?
+
+***
+
+# Preismodellierung mit mehr als einer erklärenden Variable (multiple Regression)
+
+#### R
+
+```{r}
+# Lineare Modellierung
+erg2 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
+# Visualisierung Ergebnis
+plotModel(erg2)
+# Koeffizienten
+coef(erg2)
+```
+
+#### Python
+
+```{python}
+# Lineare Modellierung
+erg2 = smf.ols(formula="Amazon_Price ~ Pieces + C(Theme)", data=lego).fit()
+
+# Visualisieren
+x, y = lego["Pieces"], lego["Amazon_Price"]
+duplo = lego["Theme"] == "DUPLO"
+city = lego["Theme"] == "City"
+friends = lego["Theme"] == "Friends"
+
+plt.plot(x[city], y[city], 'r.')
+plt.plot(x[duplo], y[duplo], 'g.')
+plt.plot(x[friends], y[friends], 'b.')
+
+plt.axline( (0, erg2.params.values[0]), 
+            slope = erg2.params.values[3], 
+            color = "red",
+            label="City")
+plt.axline( (0, erg2.params.values[0] + erg2.params.values[1]), 
+             slope = erg2.params.values[3], 
+             color = "green",
+             label = "DUPLO")
+plt.axline( (0, erg2.params.values[0] + erg2.params.values[2]), 
+            slope = erg2.params.values[3], 
+            color = "blue",
+            label = "Friends")
+plt.legend()
+
+plt.show()
+plt.close()
+```
+
+```{python}
+# Koeffizienten
+erg2.params
+
+```
+
+#### Fragen
+
+- Bei welcher Serie ist der Achsenabschnitt am größten?
+
+- Welches *Problem* dieses Modells sehen Sie?
+
+# Preismodellierung mit Wechselwirkung
+
+Über `x1:x2` kann die Wechselwirkung zwischen zwei Variablen in ein Modell integriert werden.
+Alternativ kann auch `x1*x2` verwendet werden, das entspricht `x1 + x2 + x1:x2`.
+
+
+#### Fragen
+
+- Erweitern Sie den Code so, dass Sie die Wechselwirkung zwischen `Pieces` und `Theme` ins Modell integrieren. 
+
+#### R
+
+```{r}
+# Lineare Modellierung
+erg3 <- lm(Amazon_Price ~ Pieces + Theme, data = lego)
+# Visualisierung Ergebnis
+plotModel(erg3)
+# Koeffizienten
+coef(erg3)
+```
+
+#### Python
+
+```{python}
+# Lineare Modellierung
+erg3 = smf.ols(formula="Amazon_Price ~ Pieces + C(Theme)", data=lego).fit()
+
+# Visualisieren
+x, y = lego["Pieces"], lego["Amazon_Price"]
+duplo = lego["Theme"] == "DUPLO"
+city = lego["Theme"] == "City"
+friends = lego["Theme"] == "Friends"
+
+plt.plot(x[city], y[city], 'r.')
+plt.plot(x[duplo], y[duplo], 'g.')
+plt.plot(x[friends], y[friends], 'b.')
+
+plt.axline( (0, erg3.params.values[0]), 
+            slope = erg3.params.values[3], 
+            color = "red",
+            label="City")
+plt.axline( (0, erg3.params.values[0] + erg3.params.values[1]), 
+             slope = erg3.params.values[3], 
+             color = "green",
+             label = "DUPLO")
+plt.axline( (0, erg3.params.values[0] + erg3.params.values[2]), 
+            slope = erg3.params.values[3], 
+            color = "blue",
+            label = "Friends")
+plt.legend()
+
+plt.show()
+plt.close()
+```
+
+```{python}
+# Koeffizienten
+erg3.params
+```
+
+
+- Bei welcher Serie ist die Steigung am größten?
+
+# Inferenz in der linearen Regression
+
+## Schätzunsicherheit
+
+In der zugrundeliegenden Population unser Stichprobe, wird mathematisch folgendes Modell für einen linearen Zusammenhang angenommen:
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i$$
+
+Die anhand der Stichprobe aus dieser Population berechneten Werte für Achsenabschnitt und Steigung, $b_0, b_1$, können als Schätzwerte für die unbekannten Modellparameter $\beta_0, \beta_1$ im Modell der Population verwendet werden (sogenannte *Punktschätzer*):
+
+$$\hat{\beta}_0=b_0,\,\hat{\beta}_1=b_1.$$
+
+```{r}
+# R
+# betadach
+betadach <- b
+```
+
+```{python}
+# Python
+# betadach
+betadach = erg.params.values
+```
+
+
+### Bootstrap
+
+#### R
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# Streudiagramm inkl. Regressionsgerade auf einem zufälligen Re-Sample (resample())
+gf_point(Amazon_Price ~ Pieces, data = resample(lego_sub)) |>
+  gf_lm()
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# geschätztes Modell auf drei zufälligen Re-Samples (resample())
+do(3) * lm(Amazon_Price ~ Pieces, data = resample(lego_sub))
+```
+
+#### Python
+
+```{python}
+# Zufallszahlengenerator initiieren
+np.random.seed(2009)
+
+slope = []
+intercept = []
+
+# Bootstrap
+for _ in range(3):
+  x, y = lego_sub["Pieces"].values, lego_sub["Amazon_Price"].values
+  indice = list(np.random.choice(len(x), len(x), replace=True))
+  erg_boot = sm.OLS( x[indice], 
+                     sm.add_constant(y[indice]),
+                    ).fit()
+  intercept += [erg_boot.params[0]]
+  slope += [erg_boot.params[1]]
+
+print(f"Intercepts: {intercept}")
+print(f"Steigung: {slope}")
+
+```
+
+#### Frage
+
+- Ergeben sich bei zufälligen Re-Samples dieselben geschätzten Parameter $\hat{\beta}_0, \hat{\beta}_1$?
+
+**Zur Erinnerung: Messung**
+
+Statistik = Parameter + Bias + Rauschen
+
+#### Frage
+
+- Welcher Teil der Gleichung wird durch das Bootstrapping simuliert?
+
+***
+
+#### R
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# 1000x Re-Samplen
+Bootvtlg <- do(1000) * lm(Amazon_Price ~ Pieces, 
+                          data = resample(lego_sub))
+# Obere Beobachtungen
+head(Bootvtlg)
+# Visualisierung Verteilung 
+gf_histogram( ~ Pieces, data = Bootvtlg,
+              # Anpassung Histogramm 
+              bins = 20, center = betadach[2]) |> 
+  # geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = betadach[2], color = "blue")
+```
+
+#### Python
+
+```{python}
+# Zufallszahlengenerator initiieren
+np.random.seed(2009)
+
+slope = []
+intercept = []
+
+# 1000x Re-Samplen
+for _ in range(1000):
+  y, x = lego_sub["Pieces"].values, lego_sub["Amazon_Price"].values
+  indice = list(np.random.choice(len(x), len(x), replace=True))
+  erg_boot = sm.OLS( x[indice], 
+                     sm.add_constant(y[indice]),
+                    ).fit()
+  intercept += [erg_boot.params[0]]
+  slope += [erg_boot.params[1]]
+
+Bootvtlg = pd.DataFrame({"(Intercept)": intercept, "Pieces": slope})
+
+# Obere Beobachtungen
+print(Bootvtlg.head(6))
+
+# Visualisierung Verteilung 
+plt.hist(Bootvtlg["Pieces"], bins = 20)
+plt.axvline(x = betadach[1], color = "blue", label = "betadach")
+plt.xlabel("Pieces")
+plt.ylabel("Anzahl")
+plt.legend()
+
+plt.show()
+plt.close()
+```
+
+#### Fragen
+
+- Wird durch das Bootstrapping die Anzahl der Beobachtungen erhöht?
+
+- Welche Verteilungsform zeigt das Histogramm?
+
+- Werden durch das Bootstrapping die Beobachtungen normalverteilt?
+
+***
+
+### Standardfehler
+
+```{r}
+# R
+se <- sd( ~ Pieces, data = Bootvtlg) |> round(4)
+se
+```
+
+```{python}
+# Python
+se = Bootvtlg["Pieces"].std()
+print(f"{se:.4f}")
+```
+
+#### Fragen
+
+- Welche Standardabweichung liegt bei `r se`: Die der Anzahl der Bausteine oder die der geschätzten Steigungen?
+
+- Würde der Standardfehler durch mehr Bootstrap-Stichproben kleiner werden?
+
+- Wann würde der Standardfehler kleiner werden, d.h., die Genauigkeit der Schätzung steigen?
+
+***
+
+### Konfidenzintervall
+
+```{r}
+# R
+ki95 <- qdata( ~ Pieces, p = c(0.025, 0.975), data = Bootvtlg)
+ki95
+```
+
+```{python}
+# Python
+ki95 = Bootvtlg["Pieces"].quantile([0.025, 0.975])
+ki95
+```
+
+D.h., in $95\%$ der Re-Samples ergibt sich eine geschätzte Steigung zwischen `r ki95[1]` und `r ki95[2]`.
+
+#### Frage
+
+- Ist eine Steigung von $0$ kompatibel zu der Stichprobe?
+
+#### R
+
+```{r}
+# Visualisierung Verteilung 
+gf_histogram( ~ Pieces, data = Bootvtlg,
+              # Anpassung Histogramm 
+              bins = 20, center = betadach[2]) |> 
+  # Konfidenzintervall
+  gf_vline(xintercept = ki95, color = "blue") |> 
+  # Steigung = 0
+  gf_vline(xintercept = 0, color = "red") 
+
+```
+
+#### Python
+
+```{python}
+plt.hist(Bootvtlg["Pieces"], bins = 20)
+
+# KI einzeichnen
+plt.axvline(x = ki95.values[0], color = "blue", label = "KI95")
+plt.axvline(x = ki95.values[1], color = "blue")
+
+# Steigung gleich 0 einzeichnen
+plt.axvline(x = 0, color = "red", label = "Steigung = 0")
+
+plt.xlabel("Pieces")
+plt.ylabel("Anzahl")
+plt.legend()
+
+plt.show()
+plt.close()
+```
+
+
+
+***
+
+Visualisierung Schätzunsicherheit:
+
+#### R
+
+```{r}
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) |>
+  gf_lm(interval = "confidence")
+```
+
+#### Python
+
+```{python}
+n, m = len(lego_sub["Pieces"]), 1
+b = erg.params.values[1], erg.params.values[0]
+
+x, y = lego_sub["Pieces"], lego_sub["Amazon_Price"]
+x2 = np.linspace(np.min(x), np.max(x), 100)
+y2 = np.polyval(b, x2)
+x_mean = np.mean(x)
+
+plt.plot(x, y, 'b.')
+
+ax = plt.gca()
+t = stats.t.ppf(0.975, n-1)
+s_err = erg.resid.std()
+
+ci = t * s_err * np.sqrt(1/n + (x2 - x_mean)**2 / np.sum((x - x_mean)**2))
+    
+plt.fill_between(x2, y2 + ci, y2 - ci, label="95%-KI")
+
+plt.xlabel('Pieces')
+plt.ylabel('Amazon_Price')
+plt.legend()
+plt.title('Streudiagramm "Amazon_Price ~ Pieces" mit 95%-Konfidenzintervall', 
+          loc='left')
+
+plt.show()
+plt.close()
+```
+
+Visualisierung Prognoseunsicherheit:
+
+#### R
+
+```{r}
+gf_point(Amazon_Price ~ Pieces, data = lego_sub) |>
+  gf_lm(interval = "prediction")
+```
+
+#### Python
+
+```{python}
+n, m = len(lego_sub["Pieces"]), 1
+b = erg.params.values[1], erg.params.values[0]
+
+x, y = lego_sub["Pieces"], lego_sub["Amazon_Price"]
+x2 = np.linspace(np.min(x), np.max(x), 100)
+y2 = np.polyval(b, x2)
+x_mean = np.mean(x)
+
+plt.plot(x, y, 'b.')
+
+ax = plt.gca()
+t = stats.t.ppf(0.975, n-1) 
+s_err = erg.resid.std()
+
+pi = t * s_err * np.sqrt(1 + 1/n + (x2 - x_mean)**2 / np.sum((x - x_mean)**2))
+    
+plt.fill_between(x2, y2 + pi, y2 - pi, label="95%-PI")
+
+plt.xlabel('Pieces')
+plt.ylabel('Amazon_Price')
+plt.legend()
+plt.title('Streudiagramm "Amazon_Price ~ Pieces" mit 95%-Prognoseintervall', 
+          loc='left')
+
+plt.show()
+plt.close()
+```
+
+
+
+## Hypothesenprüfung
+
+#### Frage
+
+- Wenn es im theoretischen Modell der Population keinen Zusammenhang zwischen $X$ und $Y$ gibt, was gilt dann für $\beta_1$ und $\hat{\beta}_1$?
+
+***
+
+#### R
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# Streudiagramm inkl. Regressionsgerade bei permutierten (shuffle()) x
+gf_point(Amazon_Price ~ shuffle(Pieces), data = lego_sub) |>
+  gf_lm()
+
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# geschätztes Modell bei Permutationen
+do(3) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
+```
+
+#### Python
+
+```{python}
+# Zufallszahlengenerator festlegen
+np.random.seed(2009)
+
+# Plot vorbereiten
+x, y = lego_sub["Pieces"].values, lego_sub["Amazon_Price"].values
+indice = list(np.random.choice(len(x), len(x), replace=False))
+
+erg_perm = sm.OLS( y, 
+                   sm.add_constant(x[indice]),
+                    ).fit()
+intercept, slope = erg_perm.params[0], erg_perm.params[1]
+
+plt.plot(x[indice], y, 'b.')
+plt.axline((0, intercept) , slope=slope, color="green")
+
+plt.show()
+plt.close()
+```
+
+```{python}
+# Zufallszahlengenerator festlegen
+np.random.seed(2009)
+
+# geschätztes Modell bei Permutationen
+# Plot vorbereiten
+x, y = lego_sub["Pieces"].values, lego_sub["Amazon_Price"].values
+intercept, slope = [], []
+
+for _ in range(3):
+  indice = list(np.random.choice(len(x), len(x), replace=False))
+  erg_perm = sm.OLS( y, 
+                     sm.add_constant(x[indice]),
+                    ).fit()
+  intercept += [erg_perm.params[0]]
+  slope += [erg_perm.params[1]]
+
+Nullvtlg = pd.DataFrame({"(Intercept)": intercept, "Pieces": slope})
+
+# Obere Beobachtungen
+print(Nullvtlg.head(3))
+
+```
+
+
+***
+
+### Permutationsverteilung
+
+#### R
+
+```{r}
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# 1000x Simulation unter Nullhypothese
+Nullvtlg <- do(1000) * lm(Amazon_Price ~ shuffle(Pieces), data = lego_sub)
+# Obere Beobachtungen
+head(Nullvtlg)
+# Visualisierung Verteilung 
+gf_histogram( ~ Pieces, data = Nullvtlg,
+              # Anpassung Histogramm 
+              bins = 20, center = 0) |> 
+  # geschätzte Steigung in Originalstichprobe
+  gf_vline(xintercept = betadach[2], color = "blue") |> 
+  # Steigung = 0
+  gf_vline(xintercept = 0, color = "red") 
+```
+
+#### Python
+
+```{python}
+# Zufallszahlengenerator festlegen
+np.random.seed(2009)
+
+# geschätztes Modell bei Permutationen
+# Plot vorbereiten
+x, y = lego_sub["Pieces"].values, lego_sub["Amazon_Price"].values
+intercept, slope = [], []
+
+for _ in range(1000):
+  indice = list(np.random.choice(len(x), len(x), replace = False))
+  erg_perm = sm.OLS( y, 
+                     sm.add_constant(x[indice]),
+                    ).fit()
+  intercept += [erg_perm.params[0]]
+  slope += [erg_perm.params[1]]
+
+Nullvtlg = pd.DataFrame({"(Intercept)": intercept, "Pieces": slope})
+
+# Obere Beobachtungen
+print(Nullvtlg.head(6))
+
+```
+
+```{python}
+# Visualisierung Verteilung 
+plt.hist(Nullvtlg["Pieces"], bins = 20)
+plt.axvline(x = betadach[1], color = "blue", label = "betadach")
+plt.axvline(x = 0, color = "red", label = "Steigung=0")
+plt.xlabel("Pieces")
+plt.ylabel("Anzahl")
+plt.legend()
+
+plt.show()
+plt.close()
+```
+
+
+#### Frage
+
+- Ist die geschätzte Steigung $\hat{\beta}_1 = `r betadach[2]`$ kompatibel zum Modell $H_0: \beta_1=0$?
+
+***
+
+### p-Wert
+
+p-Wert: Anteil der simulierten Strichproben gemäß dem Modell der Nullhypothese, in denen der (Betrag) der Steigung mindestens so groß ist wie der Betrag der Steigung in der Stichprobe
+
+```{r}
+# R
+pwert <- prop( ~ (abs(Pieces) >= abs(betadach[2])), data = Nullvtlg)
+pwert
+```
+
+```{python}
+# Python
+n = len(Nullvtlg["Pieces"])
+
+pwert = list(abs(Nullvtlg["Pieces"]) >= abs(betadach[1])).count(True) / n
+pwert
+```
+
+#### Frage
+
+- Der p-Wert ist kleiner als $1/1000$. Heißt das, dass die Wahrscheinlichkeit, dass die Nullhypothese stimmt, kleiner als $1/1000$ ist? 
+
+## Ergebniszusammenfassung (II/II)
+
+```{r}
+# R
+summary(erg)
+```
+
+```{python}
+# Python
+erg.summary()
+```
+
+#### Frage
+
+- Welche Fehler können beim statistischen Testen gemacht werden?

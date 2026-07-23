@@ -1,0 +1,680 @@
+---
+title: "Wie groß sind wir?"
+lang: de
+author: "Ihr Name"
+date: today
+format: 
+  typst:
+    toc: true
+    papersize: a4
+    margin:
+      x: 2cm
+      y: 2cm
+    warning: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(mosaic)
+```
+
+```{python include = FALSE}
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from scipy.stats import norm
+```
+
+# R und Python
+
+R und Python können gemeinsam in einem Quarto-Dokument genutzt werden. 
+Python läuft dann über `reticulate`, das bei lokaler RStudio-Nutzung auf die lokale Python-Installation zugreift.
+
+## Allgemeine Hinweise
+
+Paketinstallation für Python in der lokalen RStudio-Installation: mit `pip install` (im Terminal), in der Posit-Cloud mit `reticulate::py_install()`.
+
+Code-Chunk-Optionen für Python-Code-Chunks müssen in den geschweiften Klammern angegeben werden, die *moderne* Variante mit `#|` funktioniert (noch) nicht.
+
+Auch *versteht* Python nicht den Aufruf *Run all chunks above*, die notwendigen Chunks müssen daher einzeln aufgerufen werden.
+
+## Wechselseitige Nutzung von Objekten
+
+### R-Objekte in Python
+
+R-Objekte können in Python mit `r.` verwendet werden
+
+```{r}
+# Daten in R erzeugen
+x <- 1:3
+```
+
+```{python}
+# Daten von R in Python ausgeben
+r.x
+r.x[0]
+```
+
+*Hinweis:* In Python beginnt die Indexierung bei null, in R bei eins.
+
+Über denselben Weg  können auch R-Funktionen, z.B. von in R geladenen Paketen, genutzt werden.
+
+```{r}
+# R: Paket here aktiveren
+library(here)
+```
+
+```{python}
+# Python: Funktion aus R nutzen
+path = r.here("data", "lego.csv")
+path
+```
+
+### Python-Objekte in R
+
+Python-Objekte können mit `reticulate::py$` verwendet werden.
+
+```{python}
+# Daten in Python erzeugen
+data = np.random.normal(10, 5, 100)
+```
+
+```{r}
+# Daten von Python in R ausgeben
+reticulate::py$data[1:5]
+```
+
+Auch können Python-Pakete in R genutzt werden.
+Das Paket wird mit `pkg <- reticulate::import("pkg")` geladen.
+Einzelne Funktionen daraus werden mit `pkg$...` angesprochen.
+
+*Wichtig:* Module aus den Pakete (z. B. `numpy.random`)  müssen separat geladen werden.
+
+```{r}
+# Paket numpy als np in R aktivieren
+np <- reticulate::import("numpy")
+# Vektor mit numpy erzeugen und ausgeben
+x <- np$array(c(1, 2, 3, 4, 5))
+x
+```
+
+
+
+# Menschliche Größe
+
+Manche Menschen haben eine hohe Körpergröße, manche eine eher kleine. 
+
+Wie groß (in cm) ein Mensch wird, hängt von vielen Faktoren ab, z.B. Ernährung, aber auch von den Genen -- und ist im Laufe der Zeit gestiegen.
+
+Für die Zielpopulation (biologische) Frauen zwischen 20 und 25 gehen wir von einem Mittelwert von 168 cm aus^[Siehe z.B. [Statistisches Bundesamt](https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Gesundheit/Gesundheitszustand-Relevantes-Verhalten/Tabellen/liste-koerpermasse.html)] -- bei einer Standardabweichung von 6 cm.^[Hier liegen keine *offiziellen* Daten vor, siehe aber z.B. [https://doi.org/10.1016/j.ehb.2007.02.002](https://doi.org/10.1016/j.ehb.2007.02.002) oder [https://doi.org/10.7554/eLife.20320](https://doi.org/10.7554/eLife.20320).]
+
+#### Frage
+
+- Recherchieren Sie die durchschnittliche Körpergröße eines 20--25-jährigen (biologischen) Mannes.
+
+## Normalverteilung
+
+Es gibt gute Gründe dafür (siehe z.B. [Our World in Data](https://ourworldindata.org/human-height#height-is-normally-distributed)), davon auszugehen, dass die Größe normalverteilt ist.
+
+#### R
+
+```{r}
+gf_dist("norm", mean = 168, sd = 6) |> 
+  gf_labs(title = "Größenverteilung Frauen",
+          subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
+```
+
+#### Python
+
+```{python}
+# Erwartungswert und Standardabweichung
+mu, sigma = 168, 6
+
+# x und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+p = norm.pdf(x, mu, sigma)
+
+# Grafik erzeugen
+plt.plot(x, p, 'k', linewidth=2)
+plt.xlabel('x (in cm)')
+plt.ylabel('f(x)')
+plt.title('Größenverteilung Frauen\nDichtefunktion', loc='left')
+
+# Grafik anzeigen
+plt.show()
+plt.close()
+```
+
+D.h., die Größe der weiblichen Bevölkerung verteilt sich unimodal und symmetrisch um den Mittelwert, kleinere Abweichung zum Mittelwert kommen häufig vor.
+
+### Verteilungsfunktion
+
+Die Verteilungsfunktion $F(x)$ sagt, wie wahrscheinlich es ist, einen Wert $\leq x$ zu beobachten: $F(x)=Pr(X\leq x)$, und damit $0\leq F(x) \leq 1$.
+
+Für unsere Größenverteilung:
+
+#### R
+
+```{r}
+gf_dist("norm", mean = 168, sd = 6, kind = "cdf") |> 
+  gf_labs(title = "Größenverteilung Frauen",
+          subtitle = "Verteilungsfunktion", x = "x (in cm)", y = "F(x)")
+```
+
+#### Python
+
+```{python}
+# Erwartungswert und Standardabweichung
+mu, sigma = 168, 6
+
+# y und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+p = norm.cdf(x, mu, sigma)
+
+# Grafik erzeugen
+plt.plot(x, p, 'k',linewidth=2)
+plt.xlabel('x (in cm)')
+plt.ylabel('F(x)')
+plt.title('Größenverteilung Frauen\nVerteilungsfunktion', loc='left')
+
+# Grafik ausgeben
+plt.show()
+plt.close()
+```
+
+
+Bei einer Normalverteilung gilt:
+
+- Dichtefunktion: 
+$$f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+- Verteilungsfunktion:
+$$F(x) = \int_{-\infty}^x f(u)\, du= \int_{-\infty}^x \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(u-\mu)^2}{2\sigma^2}} \,du$$
+
+Dabei ist: 
+
+- $\mu=E(X)=\int_{-\infty}^{\infty} x \cdot f(x) \, dx$ der Mittelwert der Verteilung (Erwartungswert).
+  
+- $\sigma^2=Var(X)=\int_{-\infty}^{\infty} (x-\mu)^2 \cdot f(x) \, dx$ die Varianz der Verteilung.
+
+#### Frage
+
+Für 20--25-jährige Männer gehen wir von $\mu=181$ cm und $\sigma=7.5$ cm aus:
+
+#### R
+
+```{r}
+gf_dist("norm", mean = 181, sd = 7.5) |> 
+  gf_labs(title = "Größenverteilung Männer",
+          subtitle = "Dichtefunktion", x = "x (in cm)", y = "f(x)")
+```
+
+#### Python
+
+```{python}
+# Erwartungswert und Standardabweichung
+mu, sigma = 181, 7.5
+
+# x und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+
+# Grafik erzeugen
+p = norm.pdf(x, mu, sigma)
+plt.plot(x, p, 'k', linewidth=2)
+plt.xlabel('x (in cm)')
+plt.ylabel('f(x)')
+plt.title('Größenverteilung Männer\nDichtefunktion', loc='left')
+
+# Grafik ausgeben              
+plt.show()
+plt.close()
+```
+
+- Was hat sich in der Verteilung gegenüber der Verteilung der Frauen geändert, was nicht?
+
+## Wahrscheinlichkeiten bestimmen
+
+Wenn die Daten normalverteilt sind, und wir $\mu$ und $\sigma$ kennen, können wir Wahrscheinlichkeiten bestimmen, z.B., dass eine Frau kleiner oder gleich 160 cm ist:
+
+```{r}
+# R
+xpnorm(q = 160, mean = 168, sd = 6)
+```
+
+*Hinweis:* `pnorm()` geht auch. 
+`xpnorm()` ist eine erweitere Funktion, die zusätzlich die Dichtefunktion darstellt und den z-Wert ausgibt.
+
+```{python}
+# Python
+norm.cdf(160, loc = 168, scale = 6)
+```
+
+
+#### Fragen
+
+- Ändern Sie den Code so, dass Sie die Wahrscheinlichkeit bestimmen können, dass eine Frau kleiner oder gleich 180 cm ist:
+
+```{r}
+# R
+xpnorm(q = 160, mean = 168, sd = 6)
+```
+
+```{python}
+# Python
+norm.cdf(160, loc = 168, scale = 6)
+```
+
+- Wie groß ist die Wahrscheinlichkeit, dass eine Frau größer als 180 cm ist?
+
+## Quantile bestimmen
+
+Die Quantilsfunktion, $q=F^{-1}(p)$, gibt den Wert $q$ zurück, der mit einer Wahrscheinlichkeit $p$ nicht überschritten wird. So sind z.B. unter diesen Annahmen 90 % der Frauen kleiner oder gleich `r qnorm(p = 0.9, mean = 168, sd = 6) |> round(2)` cm:
+
+```{r}
+# R
+xqnorm(p = 0.9, mean = 168, sd = 6)
+```
+
+*Hinweis:* `qnorm()` geht auch, siehe weitere Informationen oben.
+
+```{python}
+# Python
+print(f"{norm.ppf(0.9, 168, 6):.2f}")
+```
+
+#### Fragen
+
+- Was ist der Wert der Verteilungsfunktion an der Stelle `r qnorm(p = 0.9, mean = 168, sd =6)`? 
+
+- Ändern Sie den Code so, dass Sie sagen können, ab wann eine Frau zu den 1 % größten gehört.
+
+```{r}
+# R
+xpnorm(q = 160, mean = 168, sd = 6)
+```
+
+```{python}
+# Python
+
+```
+
+## z-Wert
+
+Über 
+
+$$z=\frac{x-\mu}{\sigma}$$ 
+
+(R-Befehl `zscore()`) kann eine beliebige Verteilung in eine transformiert werden, für die $\mu_z=0$ und $\sigma_z=1$ gilt. Bei einer Normalverteilung spricht mensch in diesem Fall von einer Standardnormalverteilung. 
+Z.B. hat eine 174 cm große Frau einen z-Wert von +1:
+
+$$z=\frac{x-\mu}{\sigma}=\frac{174-168}{6}=+1$$ 
+
+D.h., ihre Größe ist eine Standardabweichung über dem Mittelwert
+
+#### Fragen
+
+- Berechnen und interpretieren Sie den z-Wert einer Frau, die 156 cm groß ist.
+
+- Berechnen Sie den z-Wert Ihrer Größe in R. Für die Damen $\mu=168$ und $\sigma=6$, für die Herren $\mu=181$ und $\sigma=7.5$
+
+```{r}
+# R
+# Code-Feld für z-Wert
+
+```
+
+```{python}
+# Python
+# Code-Feld für z-Wert
+
+```
+
+
+## 68-95-99,7%-Regel
+
+Bei einer Normalverteilung liegt die Wahrscheinlichkeit für einen Wert innerhalb einer Standardabweichung um den Mittelwert bei ca. 68 %:
+
+#### R
+
+```{r}
+xpnorm(c(-1, 1))
+```
+
+#### Python
+
+```{python}
+# Erwartungswert und Standardabweichung
+mu, sigma = 0, 1
+
+# x und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+p = norm.pdf(x, mu, sigma)
+
+# Grafik erzeugen
+plt.plot(x, p, 'k', linewidth=2)
+
+plt.axvline(x=-1, color='red', linestyle='--')
+plt.axvline(x=+1, color='red', linestyle='--')
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('Dichtefunktion der Standardnormalverteiung', loc='left')
+
+# Grafik ausgeben
+plt.show()
+plt.close()
+```
+
+
+
+#### Fragen
+
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von zwei Standardabweichungen um den Mittelwert ist.
+
+```{r}
+# R
+xpnorm(c(-1, 1))
+```
+
+```{python}
+# Python
+# Erwartungswert und Standardabweichung
+mu, sigma = 0, 1
+
+# x und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+p = norm.pdf(x, mu, sigma)
+
+# Grafik erzeugen
+plt.plot(x, p, 'k', linewidth=2)
+
+plt.axvline(x=-1, color='red', linestyle='--')
+plt.axvline(x=+1, color='red', linestyle='--')
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('Dichtefunktion der Standardnormalverteiung', loc='left')
+
+# Grafik ausgeben
+plt.show()
+plt.close()
+```
+
+- Ändern Sie den Code so, dass Sie aussagen können, wie wahrscheinlich ein Wert innerhalb von drei Standardabweichungen um den Mittelwert ist.
+
+```{r}
+# R
+xpnorm(c(-1, 1))
+```
+
+```{python}
+# Python
+# Erwartungswert und Standardabweichung
+mu, sigma = 0, 1
+
+# x und y generieren
+x = np.linspace(mu-4.5*sigma, mu+4.5*sigma, 100)
+p = norm.pdf(x, mu, sigma)
+
+# Grafik erzeugen
+plt.plot(x, p, 'k', linewidth=2)
+
+plt.axvline(x=-1, color='red', linestyle='--')
+plt.axvline(x=+1, color='red', linestyle='--')
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('Dichtefunktion der Standardnormalverteiung', loc='left')
+
+# Grafik ausgeben
+plt.show()
+plt.close()
+```
+
+- In welchem Größenbereich liegen ungefähr 95 % der Frauen? 
+
+# Einstieg in Bayes (Exkurs)
+
+Simulieren wir eine Datentabelle von jeweils 10000 Frauen und Männern, mit normalverteilter Größe und $\mu_F=168$, $\sigma_F=6$ bzw. $\mu_M=181$ $\sigma_M=7.5$
+
+#### R
+
+```{r}
+# Zufallszahlengenerator festlegen
+set.seed(1896)
+
+# Daten simulieren
+Daten <- data.frame(
+  geschlecht = c(rep("Frau",10000),
+                 rep("Mann", 10000)),
+  groesse = c(rnorm(n = 10000, mean = 168, sd = 6), 
+              rnorm(n = 10000, mean = 181, sd = 7.5))
+)
+
+# Kennzahlen ausgeben
+favstats(groesse ~ geschlecht, data = Daten)
+```
+
+#### Python
+
+```{python}
+# Zufallszahlengenerator initiieren
+np.random.seed(1896)
+
+# Daten generieren
+data = {
+    'geschlecht': np.repeat(['Frau', 'Mann'], [10000, 10000]),
+    'groesse': np.concatenate([
+        np.random.normal(loc=168, scale=6, size=10000),
+        np.random.normal(loc=181, scale=7.5, size=10000)
+    ])
+}
+
+# Dataframe erzeugen
+df = pd.DataFrame(data)
+
+# Kennzahlen ausgeben
+df.groupby('geschlecht')['groesse'].describe()
+```
+
+#### Frage
+
+- Angenommen vor Ihnen steht eine Person, die 185 cm groß ist, und Sie können das Geschlecht nicht erkennen. 
+Was schätzen Sie, welches Geschlecht hat die Person wahrscheinlich?
+
+---
+
+#### R
+
+```{r}
+gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) |>
+  gf_vline(xintercept = 185)
+```
+
+#### Python
+
+```{python}
+# zwei einzelne Objekte erzeugen
+maenner, frauen = df["geschlecht"] == "Mann", df["geschlecht"] == "Frau"
+
+# Kennzahlen für die beiden Gruppen
+groesse_min_mann, groesse_min_frau = df[maenner]["groesse"].min(), df[frauen]["groesse"].min()
+groesse_max_mann, groesse_max_frau = df[maenner]["groesse"].max(), df[frauen]["groesse"].max()
+groesse_mw_mann, groesse_mw_frau = df[maenner]["groesse"].mean(), df[frauen]["groesse"].mean()
+groesse_sd_mann, groesse_sd_frau = df[maenner]["groesse"].std(), df[frauen]["groesse"].std()
+```
+
+```{python}
+# Kennzahlen vorbereiten
+groesse_min, groesse_max = df["groesse"].min(), df["groesse"].max()
+# X-Achse für alle Grafiken
+linspace_all = np.linspace(groesse_min, groesse_max, 100)
+
+# 1. Plot für Frauen
+# X-Achse: linspace_all
+# Y-Achse: Dichte der Normalverteilung berechnet über linspace_all
+plt.plot(linspace_all, 
+         norm.pdf(linspace_all,
+                  groesse_mw_frau, 
+                  groesse_sd_frau), 
+         color='red', 
+         linewidth=2,
+         label="Frau")
+
+# 2. Plot für Männer
+# X-Achse: linspace_all
+# Y-Achse: Dichte der Normalverteilung berechnet über linspace_all
+plt.plot(linspace_all, 
+         norm.pdf(linspace_all, 
+                  groesse_mw_mann, 
+                  groesse_sd_mann), 
+         color='blue', 
+         linewidth=2,
+         label="Mann")
+
+plt.axvline(x=185., color='green', linestyle='--', label='x = 185')
+
+plt.title("Geschätzte Normalverteilung der Körpergröße")
+plt.xlabel("Größe (cm)")
+plt.ylabel("Dichte (PDF)")
+plt.legend()
+plt.show()
+plt.close()
+```
+
+---
+
+Der Wert der Dichtefunktion ist für Männer an der Stelle 185 viel höher als für Frauen:
+
+#### R
+
+```{r}
+# Frauen
+dnorm(185, mean = 168, sd = 6)
+# Männer
+dnorm(185, mean = 181, sd = 7.5)
+```
+
+#### Python
+
+```{python}
+# Frauen
+norm.pdf(185, loc = 168, scale = 6)
+
+# Männer
+norm.pdf(185, loc = 181, scale = 7.5)
+
+```
+
+#### Fragen
+
+- Wären Sie sich bei einer Größe von 174.5 cm bzgl. des Geschlechts *sicher*?
+
+#### R
+
+```{r}
+gf_density( ~ groesse, fill = ~ geschlecht, data = Daten) |>
+  gf_vline(xintercept = 174.5)
+```
+
+#### Python
+
+```{python}
+linspace_all = np.linspace(groesse_min, groesse_max, 100)
+
+plt.plot(linspace_all, 
+         norm.pdf(linspace_all, 
+         groesse_mw_frau , 
+         groesse_sd_frau), 
+         color='red', 
+         linewidth=2,
+         label="Frau")
+
+plt.plot(linspace_all, 
+         norm.pdf(linspace_all, 
+         groesse_mw_mann , 
+         groesse_sd_mann), 
+         color='blue', 
+         linewidth=2,
+         label="Mann")
+
+plt.axvline(x=174.5, color='green', linestyle='--', label='x = 174.5')
+
+
+plt.legend()
+plt.show()
+plt.close()
+```
+
+- Würde sich Ihre Einschätzung ändern, wenn z.B. 90 % der Zielpopulation weiblich wären?
+
+### Satz von Bayes
+
+Der Satz von Bayes ermöglicht die Unsicherheit über $Pr(y)$ auf Basis von Information über $x$ zu aktualisieren: $Pr(y|x)$. Dabei ist $Pr(y)$ die *a priori* Wahrscheinlichkeit von $y$ und $Pr(y|x)$ die *a posteriori* Wahrscheinlichkeit von $y$, bei bekanntem $x$.
+
+Auch lassen sich bedingte Wahrscheinlichkeiten umrechnen, d.h., aus $Pr(x|y)$ kann $Pr(y|x)$ bestimmt werden.
+
+$$Pr(y|x)=\frac{Pr(x|y)\cdot Pr(y)}{Pr(x)}$$
+
+### Naive Bayes
+
+Auch wenn die Dichtefunktion $f$ keine Wahrscheinlichkeit $Pr$ ist, können wir jetzt auf Basis der bekannten Größenverteilung je Geschlecht und der angenommenen a priori Verteilung der Geschlechter die a posteriori Verteilung des Geschlechts gegeben die Größe bestimmen und damit klassifizieren:
+
+$$
+Pr(Geschlecht|Groesse) =\frac{Pr(Groesse|Geschlecht)\cdot Pr(Geschlecht)}{Pr(Groesse)} 
+$$
+Der Nenner spielt für die Zuordnung keine Rolle. Für 174.5 cm und a priori 90 % weiblich ergibt sich dann:
+
+#### R
+
+```{r}
+# Frau
+dnorm(174.5, mean = 168, sd = 6) * 0.9
+# Mann
+dnorm(174.5, mean = 181, sd = 7.5) * (1 - 0.9)
+
+# Bzw. als Wahrscheinlichkeiten:
+# Frau
+dnorm(174.5, mean = 168, sd = 6) * 0.9 / 
+  (dnorm(174.5, mean = 168, sd = 6) * 0.9 
+   + dnorm(174.5, mean = 181, sd = 7.5) * (1 - 0.9))
+# Mann
+dnorm(174.5, mean = 181, sd = 7.5) * (1-0.9) / 
+  (dnorm(174.5, mean = 168, sd = 6) * 0.9 
+   + dnorm(174.5, mean = 181, sd = 7.5) * (1 - 0.9))
+```
+
+#### Python
+
+```{python}
+# Frau
+print(norm.pdf(174.5, loc = 168, scale = 6) * 0.9)
+# Mann
+print(norm.pdf(174.5, loc = 181, scale = 7.1) * (1 - 0.9))
+
+# Bzw. als Wahrscheinlichkeiten:
+# Frau
+print((norm.pdf(174.5, loc = 168, scale = 6) * 0.9) / 
+  (norm.pdf(174.5, loc = 168, scale = 6) * 0.9 
+  + norm.pdf(174.5, loc = 181, scale = 7.1) * (1 - 0.9)))
+# Mann
+print(norm.pdf(174.5, loc = 181, scale = 7.1) * (1 - 0.9) / 
+  (norm.pdf(174.5, loc = 168, scale = 6) * 0.9 
+  + norm.pdf(174.5, loc = 181, scale = 7.1) * (1 - 0.9)))
+```
+
+*Hinweis:* Die Abweichungen in den Wahrscheinlichkeiten kommen daher, dass Python standardmäßig 64-Bit-Gleitkommazahlen verwendet, während R standardmäßig mit 32 Bit rechnet (siehe auch Anzahl der Nachkommastellen bei der Ausgabe der Werte der Dichtefunktion).
+
+#### Fragen
+
+- Welches Geschlecht ist hier wahrscheinlicher?
+
+- Wie würde sich die Wahrscheinlichkeit für eine Frau ändern, wenn die a priori Wahrscheinlichkeit, dass es eine Frau ist, kleiner wäre?
+
+---
+
+**Hinweis:** Das Geschlecht einer Person ist ein komplexes Thema. Anstelle von automatischer und unsicherer Klassifikation oder Klischee-Zuordnungen, fragen Sie bitte einfach die Person, welchem Geschlecht sie sich selbst zuordnet!
+
+
+
+
