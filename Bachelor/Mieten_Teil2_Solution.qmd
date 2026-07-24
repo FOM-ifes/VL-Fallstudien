@@ -1,5 +1,6 @@
 ---
-title: "Beispiellösung Fallstudie Mietpreise"
+title: "Lösungsskizze: Fallstudie Mietpreise"
+subtitle: "Regression und Inferenz"
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: "today"
 lang: de

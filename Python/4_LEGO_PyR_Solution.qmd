@@ -1,5 +1,5 @@
 ---
-title: "Preismodellierung Lego"
+title: "Lösungsskizze: Preismodellierung Lego"
 lang: de
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: today

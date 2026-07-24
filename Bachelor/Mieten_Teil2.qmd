@@ -1,5 +1,6 @@
 ---
 title: "Fallstudie Mietpreise"
+subtitle: "Regression und Inferenz"
 author: "Ihr Name"
 date: "today"
 lang: de

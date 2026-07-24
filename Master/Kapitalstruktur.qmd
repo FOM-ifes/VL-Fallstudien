@@ -1,5 +1,6 @@
 ---
-title: "Fallstudie: Kapitalstruktur"
+title: "Fallstudie Kapitalstruktur"
+subtitle: "Regression und Inferenz, Random Forest, Hauptkomponentenanalyse"
 author: "Ihr Name"
 date: "today"
 lang: de

@@ -1,5 +1,6 @@
 ---
-title: "Mietpreise"
+title: "Fallstudie Mietpreise"
+subtitle: "Explorative Datenanalyse"
 author: "Ihr Name"
 date: "today"
 lang: de

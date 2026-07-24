@@ -1,5 +1,6 @@
 ---
-title: "Lösungsskizze: Kapitalstruktur"
+title: "Lösungsskizze: Fallstudie Kapitalstruktur"
+subtitle: "Regression und Inferenz, Random Forest, Hauptkomponentenanalyse"
 author: "Arbeitsgruppe quantitative Methodenausbildung am ifes"
 date: "today"
 lang: de
