@@ -182,7 +182,7 @@ Schätzen Sie ein bivariates Modell für den Zusammenhang zwischen `paid`, also 
 
 Schätzen Sie ein adjustiertes Modell für den Zusammenhang zwischen bezahlter Nachhilfe `paid` und der Abschlussnote `G3`, in dem Sie zusätzlich `freetime`, `absences`, `failures` und `higher` berücksichtigen. Erstellen Sie zuvor ein DAG mit den angenommenen theoretischen Zusammenhängen.
 
-Formulieren Sie eine Forschungsfrage sowie eine Null- und eine Alternativhypothese für den Koeffizienten von `paidyes`. Stellen Sie die Regressionsgleichung des adjustierten Modells explizit auf.
+Formulieren Sie eine Forschungsfrage sowie eine Null- und eine Alternativhypothese für den Koeffizienten von `paidyes`.
 
 Interpretieren Sie den Achsenabschnitt und die Regressionskoeffizienten für `paidyes`, `freetime`, `absences`, `failures` und `higheryes` jeweils als erwartete Änderung von `G3` bei einer Änderung der jeweiligen Variablen, unter Konstanthaltung der übrigen. Beurteilen Sie anhand der p-Werte, ob die einzelnen Koeffizienten statistisch von 0 unterscheidbar sind, und berichten Sie das Bestimmtheitsmaß sowie den F-Test für das Gesamtmodell.
 
