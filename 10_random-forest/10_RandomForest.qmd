@@ -9,7 +9,6 @@ format:
     margin:
       x: 2cm
       y: 2cm
-
 execute:
   warning: false
   message: false
