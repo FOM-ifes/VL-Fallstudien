@@ -30,7 +30,7 @@ library(dplyr)
 library(tidyverse)
 
 # Datentabelle einlesen
-student <- read.csv(here("data", "student-por-clean.csv"))
+read.csv2(here::here("..", "data", "student-por-clean.csv")) -> student
 ```
 
 # Fallstudie Student Performance – Portugiesisch-Kurs
