@@ -30,7 +30,7 @@ library(dplyr)
 library(tidyverse)
 
 # Datentabelle einlesen
-read.csv2(here::here("..", "data", "student-por-clean.csv")) -> student
+read.csv(here::here("..", "data", "student-por-clean.csv")) -> student
 ```
 
 # Fallstudie Student Performance – Portugiesisch-Kurs
