@@ -147,3 +147,7 @@ Bestimmen Sie für den Koeffizienten von `Pieces` im multiplen linearen Regressi
 ### 6.2 Permutationsverteilung des Koeffizienten von Pieces
 
 Formulieren Sie für den Koeffizienten von `Pieces` im linearen Regressionsmodell `Price ~ Pieces` die Nullhypothese und die Alternativhypothese. Erzeugen Sie anschließend eine Permutationsverteilung für diesen Koeffizienten, bestimmen Sie den p-Wert und entscheiden Sie auf dem 5%-Niveau.
+
+
+## Quellenverzeichnis
+Peterson, A. D., & Ziegler, L. (2021). Building a multiple linear regression model with LEGO brick data. Journal of Statistics and Data Science Education, 29(3), 297–303. https://doi.org/10.1080/26939169.2021.1946450
