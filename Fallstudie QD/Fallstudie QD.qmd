@@ -25,7 +25,7 @@ editor: source
 
 ### 1.1 Datensatz erschließen
 
-Für diese Fallstudie arbeiten Sie mit einem bereinigten Datensatz aus dem Themenfeld LEGO. Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, einen Datensatz nicht nur zu laden, sondern auch seine Struktur und seine Beobachtungseinheiten zu verstehen.
+Für diese Fallstudie arbeiten Sie mit einem bereinigten Datensatz aus dem Themenfeld LEGO (Peterson & Ziegler, 2021). Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, einen Datensatz nicht nur zu laden, sondern auch seine Struktur und seine Beobachtungseinheiten zu verstehen.
 
 Untersuchen Sie den Datensatz daher zunächst systematisch. Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen der Datensatz umfasst. Bestimmen Sie außerdem, welche Variablen im Datensatz enthalten sind, und erläutern Sie, was in diesem Fall als Beobachtungseinheit verstanden werden kann.
 
