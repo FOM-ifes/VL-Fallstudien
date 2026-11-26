@@ -27,7 +27,7 @@ editor: source
 
 ### 1.1 Datentabelle erschließen
 
-Für diese Fallstudie arbeiten Sie mit einer bereinigten Datentabelle aus dem Themenfeld LEGO. Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, eine Datentabelle nicht nur zu laden, sondern auch ihre Struktur und Beobachtungseinheiten zu verstehen.
+Für diese Fallstudie arbeiten Sie mit einer bereinigten Datentabelle aus dem Themenfeld LEGO (Peterson & Ziegler, 2021). Bevor Sie mit den eigentlichen Analysen beginnen, sollen Sie sich zunächst selbst einen Überblick über die Datenbasis verschaffen. Ein zentraler Bestandteil statistischer Datenanalyse besteht darin, eine Datentabelle nicht nur zu laden, sondern auch ihre Struktur und Beobachtungseinheiten zu verstehen.
 
 Untersuchen Sie die Daten daher zunächst systematisch. Ermitteln Sie, wie viele Beobachtungen und wie viele Variablen die Datentabelle umfasst. Bestimmen Sie außerdem, welche Variablen in der Datentabelle enthalten sind, und erläutern Sie, was in diesem Fall als Beobachtungseinheit verstanden werden kann.
 
@@ -529,3 +529,6 @@ Anschließend wird für den Koeffizienten von `Pieces` eine Permutationsverteilu
 Der beobachtete Koeffizient wird mit den Koeffizienten aus den 1000 Permutationen verglichen, um den p-Wert zu bestimmen.
 In 1000 Permutationen trat kein mindestens so extremer Wert auf; daher gilt $p < 0.001$.
 Damit wird die Nullhypothese auf dem 5%-Niveau verworfen.
+
+## Quellenverzeichnis
+Peterson, A. D., & Ziegler, L. (2021). Building a multiple linear regression model with LEGO brick data. Journal of Statistics and Data Science Education, 29(3), 297–303. https://doi.org/10.1080/26939169.2021.1946450
